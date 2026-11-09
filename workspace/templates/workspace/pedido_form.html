@@ -1,0 +1,216 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Nova venda</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Cadastro</span>
+                <h1>Nova venda</h1>
+                <p>Registre cliente, tipo do pedido, itens, pagamento e entrega em um unico fluxo.</p>
+            </div>
+            <a class="pedidos-secondary" href="{% url 'pedidos' %}">Voltar</a>
+        </section>
+
+        <section class="pedidos-panel">
+            <form class="pedidos-form" method="post">
+                {% csrf_token %}
+                <label>Codigo interno<input name="codigo" value="{{ codigo_sugerido }}"></label>
+                <label>Codigo iFood/app<input name="codigo_externo" placeholder="Ex: 1234"></label>
+                <label>Tipo do pedido
+                    <select name="canal">
+                        {% for valor, rotulo in canal_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Cliente<input name="cliente_nome" required></label>
+                <label>Tipo de pessoa
+                    <select name="tipo_pessoa">
+                        {% for valor, rotulo in tipo_pessoa_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Documento<input name="documento"></label>
+                <label>E-mail<input name="email" type="email"></label>
+                <label>Telefone<input name="telefone"></label>
+                <section class="pedidos-form-wide pedido-itens-editor" aria-label="Itens do pedido">
+                    <div class="pedido-itens-editor-header">
+                        <div>
+                            <span class="pedidos-eyebrow">Itens do pedido</span>
+                            <h2>Produtos vendidos</h2>
+                        </div>
+                        <button class="pedidos-secondary" type="button" id="adicionarItemPedido">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Adicionar item
+                        </button>
+                    </div>
+
+                    <div class="pedido-itens-list" id="pedidoItensList">
+                        <div class="pedido-item-row" data-pedido-item-row>
+                            <label>Item cadastrado
+                                <select name="produto_id" data-produto-select>
+                                    <option value="">Selecionar</option>
+                                    {% for produto in produtos %}
+                                        <option
+                                            value="{{ produto.id }}"
+                                            data-preco="{{ produto.preco_unitario|floatformat:2 }}"
+                                            data-categoria="{{ produto.categoria }}"
+                                            data-sku="{{ produto.sku }}">
+                                            {{ produto.nome }} - R$ {{ produto.preco_unitario|floatformat:2 }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                            <label>Ou novo item
+                                <input name="produto_nome" placeholder="Ex: X-Burger">
+                            </label>
+                            <label>Categoria
+                                <select name="categoria" data-categoria-select>
+                                    {% for valor, rotulo in categoria_choices %}
+                                        <option value="{{ valor }}">{{ rotulo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                            <label>SKU/codigo
+                                <input name="sku" data-sku-input>
+                            </label>
+                            <label>Qtd.
+                                <input name="quantidade" type="number" min="1" value="1">
+                            </label>
+                            <label>Valor
+                                <input name="valor_unitario" placeholder="R$ 0,00" data-valor-input>
+                            </label>
+                            <label>Desconto
+                                <input name="desconto" placeholder="R$ 0,00">
+                            </label>
+                            <label>Adicionais/obs.
+                                <input name="item_observacoes" placeholder="Ex: Catupiry, sem cebola">
+                            </label>
+                            <button class="pedido-item-remover" type="button" data-remover-item aria-label="Remover item" title="Remover item">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <label>Taxa de entrega<input name="taxa_entrega" placeholder="R$ 0,00"></label>
+                <label>Desconto geral<input name="desconto_pedido" placeholder="R$ 0,00"></label>
+                <label>Pagamento
+                    <select name="forma_pagamento" id="formaPagamentoPedido">
+                        {% for valor, rotulo in forma_pagamento_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Valor recebido<input name="valor_recebido" id="valorRecebidoPedido" placeholder="R$ 0,00"></label>
+                <label>Previsao de entrega<input name="previsao_entrega" type="date"></label>
+                <label>Entregador<input name="entregador" placeholder="Nome do entregador"></label>
+                <label>Status
+                    <select name="status">
+                        {% for valor, rotulo in status_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Prioridade
+                    <select name="prioridade">
+                        {% for valor, rotulo in prioridade_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="pedidos-form-wide">Endereco de entrega<input name="endereco_entrega" placeholder="Rua, numero, bairro, complemento"></label>
+                <label class="pedidos-form-wide">Detalhes do pedido/preparo<textarea name="observacoes" rows="4" placeholder="Ex: sem cebola, molho separado, ponto da carne, observacoes do iFood"></textarea></label>
+                <div class="pedidos-form-actions">
+                    <button class="pedidos-primary" type="submit">Confirmar venda</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <script>
+        (function () {
+            const lista = document.getElementById("pedidoItensList");
+            const adicionar = document.getElementById("adicionarItemPedido");
+
+            if (!lista || !adicionar) {
+                return;
+            }
+
+            function atualizarLinha(linha) {
+                const select = linha.querySelector("[data-produto-select]");
+                const opcao = select ? select.options[select.selectedIndex] : null;
+                const valor = linha.querySelector("[data-valor-input]");
+                const categoria = linha.querySelector("[data-categoria-select]");
+                const sku = linha.querySelector("[data-sku-input]");
+
+                if (!opcao || !opcao.value) {
+                    return;
+                }
+
+                if (valor && !valor.value) {
+                    valor.value = opcao.dataset.preco || "";
+                }
+
+                if (categoria && opcao.dataset.categoria) {
+                    categoria.value = opcao.dataset.categoria;
+                }
+
+                if (sku && !sku.value) {
+                    sku.value = opcao.dataset.sku || "";
+                }
+            }
+
+            function prepararLinha(linha) {
+                const select = linha.querySelector("[data-produto-select]");
+                const remover = linha.querySelector("[data-remover-item]");
+
+                if (select) {
+                    select.addEventListener("change", function () {
+                        atualizarLinha(linha);
+                    });
+                }
+
+                if (remover) {
+                    remover.addEventListener("click", function () {
+                        const linhas = lista.querySelectorAll("[data-pedido-item-row]");
+                        if (linhas.length > 1) {
+                            linha.remove();
+                        } else {
+                            linha.querySelectorAll("input").forEach(function (input) {
+                                input.value = "";
+                            });
+                            linha.querySelectorAll("select").forEach(function (selectField) {
+                                selectField.selectedIndex = 0;
+                            });
+                        }
+                    });
+                }
+            }
+
+            prepararLinha(lista.querySelector("[data-pedido-item-row]"));
+
+            adicionar.addEventListener("click", function () {
+                const base = lista.querySelector("[data-pedido-item-row]");
+                const novaLinha = base.cloneNode(true);
+
+                novaLinha.querySelectorAll("input").forEach(function (input) {
+                    input.value = input.name === "quantidade" ? "1" : "";
+                });
+                novaLinha.querySelectorAll("select").forEach(function (selectField) {
+                    selectField.selectedIndex = 0;
+                });
+
+                lista.appendChild(novaLinha);
+                prepararLinha(novaLinha);
+            });
+        })();
+    </script>
+</body>
+</html>

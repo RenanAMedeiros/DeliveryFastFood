@@ -1,0 +1,829 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+{% include "components/_head.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Capacity Operacional | Workspace Qore</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style_dashboard_capacity.css' %}?v=4.0.1">
+</head>
+
+<body class="workspace-capacity-page">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="capacity-page">
+        <section
+            class="capacity-shell"
+            id="capacityDashboard"
+            data-api-url="{% url 'dados_dashboard_capacity' %}"
+            data-import-url="{% url 'importar_capacity' %}">
+
+            <!-- =====================================================
+                 HEADER PADRÃO WORKSPACE
+            ====================================================== -->
+            <header class="capacity-page-header">
+                <div class="capacity-page-heading">
+                    <span class="capacity-eyebrow">
+                        Planejamento operacional
+                    </span>
+
+                    <h1>Capacity Operacional</h1>
+
+                    <p>
+                        Visão consolidada do budget aprovado, utilização operacional,
+                        disponibilidade das carteiras e estrutura de liderança.
+                    </p>
+                </div>
+
+                <div class="capacity-header-actions">
+                    {% if request.user.is_staff or request.user.role == 'admin' or request.user.role == 'diretoria' %}
+                    <button
+                        type="button"
+                        class="capacity-header-button capacity-header-button-secondary capacity-import-toggle"
+                        id="capacityImportToggle"
+                        aria-expanded="false">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path
+                                d="M12 4v11M8 8l4-4 4 4M5 14v5h14v-5"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                            </path>
+                        </svg>
+
+                        <span>Importar planilha</span>
+                    </button>
+                    {% endif %}
+
+                    <div
+                        class="capacity-source-status"
+                        id="capacitySourceStatus"
+                        aria-live="polite">
+
+                        <span
+                            class="capacity-source-status-dot"
+                            id="capacitySourceStatusDot">
+                        </span>
+
+                        <div>
+                            <small>Fonte de dados</small>
+                            <strong id="capacitySourceStatusText">
+                                Aguardando carregamento
+                            </strong>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="capacity-header-button capacity-header-button-primary capacity-refresh-button"
+                        id="capacityRefreshButton">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            focusable="false">
+
+                            <path
+                                d="M19 8a7.5 7.5 0 1 0 1 6M19 4v4h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.9"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                            </path>
+                        </svg>
+
+                        <span>Atualizar dados</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 IMPORTAÇÃO
+            ====================================================== -->
+            {% if request.user.is_staff or request.user.role == 'admin' or request.user.role == 'diretoria' %}
+            <form
+                class="capacity-import-form"
+                id="capacityImportForm"
+                enctype="multipart/form-data"
+                hidden>
+
+                {% csrf_token %}
+
+                <div class="capacity-import-copy">
+                    <span class="capacity-section-eyebrow">Carga mensal</span>
+                    <strong>Importar capacity da planilha</strong>
+                    <small>
+                        Os nomes são preservados e vinculados automaticamente
+                        aos cadastros quando possível.
+                    </small>
+                </div>
+
+                <label class="capacity-filter-field">
+                    <span>Mês/Ano</span>
+                    <input type="month" name="competencia" required>
+                </label>
+
+                <label class="capacity-filter-field capacity-import-file">
+                    <span>Planilha XLSX</span>
+                    <input type="file" name="arquivo" accept=".xlsx" required>
+                </label>
+
+                <button
+                    type="submit"
+                    class="capacity-refresh-button capacity-import-submit">
+                    Enviar capacity
+                </button>
+            </form>
+            {% endif %}
+
+            <!-- =====================================================
+                 ALERTA
+            ====================================================== -->
+            <section
+                class="capacity-alert"
+                id="capacityAlert"
+                hidden
+                role="alert">
+
+                <span class="capacity-alert-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8">
+                        </circle>
+
+                        <path
+                            d="M12 7.5v5M12 16.4v.1"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.9"
+                            stroke-linecap="round">
+                        </path>
+                    </svg>
+                </span>
+
+                <div>
+                    <strong id="capacityAlertTitle">
+                        Não foi possível carregar a base
+                    </strong>
+                    <p id="capacityAlertText"></p>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 FILTROS
+            ====================================================== -->
+            <section
+                class="capacity-filter-card"
+                aria-label="Filtros do dashboard">
+
+                <div class="capacity-filter-heading">
+                    <div>
+                        <span class="capacity-section-eyebrow">Segmentação</span>
+                        <h2>Filtros da análise</h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="capacity-clear-filters"
+                        id="capacityClearFilters">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path
+                                d="M5 7h14M8 7V5h8v2M9 10v7M15 10v7M7 7l1 13h8l1-13"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                            </path>
+                        </svg>
+
+                        Limpar filtros
+                    </button>
+                </div>
+
+                <div class="capacity-filters-grid">
+                    <label class="capacity-filter-field">
+                        <span>Mês/Ano do capacity</span>
+                        <select id="capacityFilterCompetence">
+                            <option value="">Carregando...</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field">
+                        <span>Supervisão operacional</span>
+                        <select id="capacityFilterSupervisor">
+                            <option value="">Todos</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field">
+                        <span>Gerente</span>
+                        <select id="capacityFilterManager">
+                            <option value="">Todos</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field">
+                        <span>Gestor</span>
+                        <select id="capacityFilterLeader">
+                            <option value="">Todos</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field">
+                        <span>Modalidade</span>
+                        <select id="capacityFilterMode">
+                            <option value="">Todas</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field capacity-filter-field-wide">
+                        <span>Carteira</span>
+                        <select id="capacityFilterPortfolio">
+                            <option value="">Todas</option>
+                        </select>
+                    </label>
+
+                    <label class="capacity-filter-field">
+                        <span>Situação</span>
+                        <select id="capacityFilterStatus">
+                            <option value="">Todas</option>
+                            <option value="critical">Acima da capacidade</option>
+                            <option value="attention">Atenção</option>
+                            <option value="balanced">Equilibrada</option>
+                            <option value="available">Capacidade disponível</option>
+                        </select>
+                    </label>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 KPIs EXECUTIVOS
+            ====================================================== -->
+            <section
+                class="capacity-kpi-grid capacity-kpi-grid-executive"
+                aria-label="Indicadores principais">
+
+                <article class="capacity-kpi-card capacity-kpi-card-executive capacity-kpi-action"
+                    role="button" tabindex="0" data-capacity-kpi="budget" aria-label="Analisar Budget aprovado">
+                    <div class="capacity-kpi-topline">
+                        <span class="capacity-kpi-title">Budget aprovado</span>
+
+                        <span class="capacity-kpi-icon is-blue">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M5 19V9M12 19V5M19 19v-7"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.9"
+                                    stroke-linecap="round">
+                                </path>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <strong class="capacity-kpi-main-value" id="capacityKpiBudget">0</strong>
+                    <small>Capacidade planejada para a competência</small>
+                    <div class="capacity-kpi-tooltip" data-kpi-tooltip="budget" role="tooltip"></div>
+                </article>
+
+                <article class="capacity-kpi-card capacity-kpi-card-executive capacity-kpi-action"
+                    role="button" tabindex="0" data-capacity-kpi="actual" aria-label="Analisar Budget atual">
+                    <div class="capacity-kpi-topline">
+                        <span class="capacity-kpi-title" id="capacityKpiActualLabel">
+                            Budget atual
+                        </span>
+
+                        <span class="capacity-kpi-icon is-cyan">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 10a2.5 2.5 0 1 0 0-5M3 19a5 5 0 0 1 10 0M13 14.5a4.5 4.5 0 0 1 8 2.8V19"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <strong class="capacity-kpi-main-value" id="capacityKpiActual">0</strong>
+                    <small>Total informado para a competência</small>
+                    <div class="capacity-kpi-tooltip" data-kpi-tooltip="actual" role="tooltip"></div>
+                </article>
+
+                <article class="capacity-kpi-card capacity-kpi-card-executive capacity-kpi-action"
+                    role="button" tabindex="0" data-capacity-kpi="balance" aria-label="Analisar Saldo disponível">
+                    <div class="capacity-kpi-topline">
+                        <span class="capacity-kpi-title">Saldo disponível</span>
+
+                        <span class="capacity-kpi-icon is-green">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M5 12.5 9.2 17 19 7"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <strong class="capacity-kpi-main-value" id="capacityKpiBalance">0</strong>
+                    <small>Budget aprovado menos Budget atual</small>
+                    <div class="capacity-kpi-tooltip" data-kpi-tooltip="balance" role="tooltip"></div>
+                </article>
+
+                <article class="capacity-kpi-card capacity-kpi-card-executive capacity-kpi-utilization-card capacity-kpi-action"
+                    role="button" tabindex="0" data-capacity-kpi="utilization" aria-label="Analisar Utilização geral">
+                    <div class="capacity-kpi-topline">
+                        <span class="capacity-kpi-title">Utilização geral</span>
+
+                        <span class="capacity-kpi-icon is-purple">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M4 18h16M6 15l4-4 3 2 5-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.9"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <strong class="capacity-kpi-main-value" id="capacityKpiUtilization">0%</strong>
+                    <small>Budget atual sobre o aprovado</small>
+                    <div class="capacity-kpi-tooltip" data-kpi-tooltip="utilization" role="tooltip"></div>
+                </article>
+            </section>
+
+            <section class="capacity-decision-panel" id="capacityDecisionPanel" hidden aria-live="polite">
+                <div class="capacity-decision-accent">
+                    <span class="capacity-decision-icon">✦</span>
+                </div>
+                <div class="capacity-decision-content">
+                    <div class="capacity-decision-heading">
+                        <div>
+                            <span class="capacity-section-eyebrow">Leitura do indicador</span>
+                            <h2 id="capacityDecisionTitle">Análise operacional</h2>
+                        </div>
+                        <button type="button" class="capacity-decision-close" id="capacityDecisionClose" aria-label="Fechar análise">×</button>
+                    </div>
+                    <p class="capacity-decision-summary" id="capacityDecisionText"></p>
+                    <div class="capacity-decision-metrics" id="capacityDecisionMetrics"></div>
+                    <div class="capacity-decision-recommendation">
+                        <span>Recomendação operacional</span>
+                        <strong id="capacityDecisionRecommendation"></strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 SAÚDE OPERACIONAL
+            ====================================================== -->
+            <section class="capacity-health-grid">
+                <article class="capacity-panel capacity-health-panel">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Saúde operacional</span>
+                            <h2>Situação da capacidade</h2>
+                            <p>
+                                Distribuição das carteiras conforme utilização e saldo disponível.
+                            </p>
+                        </div>
+                    </header>
+
+                    <div class="capacity-health-content">
+                        <div class="capacity-status-chart-area">
+                            <div class="capacity-status-chart-wrapper">
+                                <canvas id="capacityStatusChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="capacity-health-stats">
+                            <article class="capacity-health-stat is-balance capacity-health-action" role="button" tabindex="0" data-capacity-health="margin">
+                                <span class="capacity-health-stat-icon">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path
+                                            d="M5 19V8M12 19V5M19 19v-7M4 19h16"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linecap="round">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <small>Saldo com margem operacional</small>
+                                    <strong id="capacityKpiBalanceWithFat">0</strong>
+                                    <span>Budget aprovado + margem − posição atual</span>
+                                </div>
+                            </article>
+
+                            <article class="capacity-health-stat is-attention capacity-health-action" role="button" tabindex="0" data-capacity-health="risk">
+                                <span class="capacity-health-dot"></span>
+                                <div>
+                                    <small>Requerem atenção</small>
+                                    <strong id="capacityKpiAttention">0</strong>
+                                    <span>Próximas ou acima do limite</span>
+                                </div>
+                            </article>
+
+                            <article class="capacity-health-stat is-critical capacity-health-action" role="button" tabindex="0" data-capacity-health="critical">
+                                <span class="capacity-health-dot"></span>
+                                <div>
+                                    <small>Acima da capacidade</small>
+                                    <strong id="capacityKpiCritical">0</strong>
+                                    <span>Saldo com margem operacional negativo</span>
+                                </div>
+                            </article>
+
+                            <article class="capacity-health-stat is-balanced capacity-health-action" role="button" tabindex="0" data-capacity-health="balanced">
+                                <span class="capacity-health-dot"></span>
+                                <div>
+                                    <small>Equilibradas</small>
+                                    <strong id="capacityKpiBalanced">0</strong>
+                                    <span>Dentro da faixa operacional</span>
+                                </div>
+                            </article>
+
+                            <article class="capacity-health-stat is-available capacity-health-action" role="button" tabindex="0" data-capacity-health="available">
+                                <span class="capacity-health-dot"></span>
+                                <div>
+                                    <small>Com capacidade disponível</small>
+                                    <strong id="capacityKpiAvailable">0</strong>
+                                    <span>Utilização abaixo da faixa de atenção</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="capacity-panel capacity-insights-panel">
+                    <div
+                        class="capacity-insights-list"
+                        id="capacityInsights">
+                    </div>
+                </article>
+            </section>
+
+            <!-- =====================================================
+                 HISTÓRICO
+            ====================================================== -->
+            <section class="capacity-panel capacity-timeline-panel">
+                <header class="capacity-panel-header">
+                    <div>
+                        <span class="capacity-section-eyebrow">Evolução</span>
+                        <h2>Histórico do capacity</h2>
+                        <p>
+                            Evolução mensal do budget aprovado, posição atual e saldos.
+                        </p>
+                    </div>
+                </header>
+
+                <div class="capacity-chart-wrapper capacity-chart-wrapper-timeline">
+                    <canvas id="capacityTimelineChart"></canvas>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 ANÁLISES
+            ====================================================== -->
+            <section class="capacity-analytics-grid">
+                <article class="capacity-panel capacity-analysis-panel capacity-analysis-panel-wide">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Supervisão</span>
+                            <h2>Budget aprovado x Budget atual</h2>
+                            <p>Comparativo por supervisão operacional.</p>
+                        </div>
+                    </header>
+
+                    <div class="capacity-chart-wrapper capacity-chart-wrapper-budget">
+                        <canvas id="capacityBudgetChart"></canvas>
+                    </div>
+                </article>
+
+                <article class="capacity-panel capacity-analysis-panel">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Modalidade</span>
+                            <h2>Utilização por modalidade</h2>
+                            <p>Distribuição do capacity por tipo de operação.</p>
+                        </div>
+                    </header>
+
+                    <div class="capacity-chart-wrapper capacity-chart-wrapper-compact">
+                        <canvas id="capacityModeChart"></canvas>
+                    </div>
+                </article>
+
+                <article class="capacity-panel capacity-analysis-panel">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Área responsável</span>
+                            <h2>Operação x Jurídico</h2>
+                            <p>Comparativo da capacidade por área.</p>
+                        </div>
+                    </header>
+
+                    <div class="capacity-chart-wrapper capacity-chart-wrapper-compact">
+                        <canvas id="capacityAreaChart"></canvas>
+                    </div>
+                </article>
+            </section>
+
+            <!-- =====================================================
+                 PRIORIDADES
+            ====================================================== -->
+            <section class="capacity-priority-grid">
+                <article class="capacity-panel capacity-priority-panel">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Prioridades</span>
+                            <h2>Carteiras que precisam de atenção</h2>
+                            <p>
+                                Principais carteiras ordenadas pelo comprometimento da capacidade.
+                            </p>
+                        </div>
+                    </header>
+
+                    <div
+                        class="capacity-critical-cards"
+                        id="capacityCriticalCards">
+                    </div>
+                </article>
+
+                <article class="capacity-panel capacity-balance-panel">
+                    <header class="capacity-panel-header">
+                        <div>
+                            <span class="capacity-section-eyebrow">Saldo operacional</span>
+                            <h2>Menores saldos com margem operacional</h2>
+                            <p>Carteiras mais próximas de consumir o budget e a margem operacional.</p>
+                        </div>
+                    </header>
+
+                    <div class="capacity-chart-wrapper capacity-chart-wrapper-balance">
+                        <canvas id="capacityBalanceChart"></canvas>
+                    </div>
+                </article>
+            </section>
+
+            <!-- =====================================================
+                 HIERARQUIA
+            ====================================================== -->
+            <section
+                class="capacity-panel capacity-hierarchy-panel"
+                id="capacityHierarchyPanel">
+
+                <header class="capacity-panel-header capacity-panel-header-actions">
+                    <div>
+                        <span class="capacity-section-eyebrow">Estrutura organizacional</span>
+                        <h2>Hierarquia operacional</h2>
+                        <p>
+                            Navegue da área responsável até as carteiras vinculadas.
+                        </p>
+                    </div>
+
+                    <div class="capacity-panel-actions">
+                        <button
+                            type="button"
+                            class="capacity-expand-hierarchy"
+                            id="capacityExpandHierarchy">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M8 10l4 4 4-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.9"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+
+                            <span>Abrir estrutura</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="capacity-expand-view"
+                            id="capacityHierarchyExpandButton"
+                            aria-pressed="false">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+
+                            <span>Expandir estrutura</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div
+                    class="capacity-hierarchy"
+                    id="capacityHierarchy">
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 TABELA FINAL
+            ====================================================== -->
+            <section
+                class="capacity-panel capacity-table-panel"
+                id="capacityTablePanel">
+
+                <header class="capacity-panel-header">
+                    <div>
+                        <span class="capacity-section-eyebrow">Detalhamento</span>
+                        <h2>Carteiras e capacidade planejada</h2>
+                        <p>
+                            Consulte os dados completos da competência selecionada.
+                        </p>
+                    </div>
+
+                    <div class="capacity-panel-actions">
+                        <span
+                            class="capacity-table-counter"
+                            id="capacityTableCounter">
+                            0 registros
+                        </span>
+
+                        <button
+                            type="button"
+                            class="capacity-expand-view"
+                            id="capacityTableExpandButton"
+                            aria-pressed="false">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+
+                            <span>Expandir tabela</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="capacity-table-scroll">
+                    <table class="capacity-table">
+                        <thead>
+                            <tr>
+                                <th data-sort-column="supervisor">
+                                    <button type="button" class="capacity-sort-button" data-sort="supervisor">
+                                        Sup. Operacional
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="manager">
+                                    <button type="button" class="capacity-sort-button" data-sort="manager">
+                                        Gerente
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="leader">
+                                    <button type="button" class="capacity-sort-button" data-sort="leader">
+                                        Gestor
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="mode">
+                                    <button type="button" class="capacity-sort-button" data-sort="mode">
+                                        Modalidade
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="portfolio">
+                                    <button type="button" class="capacity-sort-button" data-sort="portfolio">
+                                        Carteira
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="budget">
+                                    <button type="button" class="capacity-sort-button" data-sort="budget">
+                                        Budget aprovado
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="fat">
+                                    <button type="button" class="capacity-sort-button" data-sort="fat">
+                                        Margem operacional
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="actual">
+                                    <button type="button" class="capacity-sort-button" data-sort="actual">
+                                        <span id="capacityActualColumnTitle">Budget atual</span>
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="balance">
+                                    <button type="button" class="capacity-sort-button" data-sort="balance">
+                                        Saldo
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="balanceWithFat">
+                                    <button type="button" class="capacity-sort-button" data-sort="balanceWithFat">
+                                        Saldo c/ margem
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="utilization">
+                                    <button type="button" class="capacity-sort-button" data-sort="utilization">
+                                        Utilização
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+
+                                <th data-sort-column="status">
+                                    <button type="button" class="capacity-sort-button" data-sort="status">
+                                        Situação
+                                        <span class="capacity-sort-indicator">↕</span>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="capacityTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 LOADING
+            ====================================================== -->
+            <div
+                class="capacity-loading"
+                id="capacityLoading"
+                aria-live="polite">
+
+                <span class="capacity-loading-spinner"></span>
+
+                <div>
+                    <strong>Carregando capacity</strong>
+                    <p>Consultando e consolidando a competência selecionada...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script
+        src="{% static 'js/dashboard_capacity.js' %}?v=4.0.1">
+    </script>
+
+</body>
+</html>

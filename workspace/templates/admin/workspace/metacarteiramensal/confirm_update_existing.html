@@ -1,0 +1,237 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content_title %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .confirm-wrapper {
+        max-width: 780px;
+        margin: 32px auto;
+        padding: 0 12px;
+        --confirm-bg: var(--body-bg);
+        --confirm-fg: var(--body-fg);
+        --confirm-muted: var(--body-quiet-color, var(--body-fg));
+        --confirm-border: var(--hairline-color, rgba(128, 128, 128, 0.25));
+        --confirm-header-bg: var(--darkened-bg, var(--body-bg));
+        --confirm-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+        --confirm-accent: var(--primary);
+        --confirm-accent-fg: var(--primary-fg, #fff);
+        --confirm-cancel-bg: var(--secondary, #6c757d);
+        --confirm-cancel-fg: #fff;
+        --confirm-alert-bg: color-mix(in srgb, var(--primary) 10%, var(--body-bg) 90%);
+        --confirm-alert-border: color-mix(in srgb, var(--primary) 28%, var(--body-bg) 72%);
+        --confirm-alert-fg: var(--body-fg);
+        --confirm-row-bg: color-mix(in srgb, var(--body-fg) 3%, var(--body-bg) 97%);
+    }
+
+    .confirm-card {
+        background: var(--confirm-bg);
+        color: var(--confirm-fg);
+        border: 1px solid var(--confirm-border);
+        border-radius: 16px;
+        box-shadow: var(--confirm-shadow);
+        overflow: hidden;
+    }
+
+    .confirm-card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--confirm-border);
+        background: var(--confirm-header-bg);
+    }
+
+    .confirm-card-header h1 {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.2;
+        color: var(--confirm-fg);
+    }
+
+    .confirm-card-body {
+        padding: 22px;
+        color: var(--confirm-fg);
+    }
+
+    .confirm-alert {
+        background: var(--confirm-alert-bg);
+        color: var(--confirm-alert-fg);
+        border: 1px solid var(--confirm-alert-border);
+        border-left: 4px solid var(--confirm-accent);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 22px;
+    }
+
+    .confirm-alert p {
+        margin: 0 0 8px 0;
+        color: var(--confirm-fg);
+    }
+
+    .confirm-alert p:last-child {
+        margin-bottom: 0;
+    }
+
+    .confirm-grid {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 10px 14px;
+        margin-top: 8px;
+    }
+
+    .confirm-label,
+    .confirm-value {
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--confirm-row-bg);
+    }
+
+    .confirm-label {
+        font-weight: 700;
+        color: var(--confirm-fg);
+    }
+
+    .confirm-value {
+        color: var(--confirm-fg);
+        word-break: break-word;
+    }
+
+    .confirm-question {
+        margin-top: 24px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--confirm-fg);
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .confirm-actions button,
+    .confirm-actions a {
+        appearance: none;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 1.2;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: .2s ease;
+    }
+
+    .btn-confirm {
+        background: var(--confirm-accent);
+        color: var(--confirm-accent-fg);
+        border-color: var(--confirm-accent);
+    }
+
+    .btn-confirm:hover,
+    .btn-confirm:focus {
+        filter: brightness(0.96);
+        text-decoration: none;
+    }
+
+    .btn-cancel {
+        background: transparent;
+        color: var(--confirm-fg);
+        border-color: var(--confirm-border);
+    }
+
+    .btn-cancel:hover,
+    .btn-cancel:focus {
+        background: var(--confirm-row-bg);
+        color: var(--confirm-fg);
+        text-decoration: none;
+    }
+
+    @media (max-width: 640px) {
+        .confirm-wrapper {
+            margin: 20px auto;
+            padding: 0 8px;
+        }
+
+        .confirm-card-header,
+        .confirm-card-body {
+            padding: 16px;
+        }
+
+        .confirm-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .confirm-actions {
+            flex-direction: column;
+        }
+
+        .confirm-actions button,
+        .confirm-actions a {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirm-wrapper">
+    <div class="confirm-card">
+        <div class="confirm-card-header">
+            <h1>Confirmar atualização da meta</h1>
+        </div>
+
+        <div class="confirm-card-body">
+            <div class="confirm-alert">
+                <p>Já existe uma meta cadastrada para esta carteira nesta competência.</p>
+                <p>Você pode atualizar o registro existente com o novo valor informado.</p>
+            </div>
+
+            <div class="confirm-grid">
+                <div class="confirm-label">Carteira</div>
+                <div class="confirm-value">{{ carteira }}</div>
+
+                <div class="confirm-label">Competência</div>
+                <div class="confirm-value">{{ competencia|date:"m/Y" }}</div>
+
+                <div class="confirm-label">Valor atual</div>
+                <div class="confirm-value">{{ existing_obj.valor_meta }}</div>
+
+                <div class="confirm-label">Novo valor informado</div>
+                <div class="confirm-value">{{ valor_meta }}</div>
+            </div>
+
+            <div class="confirm-question">
+                Deseja atualizar o registro existente?
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for key, values in form_data.lists %}
+                    {% if key != '_confirm_update_existing' %}
+                        {% for value in values %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                <input type="hidden" name="_confirm_update_existing" value="1">
+
+                <div class="confirm-actions">
+                    <button type="submit" class="btn-confirm">
+                        Sim, atualizar registro existente
+                    </button>
+                    <a href="../add/" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

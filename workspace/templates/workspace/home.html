@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Inicio | Controle de Pedidos</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}?v=2.0.0">
+</head>
+<body class="workspace-home pedidos-home-page">
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="workspace-home-main pedidos-home-main">
+        <div class="workspace-home-shell">
+            <section class="workspace-home-feature-grid pedidos-home-feature" aria-label="Resumo comercial">
+                <article class="workspace-welcome pedidos-welcome" aria-labelledby="pedidosWelcomeTitle">
+                    <div class="workspace-welcome-copy">
+                        <span class="workspace-welcome-eyebrow">Controle comercial</span>
+                        <h2 id="pedidosWelcomeTitle">
+                            Ola,
+                            <strong>
+                                {% if user.first_name or user.last_name %}
+                                    {{ user.first_name }} {{ user.last_name }}.
+                                {% else %}
+                                    {{ user.username }}.
+                                {% endif %}
+                            </strong>
+                        </h2>
+                        <p class="workspace-welcome-greeting">Sua loja e seus pedidos de delivery em tempo real.</p>
+                        <time class="workspace-welcome-date" id="pedidosWelcomeDate" datetime="">
+                            <span class="workspace-welcome-date-icon" aria-hidden="true">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            <span id="pedidosWelcomeDateText">Carregando data...</span>
+                        </time>
+                        <span class="workspace-welcome-divider" aria-hidden="true"></span>
+                        <p class="workspace-welcome-description">
+                            Acompanhe pedidos de iFood, balcao e WhatsApp, clientes, itens vendidos,
+                            prazos e status em um painel preparado para a rotina da loja.
+                        </p>
+                        <div class="workspace-welcome-security">
+                            <span aria-hidden="true"><i class="fa fa-check-circle"></i></span>
+                            <p>Fluxo centralizado do recebimento do pedido ao detalhe do preparo e entrega.</p>
+                        </div>
+                    </div>
+                    <span class="workspace-welcome-glow" aria-hidden="true"></span>
+                </article>
+
+                <section class="pedidos-command-center" aria-label="Painel de acompanhamento de pedidos">
+                    <div class="pedidos-command-header">
+                        <div>
+                            <span>Pipeline de pedidos</span>
+                            <strong>{{ pedidos_abertos }} em andamento</strong>
+                        </div>
+                        <a class="pedidos-primary" href="{% url 'pedido_novo' %}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Novo pedido
+                        </a>
+                    </div>
+
+                    <div class="pedidos-command-grid">
+                        <article>
+                            <span>Total</span>
+                            <strong>{{ total_pedidos }}</strong>
+                            <small>pedidos cadastrados</small>
+                        </article>
+                        <article>
+                            <span>Faturados</span>
+                            <strong>{{ pedidos_faturados }}</strong>
+                            <small>aguardando envio ou entrega</small>
+                        </article>
+                        <article class="{% if pedidos_atrasados %}is-danger{% endif %}">
+                            <span>Atrasados</span>
+                            <strong>{{ pedidos_atrasados }}</strong>
+                            <small>precisam de atencao</small>
+                        </article>
+                        <article>
+                            <span>Valor aberto</span>
+                            <strong>R$ {{ valor_em_aberto|floatformat:2 }}</strong>
+                            <small>em pedidos ativos</small>
+                        </article>
+                    </div>
+
+                    <div class="pedidos-progress-card">
+                        <span class="pedidos-progress-icon" aria-hidden="true">
+                            <i class="fa fa-line-chart"></i>
+                        </span>
+                        <div>
+                            <strong>Pedidos organizados por status</strong>
+                            <p>Use a lista de pedidos para filtrar recebidos, preparo, faturamento, envio e entrega.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="workspace-home-quick-info pedidos-quick-info" aria-label="Atalhos do sistema">
+                <a class="workspace-quick-card pedidos-quick-card" href="{% url 'pedidos' %}">
+                    <span class="workspace-quick-card-icon"><i class="fa fa-list-alt"></i></span>
+                    <div>
+                        <strong>Consultar pedidos</strong>
+                        <p>Busque pedidos por codigo, cliente, produto ou status.</p>
+                    </div>
+                </a>
+                <a class="workspace-quick-card pedidos-quick-card" href="{% url 'pedido_novo' %}">
+                    <span class="workspace-quick-card-icon"><i class="fa fa-cart-plus"></i></span>
+                    <div>
+                        <strong>Novo pedido</strong>
+                        <p>Cadastre cliente, produto, quantidade, valor e prazo.</p>
+                    </div>
+                </a>
+                <a class="workspace-quick-card pedidos-quick-card" href="{% url 'produtos' %}">
+                    <span class="workspace-quick-card-icon"><i class="fa fa-cutlery"></i></span>
+                    <div>
+                        <strong>Itens de venda</strong>
+                        <p>Cadastre produtos, categorias, valores, fotos e tempo de preparo.</p>
+                    </div>
+                </a>
+            </section>
+
+            <section class="workspace-home-resources pedidos-home-resources" aria-label="Ultimos pedidos e cadastros">
+                <article class="workspace-notice-board pedidos-recent-board">
+                    <header class="workspace-resource-header">
+                        <div>
+                            <span class="workspace-resource-eyebrow">Movimentacao recente</span>
+                            <h2>
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                Ultimos pedidos
+                            </h2>
+                            <p>Pedidos mais recentes cadastrados no sistema de venda.</p>
+                        </div>
+                        <a class="workspace-resource-all" href="{% url 'pedidos' %}">
+                            Ver todos
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </header>
+
+                    <div class="workspace-notice-list pedidos-recent-list">
+                        {% if pedidos_recentes %}
+                            {% for pedido in pedidos_recentes %}
+                                <a class="workspace-notice-item" href="{% url 'pedido_detalhe' pedido.id %}">
+                                    <span class="workspace-notice-icon">
+                                        <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="workspace-notice-copy">
+                                        <strong>{{ pedido.codigo }} - {{ pedido.cliente.nome }}</strong>
+                                        <span class="workspace-notice-meta">
+                                            {{ pedido.get_status_display }} &middot; {{ pedido.data_pedido|date:"d/m/Y" }}
+                                        </span>
+                                    </span>
+                                    <i class="fa fa-chevron-right workspace-notice-arrow" aria-hidden="true"></i>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="workspace-notice-empty">
+                                <span aria-hidden="true"><i class="fa fa-inbox"></i></span>
+                                <div>
+                                    <strong>Nenhum pedido cadastrado</strong>
+                                    <p>Comece criando o primeiro pedido de venda.</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </article>
+
+                <a class="workspace-documentation-card pedidos-admin-card" href="{% url 'admin:index' %}">
+                    <span class="workspace-documentation-icon">
+                        <i class="fa fa-cogs" aria-hidden="true"></i>
+                    </span>
+                    <span class="workspace-documentation-copy">
+                        <span class="workspace-documentation-eyebrow">Administracao</span>
+                        <strong>Painel administrativo</strong>
+                        <span>Gerencie pedidos, produtos, clientes, usuarios e historico com a identidade visual do portal.</span>
+                    </span>
+                    <span class="workspace-documentation-action">
+                        Abrir admin
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const dateNode = document.getElementById("pedidosWelcomeDate");
+            const textNode = document.getElementById("pedidosWelcomeDateText");
+            const today = new Date();
+
+            if (dateNode && textNode) {
+                dateNode.dateTime = today.toISOString();
+                textNode.textContent = new Intl.DateTimeFormat(
+                    "pt-BR",
+                    { weekday: "long", day: "2-digit", month: "long", year: "numeric" }
+                ).format(today);
+            }
+        })();
+    </script>
+</body>
+</html>

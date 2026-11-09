@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Clientes</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Cadastro</span>
+                <h1>Clientes</h1>
+                <p>Consulte clientes gerados pelos pedidos e acompanhe o volume por cadastro.</p>
+            </div>
+            <a class="pedidos-primary" href="{% url 'pedido_novo' %}">Novo pedido</a>
+        </section>
+
+        <form class="pedidos-toolbar" method="get">
+            <label>Busca
+                <input name="q" value="{{ busca }}" placeholder="Nome ou documento">
+            </label>
+            <button class="pedidos-secondary" type="submit">Filtrar</button>
+        </form>
+
+        <section class="pedidos-table-wrap">
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Pedidos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.nome }}</td>
+                            <td>{{ cliente.documento|default:"-" }}</td>
+                            <td>{{ cliente.email|default:"-" }}</td>
+                            <td>{{ cliente.telefone|default:"-" }}</td>
+                            <td>{{ cliente.total_pedidos }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="5" class="pedidos-empty">Nenhum cliente encontrado.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

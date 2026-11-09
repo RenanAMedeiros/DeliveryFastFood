@@ -1,0 +1,355 @@
+/* ==========================================================================
+   WORKSPACE UI CORE
+   RESPONSIVE
+   Arquivo: workspace_responsive.css
+
+   Referência principal:
+   1920 x 1080
+
+   FILOSOFIA:
+   - uma única identidade visual;
+   - adaptação progressiva;
+   - não detectar zoom;
+   - não neutralizar zoom;
+   - não reconstruir páginas em cada breakpoint;
+   - desktop/notebook preserva composição;
+   - tablet/mobile estrutural somente em dispositivo touch;
+   - largura se enquadra;
+   - altura cresce naturalmente;
+   - tabelas e gráficos controlam seu próprio overflow.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   LARGE DESKTOP / ULTRAWIDE
+   ========================================================================== */
+
+@media (min-width: 1921px) {
+
+    .ws-page-container {
+        max-width: var(--ws-page-max-width);
+    }
+}
+
+
+/* ==========================================================================
+   DESKTOP / NOTEBOOK
+   Ajustes dimensionais apenas. Não mudam a arquitetura da página.
+   ========================================================================== */
+
+@media (max-width: 1440px) {
+
+    :root {
+        --ws-page-padding-x:
+            clamp(14px, 1.35vw, 24px);
+
+        --ws-page-padding-y:
+            clamp(13px, 1vw, 20px);
+    }
+
+    .ws-page-stack {
+        gap: 14px;
+    }
+}
+
+
+@media (max-width: 1100px) {
+
+    :root {
+        --ws-page-padding-x: 16px;
+        --ws-page-padding-y: 14px;
+    }
+
+    .ws-page-stack {
+        gap: 12px;
+    }
+}
+
+
+/* ==========================================================================
+   DESKTOP / NOTEBOOK — PROTEÇÃO DE COMPOSIÇÃO NO ZOOM
+
+   CSS não possui um sinal confiável para diferenciar viewport menor de zoom.
+   A estratégia oficial é preservar um piso estrutural de 1024px quando o
+   dispositivo utiliza ponteiro fino (mouse/trackpad). Assim, zoom elevado
+   não converte o Workspace em tablet/mobile: a página mantém a composição e
+   usa overflow quando necessário.
+
+   IMPORTANTE:
+   - não altera o zoom do navegador;
+   - não utiliza transform: scale();
+   - não utiliza width: 100vw;
+   - não se aplica a dispositivos touch.
+   ========================================================================== */
+
+@media (max-width: 1023px) and (hover: hover) and (pointer: fine) {
+
+    .ws-app,
+    .ws-page-container {
+        min-width: var(--ws-desktop-min-width, 1024px);
+    }
+
+    .ws-only-desktop {
+        display: initial !important;
+    }
+
+    .ws-only-mobile {
+        display: none !important;
+    }
+}
+
+
+/* ==========================================================================
+   NAVBAR — CONTRATO DESKTOP / ZOOM
+
+   style_navbar.css possui versões legadas que recolhem toda a navegação em
+   larguras intermediárias. Como este Core é carregado depois da navbar,
+   neutralizamos esse colapso somente em dispositivos com mouse/trackpad.
+   Tablets e celulares continuam usando o comportamento responsivo próprio.
+   ========================================================================== */
+
+@media (max-width: 1540px) and (hover: hover) and (pointer: fine) {
+
+    .workspace-header,
+    .workspace-header .header-content {
+        min-height: 68px;
+    }
+
+    .workspace-header .header-content {
+        position: relative;
+
+        padding-right:
+            clamp(10px, 1.2vw, 18px);
+
+        padding-left:
+            clamp(10px, 1.2vw, 18px);
+
+        grid-template-columns:
+            minmax(180px, 300px)
+            minmax(0, 1fr);
+
+        gap:
+            clamp(8px, 0.8vw, 14px);
+    }
+
+    .workspace-header .hamburguer_icon {
+        display: none !important;
+    }
+
+    .workspace-header .logos {
+        width: 100%;
+        min-width: 0;
+        max-width: 300px;
+    }
+
+    .workspace-header .workspace-navigation {
+        width: 100%;
+        min-width: 0;
+
+        justify-content: flex-end;
+    }
+
+    .workspace-header #navbar,
+    .workspace-header #navbar.navbar-open {
+        position: static;
+
+        top: auto;
+        right: auto;
+        left: auto;
+
+        width: auto;
+        min-width: 0;
+        min-height: 68px;
+        max-height: none;
+
+        margin: 0;
+        padding: 0;
+
+        display: flex !important;
+        flex: 1 1 auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+
+        gap:
+            clamp(0px, 0.20vw, 3px);
+
+        overflow: visible;
+
+        border: 0;
+        border-radius: 0;
+
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .workspace-header .nav-item {
+        width: auto;
+        min-width: 0;
+        min-height: 68px;
+
+        display: flex;
+        align-items: center;
+    }
+
+    .workspace-header #navbar > .nav-item > .nav-link {
+        width: auto;
+        min-width: 0;
+        min-height: 40px;
+
+        padding-right:
+            clamp(5px, 0.50vw, 9px);
+
+        padding-left:
+            clamp(5px, 0.50vw, 9px);
+
+        gap:
+            clamp(4px, 0.35vw, 7px);
+
+        font-size:
+            clamp(10px, 0.72vw, 13px);
+
+        white-space: nowrap;
+    }
+
+    .workspace-header #navbar > .nav-item > .nav-link i {
+        width: 13px;
+
+        font-size:
+            clamp(10px, 0.68vw, 12px);
+    }
+
+    /*
+     * Em desktop intermediário o nome do usuário continua compacto.
+     * Isso libera espaço para a navegação sem mudar o padrão estrutural.
+     */
+    .workspace-header .user-trigger {
+        width: 44px;
+        min-width: 44px;
+
+        padding: 2px;
+
+        grid-template-columns: 40px;
+    }
+
+    .workspace-header .user-trigger-copy,
+    .workspace-header .user-trigger-chevron {
+        display: none;
+    }
+}
+
+
+@media (max-width: 1023px) and (hover: hover) and (pointer: fine) {
+
+    /*
+     * Mantém o cabeçalho no mesmo piso estrutural usado pelo conteúdo.
+     * Em zoom elevado o navegador rola horizontalmente em vez de transformar
+     * a navbar em menu mobile.
+     */
+    .workspace-header {
+        min-width: var(--ws-desktop-min-width, 1024px);
+    }
+
+    .workspace-header .header-content {
+        min-width: var(--ws-desktop-min-width, 1024px);
+    }
+}
+
+
+/* ==========================================================================
+   TABLET / TOUCH
+   Mudanças estruturais são reservadas a dispositivos touch.
+   ========================================================================== */
+
+@media (max-width: 1100px) and (pointer: coarse) {
+
+    .ws-layout {
+        min-width: 0;
+    }
+
+    .ws-page-container {
+        padding-inline: 14px;
+    }
+
+    .ws-only-desktop {
+        display: none !important;
+    }
+
+    .ws-only-mobile {
+        display: initial;
+    }
+}
+
+
+/* ==========================================================================
+   MOBILE / TOUCH
+   ========================================================================== */
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    :root {
+        --ws-page-padding-x: 12px;
+        --ws-page-padding-y: 12px;
+    }
+
+    .ws-page-stack {
+        gap: 10px;
+    }
+
+    .ws-page-container {
+        padding:
+            var(--ws-page-padding-y)
+            var(--ws-page-padding-x);
+    }
+}
+
+
+/* ==========================================================================
+   VERY SMALL MOBILE / TOUCH
+   ========================================================================== */
+
+@media (max-width: 420px) and (pointer: coarse) {
+
+    :root {
+        --ws-page-padding-x: 10px;
+        --ws-page-padding-y: 10px;
+    }
+}
+
+
+/* ==========================================================================
+   HEIGHT / ZOOM SAFETY
+   ========================================================================== */
+
+/*
+   O Core deliberadamente NÃO força:
+   - height: 100vh
+   - max-height global
+   - calc(100vh - ...)
+   em regiões de conteúdo.
+
+   Quando o zoom ou a resolução reduzir a altura disponível, o documento
+   deve crescer verticalmente e o usuário deve rolar normalmente.
+*/
+
+
+/* ==========================================================================
+   PRINT
+   ========================================================================== */
+
+@media print {
+
+    .ws-page-container {
+        max-width: none;
+
+        padding: 0;
+    }
+
+    .ws-only-print {
+        display: initial !important;
+    }
+
+    .ws-no-print {
+        display: none !important;
+    }
+}

@@ -1,0 +1,148 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Panel
+Arquivo: components/ui/_panel.html
+
+Objetivo:
+Container visual padrão para blocos do Workspace, como:
+- filtros;
+- tabelas;
+- gráficos;
+- formulários;
+- análises;
+- configurações;
+- conteúdos diversos.
+
+Parâmetros:
+- panel_title              opcional
+- panel_description        opcional
+- panel_icon               opcional: filter | table | chart | form | settings | info
+- panel_badge              opcional
+- panel_dom_id             opcional
+- panel_extra_class        opcional
+- panel_body_class         opcional
+- panel_compact            opcional (True/False)
+- panel_no_padding         opcional (True/False)
+
+Blocos opcionais via contexto:
+- panel_actions_html       HTML já renderizado para ações do cabeçalho
+- panel_content            conteúdo principal já renderizado
+
+Uso simples:
+
+{% include "components/ui/_panel.html" with
+    panel_title="Filtros"
+    panel_description="Refine os resultados apresentados na página."
+    panel_icon="filter"
+    panel_content=filtros_html
+%}
+
+IMPORTANTE:
+Para conteúdo complexo com formulários, tabelas ou tags Django extensas,
+o padrão recomendado é utilizar este componente como referência estrutural
+ou incluir o conteúdo já renderizado na variável panel_content.
+
+O componente não altera lógica funcional, IDs, formulários ou eventos.
+===============================================================================
+{% endcomment %}
+
+<section
+    {% if panel_dom_id %}id="{{ panel_dom_id }}"{% endif %}
+    class="ws-panel{% if panel_compact %} ws-panel--compact{% endif %}{% if panel_extra_class %} {{ panel_extra_class }}{% endif %}"
+>
+
+    {% if panel_title or panel_description or panel_actions_html %}
+        <header class="ws-panel__header">
+
+            <div class="ws-panel__heading">
+
+                {% if panel_icon %}
+                    <span class="ws-panel__icon" aria-hidden="true">
+
+                        {% if panel_icon == "filter" %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <path d="M4 5H20L14 12V18L10 20V12L4 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                        {% elif panel_icon == "table" %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
+                                <path d="M9 9V20" stroke="currentColor" stroke-width="2"/>
+                                <path d="M15 9V20" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+
+                        {% elif panel_icon == "chart" %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <path d="M4 19V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M10 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M16 19V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M22 19H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+
+                        {% elif panel_icon == "form" %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 8H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M8 16H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+
+                        {% elif panel_icon == "settings" %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                <path d="M19.4 15A1.7 1.7 0 0 0 19.7 16.9L20 17.2L17.2 20L16.9 19.7A1.7 1.7 0 0 0 15 19.4A1.7 1.7 0 0 0 14 21V21.5H10V21A1.7 1.7 0 0 0 9 19.4A1.7 1.7 0 0 0 7.1 19.7L6.8 20L4 17.2L4.3 16.9A1.7 1.7 0 0 0 4.6 15A1.7 1.7 0 0 0 3 14H2.5V10H3A1.7 1.7 0 0 0 4.6 9A1.7 1.7 0 0 0 4.3 7.1L4 6.8L6.8 4L7.1 4.3A1.7 1.7 0 0 0 9 4.6A1.7 1.7 0 0 0 10 3V2.5H14V3A1.7 1.7 0 0 0 15 4.6A1.7 1.7 0 0 0 16.9 4.3L17.2 4L20 6.8L19.7 7.1A1.7 1.7 0 0 0 19.4 9A1.7 1.7 0 0 0 21 10H21.5V14H21A1.7 1.7 0 0 0 19.4 15Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            </svg>
+
+                        {% else %}
+                            <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 10V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 7H12.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                            </svg>
+                        {% endif %}
+
+                    </span>
+                {% endif %}
+
+                <div class="ws-panel__heading-copy">
+
+                    {% if panel_title %}
+                        <div class="ws-panel__title-row">
+                            <h2 class="ws-panel__title">
+                                {{ panel_title }}
+                            </h2>
+
+                            {% if panel_badge %}
+                                <span class="ws-panel__badge">
+                                    {{ panel_badge }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if panel_description %}
+                        <p class="ws-panel__description">
+                            {{ panel_description }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% if panel_actions_html %}
+                <div class="ws-panel__actions">
+                    {{ panel_actions_html|safe }}
+                </div>
+            {% endif %}
+
+        </header>
+    {% endif %}
+
+    <div class="ws-panel__body{% if panel_no_padding %} ws-panel__body--no-padding{% endif %}{% if panel_body_class %} {{ panel_body_class }}{% endif %}">
+        {{ panel_content|default:""|safe }}
+    </div>
+
+</section>

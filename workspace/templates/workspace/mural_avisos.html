@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+
+<head>
+    <title>Mural de avisos</title>
+    <link rel="stylesheet" href="{% static 'css/style_home.css' %}?v=2.2.0">
+    <link rel="stylesheet" href="{% static 'css/style_mural.css' %}?v=1.0.3">
+</head>
+
+<body>
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="mural-page">
+        <header class="mural-page-header">
+            <a class="mural-back" href="{% url 'home' %}">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                Voltar para a Home
+            </a>
+            <h1>
+                <i class="fa fa-thumbtack" aria-hidden="true"></i>
+                Mural de avisos
+            </h1>
+        </header>
+
+        <div class="mural-layout">
+            <aside class="mural-sidebar" aria-label="Lista de avisos">
+                <p class="mural-count">{{ total_avisos }} aviso{{ total_avisos|pluralize:"s" }}</p>
+
+                <form class="mural-search" method="get" action="{% url 'mural_avisos' %}" role="search">
+                    <input type="search" name="q" value="{{ busca }}" placeholder="Pesquisar"
+                           aria-label="Pesquisar avisos">
+                    <button type="submit" aria-label="Buscar">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+                <small class="mural-search-hint">Digite pelo menos 3 caracteres para iniciar a busca.</small>
+
+                <ul class="mural-list">
+                    {% for aviso in avisos %}
+                        <li>
+                            <a class="mural-list-item destaque-{{ aviso.destaque }}{% if aviso_atual and aviso.pk == aviso_atual.pk %} is-active{% endif %}"
+                               href="{% url 'mural_aviso_detalhe' slug=aviso.slug %}">
+                                {% if aviso.fixado %}
+                                    <i class="fa fa-thumbtack mural-list-pin" aria-hidden="true" title="Aviso fixado"></i>
+                                {% endif %}
+                                <span class="mural-list-author">
+                                    {% with autor=aviso.atualizado_por|default:aviso.criado_por %}
+                                        {% if autor %}{{ autor.get_full_name|default:autor.username }}{% else %}Comunicado interno{% endif %}
+                                    {% endwith %}
+                                </span>
+                                <span class="mural-list-title">
+                                    <i class="fa {{ aviso.icone }}" aria-hidden="true"></i>
+                                    {{ aviso.titulo }}
+                                </span>
+                                {% if aviso.resumo %}
+                                    <span class="mural-list-resumo">{{ aviso.resumo|striptags }}</span>
+                                {% endif %}
+                                <span class="mural-list-date">Publicado em {{ aviso.publicado_em|date:"d/m/Y H:i" }}</span>
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="mural-empty">
+                            {% if busca %}
+                                Nenhum aviso encontrado para "{{ busca }}".
+                            {% else %}
+                                Nenhum aviso publicado no momento.
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </aside>
+
+            <article class="mural-detail">
+                {% if aviso_atual %}
+                    <div class="mural-detail-header">
+                        <h2>
+                            <i class="fa {{ aviso_atual.icone }}" aria-hidden="true"></i>
+                            {{ aviso_atual.titulo }}
+                        </h2>
+                        <time class="mural-detail-date" datetime="{{ aviso_atual.publicado_em|date:'c' }}">
+                            Publicado em {{ aviso_atual.publicado_em|date:"d/m/Y H:i" }}
+                        </time>
+                    </div>
+
+                    {% if aviso_atual.resumo %}
+                        {# Resumo vem do editor rich text do admin, por isso |safe. #}
+                        <div class="mural-detail-resumo">{{ aviso_atual.resumo|safe }}</div>
+                    {% endif %}
+
+                    {# Conteúdo vem do editor rich text do admin (staff), por isso |safe. #}
+                    <div class="mural-detail-body destaque-{{ aviso_atual.destaque }}">
+                        {{ aviso_atual.conteudo|safe }}
+                    </div>
+
+                    {% if aviso_atual.link_externo %}
+                        <a class="mural-detail-link" href="{{ aviso_atual.link_externo }}"
+                           target="_blank" rel="noopener noreferrer">
+                            Abrir link relacionado
+                            <i class="fa fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <div class="mural-detail-empty">
+                        <i class="fa fa-bullhorn" aria-hidden="true"></i>
+                        <p>Selecione um aviso na lista ao lado para ver o conteúdo completo.</p>
+                    </div>
+                {% endif %}
+            </article>
+        </div>
+    </main>
+</body>
+
+</html>

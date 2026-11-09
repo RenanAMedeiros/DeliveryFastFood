@@ -1,0 +1,4321 @@
+:root {
+    --workspace-home-navy: #03132f;
+    --workspace-home-navy-soft: #082558;
+    --workspace-home-primary: #2563eb;
+    --workspace-home-primary-dark: #155eef;
+    --workspace-home-primary-light: #38bdf8;
+    --workspace-home-text: #172033;
+    --workspace-home-muted: #667085;
+    --workspace-home-surface: #ffffff;
+    --workspace-home-background: #f4f7fb;
+    --workspace-home-border: #dfe6f0;
+    --workspace-home-success: #12b76a;
+}
+
+.workspace-home {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--workspace-home-text);
+    font-family: "Inter", Arial, sans-serif;
+    background:
+        radial-gradient(
+            circle at 7% 9%,
+            rgba(37, 99, 235, 0.09),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 94% 90%,
+            rgba(56, 189, 248, 0.07),
+            transparent 24%
+        ),
+        var(--workspace-home-background);
+}
+
+.workspace-home *,
+.workspace-home *::before,
+.workspace-home *::after {
+    box-sizing: border-box;
+}
+
+.workspace-home-main {
+    width: 100%;
+    padding:
+        18px
+        clamp(20px, 3.5vw, 68px)
+        34px;
+    flex: 1 0 auto;
+}
+
+.workspace-home-shell {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.workspace-home-toolbar {
+    width: 100%;
+    min-height: 64px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.workspace-home-toolbar-copy {
+    min-width: 0;
+}
+
+.workspace-home-toolbar-eyebrow {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--workspace-home-primary);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.workspace-home-toolbar h1 {
+    margin: 0;
+    color: var(--workspace-home-text);
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+}
+
+.workspace-home-toolbar p {
+    margin: 4px 0 0;
+    color: var(--workspace-home-muted);
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.workspace-open-request {
+    min-height: 45px;
+    padding: 0 19px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    flex: 0 0 auto;
+    color: #ffffff;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 11px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--workspace-home-primary),
+            var(--workspace-home-primary-dark)
+        );
+    box-shadow:
+        0 12px 27px rgba(37, 99, 235, 0.25);
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+}
+
+.workspace-open-request:hover,
+.workspace-open-request:focus-visible {
+    color: #ffffff;
+    filter: brightness(1.06);
+    outline: 0;
+    box-shadow:
+        0 16px 33px rgba(37, 99, 235, 0.32);
+    transform: translateY(-2px);
+}
+
+.workspace-open-request:active {
+    transform: translateY(0);
+}
+
+.workspace-open-request-locked {
+    cursor: not-allowed;
+    filter: grayscale(0.4) brightness(0.85);
+    box-shadow: none;
+}
+
+.workspace-open-request-locked:hover,
+.workspace-open-request-locked:focus-visible {
+    filter: grayscale(0.4) brightness(0.85);
+    box-shadow: none;
+    transform: none;
+}
+
+/* =========================================================
+   GRID PRINCIPAL
+========================================================= */
+
+.workspace-home-feature-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(310px, 390px)
+        minmax(0, 1fr);
+    align-items: stretch;
+    gap: 18px;
+}
+
+/* =========================================================
+   BOAS-VINDAS
+========================================================= */
+
+.workspace-welcome {
+    position: relative;
+    min-width: 0;
+    min-height: 330px;
+    overflow: hidden;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            rgba(56, 189, 248, 0.17),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            var(--workspace-home-navy),
+            #062454
+        );
+    box-shadow:
+        0 20px 48px rgba(3, 19, 47, 0.17);
+    isolation: isolate;
+}
+
+.workspace-welcome-copy {
+    position: relative;
+    z-index: 3;
+    min-height: 330px;
+    padding:
+        27px
+        clamp(24px, 2.4vw, 35px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.workspace-welcome-eyebrow {
+    display: block;
+    margin-bottom: 14px;
+    color: #58b9ff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.workspace-welcome h2 {
+    max-width: 330px;
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(27px, 2.1vw, 39px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+}
+
+.workspace-welcome h2 strong {
+    font-weight: 800;
+}
+
+.workspace-welcome-greeting {
+    margin: 10px 0 0;
+    color: #4db7ff;
+    font-size: clamp(16px, 1.15vw, 20px);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+}
+
+.workspace-welcome-date {
+    width: fit-content;
+    margin-top: 21px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 10px;
+    font-style: normal;
+    line-height: 1.4;
+}
+
+.workspace-welcome-date-icon {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    color: #2ea7ff;
+    font-size: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.30);
+    border-radius: 7px;
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.workspace-welcome-divider {
+    width: 52px;
+    height: 2px;
+    margin-top: 19px;
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            90deg,
+            var(--workspace-home-primary-light),
+            rgba(56, 189, 248, 0.08)
+        );
+}
+
+.workspace-welcome-description {
+    max-width: 330px;
+    margin: 17px 0 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.62;
+}
+
+.workspace-welcome-security {
+    max-width: 330px;
+    margin-top: 18px;
+    padding: 10px 11px;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    color: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+}
+
+.workspace-welcome-security > span {
+    margin-top: 1px;
+    color: var(--workspace-home-success);
+    font-size: 10px;
+}
+
+.workspace-welcome-security p {
+    margin: 0;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.workspace-welcome-glow {
+    position: absolute;
+    right: -110px;
+    bottom: -150px;
+    z-index: 1;
+    width: 310px;
+    height: 310px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.26);
+    filter: blur(80px);
+}
+
+/* =========================================================
+   CARROSSEL
+========================================================= */
+
+.workspace-partner-carousel {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    height: 330px;
+    min-height: 330px;
+    max-height: 330px;
+    overflow: hidden;
+    border: 1px solid rgba(16, 39, 87, 0.10);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            #061735,
+            #0a2b61
+        );
+    box-shadow:
+        0 20px 48px rgba(3, 19, 47, 0.15);
+    isolation: isolate;
+}
+
+.workspace-carousel-viewport {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.workspace-carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.025);
+    transition:
+        opacity 0.55s ease,
+        visibility 0.55s ease,
+        transform 0.80s ease;
+}
+
+.workspace-carousel-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.workspace-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    object-position: center center;
+    background-color: #03132f;
+}
+
+.workspace-carousel-image-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(3, 19, 47, 0.10),
+            rgba(3, 19, 47, 0)
+        ),
+        linear-gradient(
+            180deg,
+            rgba(3, 19, 47, 0),
+            rgba(3, 19, 47, 0.20)
+        );
+    pointer-events: none;
+}
+
+.workspace-carousel-control {
+    position: absolute;
+    top: 50%;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    font-size: 17px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 11px;
+    background: rgba(3, 19, 47, 0.48);
+    box-shadow: 0 8px 22px rgba(3, 19, 47, 0.18);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition:
+        opacity 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.workspace-carousel-control-prev {
+    left: 15px;
+}
+
+.workspace-carousel-control-next {
+    right: 15px;
+}
+
+.workspace-partner-carousel:hover
+.workspace-carousel-control,
+.workspace-partner-carousel:focus-within
+.workspace-carousel-control {
+    opacity: 1;
+}
+
+.workspace-carousel-control:hover,
+.workspace-carousel-control:focus-visible {
+    border-color: rgba(255, 255, 255, 0.38);
+    background: rgba(37, 99, 235, 0.72);
+    outline: 0;
+}
+
+.workspace-carousel-control-prev:hover {
+    transform: translate(-2px, -50%);
+}
+
+.workspace-carousel-control-next:hover {
+    transform: translate(2px, -50%);
+}
+
+.workspace-carousel-dots {
+    position: absolute;
+    right: 19px;
+    bottom: 17px;
+    z-index: 6;
+    padding: 7px 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(3, 19, 47, 0.45);
+    backdrop-filter: blur(8px);
+}
+
+.workspace-carousel-dot {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.42);
+    cursor: pointer;
+    transition:
+        width 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.workspace-carousel-dot.is-active {
+    width: 21px;
+    background: #ffffff;
+}
+
+.workspace-carousel-dot:focus-visible {
+    outline: 2px solid var(--workspace-home-primary-light);
+    outline-offset: 3px;
+}
+
+.workspace-carousel-status {
+    position: absolute;
+    left: 18px;
+    bottom: 17px;
+    z-index: 6;
+    padding: 7px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(3, 19, 47, 0.45);
+    backdrop-filter: blur(8px);
+}
+
+.workspace-carousel-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--workspace-home-success);
+    box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.13);
+}
+
+/* =========================================================
+   CARDS INFORMATIVOS
+========================================================= */
+
+.workspace-home-quick-info {
+    width: 100%;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.workspace-quick-card {
+    min-width: 0;
+    min-height: 96px;
+    padding: 17px 18px;
+    display: grid;
+    grid-template-columns:
+        42px
+        minmax(0, 1fr);
+    align-items: center;
+    gap: 13px;
+    border: 1px solid rgba(16, 39, 87, 0.08);
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 11px 28px rgba(3, 19, 47, 0.06);
+}
+
+.workspace-quick-card-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    color: var(--workspace-home-primary);
+    font-size: 14px;
+    border-radius: 12px;
+    background: #eff6ff;
+}
+
+.workspace-quick-card strong,
+.workspace-quick-card p {
+    display: block;
+}
+
+.workspace-quick-card strong {
+    margin-bottom: 5px;
+    color: var(--workspace-home-text);
+    font-size: 11px;
+}
+
+.workspace-quick-card p {
+    margin: 0;
+    color: var(--workspace-home-muted);
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.workspace-home footer {
+    margin-top: auto;
+}
+
+/* =========================================================
+   SHEET TAB — MURAL E DOCUMENTAÇÃO
+========================================================= */
+
+.workspace-help-tabs-panel {
+    width: 100%;
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(16, 39, 87, 0.10);
+    border-radius: 18px;
+    background: var(--workspace-home-surface);
+    box-shadow:
+        0 15px 36px rgba(3, 19, 47, 0.09);
+}
+
+.workspace-help-tabs-panel[hidden] {
+    display: none !important;
+}
+
+.workspace-help-tabs-header {
+    min-height: 48px;
+    padding: 6px 10px 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--workspace-home-border);
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #f8fbff
+        );
+}
+
+.workspace-help-tabs-bar {
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.workspace-help-tab {
+    min-height: 36px;
+    max-width: 260px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    color: var(--workspace-home-muted);
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 11px 11px 0 0;
+    background: transparent;
+    cursor: pointer;
+    transition:
+        color 0.16s ease,
+        border-color 0.16s ease,
+        background-color 0.16s ease;
+}
+
+.workspace-help-tab:hover,
+.workspace-help-tab:focus-visible {
+    color: var(--workspace-home-text);
+    background: #eef4ff;
+    outline: 0;
+}
+
+.workspace-help-tab.is-active {
+    color: var(--workspace-home-primary);
+    border-color: var(--workspace-home-border);
+    background: #ffffff;
+}
+
+.workspace-help-tab-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-help-tab-remove {
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    color: inherit;
+    font-size: 8px;
+    border-radius: 50%;
+    opacity: 0.55;
+    transition:
+        color 0.16s ease,
+        background-color 0.16s ease,
+        opacity 0.16s ease;
+}
+
+.workspace-help-tab-remove:hover {
+    color: #b42318;
+    background: #fee4e2;
+    opacity: 1;
+}
+
+.workspace-help-tabs-close {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 6px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    color: var(--workspace-home-muted);
+    font-size: 12px;
+    border: 1px solid var(--workspace-home-border);
+    border-radius: 10px;
+    background: #ffffff;
+    cursor: pointer;
+    transition:
+        color 0.16s ease,
+        border-color 0.16s ease,
+        background-color 0.16s ease;
+}
+
+.workspace-help-tabs-close:hover,
+.workspace-help-tabs-close:focus-visible {
+    color: #b42318;
+    border-color: #fecdca;
+    background: #fef3f2;
+    outline: 0;
+}
+
+.workspace-help-tabs-body {
+    max-height: 245px;
+    padding:
+        16px
+        clamp(18px, 2.5vw, 26px)
+        18px;
+    overflow-y: auto;
+    color: var(--workspace-home-text);
+}
+
+.workspace-help-title {
+    margin: 0 0 11px;
+    color: var(--workspace-home-text);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.workspace-help-tabs-body p,
+.workspace-help-tabs-body li {
+    color: var(--workspace-home-muted);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.65;
+}
+
+.workspace-help-tabs-body p {
+    margin: 0 0 10px;
+}
+
+.workspace-help-tabs-body p:last-child {
+    margin-bottom: 0;
+}
+
+.workspace-help-tabs-body a {
+    color: var(--workspace-home-primary);
+}
+
+.workspace-help-author {
+    margin-bottom: 13px !important;
+    padding-bottom: 11px;
+    color: #8793a8 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    border-bottom: 1px solid var(--workspace-home-border);
+}
+
+.workspace-help-fullpage {
+    min-height: 38px;
+    margin-top: 6px;
+    padding: 0 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #ffffff !important;
+    font-size: 9px;
+    font-weight: 800;
+    text-decoration: none;
+    border-radius: 9px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--workspace-home-primary),
+            var(--workspace-home-primary-dark)
+        );
+    box-shadow:
+        0 9px 20px rgba(37, 99, 235, 0.20);
+}
+
+.workspace-help-fullpage:hover,
+.workspace-help-fullpage:focus-visible {
+    color: #ffffff;
+    text-decoration: none;
+    filter: brightness(1.06);
+    outline: 0;
+}
+
+.workspace-help-callout {
+    margin: 14px 0;
+    padding: 14px;
+    display: grid;
+    grid-template-columns:
+        36px
+        minmax(0, 1fr);
+    align-items: center;
+    gap: 11px;
+    color: #1e3a8a;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    background: #eff6ff;
+}
+
+.workspace-help-callout > span {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: var(--workspace-home-primary);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.workspace-help-callout strong {
+    display: block;
+    margin-bottom: 3px;
+    color: #1e3a8a;
+    font-size: 10px;
+}
+
+.workspace-help-callout p {
+    margin: 0;
+    color: #475467;
+    font-size: 9px;
+}
+
+/* =========================================================
+   MURAL DE AVISOS E DOCUMENTAÇÃO
+========================================================= */
+
+.workspace-home-resources {
+    width: 100%;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(320px, 0.65fr);
+    align-items: stretch;
+    gap: 14px;
+}
+
+.workspace-notice-board {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(16, 39, 87, 0.09);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow:
+        0 11px 28px rgba(3, 19, 47, 0.06);
+}
+
+.workspace-resource-header {
+    padding: 16px 18px 13px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    border-bottom: 1px solid var(--workspace-home-border);
+}
+
+.workspace-resource-header > div {
+    min-width: 0;
+}
+
+.workspace-resource-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--workspace-home-primary);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.workspace-resource-header h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--workspace-home-text);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.workspace-resource-header h2 i {
+    color: var(--workspace-home-primary);
+}
+
+.workspace-resource-header p {
+    margin: 5px 0 0;
+    color: var(--workspace-home-muted);
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+.workspace-resource-all {
+    min-height: 32px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    color: var(--workspace-home-primary);
+    font-size: 8px;
+    font-weight: 800;
+    text-decoration: none;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #eff6ff;
+}
+
+.workspace-resource-all:hover,
+.workspace-resource-all:focus-visible {
+    color: var(--workspace-home-primary-dark);
+    text-decoration: none;
+    border-color: #bfdbfe;
+    outline: 0;
+}
+
+.workspace-notice-list {
+    padding: 6px 8px 9px;
+}
+
+.workspace-notice-item {
+    width: 100%;
+    min-height: 58px;
+    margin: 0;
+    padding: 9px 10px;
+    display: grid;
+    grid-template-columns:
+        36px
+        minmax(0, 1fr)
+        18px;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    font-family: "Inter", Arial, sans-serif;
+    text-align: left;
+    text-decoration: none;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition:
+        color 0.16s ease,
+        background-color 0.16s ease,
+        transform 0.16s ease;
+}
+
+.workspace-notice-item + .workspace-notice-item {
+    border-top: 1px solid var(--workspace-home-border);
+    border-radius: 0 0 10px 10px;
+}
+
+.workspace-notice-item:hover,
+.workspace-notice-item:focus-visible {
+    color: inherit;
+    text-decoration: none;
+    background: #f6f9fd;
+    outline: 0;
+    transform: translateX(2px);
+}
+
+.workspace-notice-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: var(--workspace-home-primary);
+    font-size: 12px;
+    border-radius: 10px;
+    background: #eff6ff;
+}
+
+.workspace-notice-copy {
+    min-width: 0;
+    display: grid;
+    gap: 3px;
+}
+
+.workspace-notice-copy strong {
+    overflow: hidden;
+    color: var(--workspace-home-text);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-notice-meta {
+    overflow: hidden;
+    color: #8893a7;
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-notice-meta > span {
+    margin: 0 3px;
+    opacity: 0.65;
+}
+
+.workspace-notice-arrow {
+    color: #aeb8c9;
+    font-size: 9px;
+}
+
+.workspace-notice-item.destaque-negrito
+.workspace-notice-copy strong {
+    font-weight: 900;
+}
+
+.workspace-notice-item.destaque-urgente
+.workspace-notice-copy strong {
+    color: #b42318;
+    font-weight: 900;
+}
+
+.workspace-notice-item.destaque-urgente
+.workspace-notice-icon {
+    color: #d92d20;
+    background: #fef3f2;
+}
+
+.workspace-notice-empty {
+    min-height: 118px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.workspace-notice-empty > span {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 40px;
+    color: var(--workspace-home-primary);
+    border-radius: 11px;
+    background: #eff6ff;
+}
+
+.workspace-notice-empty strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--workspace-home-text);
+    font-size: 10px;
+}
+
+.workspace-notice-empty p {
+    margin: 0;
+    color: var(--workspace-home-muted);
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+.workspace-documentation-card {
+    position: relative;
+    min-width: 0;
+    min-height: 100%;
+    padding:
+        clamp(20px, 2.3vw, 29px);
+    display: grid;
+    grid-template-columns:
+        52px
+        minmax(0, 1fr);
+    align-content: center;
+    align-items: center;
+    gap: 15px;
+    overflow: hidden;
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    background:
+        radial-gradient(
+            circle at 90% 0,
+            rgba(56, 189, 248, 0.22),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            var(--workspace-home-navy),
+            var(--workspace-home-navy-soft)
+        );
+    box-shadow:
+        0 14px 34px rgba(3, 19, 47, 0.17);
+    transition:
+        color 0.16s ease,
+        box-shadow 0.16s ease,
+        transform 0.16s ease;
+}
+
+.workspace-documentation-card::after {
+    content: "";
+    position: absolute;
+    right: -62px;
+    bottom: -82px;
+    width: 180px;
+    height: 180px;
+    border: 24px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.workspace-documentation-card:hover,
+.workspace-documentation-card:focus-visible {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    box-shadow:
+        0 18px 42px rgba(3, 19, 47, 0.24);
+    transform: translateY(-2px);
+}
+
+.workspace-documentation-icon {
+    position: relative;
+    z-index: 2;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    font-size: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.workspace-documentation-copy {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+}
+
+.workspace-documentation-eyebrow {
+    color: #8bd3ff;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.workspace-documentation-copy strong {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.workspace-documentation-copy > span:last-child {
+    max-width: 350px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 9px;
+    line-height: 1.55;
+}
+
+.workspace-documentation-action {
+    position: relative;
+    z-index: 2;
+    grid-column: 2;
+    width: fit-content;
+    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.workspace-documentation-card:hover
+.workspace-documentation-action i {
+    transform: translateX(3px);
+}
+
+.workspace-documentation-action i {
+    transition: transform 0.16s ease;
+}
+
+/* =========================================================
+   RESPONSIVIDADE CONSOLIDADA — WORKSPACE QORE
+   Referência principal: 1920 x 1080
+========================================================= */
+
+.workspace-home {
+    overflow-x: hidden;
+}
+
+.workspace-home-main,
+.workspace-home-shell,
+.workspace-home-feature-grid,
+.workspace-home-quick-info,
+.workspace-home-resources,
+.workspace-help-tabs-panel,
+.workspace-help-tabs-header,
+.workspace-help-tabs-bar,
+.workspace-help-tabs-body,
+.workspace-notice-board,
+.workspace-notice-list,
+.workspace-documentation-card,
+.workspace-welcome,
+.workspace-welcome-copy,
+.workspace-partner-carousel {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.workspace-home-main {
+    overflow: visible;
+}
+
+.workspace-home-shell {
+    min-height: 0;
+}
+
+.workspace-carousel-slide img {
+    max-width: 100%;
+}
+
+.workspace-open-request-carousel {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 8;
+    width: auto;
+    max-width: calc(100% - 36px);
+}
+
+.workspace-help-tabs-header {
+    overflow: hidden;
+}
+
+.workspace-help-tabs-bar {
+    flex: 1 1 auto;
+    max-width: 100%;
+    overscroll-behavior-x: contain;
+}
+
+.workspace-help-tabs-body {
+    overscroll-behavior: contain;
+}
+
+.workspace-notice-copy,
+.workspace-documentation-copy,
+.workspace-resource-header > div,
+.workspace-quick-card > div {
+    min-width: 0;
+}
+
+.workspace-home a,
+.workspace-home button {
+    max-width: 100%;
+}
+
+/* =========================================================
+   FULL HD — 1600+ COM ALTURA A PARTIR DE 900
+========================================================= */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+    .workspace-home-main {
+        padding:
+            24px
+            clamp(44px, 3.125vw, 60px)
+            42px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1800px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(400px, clamp(400px, 22vw, 430px))
+            minmax(0, 1fr);
+        gap: 22px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: clamp(365px, 20.5vw, 390px);
+        min-height: clamp(365px, 20.5vw, 390px);
+        max-height: 390px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            32px
+            clamp(34px, 2.1vw, 40px);
+    }
+
+    .workspace-welcome-eyebrow {
+        margin-bottom: 15px;
+        font-size: 10px;
+    }
+
+    .workspace-welcome h2 {
+        max-width: 360px;
+        font-size: clamp(38px, 2.05vw, 40px);
+    }
+
+    .workspace-welcome-greeting {
+        margin-top: 11px;
+        font-size: 20px;
+    }
+
+    .workspace-welcome-date {
+        margin-top: 22px;
+        font-size: 11px;
+    }
+
+    .workspace-welcome-date-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+    }
+
+    .workspace-welcome-divider {
+        margin-top: 18px;
+    }
+
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 360px;
+    }
+
+    .workspace-welcome-description {
+        margin-top: 16px;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .workspace-welcome-security {
+        margin-top: 17px;
+        padding: 11px 12px;
+    }
+
+    .workspace-welcome-security p {
+        font-size: 9px;
+    }
+
+    .workspace-open-request-carousel {
+        top: 20px;
+        right: 20px;
+    }
+
+    .workspace-home-quick-info {
+        margin-top: 20px;
+        gap: 16px;
+    }
+
+    .workspace-quick-card {
+        min-height: 108px;
+        padding: 20px 22px;
+        grid-template-columns:
+            46px
+            minmax(0, 1fr);
+        gap: 15px;
+    }
+
+    .workspace-quick-card-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 16px;
+    }
+
+    .workspace-quick-card strong {
+        font-size: 13px;
+    }
+
+    .workspace-quick-card p {
+        font-size: 10px;
+    }
+
+    .workspace-help-tabs-panel,
+    .workspace-home-resources {
+        margin-top: 20px;
+    }
+
+    .workspace-home-resources {
+        grid-template-columns:
+            minmax(0, 1.4fr)
+            minmax(390px, 0.6fr);
+        gap: 16px;
+    }
+
+    .workspace-resource-header {
+        padding: 19px 21px 16px;
+    }
+
+    .workspace-resource-eyebrow {
+        font-size: 8px;
+    }
+
+    .workspace-resource-header h2 {
+        font-size: 16px;
+    }
+
+    .workspace-resource-header p {
+        font-size: 10px;
+    }
+
+    .workspace-resource-all {
+        min-height: 36px;
+        padding: 0 12px;
+        font-size: 9px;
+    }
+
+    .workspace-notice-list {
+        padding: 8px 10px 11px;
+    }
+
+    .workspace-notice-item {
+        min-height: 64px;
+        padding: 10px 12px;
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            20px;
+        gap: 12px;
+    }
+
+    .workspace-notice-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+    }
+
+    .workspace-notice-copy strong {
+        font-size: 11px;
+    }
+
+    .workspace-notice-meta {
+        font-size: 9px;
+    }
+
+    .workspace-documentation-card {
+        padding: 30px;
+        grid-template-columns:
+            58px
+            minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .workspace-documentation-icon {
+        width: 58px;
+        height: 58px;
+        font-size: 20px;
+    }
+
+    .workspace-documentation-eyebrow {
+        font-size: 8px;
+    }
+
+    .workspace-documentation-copy strong {
+        font-size: 18px;
+    }
+
+    .workspace-documentation-copy > span:last-child {
+        max-width: 420px;
+        font-size: 10px;
+    }
+
+    .workspace-documentation-action {
+        font-size: 9px;
+    }
+
+    .workspace-help-tabs-body {
+        max-height: min(310px, 38vh);
+    }
+}
+
+/* =========================================================
+   ULTRAWIDE / 2K / 4K
+========================================================= */
+
+@media only screen and (min-width: 2200px) {
+    .workspace-home-main {
+        padding-left: 72px;
+        padding-right: 72px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1920px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(420px, 450px)
+            minmax(0, 1fr);
+        gap: 24px;
+    }
+}
+
+/* =========================================================
+   DESKTOP / NOTEBOOK GRANDE — 1280 ATÉ 1599
+========================================================= */
+
+@media only screen and (min-width: 1280px) and (max-width: 1599px) {
+    .workspace-home-main {
+        padding:
+            18px
+            clamp(28px, 3.2vw, 50px)
+            34px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1500px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(350px, 400px)
+            minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: 350px;
+        min-height: 350px;
+        max-height: 350px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            27px
+            clamp(28px, 2.3vw, 34px);
+    }
+
+    .workspace-welcome h2 {
+        max-width: 340px;
+        font-size: clamp(33px, 2.55vw, 37px);
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(17px, 1.35vw, 19px);
+    }
+
+    .workspace-welcome-description {
+        font-size: 10px;
+    }
+
+    .workspace-quick-card strong {
+        font-size: 12px;
+    }
+
+    .workspace-quick-card p {
+        font-size: 9px;
+    }
+}
+
+/* =========================================================
+   NOTEBOOK MÉDIO — 901 ATÉ 1279
+========================================================= */
+
+@media only screen and (min-width: 901px) and (max-width: 1279px) {
+    .workspace-home-main {
+        padding:
+            16px
+            clamp(20px, 2.8vw, 34px)
+            30px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1220px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(290px, 330px)
+            minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: 310px;
+        min-height: 310px;
+        max-height: 310px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            23px
+            25px;
+    }
+
+    .workspace-welcome-eyebrow {
+        margin-bottom: 11px;
+    }
+
+    .workspace-welcome h2 {
+        max-width: 100%;
+        font-size: clamp(28px, 3vw, 33px);
+    }
+
+    .workspace-welcome-greeting {
+        margin-top: 8px;
+        font-size: 16px;
+    }
+
+    .workspace-welcome-date {
+        margin-top: 16px;
+    }
+
+    .workspace-welcome-divider {
+        margin-top: 14px;
+    }
+
+    .workspace-welcome-description {
+        margin-top: 12px;
+        line-height: 1.5;
+    }
+
+    .workspace-welcome-security {
+        margin-top: 12px;
+        padding: 9px 10px;
+    }
+
+    .workspace-home-quick-info {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .workspace-home-resources {
+        grid-template-columns:
+            minmax(0, 1.35fr)
+            minmax(285px, 0.65fr);
+    }
+}
+
+/* =========================================================
+   ALTURA REDUZIDA — 1024+ ATÉ 820PX DE ALTURA
+   Inclui 1366x768, 1280x720 e 1024x768.
+========================================================= */
+
+@media only screen and (min-width: 901px) and (max-height: 820px) {
+    .workspace-home-main {
+        padding-top: 14px;
+        padding-bottom: 26px;
+    }
+
+    .workspace-home-feature-grid {
+        gap: 16px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: clamp(292px, 39vh, 305px);
+        min-height: clamp(292px, 39vh, 305px);
+        max-height: 305px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            21px
+            clamp(23px, 2.15vw, 31px);
+    }
+
+    .workspace-welcome-eyebrow {
+        margin-bottom: 9px;
+    }
+
+    .workspace-welcome h2 {
+        font-size: clamp(27px, 2.35vw, 33px);
+    }
+
+    .workspace-welcome-greeting {
+        margin-top: 7px;
+        font-size: clamp(15px, 1.25vw, 18px);
+    }
+
+    .workspace-welcome-date {
+        margin-top: 14px;
+    }
+
+    .workspace-welcome-divider {
+        margin-top: 12px;
+    }
+
+    .workspace-welcome-description {
+        margin-top: 10px;
+        line-height: 1.45;
+    }
+
+    .workspace-welcome-security {
+        margin-top: 10px;
+        padding: 8px 10px;
+    }
+
+    .workspace-home-quick-info,
+    .workspace-help-tabs-panel,
+    .workspace-home-resources {
+        margin-top: 13px;
+    }
+
+    .workspace-home-quick-info,
+    .workspace-home-resources {
+        gap: 12px;
+    }
+
+    .workspace-quick-card {
+        min-height: 82px;
+        padding: 13px 15px;
+    }
+
+    .workspace-resource-header {
+        padding-top: 13px;
+        padding-bottom: 10px;
+    }
+
+    .workspace-notice-item {
+        min-height: 50px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .workspace-help-tabs-body {
+        max-height: min(230px, 32vh);
+    }
+}
+
+/* =========================================================
+   TABLET — 681 ATÉ 900
+========================================================= */
+
+@media only screen and (min-width: 681px) and (max-width: 900px) {
+    .workspace-home-main {
+        padding:
+            16px
+            20px
+            28px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy {
+        height: auto;
+        min-height: 305px;
+        max-height: none;
+    }
+
+    .workspace-partner-carousel {
+        height: clamp(300px, 40vw, 340px);
+        min-height: 300px;
+        max-height: 340px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            28px
+            30px;
+    }
+
+    .workspace-welcome h2,
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+
+    .workspace-home-quick-info {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .workspace-quick-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .workspace-home-resources {
+        grid-template-columns: 1fr;
+    }
+
+    .workspace-documentation-card {
+        min-height: 165px;
+    }
+
+    .workspace-carousel-control {
+        opacity: 1;
+    }
+
+    .workspace-help-tabs-body {
+        max-height: min(260px, 34vh);
+    }
+}
+
+/* =========================================================
+   CELULAR — ATÉ 680
+========================================================= */
+
+@media only screen and (max-width: 680px) {
+    .workspace-home-main {
+        padding:
+            14px
+            14px
+            26px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+
+    .workspace-welcome,
+    .workspace-partner-carousel,
+    .workspace-help-tabs-panel,
+    .workspace-notice-board,
+    .workspace-documentation-card {
+        border-radius: 15px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            27px
+            22px;
+    }
+
+    .workspace-welcome h2 {
+        max-width: 100%;
+        font-size: clamp(28px, 8.5vw, 34px);
+        overflow-wrap: anywhere;
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(16px, 4.8vw, 18px);
+    }
+
+    .workspace-welcome-date {
+        max-width: 100%;
+        align-items: flex-start;
+    }
+
+    .workspace-welcome-date > span:last-child {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+
+    .workspace-partner-carousel {
+        height: clamp(220px, 56vw, 290px);
+        min-height: 220px;
+        max-height: 290px;
+    }
+
+    .workspace-open-request-carousel {
+        top: 12px;
+        right: 12px;
+        width: auto;
+        max-width: calc(100% - 24px);
+        min-height: 40px;
+        padding: 0 14px;
+        gap: 7px;
+        font-size: 10px;
+        border-radius: 10px;
+    }
+
+    .workspace-carousel-control {
+        width: 34px;
+        height: 34px;
+        opacity: 1;
+    }
+
+    .workspace-carousel-control-prev {
+        left: 10px;
+    }
+
+    .workspace-carousel-control-next {
+        right: 10px;
+    }
+
+    .workspace-carousel-status {
+        display: none;
+    }
+
+    .workspace-carousel-dots {
+        right: 50%;
+        bottom: 12px;
+        transform: translateX(50%);
+    }
+
+    .workspace-home-quick-info {
+        margin-top: 14px;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .workspace-quick-card,
+    .workspace-quick-card:last-child {
+        min-height: 86px;
+        grid-column: auto;
+    }
+
+    .workspace-help-tabs-panel,
+    .workspace-home-resources {
+        margin-top: 14px;
+    }
+
+    .workspace-home-resources {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .workspace-resource-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .workspace-resource-all {
+        width: fit-content;
+        min-height: 36px;
+    }
+
+    .workspace-notice-item {
+        grid-template-columns:
+            36px
+            minmax(0, 1fr)
+            16px;
+        gap: 9px;
+    }
+
+    .workspace-notice-copy strong,
+    .workspace-notice-meta {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .workspace-documentation-card {
+        min-height: 160px;
+        padding: 20px;
+        grid-template-columns:
+            44px
+            minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .workspace-documentation-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 15px;
+    }
+
+    .workspace-documentation-copy > span:last-child {
+        max-width: 100%;
+    }
+
+    .workspace-help-tabs-header {
+        align-items: stretch;
+    }
+
+    .workspace-help-tabs-bar {
+        padding-top: 2px;
+    }
+
+    .workspace-help-tab {
+        max-width: min(210px, 72vw);
+    }
+
+    .workspace-help-tabs-body {
+        max-height: min(230px, 38vh);
+        padding: 15px;
+    }
+
+    .workspace-help-callout {
+        grid-template-columns:
+            34px
+            minmax(0, 1fr);
+        padding: 12px;
+    }
+
+    .workspace-help-callout > span {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* =========================================================
+   CELULAR PEQUENO — ATÉ 390
+========================================================= */
+
+@media only screen and (max-width: 390px) {
+    .workspace-home-main {
+        padding:
+            12px
+            10px
+            22px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            24px
+            18px;
+    }
+
+    .workspace-welcome h2 {
+        font-size: 28px;
+    }
+
+    .workspace-welcome-date {
+        gap: 8px;
+        font-size: 9px;
+    }
+
+    .workspace-welcome-security {
+        padding: 9px;
+    }
+
+    .workspace-partner-carousel {
+        height: 215px;
+        min-height: 215px;
+        max-height: 215px;
+    }
+
+    .workspace-open-request-carousel {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 9px;
+    }
+
+    .workspace-carousel-control {
+        width: 32px;
+        height: 32px;
+    }
+
+    .workspace-quick-card {
+        padding: 15px;
+        grid-template-columns:
+            38px
+            minmax(0, 1fr);
+        gap: 11px;
+    }
+
+    .workspace-quick-card-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .workspace-notice-item {
+        padding-left: 8px;
+        padding-right: 8px;
+        grid-template-columns:
+            34px
+            minmax(0, 1fr)
+            14px;
+        gap: 8px;
+    }
+
+    .workspace-notice-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .workspace-documentation-card {
+        padding: 18px;
+        grid-template-columns:
+            40px
+            minmax(0, 1fr);
+        gap: 11px;
+    }
+
+    .workspace-documentation-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .workspace-documentation-action {
+        margin-top: 3px;
+    }
+}
+
+/* =========================================================
+   DISPOSITIVOS TOUCH
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+    .workspace-carousel-control {
+        opacity: 1;
+    }
+
+    .workspace-open-request,
+    .workspace-help-tabs-close,
+    .workspace-resource-all {
+        min-height: 44px;
+    }
+
+    .workspace-open-request:hover,
+    .workspace-documentation-card:hover,
+    .workspace-notice-item:hover {
+        transform: none;
+    }
+}
+
+/* =========================================================
+   ACESSIBILIDADE — REDUÇÃO DE MOVIMENTO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-open-request,
+    .workspace-carousel-slide,
+    .workspace-carousel-control,
+    .workspace-carousel-dot,
+    .workspace-help-tab,
+    .workspace-help-tabs-close,
+    .workspace-notice-item,
+    .workspace-documentation-card,
+    .workspace-documentation-action i {
+        transition: none !important;
+    }
+}
+
+/* =========================================================
+   V5.3.0 — RESPONSIVIDADE + TIPOGRAFIA + ÍCONES
+   WORKSPACE HOME
+   Referência principal: 1920 × 1080
+
+   Camada exclusivamente visual.
+   Preserva HTML, IDs, classes funcionais, data-*,
+   permissões, navegação, carrossel e JavaScript.
+========================================================= */
+
+/* =========================================================
+   BASE E CONTENÇÃO
+========================================================= */
+
+.workspace-home-main,
+.workspace-home-shell,
+.workspace-home-feature-grid,
+.workspace-welcome,
+.workspace-welcome-copy,
+.workspace-partner-carousel,
+.workspace-home-quick-info,
+.workspace-quick-card,
+.workspace-home-resources,
+.workspace-notice-board,
+.workspace-documentation-card,
+.workspace-help-tabs-panel,
+.workspace-help-tabs-header,
+.workspace-help-tabs-bar,
+.workspace-help-tabs-body,
+.workspace-notice-list,
+.workspace-notice-item,
+.workspace-notice-copy,
+.workspace-documentation-copy {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.workspace-home img,
+.workspace-home svg,
+.workspace-home canvas,
+.workspace-home video,
+.workspace-home iframe {
+    max-width: 100%;
+}
+
+.workspace-home {
+    overflow-x: hidden;
+}
+
+.workspace-home-main {
+    width: 100%;
+}
+
+.workspace-home-shell {
+    width: 100%;
+    margin-inline: auto;
+}
+
+/* =========================================================
+   HIERARQUIA TIPOGRÁFICA
+========================================================= */
+
+.workspace-welcome h2,
+.workspace-resource-header h2,
+.workspace-quick-card strong,
+.workspace-documentation-copy > strong,
+.workspace-help-title {
+    letter-spacing: -0.018em;
+}
+
+.workspace-welcome-description,
+.workspace-welcome-security p,
+.workspace-quick-card p,
+.workspace-resource-header p,
+.workspace-notice-meta,
+.workspace-documentation-copy > span:last-child,
+.workspace-help-tabs-body p,
+.workspace-help-tabs-body li {
+    line-height: 1.52;
+}
+
+/* Textos que estavam pequenos demais */
+.workspace-welcome-eyebrow {
+    font-size: 9.5px;
+}
+
+.workspace-welcome-date {
+    font-size: 10.5px;
+}
+
+.workspace-welcome-description {
+    font-size: 10.5px;
+}
+
+.workspace-welcome-security p {
+    font-size: 9px;
+}
+
+.workspace-carousel-status {
+    font-size: 8.5px;
+}
+
+.workspace-quick-card strong {
+    font-size: 11.5px;
+}
+
+.workspace-quick-card p {
+    font-size: 9px;
+}
+
+.workspace-resource-eyebrow,
+.workspace-documentation-eyebrow {
+    font-size: 8px;
+}
+
+.workspace-resource-header h2 {
+    font-size: 15px;
+}
+
+.workspace-resource-header p {
+    font-size: 9px;
+}
+
+.workspace-resource-all {
+    font-size: 9px;
+}
+
+.workspace-notice-copy strong {
+    font-size: 10.5px;
+}
+
+.workspace-notice-meta {
+    font-size: 9px;
+}
+
+.workspace-documentation-copy > strong {
+    font-size: 16px;
+}
+
+.workspace-documentation-copy > span:last-child {
+    font-size: 10px;
+}
+
+.workspace-documentation-action {
+    font-size: 9.5px;
+}
+
+.workspace-help-tab {
+    font-size: 10px;
+}
+
+.workspace-help-tab-remove {
+    font-size: 9px;
+}
+
+.workspace-help-fullpage,
+.workspace-help-author,
+.workspace-help-callout p {
+    font-size: 10px;
+}
+
+.workspace-help-tabs-body p,
+.workspace-help-tabs-body li {
+    font-size: 11.5px;
+}
+
+/* =========================================================
+   ÍCONES — PROPORÇÃO E ALINHAMENTO
+========================================================= */
+
+.workspace-welcome-date-icon,
+.workspace-quick-card-icon,
+.workspace-notice-icon,
+.workspace-documentation-icon,
+.workspace-carousel-control,
+.workspace-help-tabs-close {
+    display: grid;
+    place-items: center;
+}
+
+.workspace-welcome-date-icon i,
+.workspace-quick-card-icon i,
+.workspace-notice-icon i,
+.workspace-documentation-icon i,
+.workspace-carousel-control i,
+.workspace-resource-header h2 i,
+.workspace-resource-all i,
+.workspace-documentation-action i,
+.workspace-help-tabs-close i {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.workspace-welcome-date-icon i {
+    font-size: 12px;
+}
+
+.workspace-quick-card-icon i {
+    font-size: 15px;
+}
+
+.workspace-resource-header h2 i {
+    font-size: 14px;
+}
+
+.workspace-notice-icon i {
+    font-size: 13px;
+}
+
+.workspace-notice-arrow {
+    font-size: 10px;
+}
+
+.workspace-documentation-icon i {
+    font-size: 16px;
+}
+
+.workspace-documentation-action i,
+.workspace-resource-all i {
+    font-size: 10px;
+}
+
+.workspace-carousel-control i {
+    font-size: 17px;
+}
+
+/* =========================================================
+   FULL HD — REFERÊNCIA PRINCIPAL
+========================================================= */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+
+    .workspace-home-main {
+        padding:
+            24px
+            clamp(44px, 3.125vw, 60px)
+            42px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1800px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(400px, 430px)
+            minmax(0, 1fr);
+        gap: 22px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: clamp(360px, 20vw, 385px);
+        min-height: clamp(360px, 20vw, 385px);
+        max-height: 385px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            30px
+            clamp(32px, 2vw, 39px);
+    }
+
+    .workspace-welcome h2 {
+        max-width: 365px;
+        font-size: clamp(35px, 1.9vw, 38px);
+        line-height: 1.06;
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(17px, 1vw, 19px);
+    }
+
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 355px;
+    }
+
+    .workspace-welcome-description {
+        font-size: 11px;
+    }
+
+    .workspace-welcome-security p {
+        font-size: 9.5px;
+    }
+
+    .workspace-open-request-carousel {
+        min-height: 44px;
+        padding-inline: 18px;
+        font-size: 10.5px;
+    }
+
+    .workspace-home-quick-info {
+        margin-top: 20px;
+        gap: 15px;
+    }
+
+    .workspace-quick-card {
+        min-height: 104px;
+        padding: 18px 19px;
+        grid-template-columns:
+            44px
+            minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .workspace-quick-card-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .workspace-quick-card strong {
+        font-size: 12px;
+    }
+
+    .workspace-quick-card p {
+        font-size: 9.5px;
+    }
+
+    .workspace-home-resources {
+        gap: 18px;
+    }
+
+    .workspace-resource-header h2 {
+        font-size: 16px;
+    }
+
+    .workspace-resource-header p {
+        font-size: 9.5px;
+    }
+
+    .workspace-notice-copy strong {
+        font-size: 11px;
+    }
+
+    .workspace-notice-meta {
+        font-size: 9px;
+    }
+
+    .workspace-documentation-copy > strong {
+        font-size: 17px;
+    }
+
+    .workspace-documentation-copy > span:last-child {
+        font-size: 10px;
+    }
+
+    .workspace-documentation-action {
+        font-size: 10px;
+    }
+}
+
+/* =========================================================
+   ULTRAWIDE
+========================================================= */
+
+@media only screen and (min-width: 2200px) {
+
+    .workspace-home-main {
+        padding-left: 72px;
+        padding-right: 72px;
+    }
+
+    .workspace-home-shell {
+        max-width: 1920px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(420px, 450px)
+            minmax(0, 1fr);
+        gap: 24px;
+    }
+}
+
+/* =========================================================
+   1280 — 1599
+========================================================= */
+
+@media only screen and (min-width: 1280px) and (max-width: 1599px) {
+
+    .workspace-home-main {
+        padding:
+            18px
+            clamp(28px, 3.2vw, 50px)
+            34px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(350px, 400px)
+            minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: 350px;
+        min-height: 350px;
+        max-height: 350px;
+    }
+
+    .workspace-welcome h2 {
+        font-size: clamp(31px, 2.25vw, 35px);
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(16px, 1.2vw, 18px);
+    }
+
+    .workspace-resource-header h2 {
+        font-size: 15px;
+    }
+
+    .workspace-resource-header p,
+    .workspace-quick-card p,
+    .workspace-notice-meta {
+        font-size: 9px;
+    }
+}
+
+/* =========================================================
+   901 — 1279
+========================================================= */
+
+@media only screen and (min-width: 901px) and (max-width: 1279px) {
+
+    .workspace-home-main {
+        padding:
+            16px
+            clamp(20px, 2.8vw, 34px)
+            30px;
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(290px, 330px)
+            minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: 310px;
+        min-height: 310px;
+        max-height: 310px;
+    }
+
+    .workspace-welcome h2 {
+        max-width: 100%;
+        font-size: clamp(27px, 2.8vw, 31px);
+    }
+
+    .workspace-welcome-greeting {
+        font-size: 16px;
+    }
+
+    .workspace-welcome-description {
+        font-size: 10px;
+    }
+
+    .workspace-welcome-security p,
+    .workspace-quick-card p,
+    .workspace-resource-header p,
+    .workspace-notice-meta {
+        font-size: 8.8px;
+    }
+
+    .workspace-documentation-copy > span:last-child {
+        font-size: 9.5px;
+    }
+}
+
+/* =========================================================
+   ALTURA REDUZIDA / ZOOM
+========================================================= */
+
+@media only screen and (min-width: 901px) and (max-height: 820px) {
+
+    .workspace-home-main {
+        padding-top: 14px;
+        padding-bottom: 26px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        height: clamp(292px, 39vh, 305px);
+        min-height: clamp(292px, 39vh, 305px);
+        max-height: 305px;
+    }
+
+    .workspace-welcome h2 {
+        font-size: clamp(26px, 2.3vw, 31px);
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(15px, 1.2vw, 17px);
+    }
+
+    .workspace-welcome-description {
+        font-size: 9.8px;
+    }
+}
+
+/* =========================================================
+   TABLET — 681 — 900
+========================================================= */
+
+@media only screen and (min-width: 681px) and (max-width: 900px) {
+
+    .workspace-home-feature-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy {
+        height: auto;
+        min-height: 305px;
+        max-height: none;
+    }
+
+    .workspace-partner-carousel {
+        height: clamp(300px, 40vw, 340px);
+        min-height: 300px;
+        max-height: 340px;
+    }
+
+    .workspace-welcome h2,
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+
+    .workspace-home-quick-info {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .workspace-quick-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .workspace-resource-header p,
+    .workspace-quick-card p,
+    .workspace-notice-meta {
+        font-size: 9px;
+    }
+}
+
+/* =========================================================
+   MOBILE — ATÉ 680
+========================================================= */
+
+@media only screen and (max-width: 680px) {
+
+    .workspace-home-main {
+        padding:
+            14px
+            14px
+            26px;
+    }
+
+    .workspace-home-feature-grid,
+    .workspace-home-quick-info,
+    .workspace-home-resources {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            26px
+            21px;
+    }
+
+    .workspace-welcome h2 {
+        max-width: 100%;
+        font-size: clamp(27px, 8.2vw, 33px);
+        overflow-wrap: anywhere;
+    }
+
+    .workspace-welcome-greeting {
+        font-size: clamp(16px, 4.6vw, 18px);
+    }
+
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+
+    .workspace-welcome-description {
+        font-size: 10px;
+    }
+
+    .workspace-welcome-security p {
+        font-size: 9px;
+    }
+
+    .workspace-partner-carousel {
+        height: clamp(220px, 56vw, 300px);
+        min-height: 220px;
+        max-height: 300px;
+    }
+
+    .workspace-open-request-carousel {
+        top: 12px;
+        right: 12px;
+        max-width: calc(100% - 24px);
+        min-height: 42px;
+        padding:
+            0
+            14px;
+        font-size: 10px;
+    }
+
+    .workspace-carousel-control {
+        width: 36px;
+        height: 36px;
+        opacity: 1;
+    }
+
+    .workspace-home-quick-info {
+        gap: 11px;
+    }
+
+    .workspace-quick-card {
+        min-height: 88px;
+        padding:
+            15px
+            16px;
+    }
+
+    .workspace-quick-card strong {
+        font-size: 11px;
+    }
+
+    .workspace-quick-card p {
+        font-size: 9px;
+    }
+
+    .workspace-resource-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .workspace-resource-all {
+        min-height: 40px;
+        font-size: 9.5px;
+    }
+
+    .workspace-resource-header h2 {
+        font-size: 15px;
+    }
+
+    .workspace-resource-header p {
+        font-size: 9px;
+    }
+
+    .workspace-notice-copy strong {
+        font-size: 10.5px;
+    }
+
+    .workspace-notice-meta {
+        font-size: 8.8px;
+    }
+
+    .workspace-documentation-copy > strong {
+        font-size: 16px;
+    }
+
+    .workspace-documentation-copy > span:last-child {
+        font-size: 9.5px;
+    }
+
+    .workspace-documentation-action {
+        font-size: 9.5px;
+    }
+
+    .workspace-help-tab {
+        font-size: 10px;
+    }
+
+    .workspace-help-tabs-body p,
+    .workspace-help-tabs-body li {
+        font-size: 11px;
+    }
+}
+
+/* =========================================================
+   MOBILE PEQUENO — ATÉ 390
+========================================================= */
+
+@media only screen and (max-width: 390px) {
+
+    .workspace-home-main {
+        padding:
+            12px
+            10px
+            22px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            23px
+            18px;
+    }
+
+    .workspace-welcome h2 {
+        font-size: 27px;
+    }
+
+    .workspace-welcome-date {
+        font-size: 9.5px;
+    }
+
+    .workspace-partner-carousel {
+        height: 215px;
+        min-height: 215px;
+        max-height: 215px;
+    }
+
+    .workspace-open-request-carousel {
+        min-height: 40px;
+        padding-inline: 12px;
+        font-size: 9.5px;
+    }
+
+    .workspace-carousel-control {
+        width: 34px;
+        height: 34px;
+    }
+
+    .workspace-quick-card {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr);
+    }
+
+    .workspace-quick-card-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* =========================================================
+   TOUCH
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .workspace-open-request,
+    .workspace-carousel-control,
+    .workspace-help-tab,
+    .workspace-help-tabs-close,
+    .workspace-resource-all,
+    .workspace-notice-item,
+    .workspace-documentation-card {
+        min-height: 44px;
+    }
+}
+
+
+
+/* ==========================================================================
+   V5.4.0 — WORKSPACE UI CORE
+   HOME
+
+   Escopo:
+   - identidade oficial do Workspace;
+   - tipografia;
+   - spacing;
+   - cards;
+   - carrossel;
+   - mural;
+   - documentação;
+   - abas de ajuda;
+   - responsividade progressiva;
+   - comportamento em zoom.
+
+   Preservado:
+   - permissões;
+   - URLs;
+   - IDs;
+   - classes funcionais;
+   - data-*;
+   - carrossel;
+   - localStorage;
+   - mural;
+   - documentação;
+   - abertura de solicitações;
+   - JavaScript inline;
+   - regras Django.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   TOKENS — PONTE PARA A IDENTIDADE OFICIAL
+   ========================================================================== */
+
+:root {
+    --workspace-home-navy:
+        var(
+            --ws-navy-950,
+            #071124
+        );
+
+    --workspace-home-navy-soft:
+        var(
+            --ws-navy-800,
+            #101C44
+        );
+
+    --workspace-home-primary:
+        var(
+            --ws-primary,
+            #2563EB
+        );
+
+    --workspace-home-primary-dark:
+        var(
+            --ws-primary-hover,
+            #1D4ED8
+        );
+
+    --workspace-home-primary-light:
+        var(
+            --ws-primary-light,
+            #60A5FA
+        );
+
+    --workspace-home-text:
+        var(
+            --ws-text-primary,
+            #172033
+        );
+
+    --workspace-home-muted:
+        var(
+            --ws-text-muted,
+            #667085
+        );
+
+    --workspace-home-surface:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+
+    --workspace-home-background:
+        var(
+            --ws-app-bg,
+            #F4F7FB
+        );
+
+    --workspace-home-border:
+        var(
+            --ws-border,
+            #DDE3EC
+        );
+
+    --workspace-home-success:
+        var(
+            --ws-success,
+            #16A34A
+        );
+}
+
+
+/* ==========================================================================
+   ESTRUTURA DA PÁGINA
+   ========================================================================== */
+
+body.workspace-home {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    color:
+        var(
+            --ws-text-primary,
+            #172033
+        );
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    background:
+        radial-gradient(
+            circle at 7% 9%,
+            rgba(37, 99, 235, 0.07),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 94% 90%,
+            rgba(56, 189, 248, 0.05),
+            transparent 24%
+        ),
+        var(
+            --ws-app-bg,
+            #F4F7FB
+        );
+}
+
+.workspace-home-main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    padding:
+        clamp(14px, 1.25vw, 24px)
+        clamp(14px, 2.2vw, 42px)
+        clamp(26px, 2vw, 38px);
+
+    overflow: visible;
+
+    flex: 1 0 auto;
+}
+
+.workspace-home-shell {
+    width: min(1800px, 100%);
+    min-width: 0;
+    max-width: 100%;
+
+    margin-inline: auto;
+}
+
+
+/* ==========================================================================
+   PRIMEIRO BLOCO — BOAS-VINDAS + CARROSSEL
+   ========================================================================== */
+
+.workspace-home-feature-grid {
+    width: 100%;
+    min-width: 0;
+
+    grid-template-columns:
+        minmax(
+            min(380px, 100%),
+            420px
+        )
+        minmax(0, 1fr);
+
+    align-items: stretch;
+
+    gap:
+        clamp(14px, 1.1vw, 20px);
+}
+
+
+/*
+ * Não usamos mais a altura da viewport para comprimir este bloco.
+ * O zoom pode aumentar a altura total da página naturalmente.
+ */
+.workspace-welcome,
+.workspace-welcome-copy,
+.workspace-partner-carousel {
+    max-height: none !important;
+}
+
+.workspace-welcome {
+    height: auto !important;
+
+    min-height:
+        clamp(
+            330px,
+            20vw,
+            380px
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-2xl,
+            18px
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-lg,
+            0 18px 42px rgba(16, 28, 68, 0.14)
+        );
+}
+
+.workspace-welcome-copy {
+    height: auto !important;
+
+    min-height:
+        clamp(
+            330px,
+            20vw,
+            380px
+        ) !important;
+
+    padding:
+        clamp(25px, 1.8vw, 32px)
+        clamp(24px, 2vw, 38px);
+}
+
+.workspace-partner-carousel {
+    height: auto !important;
+
+    min-height:
+        clamp(
+            330px,
+            20vw,
+            380px
+        ) !important;
+
+    align-self: stretch;
+
+    border-radius:
+        var(
+            --ws-radius-2xl,
+            18px
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-lg,
+            0 18px 42px rgba(16, 28, 68, 0.13)
+        );
+}
+
+.workspace-carousel-slide img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background:
+        var(
+            --ws-navy-950,
+            #071124
+        );
+}
+
+
+/* ==========================================================================
+   BOAS-VINDAS — TIPOGRAFIA
+   ========================================================================== */
+
+.workspace-welcome-eyebrow {
+    margin-bottom: 12px;
+
+    color:
+        var(
+            --ws-primary-light,
+            #60A5FA
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+
+    letter-spacing: 0.035em;
+}
+
+.workspace-welcome h2 {
+    max-width: 360px;
+
+    font-size:
+        clamp(
+            30px,
+            2vw,
+            38px
+        ) !important;
+
+    line-height: 1.07;
+
+    letter-spacing: -0.035em;
+}
+
+.workspace-welcome-greeting {
+    margin-top: 9px;
+
+    font-size:
+        clamp(
+            16px,
+            1vw,
+            19px
+        ) !important;
+
+    line-height: 1.3;
+}
+
+.workspace-welcome-date {
+    margin-top: 18px;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+.workspace-welcome-date-icon {
+    width: 28px;
+    height: 28px;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        );
+
+    border-radius:
+        var(
+            --ws-radius-sm,
+            8px
+        );
+}
+
+.workspace-welcome-divider {
+    margin-top: 16px;
+}
+
+.workspace-welcome-description {
+    max-width: 360px;
+
+    margin-top: 14px;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.6
+        );
+}
+
+.workspace-welcome-security {
+    max-width: 360px;
+
+    margin-top: 14px;
+
+    padding: 10px 11px;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+}
+
+.workspace-welcome-security p {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        );
+}
+
+
+/* ==========================================================================
+   BOTÃO ABRIR SOLICITAÇÃO
+   ========================================================================== */
+
+.workspace-open-request {
+    min-height:
+        var(
+            --ws-button-height-lg,
+            44px
+        );
+
+    padding-inline: 16px;
+
+    gap: 8px;
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+}
+
+.workspace-open-request-carousel {
+    top: 18px;
+    right: 18px;
+
+    max-width:
+        calc(
+            100% - 36px
+        );
+}
+
+
+/* ==========================================================================
+   CARROSSEL
+   ========================================================================== */
+
+.workspace-carousel-control {
+    width: 38px;
+    height: 38px;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+}
+
+.workspace-carousel-status {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+.workspace-carousel-dots {
+    padding: 7px 9px;
+}
+
+
+/* ==========================================================================
+   CARDS RÁPIDOS
+   ========================================================================== */
+
+.workspace-home-quick-info {
+    margin-top:
+        clamp(14px, 1.1vw, 18px);
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(250px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap:
+        clamp(10px, 0.8vw, 14px);
+}
+
+.workspace-quick-card {
+    min-height: 92px;
+
+    padding:
+        clamp(14px, 1vw, 17px)
+        clamp(15px, 1.1vw, 19px);
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr);
+
+    gap: 13px;
+
+    border-color:
+        var(
+            --ws-border-soft,
+            #E7EBF1
+        );
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        );
+
+    background:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        );
+}
+
+.workspace-quick-card-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        );
+
+    background:
+        var(
+            --ws-primary-soft,
+            #EFF6FF
+        );
+}
+
+.workspace-quick-card strong {
+    margin-bottom: 4px;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+.workspace-quick-card p {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        );
+}
+
+
+/* ==========================================================================
+   PAINEL DE ABAS — MURAL / DOCUMENTAÇÃO
+   ========================================================================== */
+
+.workspace-help-tabs-panel {
+    margin-top:
+        clamp(14px, 1.1vw, 18px);
+
+    border-color:
+        var(
+            --ws-border,
+            #DDE3EC
+        );
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.07)
+        );
+}
+
+.workspace-help-tabs-header {
+    min-height: 50px;
+}
+
+.workspace-help-tab {
+    min-height: 38px;
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+.workspace-help-tab-remove {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+.workspace-help-tabs-body {
+    max-height:
+        clamp(
+            220px,
+            32vh,
+            320px
+        );
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        );
+}
+
+.workspace-help-title {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+}
+
+.workspace-help-tabs-body p,
+.workspace-help-tabs-body li {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.6
+        );
+}
+
+.workspace-help-author,
+.workspace-help-fullpage,
+.workspace-help-callout p {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   MURAL + DOCUMENTAÇÃO
+   ========================================================================== */
+
+.workspace-home-resources {
+    margin-top:
+        clamp(14px, 1.1vw, 18px);
+
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(
+            min(320px, 100%),
+            0.65fr
+        );
+
+    gap:
+        clamp(12px, 0.9vw, 16px);
+}
+
+.workspace-notice-board {
+    border-color:
+        var(
+            --ws-border-soft,
+            #E7EBF1
+        );
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        );
+
+    background:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        );
+}
+
+.workspace-resource-header {
+    padding:
+        15px
+        17px
+        13px;
+}
+
+.workspace-resource-eyebrow,
+.workspace-documentation-eyebrow {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    letter-spacing:
+        var(
+            --ws-tracking-kicker,
+            0.12em
+        );
+}
+
+.workspace-resource-header h2 {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+.workspace-resource-header p {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        );
+}
+
+.workspace-resource-all {
+    min-height:
+        var(
+            --ws-button-height-sm,
+            32px
+        );
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-sm,
+            8px
+        );
+}
+
+.workspace-notice-item {
+    min-height: 58px;
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+}
+
+.workspace-notice-copy strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+.workspace-notice-meta {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+.workspace-notice-empty strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+.workspace-notice-empty p {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   DOCUMENTAÇÃO
+   ========================================================================== */
+
+.workspace-documentation-card {
+    min-height: 100%;
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-md,
+            0 10px 28px rgba(16, 28, 68, 0.10)
+        );
+}
+
+.workspace-documentation-copy strong {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+}
+
+.workspace-documentation-copy > span:last-child {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.6
+        );
+}
+
+.workspace-documentation-action {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   Footer não fica fixo. Ele permanece no final natural do documento.
+   ========================================================================== */
+
+.workspace-home footer {
+    margin-top: auto;
+
+    flex: 0 0 auto;
+}
+
+
+/* ==========================================================================
+   DESKTOP INTERMEDIÁRIO / ZOOM
+   A quebra depende da largura disponível, não da dimensão física do monitor.
+   ========================================================================== */
+
+@media only screen and (min-width: 981px) and (max-width: 1500px) {
+
+    .workspace-home-main {
+        padding-inline:
+            clamp(
+                20px,
+                2.2vw,
+                34px
+            );
+    }
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(
+                min(320px, 100%),
+                370px
+            )
+            minmax(0, 1fr);
+
+        gap: 16px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy,
+    .workspace-partner-carousel {
+        min-height:
+            clamp(
+                310px,
+                24vw,
+                350px
+            ) !important;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            24px
+            clamp(22px, 2vw, 30px);
+    }
+
+    .workspace-welcome h2 {
+        font-size:
+            clamp(
+                28px,
+                2.5vw,
+                34px
+            ) !important;
+    }
+
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+}
+
+
+/* ==========================================================================
+   TABLET / ZOOM MAIS ELEVADO
+   ========================================================================== */
+
+@media only screen and (max-width: 980px) {
+
+    .workspace-home-feature-grid {
+        grid-template-columns:
+            minmax(0, 1fr);
+
+        gap: 14px;
+    }
+
+    .workspace-welcome,
+    .workspace-welcome-copy {
+        height: auto !important;
+        min-height: 300px !important;
+        max-height: none !important;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            26px
+            28px;
+    }
+
+    .workspace-welcome h2,
+    .workspace-welcome-description,
+    .workspace-welcome-security {
+        max-width: 100%;
+    }
+
+    .workspace-partner-carousel {
+        height:
+            clamp(
+                270px,
+                42vw,
+                340px
+            ) !important;
+
+        min-height:
+            270px !important;
+
+        max-height:
+            340px !important;
+    }
+
+    .workspace-home-resources {
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+    .workspace-documentation-card {
+        min-height: 150px;
+    }
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media only screen and (max-width: 640px) {
+
+    .workspace-home-main {
+        padding:
+            12px
+            12px
+            24px;
+    }
+
+    .workspace-welcome,
+    .workspace-partner-carousel,
+    .workspace-help-tabs-panel,
+    .workspace-notice-board,
+    .workspace-documentation-card {
+        border-radius:
+            var(
+                --ws-radius-xl,
+                14px
+            );
+    }
+
+    .workspace-welcome-copy {
+        min-height: 0 !important;
+
+        padding:
+            24px
+            20px;
+    }
+
+    .workspace-welcome h2 {
+        font-size:
+            clamp(
+                27px,
+                8vw,
+                33px
+            ) !important;
+    }
+
+    .workspace-welcome-date {
+        align-items: flex-start;
+    }
+
+    .workspace-partner-carousel {
+        height:
+            clamp(
+                220px,
+                56vw,
+                285px
+            ) !important;
+
+        min-height:
+            220px !important;
+
+        max-height:
+            285px !important;
+    }
+
+    .workspace-open-request-carousel {
+        top: 12px;
+        right: 12px;
+
+        min-height: 40px;
+
+        max-width:
+            calc(
+                100% - 24px
+            );
+
+        padding-inline: 13px;
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    .workspace-home-quick-info {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    .workspace-resource-header {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 11px;
+    }
+
+    .workspace-resource-all {
+        width: fit-content;
+    }
+
+    .workspace-notice-copy strong,
+    .workspace-notice-meta {
+        white-space: normal;
+
+        overflow-wrap: anywhere;
+    }
+
+    .workspace-documentation-card {
+        min-height: 155px;
+
+        padding: 19px;
+
+        grid-template-columns:
+            44px
+            minmax(0, 1fr);
+    }
+
+    .workspace-documentation-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .workspace-help-tabs-body {
+        max-height:
+            min(
+                260px,
+                40vh
+            );
+
+        padding: 15px;
+    }
+}
+
+
+/* ==========================================================================
+   TELAS PEQUENAS
+   ========================================================================== */
+
+@media only screen and (max-width: 390px) {
+
+    .workspace-home-main {
+        padding-inline: 10px;
+    }
+
+    .workspace-welcome-copy {
+        padding:
+            22px
+            17px;
+    }
+
+    .workspace-documentation-card {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr);
+
+        gap: 11px;
+    }
+
+    .workspace-documentation-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* ==========================================================================
+   TOUCH
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .workspace-carousel-control {
+        opacity: 1;
+    }
+
+    .workspace-open-request,
+    .workspace-help-tabs-close,
+    .workspace-resource-all {
+        min-height: 44px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .workspace-home
+    *,
+    .workspace-home
+    *::before,
+    .workspace-home
+    *::after {
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* ==========================================================================
+   V5.4.1 — RESPIRO ENTRE NAVBAR E CONTEÚDO DA HOME
+   Ajuste exclusivamente visual.
+   ========================================================================== */
+
+body.workspace-home
+.workspace-home-main {
+    padding-top:
+        clamp(
+            28px,
+            2vw,
+            38px
+        ) !important;
+}
+
+/*
+ * Em telas menores mantemos separação perceptível sem desperdiçar
+ * demasiada área útil.
+ */
+@media only screen and (max-width: 980px) {
+    body.workspace-home
+    .workspace-home-main {
+        padding-top: 22px !important;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    body.workspace-home
+    .workspace-home-main {
+        padding-top: 18px !important;
+    }
+}
+
+
+/* ==========================================================================
+   V5.4.2 — SEPARAÇÃO REAL ENTRE NAVBAR E HOME
+
+   A versão anterior usava apenas padding-top no <main>.
+   Nesta versão existe um elemento próprio no fluxo do documento,
+   imediatamente após a navbar. Assim a separação não depende de
+   estilos globais aplicados ao <main>.
+   ========================================================================== */
+
+body.workspace-home
+.workspace-home-navbar-gap {
+    display: block;
+
+    width: 100%;
+    height:
+        clamp(
+            26px,
+            1.65vw,
+            34px
+        );
+
+    min-height: 26px;
+
+    flex: 0 0 auto;
+
+    pointer-events: none;
+}
+
+body.workspace-home
+.workspace-home-main {
+    padding-top:
+        clamp(
+            0px,
+            0.35vw,
+            6px
+        ) !important;
+}
+
+@media only screen and (max-width: 980px) {
+
+    body.workspace-home
+    .workspace-home-navbar-gap {
+        height: 22px;
+        min-height: 22px;
+    }
+
+    body.workspace-home
+    .workspace-home-main {
+        padding-top: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+
+    body.workspace-home
+    .workspace-home-navbar-gap {
+        height: 16px;
+        min-height: 16px;
+    }
+}
+
+
+/* ==========================================================================
+   V5.4.3 — ESPAÇO CORRETO ENTRE NAVBAR E FEATURE GRID
+   O respiro agora é aplicado diretamente no primeiro bloco visual da Home.
+   ========================================================================== */
+
+body.workspace-home
+.workspace-home-navbar-gap {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+}
+
+body.workspace-home
+.workspace-home-main {
+    padding-top: 0 !important;
+}
+
+body.workspace-home
+.workspace-home-feature-grid {
+    margin-top:
+        clamp(
+            22px,
+            1.7vw,
+            30px
+        ) !important;
+}
+
+@media only screen and (max-width: 980px) {
+    body.workspace-home
+    .workspace-home-feature-grid {
+        margin-top: 18px !important;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    body.workspace-home
+    .workspace-home-feature-grid {
+        margin-top: 14px !important;
+    }
+}

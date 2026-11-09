@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Delivery</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Entregas</span>
+                <h1>Delivery</h1>
+                <p>Acompanhe cliente, telefone, endereço, pagamento, entregador e status da entrega.</p>
+            </div>
+            <a class="pedidos-secondary" href="{% url 'pedidos' %}">Ver pedidos</a>
+        </section>
+
+        <section class="operacao-grid">
+            {% for pedido in pedidos %}
+                <article class="operacao-card">
+                    <header>
+                        <div>
+                            <span>{{ pedido.get_status_display }}</span>
+                            <strong>{{ pedido.codigo }}</strong>
+                            <small>{{ pedido.cliente.nome }} · {{ pedido.cliente.telefone|default:"Sem telefone" }}</small>
+                        </div>
+                        <a href="{% url 'pedido_detalhe' pedido.id %}">Abrir</a>
+                    </header>
+                    <div class="delivery-info">
+                        <p><b>Endereco:</b> {{ pedido.endereco_entrega|default:"Retirada ou nao informado" }}</p>
+                        <p><b>Total:</b> R$ {{ pedido.total|floatformat:2 }}</p>
+                        <p><b>Pagamento:</b> {{ pedido.get_forma_pagamento_display }}</p>
+                        <p><b>Entregador:</b> {{ pedido.entregador|default:"Nao atribuido" }}</p>
+                    </div>
+                    <form method="post" action="{% url 'pedido_atualizar_status' pedido.id %}">
+                        {% csrf_token %}
+                        {% if pedido.status == "pronto" %}
+                            <input type="hidden" name="status" value="em_entrega">
+                            <button class="pedidos-primary" type="submit">Saiu para entrega</button>
+                        {% elif pedido.status == "em_entrega" %}
+                            <input type="hidden" name="status" value="entregue">
+                            <button class="pedidos-primary" type="submit">Marcar entregue</button>
+                        {% else %}
+                            <input type="hidden" name="status" value="pronto">
+                            <button class="pedidos-secondary" type="submit">Marcar pronto</button>
+                        {% endif %}
+                    </form>
+                </article>
+            {% empty %}
+                <div class="pedidos-empty produtos-empty">Nenhuma entrega em andamento.</div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

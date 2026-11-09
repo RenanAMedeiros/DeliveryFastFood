@@ -1,0 +1,1158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+{% include "components/_head.html" %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/style_meus_envios_producao.css' %}?v=2.17.0"
+>
+
+<style>
+    /*
+     * Destaque temporário do envio recém-criado.
+     * Duração padrão: 5 minutos.
+     */
+    .qore-history-row.qore-history-new-entry > td {
+        animation:
+            qoreHistoryNewEntryHighlight
+            var(--qore-history-highlight-duration, 300000ms)
+            ease-out
+            both;
+    }
+
+    .qore-history-row.qore-history-new-entry > td:first-child {
+        box-shadow:
+            inset 4px 0 0 var(--ws-primary, #2563EB);
+    }
+
+    @keyframes qoreHistoryNewEntryHighlight {
+        0%,
+        72% {
+            background-color: var(--ws-primary-soft, #EFF6FF);
+        }
+
+        100% {
+            background-color: transparent;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .qore-history-row.qore-history-new-entry > td {
+            animation: none;
+            background-color: var(--ws-primary-soft, #EFF6FF);
+        }
+    }
+</style>
+
+<body class="qore-production-page qore-production-history-page ws-app">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="qore-production-main ws-main">
+        <div class="qore-production-shell ws-page">
+
+            <header class="qore-page-header">
+                <div class="qore-page-header-main">
+                    <a
+                        href="{% url 'form_requisicao_metas' %}"
+                        class="qore-page-back"
+                        aria-label="Voltar para envio de produção"
+                        title="Voltar para envio de produção">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    </a>
+
+                    <div class="qore-page-header-copy">
+                        <span class="qore-page-eyebrow">
+                            Produção e controles
+                        </span>
+
+                        <h1>Meus envios de produção</h1>
+
+                        <p>
+                            Consulte os envios vinculados às carteiras
+                            disponíveis para o seu usuário. Clique em uma linha
+                            para abrir o formulário preenchido ao lado.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="qore-page-header-badge">
+                    <span
+                        class="qore-page-header-badge-icon"
+                        aria-hidden="true">
+                        <i class="fa fa-history"></i>
+                    </span>
+
+                    <div>
+                        <strong>Workspace Qore</strong>
+                        <small>
+                            Histórico e consulta dos envios de produção.
+                        </small>
+                    </div>
+                </div>
+            </header>
+
+
+            <section
+                class="qore-history-summary ws-kpi-grid"
+                aria-label="Resumo dos envios">
+
+                <article
+                    class="qore-history-summary-card ws-kpi-card qore-history-summary-card--tooltip"
+                    tabindex="0"
+                    data-current-month="{{ resumo_envios.mes_atual }}"
+                    aria-describedby="historyTooltipTotalEnvios">
+                    <span
+                        class="qore-history-summary-icon"
+                        aria-hidden="true">
+                        <svg
+                            class="qore-paper-plane-svg"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            focusable="false">
+                            <path d="M22 2 11 13"></path>
+                            <path d="M22 2 15 22 11 13 2 9 22 2Z"></path>
+                        </svg>
+                    </span>
+
+                    <div class="qore-history-summary-content">
+                        <span class="qore-history-summary-label">
+                            Total de envios
+                        </span>
+
+                        <strong
+                            class="qore-history-summary-value"
+                            id="historyCardTotalEnvios">
+                            {{ resumo_envios.total_envios }}
+                        </strong>
+
+                        <small class="qore-history-summary-help">
+                            {{ resumo_envios.mes_atual }} • mês atual
+                        </small>
+                    </div>
+
+                    <span class="qore-history-summary-info" aria-hidden="true">
+                        <i class="fa fa-info-circle"></i>
+                    </span>
+
+                    <div
+                        class="qore-history-summary-tooltip qore-history-summary-tooltip--activity-only"
+                        id="historyTooltipTotalEnvios"
+                        role="tooltip">
+                        <div class="qore-history-monthly-activity qore-history-monthly-activity--only">
+                            <div class="qore-history-monthly-activity-head">
+                                <div>
+                                    <strong>Envios por dia</strong>
+                                    <span>Distribuição dos envios ao longo de {{ resumo_envios.mes_atual }}</span>
+                                </div>
+                                <small id="historyMonthlySendCaption">—</small>
+                            </div>
+
+                            <div
+                                class="qore-history-monthly-bars"
+                                id="historyMonthlySendBars"
+                                role="img"
+                                aria-label="Distribuição dos envios por dia no mês atual">
+                            </div>
+
+                            <div class="qore-history-monthly-axis" aria-hidden="true">
+                                <span>1</span>
+                                <span>15</span>
+                                <span id="historyMonthlyLastDay">31</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="qore-history-summary-card ws-kpi-card">
+                    <span
+                        class="qore-history-summary-icon"
+                        aria-hidden="true">
+                        <i class="fa fa-calendar-check-o"></i>
+                    </span>
+
+                    <div class="qore-history-summary-content">
+                        <span class="qore-history-summary-label">
+                            Última produção
+                        </span>
+
+                        <strong
+                            class="qore-history-summary-value qore-history-summary-value--date"
+                            id="historyCardUltimaProducao">
+                            {% if resumo_envios.ultima_producao %}
+                                {{ resumo_envios.ultima_producao|date:"d/m/Y" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </strong>
+
+                        <small class="qore-history-summary-help">
+                            Maior data após os filtros
+                        </small>
+                    </div>
+                </article>
+
+
+                <article
+                    class="qore-history-summary-card ws-kpi-card qore-history-summary-card--tooltip"
+                    tabindex="0"
+                    aria-describedby="historyTooltipTotalProducao">
+                    <span
+                        class="qore-history-summary-icon"
+                        aria-hidden="true">
+                        <i class="fa fa-line-chart"></i>
+                    </span>
+
+                    <div class="qore-history-summary-content">
+                        <span class="qore-history-summary-label">
+                            Total produção
+                        </span>
+
+                        <strong
+                            class="qore-history-summary-value qore-history-summary-value--money"
+                            id="historyCardTotalProducao">
+                            {{ resumo_envios.total_producao }}
+                        </strong>
+
+                        <small class="qore-history-summary-help">
+                            {{ resumo_envios.mes_atual }} • mês atual
+                        </small>
+                    </div>
+
+                    <span class="qore-history-summary-info" aria-hidden="true">
+                        <i class="fa fa-info-circle"></i>
+                    </span>
+
+                    <div
+                        class="qore-history-summary-tooltip"
+                        id="historyTooltipTotalProducao"
+                        role="tooltip">
+                        <div class="qore-history-summary-tooltip-head">
+                            <strong>Top 4 do mês • Produção</strong>
+                            <span>Maiores volumes de {{ resumo_envios.mes_atual }}</span>
+                        </div>
+
+                        <div class="qore-history-summary-tooltip-grid">
+                            <section>
+                                <span class="qore-history-summary-tooltip-title">Carteiras</span>
+                                <ol>
+                                    {% for item in resumo_envios.top_producao_carteiras %}
+                                        <li>
+                                            <span>{{ item.nome }}</span>
+                                            <strong>{{ item.valor }}</strong>
+                                        </li>
+                                    {% empty %}
+                                        <li class="is-empty">Sem produção no mês.</li>
+                                    {% endfor %}
+                                </ol>
+                            </section>
+
+                            <section>
+                                <span class="qore-history-summary-tooltip-title">Empresas</span>
+                                <ol>
+                                    {% for item in resumo_envios.top_producao_empresas %}
+                                        <li>
+                                            <span>{{ item.nome }}</span>
+                                            <strong>{{ item.valor }}</strong>
+                                        </li>
+                                    {% empty %}
+                                        <li class="is-empty">Sem produção no mês.</li>
+                                    {% endfor %}
+                                </ol>
+                            </section>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article
+                    class="qore-history-summary-card ws-kpi-card qore-history-summary-card--tooltip"
+                    tabindex="0"
+                    aria-describedby="historyTooltipTotalPagamento">
+                    <span
+                        class="qore-history-summary-icon"
+                        aria-hidden="true">
+                        <i class="fa fa-money"></i>
+                    </span>
+
+                    <div class="qore-history-summary-content">
+                        <span class="qore-history-summary-label">
+                            Total pagamento
+                        </span>
+
+                        <strong
+                            class="qore-history-summary-value qore-history-summary-value--money"
+                            id="historyCardTotalPagamento">
+                            {{ resumo_envios.total_pagamento }}
+                        </strong>
+
+                        <small class="qore-history-summary-help">
+                            {{ resumo_envios.mes_atual }} • mês atual
+                        </small>
+                    </div>
+
+                    <span class="qore-history-summary-info" aria-hidden="true">
+                        <i class="fa fa-info-circle"></i>
+                    </span>
+
+                    <div
+                        class="qore-history-summary-tooltip"
+                        id="historyTooltipTotalPagamento"
+                        role="tooltip">
+                        <div class="qore-history-summary-tooltip-head">
+                            <strong>Top 4 do mês • Pagamento</strong>
+                            <span>Maiores pagamentos de {{ resumo_envios.mes_atual }}</span>
+                        </div>
+
+                        <div class="qore-history-summary-tooltip-grid">
+                            <section>
+                                <span class="qore-history-summary-tooltip-title">Carteiras</span>
+                                <ol>
+                                    {% for item in resumo_envios.top_pagamento_carteiras %}
+                                        <li>
+                                            <span>{{ item.nome }}</span>
+                                            <strong>{{ item.valor }}</strong>
+                                        </li>
+                                    {% empty %}
+                                        <li class="is-empty">Sem pagamento no mês.</li>
+                                    {% endfor %}
+                                </ol>
+                            </section>
+
+                            <section>
+                                <span class="qore-history-summary-tooltip-title">Empresas</span>
+                                <ol>
+                                    {% for item in resumo_envios.top_pagamento_empresas %}
+                                        <li>
+                                            <span>{{ item.nome }}</span>
+                                            <strong>{{ item.valor }}</strong>
+                                        </li>
+                                    {% empty %}
+                                        <li class="is-empty">Sem pagamento no mês.</li>
+                                    {% endfor %}
+                                </ol>
+                            </section>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+
+            <section
+                class="qore-history-filters ws-panel ws-filter-panel"
+                aria-labelledby="historyFiltersTitle">
+
+                <header class="qore-history-filters-header ws-panel__header">
+                    <div>
+                        <span class="qore-history-card-kicker">
+                            Filtros
+                        </span>
+                        <h2 id="historyFiltersTitle">
+                            Filtrar envios
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="qore-history-filter-clear ws-button ws-button--secondary ws-button--sm"
+                        id="historyClearFilters">
+                        <i class="fa fa-eraser" aria-hidden="true"></i>
+                        Limpar filtros
+                    </button>
+                </header>
+
+                <div class="qore-history-filter-grid ws-filter-grid">
+
+                    <label class="qore-history-filter-field ws-filter-field">
+                        <span>Data inicial</span>
+                        <input
+                            type="date"
+                            id="historyFilterDateStart" class="ws-filter-control">
+                    </label>
+
+                    <label class="qore-history-filter-field ws-filter-field">
+                        <span>Data final</span>
+                        <input
+                            type="date"
+                            id="historyFilterDateEnd" class="ws-filter-control">
+                    </label>
+
+                    <label class="qore-history-filter-field ws-filter-field">
+                        <span>Superintendente</span>
+                        <select id="historyFilterSuperintendent" class="ws-filter-control">
+                            <option value="">
+                                Todos
+                            </option>
+
+                            {% for item in filtros_superintendentes %}
+                                <option value="{{ item.chave }}">
+                                    {{ item.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label class="qore-history-filter-field ws-filter-field">
+                        <span>Enviado por</span>
+                        <select id="historyFilterSender" class="ws-filter-control">
+                            <option value="">
+                                Todos
+                            </option>
+
+                            {% for item in filtros_enviados_por %}
+                                <option value="{{ item.chave }}">
+                                    {{ item.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label class="qore-history-filter-field ws-filter-field">
+                        <span>Tipo de envio</span>
+                        <select id="historyFilterType" class="ws-filter-control">
+                            <option value="">
+                                Todos
+                            </option>
+                            {% for item in filtros_tipos_envio %}
+                                <option value="{{ item.chave }}">
+                                    {{ item.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label class="qore-history-filter-field qore-history-filter-field--search ws-filter-field">
+                        <span>Carteira</span>
+
+                        <div class="qore-history-filter-search-wrap">
+
+                            <input
+                                type="search"
+                                id="historyFilterWallet" class="ws-filter-control"
+                                placeholder="Buscar pelo nome da carteira"
+                                autocomplete="off">
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+
+            <section class="qore-history-card ws-panel ws-table-panel">
+                <header class="qore-history-card-header ws-panel__header">
+                    <div>
+                        <span class="qore-history-card-kicker">
+                            Histórico
+                        </span>
+
+                        <h2>Envios registrados</h2>
+
+                        <p>
+                            Cada linha representa um envio registrado,
+                            seja de produção ou de meta.
+                        </p>
+                    </div>
+
+                    <a
+                        href="#nova-solicitacao"
+                        class="qore-history-new-button task-open-request ws-button ws-button--primary ws-button--sm"
+                        id="historyNewRequestButton"
+                        role="button"
+                        aria-haspopup="dialog"
+                        aria-controls="tfNewRequestDialog">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <span>Novo envio</span>
+                    </a>
+                </header>
+
+
+
+                <div
+                    class="qore-history-table-scrollbar"
+                    id="historyTableHorizontalScroll"
+                    aria-label="Rolagem horizontal da tabela"
+                    hidden>
+                    <div
+                        class="qore-history-table-scrollbar-spacer"
+                        id="historyTableHorizontalScrollSpacer"
+                        aria-hidden="true">
+                    </div>
+                </div>
+
+                <div class="qore-history-table-wrapper ws-table-region ws-table-scroll">
+                    <table class="qore-history-table ws-table--wide">
+                        <thead>
+                            <tr>
+                                <th class="qore-history-col-date">
+                                    Referência
+                                </th>
+
+                                <th class="qore-history-col-type">
+                                    Tipo
+                                </th>
+
+                                <th class="qore-history-col-superintendent">
+                                    Superintendente
+                                </th>
+
+                                <th class="qore-history-col-sender">
+                                    Enviado por
+                                </th>
+
+                                <th class="qore-history-col-wallets">
+                                    Carteiras
+                                </th>
+
+                                <th>Início do preenchimento</th>
+                                <th>Fim do envio</th>
+                                <th>Última atualização</th>
+
+                                <th class="qore-history-col-status">
+                                    Situação
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyTableBody">
+                            {% for envio in envios %}
+                                <tr
+                                    class="qore-history-row qore-history-row-clickable"
+                                    tabindex="0"
+                                    role="button"
+                                    aria-label="Abrir {{ envio.tipo_envio|lower }} de {{ envio.data_producao|date:'d/m/Y' }} - {{ envio.superintendente_nome }} - enviado por {{ envio.enviado_por_nome }}"
+                                    {% if envio.tipo_envio_chave == 'envio-metas' %}
+                                        data-detail-url="{% url 'detalhe_envio_metas' envio.envio_meta_id %}"
+                                    {% else %}
+                                        data-detail-url="{% url 'detalhe_envio_producao' envio.data_producao|date:'Y-m-d' envio.superintendente_chave envio.enviado_por_chave %}"
+                                    {% endif %}
+                                    data-detail-label="{{ envio.tipo_envio }} — {{ envio.data_producao|date:'d/m/Y' }} — {{ envio.superintendente_nome }} — {{ envio.enviado_por_nome }}"
+                                    data-date="{{ envio.data_producao|date:'Y-m-d' }}"
+                                    data-production-date="{{ envio.data_producao|date:'d/m/Y' }}"
+                                    data-send-date="{% if envio.fim_envio %}{{ envio.fim_envio|date:'d/m/Y H:i' }}{% elif envio.inicio_envio %}{{ envio.inicio_envio|date:'d/m/Y H:i' }}{% else %}-{% endif %}"
+                                    data-start-datetime="{% if envio.inicio_envio %}{{ envio.inicio_envio|date:'d/m/Y H:i:s' }}{% else %}-{% endif %}"
+                                    data-end-datetime="{% if envio.fim_envio %}{{ envio.fim_envio|date:'d/m/Y H:i:s' }}{% else %}-{% endif %}"
+                                    data-updated-datetime="{% if envio.ultima_atualizacao %}{{ envio.ultima_atualizacao|date:'d/m/Y H:i:s' }}{% else %}-{% endif %}"
+                                    data-superintendent="{{ envio.superintendentes_chaves|default:envio.superintendente_chave }}"
+                                    data-superintendent-name="{{ envio.superintendente_nome }}"
+                                    data-sender="{{ envio.enviado_por_chave }}"
+                                    data-sender-name="{{ envio.enviado_por_nome }}"
+                                    data-total-wallets="{{ envio.quantidade_carteiras }}"
+                                    data-type="{{ envio.tipo_envio_chave }}"
+                                    {% if envio.tipo_envio_chave == 'envio-metas' %}
+                                        data-envio-meta-id="{{ envio.envio_meta_id }}"
+                                        data-envio-meta-ids="{{ envio.envio_meta_ids_chave }}"
+                                    {% else %}
+                                        data-envio-producao-chave="{{ envio.envio_producao_chave }}"
+                                    {% endif %}
+                                    data-wallets-search="{{ envio.carteiras_busca }}"
+                                    data-total-producao="{{ envio.total_producao_raw }}"
+                                    data-total-pagamento="{{ envio.total_pagamento_raw }}">
+
+                                    <td>
+                                        <div class="qore-history-date-cell">
+                                            <span
+                                                class="qore-history-date-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>
+                                                    {{ envio.data_producao|date:"d/m/Y" }}
+                                                </strong>
+                                                <small>
+                                                    {% if envio.tipo_envio_chave == 'envio-metas' %}
+                                                        Competência da meta
+                                                    {% else %}
+                                                        Data da produção
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+
+                                    <td class="qore-history-type-cell">
+                                        <span class="qore-history-type-badge">
+                                            <svg
+                                                class="qore-paper-plane-svg qore-paper-plane-svg--badge"
+                                                viewBox="0 0 24 24"
+                                                aria-hidden="true"
+                                                focusable="false">
+                                                <path d="M22 2 11 13"></path>
+                                                <path d="M22 2 15 22 11 13 2 9 22 2Z"></path>
+                                            </svg>
+                                            {{ envio.tipo_envio }}
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+                                        <div class="qore-history-superintendent">
+                                            <span
+                                                class="qore-history-superintendent-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>
+                                                    {{ envio.superintendente_nome }}
+                                                </strong>
+                                                <small>
+                                                    Superintendente
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <div class="qore-history-sender">
+                                            <span
+                                                class="qore-history-sender-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-user"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>
+                                                    {{ envio.enviado_por_nome }}
+                                                </strong>
+                                                <small>
+                                                    Usuário que enviou
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <span
+                                            class="qore-history-wallet-badge"
+                                            data-wallets="{{ envio.carteiras_tooltip }}"
+                                            tabindex="0">
+
+                                            <i
+                                                class="fa fa-briefcase"
+                                                aria-hidden="true"></i>
+
+                                            <strong>
+                                                {{ envio.quantidade_carteiras }}
+                                            </strong>
+
+                                            <span>
+                                                {% if envio.quantidade_carteiras == 1 %}
+                                                    carteira
+                                                {% else %}
+                                                    carteiras
+                                                {% endif %}
+                                            </span>
+
+                                            <i
+                                                class="fa fa-info-circle qore-wallet-info-icon"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+                                        <div class="qore-history-datetime">
+                                            {% if envio.inicio_envio %}
+                                                <strong>
+                                                    {{ envio.inicio_envio|date:"d/m/Y" }}
+                                                </strong>
+                                                <small>
+                                                    {{ envio.inicio_envio|date:"H:i:s" }}
+                                                </small>
+                                            {% else %}
+                                                <span>-</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <div class="qore-history-datetime">
+                                            {% if envio.fim_envio %}
+                                                <strong>
+                                                    {{ envio.fim_envio|date:"d/m/Y" }}
+                                                </strong>
+                                                <small>
+                                                    {{ envio.fim_envio|date:"H:i:s" }}
+                                                </small>
+                                            {% else %}
+                                                <span>-</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <div class="qore-history-datetime">
+                                            {% if envio.ultima_atualizacao %}
+                                                <strong>
+                                                    {{ envio.ultima_atualizacao|date:"d/m/Y" }}
+                                                </strong>
+                                                <small>
+                                                    {{ envio.ultima_atualizacao|date:"H:i:s" }}
+                                                </small>
+                                            {% else %}
+                                                <span>-</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+
+                                    <td class="qore-history-status-cell">
+                                        <span class="qore-history-status">
+                                            <span
+                                                class="qore-history-status-dot"
+                                                aria-hidden="true"></span>
+                                            Registrado
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            {% empty %}
+                                <tr
+                                    class="qore-history-server-empty">
+                                    <td
+                                        colspan="9"
+                                        class="qore-history-empty-cell">
+
+                                        <div class="qore-history-empty">
+                                            <span
+                                                class="qore-history-empty-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-inbox"></i>
+                                            </span>
+
+                                            <strong>
+                                                Nenhuma produção encontrada
+                                            </strong>
+
+                                            <p>
+                                                Quando houver envios de produção
+                                                vinculados às suas carteiras,
+                                                eles aparecerão nesta página.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            {% if envios %}
+                                <tr
+                                    class="qore-history-filter-empty"
+                                    id="historyFilterEmpty"
+                                    hidden>
+
+                                    <td
+                                        colspan="9"
+                                        class="qore-history-empty-cell">
+
+                                        <div class="qore-history-empty qore-history-empty--filter">
+                                            <span
+                                                class="qore-history-empty-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-filter"></i>
+                                            </span>
+
+                                            <strong>
+                                                Nenhum envio corresponde aos filtros
+                                            </strong>
+
+                                            <p>
+                                                Altere ou limpe os filtros para
+                                                visualizar outros registros.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div
+                    class="qore-history-pagination ws-table-footer"
+                    id="historyPagination"
+                    aria-label="Paginação dos envios">
+
+                    <div class="qore-history-pagination-info">
+                        <span id="historyPaginationSummary">
+                            0 registros
+                        </span>
+
+                        <span class="qore-history-page-size">
+                            <i
+                                class="fa fa-list"
+                                aria-hidden="true"></i>
+                            Máximo de 20 envios por página
+                        </span>
+                    </div>
+
+                    <div class="qore-history-pagination-controls">
+
+                        <button
+                            type="button"
+                            class="qore-history-page-button qore-history-page-nav"
+                            id="historyPagePrevious"
+                            aria-label="Página anterior"
+                            title="Página anterior"
+                            disabled>
+                            <i
+                                class="fa fa-angle-left"
+                                aria-hidden="true"></i>
+                        </button>
+
+                        <div
+                            class="qore-history-page-numbers"
+                            id="historyPageNumbers"
+                            aria-label="Páginas">
+                        </div>
+
+                        <button
+                            type="button"
+                            class="qore-history-page-button qore-history-page-nav"
+                            id="historyPageNext"
+                            aria-label="Próxima página"
+                            title="Próxima página"
+                            disabled>
+                            <i
+                                class="fa fa-angle-right"
+                                aria-hidden="true"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+                <footer class="qore-history-card-footer">
+                    <div>
+                        <i
+                            class="fa fa-database"
+                            aria-hidden="true"></i>
+
+                        <span>
+                            Os horários reais de início/fim passam a ser
+                            registrados nos novos envios. Registros antigos
+                            utilizam criação/atualização como referência.
+                        </span>
+                    </div>
+                </footer>
+            </section>
+        </div>
+    </main>
+
+
+    <div
+        class="qore-detail-backdrop"
+        id="productionDetailBackdrop"
+        aria-hidden="true">
+    </div>
+
+    <aside
+        class="qore-detail-panel qore-detail-panel--overlay"
+        id="productionDetailPanel"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        aria-label="Detalhes do envio">
+
+        <header class="qore-detail-panel-header">
+            <div class="qore-detail-panel-title">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                <strong id="productionDetailTitle">
+                    Consulta do envio
+                </strong>
+            </div>
+
+            <button
+                type="button"
+                class="qore-detail-close"
+                id="productionDetailClose"
+                aria-label="Fechar detalhes"
+                title="Fechar">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <div class="qore-detail-frame-wrap">
+            <div
+                class="qore-detail-loading"
+                id="productionDetailLoading">
+                <i
+                    class="fa fa-circle-o-notch fa-spin"
+                    aria-hidden="true"></i>
+                <span>Carregando formulário enviado...</span>
+            </div>
+
+            <iframe
+                id="productionDetailFrame"
+                class="qore-detail-frame"
+                title="Formulário enviado"
+                src="about:blank">
+            </iframe>
+        </div>
+    </aside>
+
+
+    <div
+        class="qore-wallet-hover-card"
+        id="historyWalletHoverCard"
+        role="tooltip"
+        aria-hidden="true">
+    </div>
+
+
+    {% include "components/_footer.html" %}
+
+    <script
+        src="{% static 'js/meus_envios_producao.js' %}?v=2.16.0"
+        defer>
+    </script>
+
+    <script>
+        (function () {
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+                    const params =
+                        new URLSearchParams(
+                            window.location.search
+                        );
+
+                    const envioMetaId =
+                        params.get(
+                            "destacar_meta"
+                        );
+
+                    const envioProducaoChave =
+                        params.get(
+                            "destacar_producao"
+                        );
+
+                    const requestedHighlightDuration =
+                        Number.parseInt(
+                            params.get(
+                                "destaque_duracao_ms"
+                            )
+                            || "300000",
+                            10
+                        );
+
+                    const highlightDuration =
+                        Number.isFinite(
+                            requestedHighlightDuration
+                        )
+                            ? Math.min(
+                                300000,
+                                Math.max(
+                                    5000,
+                                    requestedHighlightDuration
+                                )
+                            )
+                            : 300000;
+
+                    if (
+                        !envioMetaId
+                        && !envioProducaoChave
+                    ) {
+                        return;
+                    }
+
+                    /*
+                     * Aguarda a paginação e filtros atuais
+                     * terminarem a inicialização.
+                     */
+                    window.setTimeout(
+                        function () {
+                            let row = null;
+
+                            if (envioMetaId) {
+                                row = Array.from(
+                                    document.querySelectorAll(
+                                        "[data-envio-meta-id]"
+                                    )
+                                ).find(
+                                    function (item) {
+                                        const ids = String(
+                                            item.dataset.envioMetaIds ||
+                                            item.dataset.envioMetaId ||
+                                            ""
+                                        )
+                                            .split("|")
+                                            .filter(Boolean);
+
+                                        return ids.includes(
+                                            String(envioMetaId)
+                                        );
+                                    }
+                                );
+                            }
+
+                            if (
+                                !row
+                                && envioProducaoChave
+                            ) {
+                                row = Array.from(
+                                    document.querySelectorAll(
+                                        "[data-envio-producao-chave]"
+                                    )
+                                ).find(
+                                    function (item) {
+                                        return (
+                                            item.dataset.envioProducaoChave ===
+                                            String(
+                                                envioProducaoChave
+                                            )
+                                        );
+                                    }
+                                );
+                            }
+
+                            if (!row) {
+                                return;
+                            }
+
+                            const tableBody =
+                                document.getElementById(
+                                    "historyTableBody"
+                                );
+
+                            if (tableBody) {
+                                const primeiraLinha =
+                                    tableBody.querySelector(
+                                        ".qore-history-row"
+                                    );
+
+                                if (
+                                    primeiraLinha
+                                    && primeiraLinha !== row
+                                ) {
+                                    tableBody.insertBefore(
+                                        row,
+                                        primeiraLinha
+                                    );
+                                }
+                            }
+
+                            /*
+                             * O envio recém-criado permanece no topo.
+                             * Somente o destaque visual é temporário.
+                             */
+                            row.hidden = false;
+                            row.style.display =
+                                "table-row";
+
+                            row.style.setProperty(
+                                "--qore-history-highlight-duration",
+                                `${highlightDuration}ms`
+                            );
+
+                            row.classList.add(
+                                "qore-history-new-entry"
+                            );
+
+                            /*
+                             * Mantém o envio recém-criado totalmente visível
+                             * abaixo do cabeçalho sticky da tabela.
+                             *
+                             * scrollIntoView({ block: "start" }) fazia a linha
+                             * encostar no topo do container e o <thead> sticky
+                             * acabava cobrindo o conteúdo da primeira linha.
+                             */
+                            const tableWrapper =
+                                row.closest(
+                                    ".qore-history-table-wrapper"
+                                );
+
+                            const stickyHeader =
+                                tableWrapper
+                                    ? tableWrapper.querySelector(
+                                        "thead"
+                                    )
+                                    : null;
+
+                            if (tableWrapper && stickyHeader) {
+                                const wrapperRect =
+                                    tableWrapper.getBoundingClientRect();
+
+                                const rowRect =
+                                    row.getBoundingClientRect();
+
+                                const headerHeight =
+                                    stickyHeader.getBoundingClientRect()
+                                        .height;
+
+                                const targetScrollTop =
+                                    tableWrapper.scrollTop
+                                    + (
+                                        rowRect.top
+                                        - wrapperRect.top
+                                    )
+                                    - headerHeight
+                                    - 8;
+
+                                tableWrapper.scrollTo({
+                                    top: Math.max(
+                                        0,
+                                        targetScrollTop
+                                    ),
+                                    behavior: "smooth"
+                                });
+                            } else {
+                                row.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "center"
+                                });
+                            }
+
+                            window.setTimeout(
+                                function () {
+                                    row.classList.remove(
+                                        "qore-history-new-entry"
+                                    );
+                                },
+                                highlightDuration
+                            );
+
+                            /*
+                             * Impede que F5 repita o destaque.
+                             */
+                            const cleanUrl =
+                                new URL(
+                                    window.location.href
+                                );
+
+                            cleanUrl.searchParams.delete(
+                                "destacar_meta"
+                            );
+                            cleanUrl.searchParams.delete(
+                                "destacar_producao"
+                            );
+                            cleanUrl.searchParams.delete(
+                                "destaque_duracao_ms"
+                            );
+
+                            window.history.replaceState(
+                                {},
+                                document.title,
+                                cleanUrl.pathname +
+                                cleanUrl.search +
+                                cleanUrl.hash
+                            );
+                        },
+                        180
+                    );
+                }
+            );
+        })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Filter Panel
+Arquivo: components/ui/_filter_panel.html
+
+Objetivo:
+Padronizar a área de filtros do Workspace sem alterar a lógica dos campos.
+
+Parâmetros:
+- filter_title               opcional (default: "Filtros")
+- filter_description         opcional
+- filter_dom_id              opcional
+- filter_extra_class         opcional
+- filter_badge               opcional
+- filter_content             conteúdo HTML já renderizado com os campos
+- filter_actions_html        ações já renderizadas
+- filter_compact             opcional (True/False)
+
+Estrutura recomendada para filter_content:
+
+<div class="ws-filter-grid">
+    <div class="ws-filter-field">
+        <label class="ws-filter-label" for="campo">Campo</label>
+        <input id="campo" class="ws-filter-control" ...>
+    </div>
+</div>
+
+IMPORTANTE:
+- Não renomeia IDs, names, data-* ou classes funcionais.
+- Os controles existentes podem receber as classes ws-filter-* adicionais.
+- Select2, máscaras, calendários e validações devem ser preservados.
+===============================================================================
+{% endcomment %}
+
+<section
+    {% if filter_dom_id %}id="{{ filter_dom_id }}"{% endif %}
+    class="ws-panel ws-filter-panel{% if filter_compact %} ws-panel--compact{% endif %}{% if filter_extra_class %} {{ filter_extra_class }}{% endif %}"
+>
+
+    <header class="ws-panel__header ws-filter-panel__header">
+
+        <div class="ws-panel__heading">
+
+            <span class="ws-panel__icon ws-filter-panel__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                    <path
+                        d="M4 5H20L14 12V18L10 20V12L4 5Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </span>
+
+            <div class="ws-panel__heading-copy">
+
+                <div class="ws-panel__title-row">
+                    <h2 class="ws-panel__title">
+                        {{ filter_title|default:"Filtros" }}
+                    </h2>
+
+                    {% if filter_badge %}
+                        <span class="ws-panel__badge">
+                            {{ filter_badge }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if filter_description %}
+                    <p class="ws-panel__description">
+                        {{ filter_description }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% if filter_actions_html %}
+            <div class="ws-panel__actions ws-filter-panel__header-actions">
+                {{ filter_actions_html|safe }}
+            </div>
+        {% endif %}
+
+    </header>
+
+    <div class="ws-panel__body ws-filter-panel__body">
+        {{ filter_content|default:""|safe }}
+    </div>
+
+</section>

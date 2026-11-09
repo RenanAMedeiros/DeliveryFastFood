@@ -1,0 +1,145 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+{% include "components/navbar/_navbar.html" %}
+{% include "components/navbar/_notificacao.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <link rel="stylesheet" href="{% static 'css/style_documents.css' %}?v=1.0">
+    <!-- Link para seu arquivo CSS para estilos -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .form-container {
+            border: 2px solid #dee2e6;
+            /* Cor da borda */
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            padding: 20px;
+            /* Espaçamento interno */
+            background-color: #f8f9fa;
+            /* Cor de fundo */
+            margin-top: 20px;
+            /* Espaçamento superior */
+        }
+    </style>
+</head>
+
+<body>
+
+    
+    
+        <script>
+            let subMenu = document.getElementById('subMenu');
+
+            function toggleMenu() {
+                subMenu.classList.toggle('open-menu');
+            }
+        </script>
+    </header>
+
+    <div class="container mt-5 form-container">
+        <h2>Filtros para Relatórios</h2>
+        <form>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="empresa">Empresa</label>
+                        <select class="form-control" id="empresa">
+                            <option value="" disabled selected>Selecione a Empresa</option>>
+                            <option value="AUTOMAKERS">AUTOMAKERS</option>
+                            <option value="CARS2YOU">CARS2YOU</option>
+                            <option value="DEALERS CLUB">DEALERS CLUB</option>
+                            <option value="HUBSGA MATRIZ">HUBSGA MATRIZ</option>
+                            <option value="MAIS QUE CLIENTE">MAIS QUE CLIENTE</option>
+                            <option value="WIN LEILOES - MATRIZ">WIN LEILOES - MATRIZ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tipoSolicitacao">Tipo de Solicitação</label>
+                        <select class="form-control" id="tipoSolicitacao">
+                            <option>Selecione</option>
+                            <option value="AUTOMAKERS">Solicitação Abertura de Vagas</option>
+                            <option value="AUTOMAKERS">Solicitação Cálculo de Férias</option>
+                            <option value="AUTOMAKERS">Solicitação Cálculo de Treinamento</option>
+                            <option value="AUTOMAKERS">Solicitação de Rateio Prestadores</option>
+                            <option value="AUTOMAKERS">Solicitação Comissôes Prestadoress</option>
+                            <option value="AUTOMAKERS">Solicitação Adiant & Reembolso Colaborador</option>
+                            <option value="AUTOMAKERS">Solicitação de pagamento</option>
+                            <option value="AUTOMAKERS">Solicitação Adiantiantamento Fornecedoress</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status">
+                            <option>Selecione</option>
+                            <option>Solicitado</option>
+                            <option>Aprovado</option>
+                            <option>Rejeitado</option>
+                            <option>Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nivel">Nível</label>
+                        <select class="form-control" id="nivel">
+                            <option>Selecione</option>
+                            <option>Nível 1</option>
+                            <option>Nível 2</option>
+                            <option>Nível 3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gestor">Gestor</label>
+                        <select class="form-control" id="gestor">
+                            <option>Selecione</option>
+                            <option>Jenaro</option>
+                            <option>Daniel</option>
+                            <option>Luciana</option>
+                            <option>Julio</option>
+                            <option>Emanoel</option>
+                            <option>Tunelis</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="pj">PJ</label>
+                        <select class="form-control" id="pj">
+                            <option>Selecione</option>
+                            <option>Sim</option>
+                            <option>Não</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-primary">Ver Relatório</button>
+                    <button type="button" class="btn btn-secondary">Exportar para CSV</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,4497 @@
+/* ==========================================================
+   TASKFLOW - CENTRAL DE CONFIGURAÇÕES
+   Arquivo: configuracoes.css
+========================================================== */
+
+/* ==========================================================
+   VARIÁVEIS GERAIS
+========================================================== */
+
+:root {
+    /*
+        Ajuste somente esta variável caso a altura conjunta
+        da navbar e do footer do seu projeto seja diferente.
+    */
+    --config-page-offset: 118px;
+
+    --config-primary: #4689F5;
+    --config-primary-hover: #3577EE;
+    --config-primary-soft: rgba(70, 137, 245, 0.10);
+    --config-primary-border: rgba(70, 137, 245, 0.24);
+
+    --config-danger: #d92d20;
+    --config-danger-hover: #b42318;
+    --config-danger-soft: rgba(217, 45, 32, 0.10);
+
+    --config-success: #12b76a;
+    --config-accent: #4689F5;
+    --config-accent-soft: rgba(70, 137, 245, 0.16);
+    --config-accent-border: rgba(70, 137, 245, 0.50);
+    --config-warning: #f79009;
+
+    --config-page-background: #f4f7fb;
+    --config-surface: #ffffff;
+    --config-surface-secondary: #f8fafc;
+    --config-surface-tertiary: #eef4fb;
+
+    --config-border: #dfe6f0;
+    --config-border-strong: #c9d3e1;
+
+    --config-text: #172033;
+    --config-text-secondary: #667085;
+    --config-text-muted: #98a2b3;
+
+    --config-input-background: #ffffff;
+    --config-input-readonly: #eef4fb;
+
+    --config-shadow:
+        0 8px 28px rgba(15, 23, 42, 0.08);
+
+    --config-radius-small: 8px;
+    --config-radius-medium: 12px;
+    --config-radius-large: 16px;
+
+    --config-transition: 180ms ease;
+}
+
+/* ==========================================================
+   TEMA AZUL-ESCURO GLOBAL DO TASKFLOW
+========================================================== */
+
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.dark-mode {
+    --config-primary: #6AA0F8;
+    --config-primary-hover: #A9C8FB;
+    --config-primary-soft: rgba(106, 160, 248, 0.14);
+    --config-primary-border: rgba(106, 160, 248, 0.40);
+
+    --config-success: #32d583;
+    --config-accent: #4689F5;
+    --config-accent-soft: rgba(70, 137, 245, 0.14);
+    --config-accent-border: rgba(70, 137, 245, 0.46);
+
+    --config-page-background: var(--tf-page-bg, #071124);
+    --config-surface: var(--tf-surface, #101c44);
+    --config-surface-secondary: var(--tf-surface-soft, #13224a);
+    --config-surface-tertiary: var(--tf-table-header, #172a63);
+
+    --config-border: var(--tf-border, #2b3f6d);
+    --config-border-strong: #3b5286;
+
+    --config-text: var(--tf-text, #f8fafc);
+    --config-text-secondary: #dbe7ff;
+    --config-text-muted: var(--tf-text-muted, #aebbd2);
+
+    --config-input-background: var(--tf-input-bg, #0b1735);
+    --config-input-readonly: #1b2a50;
+
+    --config-shadow: var(
+        --tf-shadow,
+        0 10px 30px rgba(0, 0, 0, 0.28)
+    );
+}
+
+/* ==========================================================
+   RESET ESPECÍFICO DA PÁGINA
+========================================================== */
+
+html,
+body.configuracoes-page {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body.configuracoes-page {
+    margin: 0;
+    background: var(--config-page-background);
+    color: var(--config-text);
+}
+
+.configuracoes-page *,
+.configuracoes-page *::before,
+.configuracoes-page *::after {
+    box-sizing: border-box;
+}
+
+.configuracoes-page button,
+.configuracoes-page input,
+.configuracoes-page select,
+.configuracoes-page textarea {
+    font-family: inherit;
+}
+
+.configuracoes-page button,
+.configuracoes-page label {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================================
+   CONTROLE DAS ABAS
+========================================================== */
+
+.config-tab-control {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.config-panel {
+    display: none;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    flex-direction: column;
+    animation: configFadeIn 180ms ease;
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-panel-account,
+#configAnotacoes:checked
+    ~ .config-layout
+    .config-panel-notes,
+#configSessoes:checked
+    ~ .config-layout
+    .config-panel-sessions,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-panel-preferences,
+#configSimulacao:checked
+    ~ .config-layout
+    .config-panel-simulation {
+    display: flex;
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account,
+#configAnotacoes:checked
+    ~ .config-layout
+    .config-nav-notes,
+#configSessoes:checked
+    ~ .config-layout
+    .config-nav-sessions,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences,
+#configSimulacao:checked
+    ~ .config-layout
+    .config-nav-simulation {
+    color: var(--config-primary);
+    border-color: var(--config-primary-border);
+    background: var(--config-primary-soft);
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account
+    .config-navigation-icon,
+#configAnotacoes:checked
+    ~ .config-layout
+    .config-nav-notes
+    .config-navigation-icon,
+#configSessoes:checked
+    ~ .config-layout
+    .config-nav-sessions
+    .config-navigation-icon,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-icon,
+#configSimulacao:checked
+    ~ .config-layout
+    .config-nav-simulation
+    .config-navigation-icon {
+    color: #ffffff;
+    border-color: var(--config-primary);
+    background: var(--config-primary);
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account
+    .config-navigation-arrow,
+#configAnotacoes:checked
+    ~ .config-layout
+    .config-nav-notes
+    .config-navigation-arrow,
+#configSessoes:checked
+    ~ .config-layout
+    .config-nav-sessions
+    .config-navigation-arrow,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-arrow,
+#configSimulacao:checked
+    ~ .config-layout
+    .config-nav-simulation
+    .config-navigation-arrow {
+    transform: translateX(3px);
+}
+
+@keyframes configFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(3px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================
+   ESTRUTURA PRINCIPAL
+========================================================== */
+
+.config-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - var(--config-page-offset));
+    min-height: 0;
+    padding: 16px 18px 14px;
+    overflow: hidden;
+    background: var(--config-page-background);
+}
+
+.config-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    min-height: 62px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.config-page-title {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 12px;
+}
+
+.config-page-title-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border: 1px solid var(--config-primary-border);
+    border-radius: 12px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 18px;
+}
+
+.config-page-title h1 {
+    margin: 0 0 3px;
+    color: var(--config-text);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.config-page-title p {
+    margin: 0;
+    color: var(--config-text-secondary);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.config-header-status {
+    display: flex;
+    align-items: center;
+    max-width: 330px;
+    min-width: 0;
+    gap: 9px;
+    padding: 8px 11px;
+    border: 1px solid var(--config-border);
+    border-radius: 10px;
+    background: var(--config-surface);
+}
+
+.config-header-status > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-header-status strong {
+    color: var(--config-text);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.config-header-status small {
+    max-width: 240px;
+    overflow: hidden;
+    color: var(--config-text-muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-status-indicator {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--config-success);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.13);
+}
+
+.config-layout {
+    display: grid;
+    grid-template-columns: 224px minmax(0, 1fr) 288px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--config-border);
+    border-radius: var(--config-radius-large);
+    background: var(--config-surface);
+    box-shadow: var(--config-shadow);
+}
+
+/* ==========================================================
+   MENU LATERAL
+========================================================== */
+
+.config-sidebar {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    padding: 14px;
+    overflow: hidden;
+    border-right: 1px solid var(--config-border);
+    background: var(--config-surface-secondary);
+}
+
+.config-user-summary {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid var(--config-border);
+    border-radius: 11px;
+    background: var(--config-surface);
+}
+
+.config-user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    overflow: hidden;
+    border: 2px solid var(--config-primary);
+    border-radius: 50%;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.config-user-summary-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-user-summary-text strong,
+.config-user-summary-text span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-user-summary-text strong {
+    color: var(--config-text);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.config-user-summary-text span {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 9px;
+}
+
+.config-navigation {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 16px;
+}
+
+.config-navigation-title {
+    margin: 0 8px 5px;
+    color: var(--config-text-muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.config-navigation-item {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 9px;
+    padding: 9px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--config-text-secondary);
+    cursor: pointer;
+    transition:
+        background var(--config-transition),
+        color var(--config-transition),
+        border-color var(--config-transition);
+}
+
+.config-navigation-item:hover {
+    color: var(--config-text);
+    border-color: var(--config-border);
+    background: var(--config-surface);
+}
+
+.config-navigation-item:focus-visible {
+    outline: 2px solid var(--config-primary);
+    outline-offset: 2px;
+}
+
+.config-navigation-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    flex: 0 0 29px;
+    border: 1px solid var(--config-border);
+    border-radius: 8px;
+    color: var(--config-primary);
+    background: var(--config-surface);
+    font-size: 12px;
+    transition: all var(--config-transition);
+}
+
+.config-navigation-info {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+}
+
+.config-navigation-info strong {
+    overflow: hidden;
+    color: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-navigation-info small {
+    margin-top: 1px;
+    overflow: hidden;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-navigation-arrow {
+    flex: 0 0 auto;
+    color: var(--config-text-muted);
+    font-size: 8px;
+    transition: transform var(--config-transition);
+}
+
+.config-sidebar-help {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px;
+    border: 1px solid var(--config-border);
+    border-radius: 10px;
+    background: var(--config-surface);
+}
+
+.config-sidebar-help-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 8px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-sidebar-help > div:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-sidebar-help strong {
+    color: var(--config-text);
+    font-size: 9px;
+}
+
+.config-sidebar-help span {
+    margin-top: 1px;
+    overflow: hidden;
+    color: var(--config-text-muted);
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================
+   CONTEÚDO CENTRAL
+========================================================== */
+
+.config-content {
+    min-width: 0;
+    min-height: 0;
+    padding: 16px 17px;
+    overflow: hidden;
+    background: var(--config-surface);
+}
+
+.config-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid var(--config-border);
+}
+
+.config-panel-eyebrow {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--config-primary);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.config-panel-header h2 {
+    margin: 0;
+    color: var(--config-text);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.config-panel-header p {
+    margin: 3px 0 0;
+    color: var(--config-text-secondary);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.config-panel-badge {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 6px;
+    padding: 6px 9px;
+    border: 1px solid var(--config-primary-border);
+    border-radius: 999px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+/* ==========================================================
+   FORMULÁRIOS
+========================================================== */
+
+.config-account-form,
+.config-preferences-form {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.config-profile-line {
+    flex: 0 0 auto;
+    margin-bottom: 11px;
+}
+
+.config-profile-photo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.config-profile-photo-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    overflow: hidden;
+    border: 3px solid var(--config-surface);
+    border-radius: 50%;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    box-shadow: 0 0 0 2px var(--config-primary);
+    font-size: 22px;
+}
+
+.config-profile-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.config-profile-photo-information {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-profile-photo-information > strong {
+    color: var(--config-text);
+    font-size: 11px;
+}
+
+.config-profile-photo-information > span {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 9px;
+}
+
+.config-profile-photo-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 7px;
+}
+
+.config-form-section {
+    flex: 0 0 auto;
+    margin-bottom: 10px;
+    padding: 11px 12px;
+    border: 1px solid var(--config-border);
+    border-radius: 11px;
+    background: var(--config-surface-secondary);
+}
+
+.config-form-section-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 9px;
+}
+
+.config-form-section-title h3 {
+    margin: 0;
+    color: var(--config-text);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.config-form-section-title p {
+    margin: 2px 0 0;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+}
+
+.config-readonly-message {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 5px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px 10px;
+}
+
+.config-grid-span-2 {
+    grid-column: span 2;
+}
+
+.config-form-group {
+    min-width: 0;
+}
+
+.config-form-group > label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--config-text-secondary);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.config-required {
+    color: var(--config-danger);
+}
+
+.config-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.config-input-container input,
+.config-input-container select {
+    width: 100%;
+    height: 34px;
+    min-width: 0;
+    padding: 0 33px;
+    border: 1px solid var(--config-border);
+    border-radius: 8px;
+    outline: none;
+    color: var(--config-text);
+    background: var(--config-input-background);
+    font-size: 10px;
+    transition:
+        border-color var(--config-transition),
+        box-shadow var(--config-transition),
+        background var(--config-transition);
+}
+
+.config-input-container select {
+    padding-right: 28px;
+    cursor: pointer;
+}
+
+.config-input-container input::placeholder,
+.config-note-text-group textarea::placeholder,
+.config-notes-filter input::placeholder {
+    color: var(--config-text-muted);
+}
+
+.config-input-container input:focus,
+.config-input-container select:focus,
+.config-note-text-group textarea:focus,
+.config-notes-filter input:focus {
+    border-color: var(--config-primary);
+    box-shadow: 0 0 0 3px var(--config-primary-soft);
+}
+
+.config-input-icon {
+    position: absolute;
+    left: 11px;
+    z-index: 2;
+    color: var(--config-primary);
+    font-size: 10px;
+    pointer-events: none;
+}
+
+.config-input-lock {
+    position: absolute;
+    right: 10px;
+    z-index: 2;
+    color: var(--config-text-muted);
+    font-size: 8px;
+    pointer-events: none;
+}
+
+.config-input-readonly input {
+    padding-right: 30px;
+    color: var(--config-text-secondary);
+    background: var(--config-input-readonly);
+    cursor: not-allowed;
+}
+
+.config-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--config-border);
+}
+
+.config-form-footer-message {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 6px;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+}
+
+.config-form-footer-message i {
+    flex: 0 0 auto;
+    color: var(--config-primary);
+}
+
+/* ==========================================================
+   BOTÕES
+========================================================== */
+
+.config-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 31px;
+    gap: 6px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+        background var(--config-transition),
+        border-color var(--config-transition),
+        color var(--config-transition),
+        transform var(--config-transition);
+}
+
+.config-button:hover {
+    transform: translateY(-1px);
+}
+
+.config-button:active {
+    transform: translateY(0);
+}
+
+.config-button:focus-visible {
+    outline: 2px solid var(--config-primary);
+    outline-offset: 2px;
+}
+
+.config-button-primary {
+    border-color: var(--config-primary);
+    color: #ffffff;
+    background: var(--config-primary);
+}
+
+.config-button-primary:hover {
+    border-color: var(--config-primary-hover);
+    background: var(--config-primary-hover);
+}
+
+.config-button-secondary {
+    border-color: var(--config-border);
+    color: var(--config-text-secondary);
+    background: var(--config-surface);
+}
+
+.config-button-secondary:hover {
+    color: var(--config-primary);
+    border-color: var(--config-primary);
+}
+
+.config-button-danger-outline {
+    border-color: rgba(239, 68, 68, 0.55);
+    color: var(--config-danger);
+    background: transparent;
+}
+
+.config-button-danger-outline:hover {
+    color: #ffffff;
+    border-color: var(--config-danger);
+    background: var(--config-danger);
+}
+
+.config-full-button {
+    width: 100%;
+    margin-top: 13px;
+}
+
+/* ==========================================================
+   ANOTAÇÕES
+========================================================== */
+
+.config-notes-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.93fr) minmax(330px, 1.07fr);
+    flex: 1;
+    min-height: 0;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.config-note-editor,
+.config-notes-list {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--config-border);
+    border-radius: 12px;
+    background: var(--config-surface-secondary);
+}
+
+.config-note-editor {
+    padding: 13px;
+}
+
+.config-note-editor-header,
+.config-notes-list-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    gap: 10px;
+    margin-bottom: 11px;
+}
+
+.config-note-editor-header h3,
+.config-notes-list-header h3 {
+    margin: 0;
+    color: var(--config-text);
+    font-size: 12px;
+}
+
+.config-note-editor-header span,
+.config-notes-list-header span {
+    display: block;
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+}
+
+.config-note-draft {
+    display: inline-flex !important;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 5px;
+    padding: 5px 7px;
+    border-radius: 999px;
+    color: var(--config-warning) !important;
+    background: rgba(245, 158, 11, 0.10);
+    font-size: 8px !important;
+    font-weight: 700;
+}
+
+.config-note-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(145px, 0.75fr);
+    align-items: end;
+    gap: 9px;
+    margin-top: 9px;
+}
+
+.config-checkbox-card {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    gap: 8px;
+    padding: 5px 8px;
+    border: 1px solid var(--config-border);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--config-input-background);
+}
+
+.config-checkbox-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.config-checkbox-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    flex: 0 0 23px;
+    border: 1px solid var(--config-border-strong);
+    border-radius: 6px;
+    color: var(--config-text-muted);
+    background: var(--config-surface-secondary);
+    font-size: 9px;
+}
+
+.config-checkbox-card input:checked + .config-checkbox-box {
+    color: #ffffff;
+    border-color: var(--config-primary);
+    background: var(--config-primary);
+}
+
+.config-checkbox-card > span:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-checkbox-card strong {
+    color: var(--config-text);
+    font-size: 8.5px;
+}
+
+.config-checkbox-card small {
+    margin-top: 1px;
+    overflow: hidden;
+    color: var(--config-text-muted);
+    font-size: 7.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-note-text-group {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    margin-top: 9px;
+}
+
+.config-note-text-group textarea {
+    width: 100%;
+    min-height: 0;
+    flex: 1;
+    resize: none;
+    padding: 10px;
+    border: 1px solid var(--config-border);
+    border-radius: 8px 8px 0 0;
+    outline: none;
+    color: var(--config-text);
+    background: var(--config-input-background);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.config-textarea-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 28px;
+    gap: 10px;
+    padding: 0 9px;
+    border: 1px solid var(--config-border);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    color: var(--config-text-muted);
+    background: var(--config-surface-tertiary);
+    font-size: 8px;
+}
+
+.config-note-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.config-notes-list {
+    padding: 13px;
+}
+
+.config-notes-filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 150px;
+}
+
+.config-notes-filter i {
+    position: absolute;
+    left: 9px;
+    z-index: 2;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-notes-filter input {
+    width: 100%;
+    height: 29px;
+    padding: 0 8px 0 25px;
+    border: 1px solid var(--config-border);
+    border-radius: 7px;
+    outline: none;
+    color: var(--config-text);
+    background: var(--config-input-background);
+    font-size: 8.5px;
+}
+
+.config-note-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    flex: 1;
+    min-height: 0;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.config-note-card {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--config-border);
+    border-radius: 10px;
+    background: var(--config-surface);
+    transition:
+        transform var(--config-transition),
+        border-color var(--config-transition),
+        box-shadow var(--config-transition);
+}
+
+.config-note-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--config-primary-border);
+    box-shadow: 0 7px 18px rgba(15, 23, 42, 0.08);
+}
+
+.config-note-card.is-pinned {
+    border-left: 3px solid var(--config-primary);
+}
+
+.config-note-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.config-note-category {
+    max-width: 110px;
+    overflow: hidden;
+    padding: 3px 6px;
+    border-radius: 999px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 7.5px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.config-note-actions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.config-note-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+    color: var(--config-primary);
+    font-size: 8px;
+}
+
+.config-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    color: var(--config-text-muted);
+    background: transparent;
+    cursor: pointer;
+}
+
+.config-icon-button:hover {
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-icon-button-danger:hover {
+    color: var(--config-danger);
+    background: var(--config-danger-soft);
+}
+
+.config-note-card h4 {
+    margin: 8px 0 4px;
+    overflow: hidden;
+    color: var(--config-text);
+    font-size: 10px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-note-card p {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--config-text-secondary);
+    font-size: 8.5px;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.config-note-card-footer {
+    margin-top: auto;
+    padding-top: 8px;
+    color: var(--config-text-muted);
+    font-size: 7.5px;
+}
+
+.config-note-card-footer span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.config-empty-state {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+}
+
+.config-empty-state-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 9px;
+    border-radius: 14px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 18px;
+}
+
+.config-empty-state strong {
+    color: var(--config-text);
+    font-size: 11px;
+}
+
+.config-empty-state span {
+    max-width: 250px;
+    margin-top: 4px;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+    line-height: 1.5;
+}
+
+.config-notes-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    gap: 8px;
+    margin-top: 9px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-pagination-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 1px solid var(--config-border);
+    border-radius: 50%;
+    color: var(--config-text-secondary);
+    background: var(--config-surface);
+    cursor: pointer;
+}
+
+.config-pagination-button:hover:not(:disabled) {
+    color: #ffffff;
+    border-color: var(--config-primary);
+    background: var(--config-primary);
+}
+
+.config-pagination-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   SESSÕES
+========================================================== */
+
+.config-security-alert {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 9px;
+    margin-bottom: 11px;
+    padding: 10px 11px;
+    border: 1px solid var(--config-primary-border);
+    border-radius: 10px;
+    background: var(--config-primary-soft);
+}
+
+.config-security-alert-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    border-radius: 8px;
+    color: #ffffff;
+    background: var(--config-primary);
+}
+
+.config-security-alert > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.config-security-alert strong {
+    color: var(--config-text);
+    font-size: 10px;
+}
+
+.config-security-alert span {
+    margin-top: 2px;
+    color: var(--config-text-secondary);
+    font-size: 8.5px;
+}
+
+.config-session-list {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.config-session-list-item {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
+    padding: 12px;
+    border: 1px solid var(--config-border);
+    border-radius: 11px;
+    background: var(--config-surface-secondary);
+}
+
+.config-session-list-item.is-current {
+    border-color: var(--config-primary-border);
+    background: var(--config-primary-soft);
+}
+
+.config-session-device-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--config-primary-border);
+    border-radius: 10px;
+    color: var(--config-primary);
+    background: var(--config-surface);
+    font-size: 16px;
+}
+
+.config-session-device-info {
+    min-width: 0;
+}
+
+.config-session-device-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.config-session-device-title strong {
+    color: var(--config-text);
+    font-size: 10.5px;
+}
+
+.config-current-session-badge,
+.config-inactive-session-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 6px;
+    border-radius: 999px;
+    font-size: 7.5px;
+    font-weight: 700;
+}
+
+.config-current-session-badge {
+    color: var(--config-success);
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.config-current-session-badge > span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--config-success);
+}
+
+.config-inactive-session-badge {
+    color: var(--config-text-muted);
+    background: var(--config-surface-tertiary);
+}
+
+.config-session-device-data {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 6px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-session-device-data span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.config-session-device-data i {
+    color: var(--config-primary);
+}
+
+.config-session-protected {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-session-end-button {
+    min-width: 76px;
+}
+
+.config-no-other-sessions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 120px;
+    gap: 10px;
+    padding: 16px;
+    border: 1px dashed var(--config-border-strong);
+    border-radius: 11px;
+    color: var(--config-success);
+}
+
+.config-no-other-sessions > i {
+    font-size: 22px;
+}
+
+.config-no-other-sessions > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.config-no-other-sessions strong {
+    color: var(--config-text);
+    font-size: 10px;
+}
+
+.config-no-other-sessions span {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+/* ==========================================================
+   PREFERÊNCIAS
+========================================================== */
+
+.config-preference-section {
+    flex: 0 0 auto;
+    margin-bottom: 11px;
+    padding: 12px;
+    border: 1px solid var(--config-border);
+    border-radius: 11px;
+    background: var(--config-surface-secondary);
+}
+
+.config-preference-section-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 11px;
+}
+
+.config-preference-section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    border-radius: 8px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-preference-section-header h3 {
+    margin: 0;
+    color: var(--config-text);
+    font-size: 11px;
+}
+
+.config-preference-section-header p {
+    margin: 2px 0 0;
+    color: var(--config-text-muted);
+    font-size: 8.5px;
+}
+
+.config-theme-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.config-theme-option {
+    position: relative;
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 22px;
+    align-items: center;
+    gap: 9px;
+    padding: 8px;
+    border: 1px solid var(--config-border);
+    border-radius: 10px;
+    cursor: pointer;
+    background: var(--config-surface);
+}
+
+.config-theme-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.config-theme-option:has(input:checked) {
+    border-color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-theme-preview {
+    display: flex;
+    width: 70px;
+    height: 43px;
+    overflow: hidden;
+    border: 1px solid var(--config-border);
+    border-radius: 7px;
+}
+
+.config-theme-preview-sidebar {
+    width: 19px;
+    height: 100%;
+}
+
+.config-theme-preview-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+}
+
+.config-theme-preview-content span {
+    display: block;
+    height: 4px;
+    border-radius: 999px;
+}
+
+.config-theme-preview-content span:nth-child(1) {
+    width: 80%;
+}
+
+.config-theme-preview-content span:nth-child(2) {
+    width: 100%;
+}
+
+.config-theme-preview-content span:nth-child(3) {
+    width: 60%;
+}
+
+.config-theme-light {
+    background: #f8fafc;
+}
+
+.config-theme-light .config-theme-preview-sidebar {
+    background: #e2e8f0;
+}
+
+.config-theme-light .config-theme-preview-content span {
+    background: #94a3b8;
+}
+
+.config-theme-dark {
+    background: #071124;
+}
+
+.config-theme-dark .config-theme-preview-sidebar {
+    background: #101c44;
+}
+
+.config-theme-dark .config-theme-preview-content span {
+    background: #5b6470;
+}
+
+.config-theme-auto {
+    background: linear-gradient(
+        110deg,
+        #f8fafc 0%,
+        #f8fafc 49%,
+        #071124 50%,
+        #071124 100%
+    );
+}
+
+.config-theme-auto .config-theme-preview-sidebar {
+    background: linear-gradient(
+        110deg,
+        #e2e8f0 0%,
+        #e2e8f0 49%,
+        #101c44 50%,
+        #101c44 100%
+    );
+}
+
+.config-theme-auto .config-theme-preview-content span {
+    background: #6AA0F8;
+}
+
+.config-theme-option-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-theme-option-text strong {
+    color: var(--config-text);
+    font-size: 9px;
+}
+
+.config-theme-option-text small {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 7.5px;
+}
+
+.config-theme-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    border: 1px solid var(--config-border-strong);
+    border-radius: 50%;
+    color: transparent;
+    font-size: 7px;
+}
+
+.config-theme-option input:checked
+    ~ .config-theme-check {
+    color: #ffffff;
+    border-color: var(--config-primary);
+    background: var(--config-primary);
+}
+
+.config-preference-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.config-preference-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    gap: 10px;
+    padding: 9px;
+    border: 1px solid var(--config-border);
+    border-radius: 9px;
+    cursor: pointer;
+    background: var(--config-surface);
+}
+
+.config-preference-item-info {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+}
+
+.config-preference-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    flex: 0 0 29px;
+    border-radius: 8px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+}
+
+.config-preference-item-info > span:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-preference-item strong {
+    overflow: hidden;
+    color: var(--config-text);
+    font-size: 8.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-preference-item small {
+    display: -webkit-box;
+    margin-top: 2px;
+    overflow: hidden;
+    color: var(--config-text-muted);
+    font-size: 7.3px;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+/* ==========================================================
+   SWITCH
+========================================================== */
+
+.config-switch {
+    position: relative;
+    width: 34px;
+    height: 19px;
+    flex: 0 0 34px;
+}
+
+.config-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.config-switch-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--config-border-strong);
+    transition: background var(--config-transition);
+}
+
+.config-switch-slider::before {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.22);
+    content: "";
+    transition: transform var(--config-transition);
+}
+
+.config-switch input:checked + .config-switch-slider {
+    background: var(--config-primary);
+}
+
+.config-switch input:checked
+    + .config-switch-slider::before {
+    transform: translateX(15px);
+}
+
+/* ==========================================================
+   PAINEL DIREITO - SESSÃO ATUAL
+========================================================== */
+
+.config-session-aside {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    overflow: hidden;
+    border-left: 1px solid var(--config-border);
+    background: var(--config-surface-secondary);
+}
+
+.config-session-card {
+    flex: 0 0 auto;
+    padding: 13px;
+    border: 1px solid var(--config-border);
+    border-radius: 12px;
+    background: var(--config-surface);
+}
+
+.config-session-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.config-session-card-header h3 {
+    margin: 0;
+    color: var(--config-text);
+    font-size: 13px;
+}
+
+.config-session-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 6px;
+    border-radius: 999px;
+    color: var(--config-success);
+    background: rgba(34, 197, 94, 0.11);
+    font-size: 7.5px;
+    font-weight: 700;
+}
+
+.config-session-online > span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--config-success);
+}
+
+.config-session-main-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    margin: 14px auto 8px;
+    border: 1px solid var(--config-primary-border);
+    border-radius: 17px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 22px;
+}
+
+.config-session-main-title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.config-session-main-title strong {
+    color: var(--config-text);
+    font-size: 11px;
+}
+
+.config-session-main-title span {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 8px;
+}
+
+.config-session-details {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 13px;
+}
+
+.config-session-detail {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid var(--config-border);
+    border-radius: 8px;
+    background: var(--config-surface-secondary);
+}
+
+.config-session-detail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    border-radius: 7px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 9px;
+}
+
+.config-session-detail > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-session-detail small {
+    color: var(--config-text-muted);
+    font-size: 7px;
+}
+
+.config-session-detail strong {
+    margin-top: 1px;
+    overflow: hidden;
+    color: var(--config-text);
+    font-size: 8.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-session-detail .config-secure-text {
+    color: var(--config-success);
+}
+
+.config-security-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid rgba(245, 158, 11, 0.24);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.config-security-tip-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 8px;
+    color: var(--config-warning);
+    background: rgba(245, 158, 11, 0.12);
+}
+
+.config-security-tip > div:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.config-security-tip strong {
+    color: var(--config-text);
+    font-size: 8.5px;
+}
+
+.config-security-tip span {
+    margin-top: 2px;
+    color: var(--config-text-muted);
+    font-size: 7.5px;
+    line-height: 1.4;
+}
+
+/* ==========================================================
+   RESPONSIVIDADE
+========================================================== */
+
+@media (max-width: 1280px) {
+    .config-layout {
+        grid-template-columns: 205px minmax(0, 1fr) 260px;
+    }
+
+    .config-sidebar {
+        padding: 12px;
+    }
+
+    .config-content {
+        padding: 14px;
+    }
+
+    .config-session-aside {
+        padding: 12px;
+    }
+
+    .config-form-grid {
+        gap: 7px 8px;
+    }
+
+    .config-theme-option {
+        grid-template-columns: 60px minmax(0, 1fr) 20px;
+    }
+
+    .config-theme-preview {
+        width: 60px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .config-layout {
+        grid-template-columns: 195px minmax(0, 1fr);
+    }
+
+    .config-session-aside {
+        display: none;
+    }
+
+    .config-form-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .config-page {
+        padding: 10px;
+    }
+
+    .config-page-header {
+        min-height: 54px;
+    }
+
+    .config-header-status {
+        display: none;
+    }
+
+    .config-layout {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .config-sidebar {
+        align-items: center;
+        padding: 10px 8px;
+    }
+
+    .config-user-summary {
+        justify-content: center;
+        width: 48px;
+        padding: 5px;
+    }
+
+    .config-user-summary-text,
+    .config-navigation-title,
+    .config-navigation-info,
+    .config-navigation-arrow,
+    .config-sidebar-help > div:last-child {
+        display: none;
+    }
+
+    .config-navigation {
+        width: 100%;
+        align-items: center;
+    }
+
+    .config-navigation-item {
+        justify-content: center;
+        width: 48px;
+        padding: 8px;
+    }
+
+    .config-navigation-icon {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+    }
+
+    .config-sidebar-help {
+        justify-content: center;
+        width: 48px;
+        padding: 8px;
+    }
+
+    .config-notes-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-notes-list {
+        display: none;
+    }
+
+    .config-theme-options,
+    .config-preference-items {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-height: 760px) {
+    :root {
+        --config-page-offset: 108px;
+    }
+
+    .config-page {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .config-page-header {
+        min-height: 49px;
+        margin-bottom: 8px;
+    }
+
+    .config-page-title-icon {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .config-page-title h1 {
+        font-size: 18px;
+    }
+
+    .config-content {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .config-panel-header {
+        margin-bottom: 9px;
+        padding-bottom: 8px;
+    }
+
+    .config-profile-photo-preview {
+        width: 54px;
+        height: 54px;
+        flex-basis: 54px;
+    }
+
+    .config-form-section {
+        margin-bottom: 7px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .config-input-container input,
+    .config-input-container select {
+        height: 31px;
+    }
+}
+
+/* ==========================================================
+   AJUSTES VISUAIS — IDENTIDADE TASKFLOW AZUL E AMARELO
+   Versão 3.1.0
+========================================================== */
+
+/* Fontes ligeiramente maiores, preservando a tela sem rolagem. */
+
+.config-page-title h1 {
+    font-size: 23px;
+}
+
+.config-page-title p {
+    font-size: 13px;
+}
+
+.config-header-status strong {
+    font-size: 12px;
+}
+
+.config-header-status small {
+    font-size: 10.5px;
+}
+
+.config-user-summary-text strong {
+    font-size: 12px;
+}
+
+.config-user-summary-text span {
+    font-size: 9.5px;
+}
+
+.config-navigation-title {
+    font-size: 10px;
+}
+
+.config-navigation-info strong {
+    font-size: 12px;
+}
+
+.config-navigation-info small {
+    font-size: 9.5px;
+}
+
+.config-panel-eyebrow {
+    font-size: 9px;
+}
+
+.config-panel-header h2 {
+    font-size: 20px;
+}
+
+.config-panel-header p {
+    font-size: 11px;
+}
+
+.config-panel-badge,
+.config-button {
+    font-size: 10px;
+}
+
+.config-form-section-title h3,
+.config-preference-section-header h3 {
+    font-size: 12px;
+}
+
+.config-form-section-title p,
+.config-preference-section-header p {
+    font-size: 9.5px;
+}
+
+.config-form-group > label {
+    font-size: 10px;
+}
+
+.config-input-container input,
+.config-input-container select,
+.config-note-text-group textarea {
+    font-size: 11px;
+}
+
+.config-theme-option-text strong {
+    font-size: 10.5px;
+}
+
+.config-theme-option-text small {
+    font-size: 8.5px;
+}
+
+.config-preference-item strong {
+    font-size: 9.5px;
+}
+
+.config-preference-item small {
+    font-size: 8px;
+}
+
+/* Avatar padronizado com as iniciais do primeiro e segundo nome. */
+
+.config-user-avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    overflow: visible;
+    border: 0;
+    color: #101c44;
+    background: #4689F5;
+    box-shadow: 0 0 0 2px rgba(16, 28, 68, 0.10);
+}
+
+.config-user-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #101c44;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.config-profile-photo-preview {
+    color: #101c44;
+    border-color: var(--config-surface);
+    background: #4689F5;
+    box-shadow: 0 0 0 2px #101c44;
+}
+
+.config-profile-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #101c44;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.03em;
+}
+
+/* Ajuda clicável por e-mail. */
+
+.config-sidebar-help {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        border-color var(--config-transition),
+        background var(--config-transition),
+        transform var(--config-transition);
+}
+
+.config-sidebar-help:hover,
+.config-sidebar-help:focus-visible {
+    border-color: var(--config-primary);
+    background: var(--config-primary-soft);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.config-sidebar-help-icon {
+    color: #101c44;
+    background: #4689F5;
+}
+
+html[data-theme="dark"] .config-sidebar-help-icon {
+    color: #101c44;
+    background: #4689F5;
+}
+
+/* Azul e amarelo como cores institucionais principais. */
+
+.config-page-title-icon,
+.config-navigation-icon,
+.config-preference-section-icon,
+.config-preference-item-icon,
+.config-session-detail-icon,
+.config-security-alert-icon {
+    color: #101c44;
+    background: #4689F5;
+    border-color: rgba(16, 28, 68, 0.14);
+}
+
+html[data-theme="dark"] .config-page-title-icon,
+html[data-theme="dark"] .config-navigation-icon,
+html[data-theme="dark"] .config-preference-section-icon,
+html[data-theme="dark"] .config-preference-item-icon,
+html[data-theme="dark"] .config-session-detail-icon,
+html[data-theme="dark"] .config-security-alert-icon {
+    color: #101c44;
+    background: #4689F5;
+    border-color: rgba(70, 137, 245, 0.48);
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account
+    .config-navigation-icon,
+#configAnotacoes:checked
+    ~ .config-layout
+    .config-nav-notes
+    .config-navigation-icon,
+#configSessoes:checked
+    ~ .config-layout
+    .config-nav-sessions
+    .config-navigation-icon,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-icon {
+    color: #101c44;
+    border-color: #4689F5;
+    background: #4689F5;
+}
+
+.config-button-primary {
+    color: #ffffff;
+    border-color: #101c44;
+    background: #101c44;
+}
+
+.config-button-primary:hover {
+    color: #101c44;
+    border-color: #4689F5;
+    background: #4689F5;
+}
+
+html[data-theme="dark"] .config-button-primary {
+    color: #101c44;
+    border-color: #4689F5;
+    background: #4689F5;
+}
+
+html[data-theme="dark"] .config-button-primary:hover {
+    color: #101c44;
+    border-color: #8DB8FA;
+    background: #8DB8FA;
+}
+
+/* Indicadores sem verde: azul no claro e amarelo no modo azul-escuro. */
+
+.config-status-indicator,
+.config-current-session-badge > span,
+.config-session-online > span {
+    background: #101c44;
+}
+
+.config-status-indicator {
+    box-shadow: 0 0 0 4px rgba(16, 28, 68, 0.12);
+}
+
+.config-current-session-badge,
+.config-session-online,
+.config-secure-text {
+    color: #101c44;
+}
+
+.config-current-session-badge,
+.config-session-online {
+    background: rgba(16, 28, 68, 0.09);
+}
+
+html[data-theme="dark"] .config-status-indicator,
+html[data-theme="dark"] .config-current-session-badge > span,
+html[data-theme="dark"] .config-session-online > span {
+    background: #4689F5;
+}
+
+html[data-theme="dark"] .config-status-indicator {
+    box-shadow: 0 0 0 4px rgba(70, 137, 245, 0.13);
+}
+
+html[data-theme="dark"] .config-current-session-badge,
+html[data-theme="dark"] .config-session-online,
+html[data-theme="dark"] .config-secure-text {
+    color: #4689F5;
+}
+
+html[data-theme="dark"] .config-current-session-badge,
+html[data-theme="dark"] .config-session-online {
+    background: rgba(70, 137, 245, 0.11);
+}
+
+/* Usa somente as preferências suportadas pelo tema global atual:
+   Claro e Automático (azul-escuro Taskflow). */
+
+.config-theme-options-two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.config-theme-option {
+    min-height: 60px;
+}
+
+.config-theme-option:has(input:checked) {
+    border-color: #101c44;
+    background: rgba(16, 28, 68, 0.07);
+    box-shadow: inset 0 0 0 1px #101c44;
+}
+
+.config-theme-option input:checked
+    ~ .config-theme-check {
+    color: #101c44;
+    border-color: #4689F5;
+    background: #4689F5;
+}
+
+html[data-theme="dark"] .config-theme-option:has(input:checked) {
+    border-color: #4689F5;
+    background: rgba(70, 137, 245, 0.10);
+    box-shadow: inset 0 0 0 1px #4689F5;
+}
+
+.config-theme-auto {
+    background: #071124;
+}
+
+.config-theme-auto .config-theme-preview-sidebar {
+    background: #101c44;
+}
+
+.config-theme-auto .config-theme-preview-content span {
+    background: #4689F5;
+}
+
+.config-theme-light .config-theme-preview-sidebar {
+    background: #101c44;
+}
+
+.config-theme-light .config-theme-preview-content span {
+    background: #8792a5;
+}
+
+/* Controles de comportamento mantidos visualmente inativos e bloqueados. */
+
+.config-preference-item.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+    background: var(--config-surface-tertiary);
+}
+
+.config-preference-item.is-disabled:hover {
+    border-color: var(--config-border);
+    transform: none;
+}
+
+.config-preference-item.is-disabled .config-switch {
+    pointer-events: none;
+}
+
+.config-preference-item.is-disabled .config-switch-slider,
+.config-switch input:disabled + .config-switch-slider {
+    background: var(--config-border-strong);
+    cursor: not-allowed;
+}
+
+.config-switch input:disabled
+    + .config-switch-slider::before {
+    transform: translateX(0);
+    background: #ffffff;
+}
+
+/* Ajuste fino para o card não cortar o avatar em larguras menores. */
+
+.config-user-summary {
+    min-height: 62px;
+    overflow: visible;
+}
+
+.config-user-summary-text {
+    overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .config-user-avatar {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    .config-user-initials {
+        font-size: 11px;
+    }
+
+    .config-theme-options-two {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================
+   V3.2 — RESPONSIVIDADE FINAL CONSOLIDADA
+   CENTRAL DE CONFIGURAÇÕES TASKFLOW
+   Referência principal: 1920 × 1080
+
+   Camada exclusivamente visual/estrutural.
+   Nenhum ID, classe funcional, formulário, rota,
+   condição Django ou comportamento JavaScript é alterado.
+========================================================== */
+
+/* ==========================================================
+   BASE SEGURA DA PÁGINA
+========================================================== */
+
+html {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+}
+
+body.configuracoes-page {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+.config-page,
+.config-page-header,
+.config-page-title,
+.config-header-status,
+.config-layout,
+.config-sidebar,
+.config-user-summary,
+.config-user-summary-text,
+.config-navigation,
+.config-navigation-item,
+.config-navigation-info,
+.config-sidebar-help,
+.config-content,
+.config-panel,
+.config-panel-header,
+.config-account-form,
+.config-preferences-form,
+.config-profile-line,
+.config-profile-photo,
+.config-profile-photo-information,
+.config-profile-photo-actions,
+.config-form-section,
+.config-form-section-title,
+.config-form-grid,
+.config-form-group,
+.config-input-container,
+.config-form-footer,
+.config-form-footer-message,
+.config-notes-layout,
+.config-note-editor,
+.config-notes-list,
+.config-note-editor-header,
+.config-notes-list-header,
+.config-note-options,
+.config-note-items,
+.config-note-card,
+.config-session-list,
+.config-session-list-item,
+.config-session-device-info,
+.config-session-device-data,
+.config-session-aside,
+.config-session-card,
+.config-session-details,
+.config-session-detail,
+.config-security-tip,
+.config-preference-section,
+.config-preference-section-header,
+.config-theme-options,
+.config-theme-option,
+.config-theme-option-text,
+.config-preference-items,
+.config-preference-item,
+.config-preference-item-info {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.configuracoes-page img,
+.configuracoes-page svg,
+.configuracoes-page canvas,
+.configuracoes-page video,
+.configuracoes-page iframe {
+    max-width: 100%;
+}
+
+.config-page-title > div:last-child,
+.config-panel-header > div:first-child,
+.config-form-section-title > div:first-child,
+.config-preference-section-header > div:last-child,
+.config-profile-photo-information,
+.config-session-device-info,
+.config-security-alert > div:last-child,
+.config-security-tip > div:last-child,
+.config-form-footer-message {
+    min-width: 0;
+}
+
+.config-page-title p,
+.config-panel-header p,
+.config-form-section-title p,
+.config-profile-photo-information > span,
+.config-security-alert span,
+.config-security-tip span,
+.config-form-footer-message span,
+.config-preference-section-header p,
+.config-preference-item small {
+    overflow-wrap: anywhere;
+}
+
+/*
+ * O documento principal não precisa rolar no desktop:
+ * o conteúdo central, sidebar e sessão lateral controlam
+ * seus próprios conteúdos. Em tablet/mobile esta regra
+ * é liberada e existe apenas o scroll normal da página.
+ */
+.config-page {
+    height:
+        calc(
+            100vh -
+            var(--config-page-offset)
+        );
+    height:
+        calc(
+            100dvh -
+            var(--config-page-offset)
+        );
+    min-height: 0;
+    overflow: hidden;
+}
+
+.config-layout {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.config-sidebar,
+.config-content,
+.config-session-aside {
+    min-height: 0;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.config-sidebar {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.config-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.config-session-aside {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/*
+ * O conteúdo ativo deve poder crescer dentro do scroll
+ * central. Isso evita cortes causados pelos vários
+ * overflow:hidden da versão anterior.
+ */
+.config-panel {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+}
+
+.config-account-form,
+.config-preferences-form {
+    overflow: visible;
+}
+
+.config-notes-layout {
+    flex: 0 0 auto;
+    min-height: 0;
+    overflow: visible;
+}
+
+.config-note-editor,
+.config-notes-list,
+.config-note-items,
+.config-session-list {
+    overflow: visible;
+}
+
+.config-note-items,
+.config-session-list {
+    flex: 0 0 auto;
+}
+
+/* ==========================================================
+   FULL HD — 1920 × 1080 / 1600 × 900
+========================================================== */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+
+    :root {
+        --config-page-offset: 118px;
+    }
+
+    .config-page {
+        width: 100%;
+        padding:
+            20px
+            clamp(38px, 2.8vw, 56px)
+            18px;
+    }
+
+    .config-page-header {
+        min-height: 72px;
+        margin-bottom: 16px;
+        padding:
+            0
+            6px;
+    }
+
+    .config-page-title {
+        gap: 15px;
+    }
+
+    .config-page-title-icon {
+        width: 48px;
+        height: 48px;
+        flex-basis: 48px;
+        font-size: 20px;
+    }
+
+    .config-page-title h1 {
+        font-size: 28px;
+    }
+
+    .config-page-title p {
+        margin-top: 4px;
+        font-size: 13px;
+    }
+
+    .config-header-status {
+        max-width: 390px;
+        padding:
+            10px
+            14px;
+    }
+
+    .config-header-status strong {
+        font-size: 12px;
+    }
+
+    .config-header-status small {
+        max-width: 290px;
+        font-size: 10.5px;
+    }
+
+    .config-layout {
+        grid-template-columns:
+            minmax(245px, 270px)
+            minmax(0, 1fr)
+            minmax(300px, 330px);
+        border-radius: 18px;
+    }
+
+    .config-sidebar {
+        padding: 18px;
+    }
+
+    .config-user-summary {
+        min-height: 70px;
+        gap: 11px;
+        padding: 12px;
+    }
+
+    .config-user-avatar {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+    }
+
+    .config-user-initials {
+        font-size: 13px;
+    }
+
+    .config-user-summary-text strong {
+        font-size: 12px;
+    }
+
+    .config-user-summary-text span {
+        font-size: 10px;
+    }
+
+    .config-navigation {
+        gap: 7px;
+        margin-top: 19px;
+    }
+
+    .config-navigation-title {
+        margin-bottom: 7px;
+        font-size: 10px;
+    }
+
+    .config-navigation-item {
+        min-height: 49px;
+        gap: 11px;
+        padding:
+            9px
+            10px;
+    }
+
+    .config-navigation-icon {
+        width: 33px;
+        height: 33px;
+        flex-basis: 33px;
+        font-size: 13px;
+    }
+
+    .config-navigation-info strong {
+        font-size: 12px;
+    }
+
+    .config-navigation-info small {
+        margin-top: 2px;
+        font-size: 9px;
+    }
+
+    .config-sidebar-help {
+        min-height: 48px;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .config-content {
+        padding:
+            21px
+            23px;
+    }
+
+    .config-panel-header {
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+    }
+
+    .config-panel-eyebrow {
+        font-size: 9px;
+    }
+
+    .config-panel-header h2 {
+        font-size: 22px;
+    }
+
+    .config-panel-header p {
+        margin-top: 5px;
+        font-size: 11px;
+    }
+
+    .config-panel-badge {
+        min-height: 32px;
+        padding:
+            7px
+            11px;
+        font-size: 10px;
+    }
+
+    .config-profile-line {
+        margin-bottom: 15px;
+    }
+
+    .config-profile-photo {
+        gap: 15px;
+    }
+
+    .config-profile-photo-preview {
+        width: 72px;
+        height: 72px;
+        flex-basis: 72px;
+    }
+
+    .config-profile-initials {
+        font-size: 21px;
+    }
+
+    .config-profile-photo-information > strong {
+        font-size: 12px;
+    }
+
+    .config-profile-photo-information > span {
+        margin-top: 3px;
+        font-size: 10px;
+    }
+
+    .config-profile-photo-actions {
+        gap: 8px;
+        margin-top: 9px;
+    }
+
+    .config-form-section {
+        margin-bottom: 13px;
+        padding:
+            14px
+            15px;
+    }
+
+    .config-form-section-title {
+        margin-bottom: 12px;
+    }
+
+    .config-form-section-title h3,
+    .config-preference-section-header h3 {
+        font-size: 12.5px;
+    }
+
+    .config-form-section-title p,
+    .config-preference-section-header p {
+        margin-top: 3px;
+        font-size: 9.5px;
+    }
+
+    .config-form-grid {
+        gap:
+            10px
+            12px;
+    }
+
+    .config-form-group > label {
+        margin-bottom: 6px;
+        font-size: 10.5px;
+    }
+
+    .config-input-container input,
+    .config-input-container select {
+        height: 39px;
+        font-size: 11px;
+    }
+
+    .config-button {
+        min-height: 37px;
+        padding:
+            0
+            14px;
+        font-size: 10px;
+    }
+
+    .config-form-footer {
+        gap: 14px;
+        padding-top: 13px;
+    }
+
+    .config-form-footer-message {
+        font-size: 9.5px;
+    }
+
+    /* Anotações */
+    .config-notes-layout {
+        grid-template-columns:
+            minmax(340px, 0.88fr)
+            minmax(430px, 1.12fr);
+        gap: 16px;
+    }
+
+    .config-note-editor,
+    .config-notes-list {
+        padding: 16px;
+    }
+
+    .config-note-editor-header,
+    .config-notes-list-header {
+        margin-bottom: 13px;
+    }
+
+    .config-note-editor-header h3,
+    .config-notes-list-header h3 {
+        font-size: 13px;
+    }
+
+    .config-note-editor-header span,
+    .config-notes-list-header span {
+        font-size: 9px;
+    }
+
+    .config-note-items {
+        gap: 10px;
+    }
+
+    .config-note-card {
+        min-height: 126px;
+        padding: 12px;
+    }
+
+    .config-note-card h4 {
+        font-size: 11px;
+    }
+
+    .config-note-card p {
+        font-size: 9px;
+    }
+
+    .config-notes-filter {
+        width: 180px;
+    }
+
+    .config-notes-filter input {
+        height: 33px;
+        font-size: 9px;
+    }
+
+    /* Sessões */
+    .config-security-alert {
+        margin-bottom: 14px;
+        padding:
+            12px
+            13px;
+    }
+
+    .config-session-list {
+        gap: 10px;
+    }
+
+    .config-session-list-item {
+        grid-template-columns:
+            46px
+            minmax(0, 1fr)
+            auto;
+        gap: 13px;
+        padding: 14px;
+    }
+
+    .config-session-device-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 17px;
+    }
+
+    .config-session-device-title strong {
+        font-size: 11px;
+    }
+
+    .config-session-device-data {
+        gap: 12px;
+    }
+
+    .config-session-aside {
+        gap: 12px;
+        padding: 17px;
+    }
+
+    .config-session-card {
+        padding: 15px;
+    }
+
+    .config-session-card-header h3 {
+        font-size: 14px;
+    }
+
+    .config-session-main-icon {
+        width: 64px;
+        height: 64px;
+        margin-top: 16px;
+        font-size: 24px;
+    }
+
+    .config-session-main-title strong {
+        font-size: 12px;
+    }
+
+    .config-session-main-title span {
+        font-size: 9px;
+    }
+
+    .config-session-detail {
+        padding: 8px;
+    }
+
+    /* Preferências */
+    .config-preference-section {
+        margin-bottom: 14px;
+        padding: 15px;
+    }
+
+    .config-preference-section-header {
+        margin-bottom: 13px;
+    }
+
+    .config-theme-options-two {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(260px, 1fr)
+            );
+        gap: 12px;
+    }
+
+    .config-theme-option {
+        min-height: 70px;
+        grid-template-columns:
+            78px
+            minmax(0, 1fr)
+            24px;
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .config-theme-preview {
+        width: 78px;
+        height: 48px;
+    }
+
+    .config-theme-option-text strong {
+        font-size: 11px;
+    }
+
+    .config-theme-option-text small {
+        font-size: 9px;
+    }
+
+    .config-preference-items {
+        gap: 10px;
+    }
+
+    .config-preference-item {
+        min-height: 58px;
+        padding: 11px;
+    }
+
+    .config-preference-item strong {
+        font-size: 10px;
+    }
+
+    .config-preference-item small {
+        font-size: 8.5px;
+    }
+}
+
+/* ==========================================================
+   ULTRAWIDE / 2K / 4K
+========================================================== */
+
+@media only screen and (min-width: 2200px) {
+
+    .config-page {
+        padding-right: 72px;
+        padding-left: 72px;
+    }
+
+    .config-layout {
+        grid-template-columns:
+            280px
+            minmax(0, 1fr)
+            340px;
+    }
+
+    .config-content {
+        padding-right: 28px;
+        padding-left: 28px;
+    }
+}
+
+/* ==========================================================
+   DESKTOP / NOTEBOOK GRANDE — 1280 ATÉ 1599
+========================================================== */
+
+@media only screen and (min-width: 1280px) and (max-width: 1599px) {
+
+    .config-page {
+        padding:
+            15px
+            clamp(20px, 2.3vw, 34px)
+            14px;
+    }
+
+    .config-layout {
+        grid-template-columns:
+            minmax(215px, 235px)
+            minmax(0, 1fr)
+            minmax(260px, 285px);
+    }
+
+    .config-content {
+        padding:
+            16px
+            18px;
+    }
+
+    .config-sidebar {
+        padding: 14px;
+    }
+
+    .config-session-aside {
+        padding: 14px;
+    }
+
+    .config-form-grid {
+        gap:
+            8px
+            10px;
+    }
+
+    .config-input-container input,
+    .config-input-container select {
+        min-height: 35px;
+    }
+}
+
+/* ==========================================================
+   NOTEBOOK COM ALTURA REDUZIDA / ZOOM
+   Inclui 1366 × 768 e 1280 × 720.
+========================================================== */
+
+@media only screen and (min-width: 1024px) and (max-height: 820px) {
+
+    :root {
+        --config-page-offset: 108px;
+    }
+
+    .config-page {
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+
+    .config-page-header {
+        min-height: 50px;
+        margin-bottom: 8px;
+    }
+
+    .config-page-title-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    .config-page-title h1 {
+        font-size: 21px;
+    }
+
+    .config-page-title p {
+        font-size: 11px;
+    }
+
+    .config-content {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .config-panel-header {
+        margin-bottom: 10px;
+        padding-bottom: 9px;
+    }
+
+    .config-profile-photo-preview {
+        width: 56px;
+        height: 56px;
+        flex-basis: 56px;
+    }
+
+    .config-form-section,
+    .config-preference-section {
+        margin-bottom: 8px;
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+
+    .config-input-container input,
+    .config-input-container select {
+        min-height: 33px;
+    }
+
+    .config-note-card {
+        min-height: 0;
+    }
+}
+
+/* ==========================================================
+   NOTEBOOK MÉDIO — 1024 ATÉ 1279
+   Mantém todas as três áreas acessíveis.
+========================================================== */
+
+@media only screen and (min-width: 1024px) and (max-width: 1279px) {
+
+    .config-page {
+        padding:
+            12px
+            16px
+            12px;
+    }
+
+    .config-layout {
+        grid-template-areas:
+            "sidebar content"
+            "sidebar session";
+        grid-template-columns:
+            minmax(185px, 205px)
+            minmax(0, 1fr);
+        grid-template-rows:
+            minmax(0, 1fr)
+            auto;
+    }
+
+    .config-sidebar {
+        grid-area: sidebar;
+    }
+
+    .config-content {
+        grid-area: content;
+        padding: 14px;
+    }
+
+    .config-session-aside {
+        display: grid;
+        grid-area: session;
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(210px, 250px);
+        max-height: 205px;
+        padding: 11px 14px;
+        border-top: 1px solid var(--config-border);
+        border-left: 0;
+    }
+
+    .config-session-card {
+        min-width: 0;
+        max-height: 180px;
+        overflow-y: auto;
+    }
+
+    .config-session-main-icon {
+        width: 46px;
+        height: 46px;
+        margin:
+            8px
+            auto
+            5px;
+        font-size: 18px;
+    }
+
+    .config-session-details {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+        gap: 6px;
+        margin-top: 9px;
+    }
+
+    .config-security-tip {
+        align-self: stretch;
+    }
+
+    .config-form-grid {
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-theme-options-two {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+/* ==========================================================
+   TABLET / MOBILE — ATÉ 900
+   Um único scroll vertical da página.
+========================================================== */
+
+@media only screen and (max-width: 900px) {
+
+    html {
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body.configuracoes-page {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        overflow-y: visible;
+    }
+
+    .config-page {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding:
+            12px
+            14px
+            24px;
+        overflow: visible;
+    }
+
+    .config-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+        margin-bottom: 12px;
+        padding: 0;
+    }
+
+    .config-page-title {
+        width: 100%;
+    }
+
+    .config-header-status {
+        display: flex;
+        width: 100%;
+        max-width: none;
+    }
+
+    .config-header-status small {
+        max-width: none;
+        white-space: normal;
+    }
+
+    .config-layout {
+        display: grid;
+        grid-template-areas:
+            "sidebar"
+            "content"
+            "session";
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        overflow: visible;
+    }
+
+    .config-sidebar {
+        grid-area: sidebar;
+        align-items: stretch;
+        padding: 12px;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--config-border);
+    }
+
+    .config-user-summary {
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 58px;
+        padding: 9px 10px;
+    }
+
+    .config-user-summary-text {
+        display: flex;
+    }
+
+    .config-navigation {
+        width: 100%;
+        display: grid;
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            );
+        align-items: stretch;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .config-navigation-title {
+        display: block;
+        grid-column: 1 / -1;
+        margin:
+            0
+            2px
+            1px;
+    }
+
+    .config-navigation-item {
+        width: 100%;
+        min-height: 58px;
+        justify-content: flex-start;
+        padding: 8px;
+    }
+
+    .config-navigation-info {
+        display: flex;
+    }
+
+    .config-navigation-arrow {
+        display: block;
+        margin-left: auto;
+    }
+
+    .config-navigation-info strong {
+        white-space: normal;
+    }
+
+    .config-navigation-info small {
+        display: none;
+    }
+
+    .config-sidebar-help {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .config-sidebar-help > div:last-child {
+        display: flex;
+    }
+
+    .config-content {
+        grid-area: content;
+        padding:
+            16px
+            15px;
+        overflow: visible;
+    }
+
+    .config-panel {
+        height: auto;
+        min-height: 0;
+    }
+
+    .config-account-form,
+    .config-preferences-form {
+        overflow: visible;
+    }
+
+    .config-session-aside {
+        display: flex;
+        grid-area: session;
+        max-height: none;
+        padding: 14px;
+        overflow: visible;
+        border-top: 1px solid var(--config-border);
+        border-left: 0;
+    }
+
+    .config-panel-header {
+        gap: 12px;
+    }
+
+    .config-form-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-grid-span-2 {
+        grid-column: span 2;
+    }
+
+    .config-notes-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        overflow: visible;
+    }
+
+    .config-note-editor,
+    .config-notes-list {
+        display: flex;
+        overflow: visible;
+    }
+
+    .config-notes-list {
+        padding: 13px;
+    }
+
+    .config-note-items {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+        overflow: visible;
+    }
+
+    .config-session-list {
+        overflow: visible;
+    }
+
+    .config-theme-options,
+    .config-theme-options-two {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-preference-items {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+}
+
+/* ==========================================================
+   TABLET ESTREITO — 601 ATÉ 760
+========================================================== */
+
+@media only screen and (min-width: 601px) and (max-width: 760px) {
+
+    .config-navigation {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-navigation-info small {
+        display: block;
+        white-space: normal;
+    }
+
+    .config-note-items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-theme-options,
+    .config-theme-options-two,
+    .config-preference-items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* ==========================================================
+   CELULAR — ATÉ 600
+========================================================== */
+
+@media only screen and (max-width: 600px) {
+
+    .config-page {
+        padding:
+            10px
+            10px
+            22px;
+    }
+
+    .config-page-title {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .config-page-title-icon {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+        font-size: 17px;
+    }
+
+    .config-page-title h1 {
+        font-size: 22px;
+    }
+
+    .config-page-title p {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .config-header-status {
+        padding: 9px 10px;
+    }
+
+    .config-layout {
+        border-radius: 14px;
+    }
+
+    .config-sidebar {
+        padding: 10px;
+    }
+
+    .config-user-summary {
+        min-height: 54px;
+    }
+
+    .config-user-avatar {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .config-navigation {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-navigation-item {
+        min-height: 62px;
+    }
+
+    .config-navigation-info small {
+        display: block;
+        white-space: normal;
+    }
+
+    .config-navigation-arrow {
+        display: none;
+    }
+
+    .config-content {
+        padding:
+            14px
+            12px;
+    }
+
+    .config-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .config-panel-badge {
+        align-self: flex-start;
+    }
+
+    .config-profile-photo {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .config-profile-photo-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .config-profile-photo-actions .config-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .config-form-section-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .config-readonly-message {
+        align-self: flex-start;
+    }
+
+    .config-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-grid-span-2 {
+        grid-column: auto;
+    }
+
+    .config-form-group {
+        grid-column: auto;
+    }
+
+    .config-input-container input,
+    .config-input-container select,
+    .config-note-text-group textarea,
+    .config-notes-filter input {
+        font-size: 16px;
+    }
+
+    .config-note-editor-header,
+    .config-notes-list-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .config-note-options {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-notes-filter {
+        width: 100%;
+    }
+
+    .config-note-items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-note-card h4 {
+        white-space: normal;
+    }
+
+    .config-note-editor-footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-note-editor-footer .config-button {
+        width: 100%;
+    }
+
+    .config-notes-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .config-session-list-item {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .config-session-device-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .config-session-end-button {
+        width: 100%;
+        min-width: 0;
+        grid-column: 1 / -1;
+    }
+
+    .config-session-device-data {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .config-session-aside {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .config-session-card,
+    .config-security-tip {
+        width: 100%;
+    }
+
+    .config-theme-options,
+    .config-theme-options-two,
+    .config-preference-items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-theme-option {
+        grid-template-columns:
+            68px
+            minmax(0, 1fr)
+            22px;
+    }
+
+    .config-theme-preview {
+        width: 68px;
+    }
+
+    .config-preference-item strong {
+        white-space: normal;
+    }
+
+    .config-form-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .config-form-footer-message {
+        align-items: flex-start;
+    }
+
+    .config-form-footer .config-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .config-button {
+        min-height: 44px;
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+/* ==========================================================
+   CELULAR PEQUENO — ATÉ 420
+========================================================== */
+
+@media only screen and (max-width: 420px) {
+
+    .config-page {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+
+    .config-navigation {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-navigation-item {
+        min-height: 54px;
+    }
+
+    .config-profile-photo-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .config-theme-option {
+        grid-template-columns:
+            60px
+            minmax(0, 1fr)
+            20px;
+        gap: 8px;
+    }
+
+    .config-theme-preview {
+        width: 60px;
+        height: 42px;
+    }
+
+    .config-security-alert,
+    .config-security-tip {
+        align-items: flex-start;
+    }
+}
+
+/* ==========================================================
+   PAISAGEM COM POUCA ALTURA
+========================================================== */
+
+@media only screen and (max-height: 560px) and (orientation: landscape) {
+
+    body.configuracoes-page {
+        overflow-y: auto;
+    }
+
+    .config-page {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    .config-layout {
+        overflow: visible;
+    }
+
+    .config-sidebar,
+    .config-content,
+    .config-session-aside {
+        overflow: visible;
+    }
+
+    .config-session-aside {
+        max-height: none;
+    }
+}
+
+/* ==========================================================
+   DISPOSITIVOS TOUCH
+========================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .config-navigation-item,
+    .config-button,
+    .config-icon-button,
+    .config-pagination-button,
+    .config-theme-option,
+    .config-preference-item,
+    .config-sidebar-help {
+        min-height: 44px;
+    }
+
+    .config-navigation-item:hover,
+    .config-button:hover,
+    .config-note-card:hover,
+    .config-sidebar-help:hover,
+    .config-preference-item:hover {
+        transform: none;
+    }
+}
+
+/* ==========================================================
+   SIMULAR USUÁRIO (aba exclusiva de superusuário)
+========================================================== */
+
+.config-simulation-search {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.config-simulation-search .config-input-container {
+    flex: 1 1 260px;
+}
+
+.config-simulation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.config-simulation-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid var(--config-border);
+    border-radius: var(--config-radius-medium);
+    background: var(--config-surface-secondary);
+    transition: border-color var(--config-transition),
+                background var(--config-transition);
+}
+
+.config-simulation-item:hover {
+    border-color: var(--config-primary-border);
+    background: var(--config-primary-soft);
+}
+
+.config-simulation-avatar {
+    display: flex;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--config-primary);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.config-simulation-info {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.config-simulation-info strong {
+    color: var(--config-text);
+    font-size: 0.92rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-simulation-info small {
+    color: var(--config-text-secondary);
+    font-size: 0.76rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.config-simulation-action {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.config-simulation-empty {
+    padding: 22px 14px;
+    border: 1px dashed var(--config-border-strong);
+    border-radius: var(--config-radius-medium);
+    background: var(--config-surface-secondary);
+    color: var(--config-text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+
+    .config-simulation-item {
+        flex-wrap: wrap;
+    }
+
+    .config-simulation-action {
+        flex: 1 1 100%;
+    }
+
+    .config-simulation-action .config-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.configuracoes-page *,
+    body.configuracoes-page *::before,
+    body.configuracoes-page *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+
+/* ==========================================================
+   V3.3 — AJUSTES DA PÁGINA DE CONFIGURAÇÕES
+   - Avatar em gradiente, alinhado ao user menu
+   - Navegação reorganizada
+   - Anotações bloqueadas
+   - Sessões removidas da navegação
+   - Preferências sem fundo azul no ícone fa-sliders-h
+   - Estrutura organizacional ampliada
+========================================================== */
+
+/* Avatar com identidade visual em gradiente. */
+.config-user-avatar,
+.config-profile-photo-preview {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.95);
+    background:
+        linear-gradient(
+            145deg,
+            #69a9ff 0%,
+            #4689f5 44%,
+            #2563eb 72%,
+            #1d4ed8 100%
+        );
+    box-shadow:
+        0 0 0 2px #1f4d91,
+        0 7px 18px rgba(37, 99, 235, 0.20);
+}
+
+.config-user-initials,
+.config-profile-initials {
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+}
+
+.config-profile-photo-preview img {
+    position: relative;
+    z-index: 1;
+    background: var(--config-surface);
+}
+
+/* Anotações permanecem visíveis apenas como referência, mas bloqueadas. */
+.config-navigation-item.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+    color: var(--config-text-muted);
+    border-color: transparent;
+    background: transparent;
+    pointer-events: none;
+}
+
+.config-navigation-item.is-disabled:hover {
+    color: var(--config-text-muted);
+    border-color: transparent;
+    background: transparent;
+}
+
+.config-navigation-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-height: 20px;
+    padding: 0 7px;
+    border: 1px solid var(--config-border);
+    border-radius: 999px;
+    color: var(--config-text-muted);
+    background: var(--config-surface);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* O ícone de Preferências não recebe o bloco azul preenchido. */
+.config-nav-preferences .config-navigation-icon,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-icon {
+    color: var(--config-primary) !important;
+    border-color: var(--config-border) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+html[data-theme="dark"] .config-nav-preferences .config-navigation-icon,
+html[data-theme="dark"]
+    #configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-icon {
+    color: #6aa0f8 !important;
+    border-color: var(--config-border) !important;
+    background: transparent !important;
+}
+
+/* Estrutura organizacional. */
+.config-organization-grid .config-input-readonly input {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.config-organization-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 5px;
+    padding: 0 5px;
+    border-radius: 999px;
+    color: var(--config-primary);
+    background: var(--config-primary-soft);
+    font-size: 8px;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+/* Com três itens na navegação, evita uma quarta coluna vazia em tablet. */
+@media only screen and (min-width: 761px) and (max-width: 1100px) {
+    .config-navigation {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    .config-navigation-status {
+        display: none;
+    }
+}
+
+/* ==========================================================
+   AJUSTE 3.3.1 - NAVEGAÇÃO SEM FUNDO AZUL
+   Avatar do usuário em gradiente preservado.
+========================================================== */
+
+.config-page-title-icon {
+    color: var(--config-primary) !important;
+    border-color: var(--config-border) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.config-navigation-icon,
+.config-nav-preferences .config-navigation-icon,
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account
+    .config-navigation-icon,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences
+    .config-navigation-icon {
+    color: var(--config-primary) !important;
+    border-color: var(--config-border) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#configMinhaConta:checked
+    ~ .config-layout
+    .config-nav-account,
+#configPreferencias:checked
+    ~ .config-layout
+    .config-nav-preferences {
+    color: var(--config-primary) !important;
+    border-color: var(--config-border) !important;
+    background: transparent !important;
+}
+
+.config-sidebar-help-icon {
+    color: var(--config-primary) !important;
+    background: transparent !important;
+}
+
+html[data-theme="dark"] .config-page-title-icon,
+html[data-theme="dark"] .config-navigation-icon,
+html[data-theme="dark"] .config-sidebar-help-icon {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================
+   AJUSTE 3.3.2
+   - Cliente direto de request.user.cliente
+   - Indicadores online em verde pulsante
+   - Ícones de detalhe sem fundo azul
+   - Botão primário azul com texto branco
+========================================================== */
+
+/* Detalhes da sessão: mantém o ícone azul, mas sem bloco/fundo azul. */
+.config-session-detail-icon {
+    color: var(--config-primary) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Indicador de conta conectada: verde e pulsante. */
+.config-status-indicator {
+    background: #12b76a !important;
+    box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.14) !important;
+    animation: configOnlinePulse 1.6s ease-in-out infinite;
+}
+
+/* Indicador da sessão atual: verde. */
+.config-session-online {
+    color: #12b76a !important;
+    background: rgba(18, 183, 106, 0.10) !important;
+}
+
+.config-session-online > span {
+    background: #12b76a !important;
+    box-shadow: 0 0 0 3px rgba(18, 183, 106, 0.12);
+    animation: configOnlinePulseDot 1.6s ease-in-out infinite;
+}
+
+/* Botão principal: azul do Workspace, texto branco e hover suave. */
+.config-button-primary,
+html[data-theme="dark"] .config-button-primary {
+    color: #ffffff !important;
+    border-color: #4689F5 !important;
+    background: #4689F5 !important;
+    box-shadow: 0 2px 5px rgba(70, 137, 245, 0.16);
+}
+
+.config-button-primary:hover,
+html[data-theme="dark"] .config-button-primary:hover {
+    color: #ffffff !important;
+    border-color: #3577EE !important;
+    background: #3577EE !important;
+    box-shadow: 0 4px 9px rgba(70, 137, 245, 0.20);
+    transform: translateY(-1px);
+}
+
+.config-button-primary:active,
+html[data-theme="dark"] .config-button-primary:active {
+    color: #ffffff !important;
+    border-color: #3577EE !important;
+    background: #3577EE !important;
+    transform: translateY(0);
+}
+
+@keyframes configOnlinePulse {
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.14);
+    }
+
+    50% {
+        opacity: 0.72;
+        box-shadow: 0 0 0 7px rgba(18, 183, 106, 0.04);
+    }
+}
+
+@keyframes configOnlinePulseDot {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.68;
+        transform: scale(0.84);
+    }
+}
+
+/* Respeita usuários que preferem menos animação. */
+@media (prefers-reduced-motion: reduce) {
+    .config-status-indicator,
+    .config-session-online > span {
+        animation: none !important;
+    }
+}
+

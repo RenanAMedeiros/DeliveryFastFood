@@ -1,0 +1,353 @@
+/* ==========================================================================
+   WORKSPACE QORE — DESIGN TOKENS OFICIAIS
+   Arquivo: workspace_tokens.css
+
+   Identidade visual oficial do Workspace.
+   Referência visual principal: 1920 x 1080.
+
+   PRINCÍPIOS
+   - Inter como família tipográfica oficial.
+   - Azul/navy como identidade principal.
+   - Sem amarelo como cor estrutural do Workspace.
+   - Escala tipográfica controlada.
+   - Cores, radius, sombras, espaçamentos e estados centralizados.
+   - Browser zoom permanece nativo.
+   - Tokens antigos --workspace-* mantidos como aliases de transição.
+   ========================================================================== */
+
+:root {
+
+    /* ======================================================================
+       REFERÊNCIA / CONTAINER
+       ====================================================================== */
+
+    --ws-reference-width: 1920px;
+    --ws-reference-height: 1080px;
+
+    /*
+     * Piso estrutural para desktop/notebook com ponteiro fino.
+     * Abaixo desta largura útil (por janela estreita ou browser zoom),
+     * o Workspace preserva a composição desktop e permite overflow local
+     * em vez de assumir prematuramente um layout de tablet/mobile.
+     */
+    --ws-desktop-min-width: 1024px;
+
+    --ws-page-max-width: 1920px;
+
+    --ws-page-padding-x: clamp(16px, 1.45vw, 30px);
+    --ws-page-padding-y: clamp(14px, 1.10vw, 24px);
+
+
+    /* ======================================================================
+       TIPOGRAFIA
+       ====================================================================== */
+
+    --ws-font-family:
+        "Inter",
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    --ws-font-mono:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+    /* Escala oficial */
+    --ws-font-2xs: 0.625rem;   /* 10px */
+    --ws-font-xs: 0.6875rem;   /* 11px */
+    --ws-font-sm: 0.75rem;     /* 12px */
+    --ws-font-md: 0.8125rem;   /* 13px */
+    --ws-font-base: 0.875rem;  /* 14px */
+    --ws-font-lg: 1rem;        /* 16px */
+    --ws-font-xl: 1.125rem;    /* 18px */
+    --ws-font-2xl: 1.25rem;    /* 20px */
+    --ws-font-3xl: 1.5rem;     /* 24px */
+
+    /* Títulos fluidos */
+    --ws-title-panel: clamp(0.875rem, 0.76vw, 1rem);
+    --ws-title-section: clamp(1rem, 0.90vw, 1.125rem);
+    --ws-title-page: clamp(1.60rem, 1.65vw, 2rem);
+    --ws-title-display: clamp(1.85rem, 2vw, 2.35rem);
+
+    /* Pesos oficiais */
+    --ws-weight-regular: 400;
+    --ws-weight-medium: 500;
+    --ws-weight-semibold: 600;
+    --ws-weight-bold: 700;
+    --ws-weight-extrabold: 800;
+
+    /* Line-height */
+    --ws-line-tight: 1.15;
+    --ws-line-heading: 1.25;
+    --ws-line-base: 1.45;
+    --ws-line-relaxed: 1.60;
+
+    /* Tracking */
+    --ws-tracking-tight: -0.025em;
+    --ws-tracking-normal: 0;
+    --ws-tracking-kicker: 0.13em;
+
+
+    /* ======================================================================
+       PALETA — BRAND / NAVY
+       ====================================================================== */
+
+    --ws-navy-950: #071124;
+    --ws-navy-900: #0B1832;
+    --ws-navy-800: #101C44;
+    --ws-navy-700: #172A63;
+
+    --ws-primary-700: #1D4ED8;
+    --ws-primary-600: #2563EB;
+    --ws-primary-500: #4689F5;
+    --ws-primary-400: #60A5FA;
+    --ws-primary-300: #93C5FD;
+    --ws-primary-100: #DBEAFE;
+    --ws-primary-50: #EFF6FF;
+
+    --ws-primary: var(--ws-primary-600);
+    --ws-primary-hover: var(--ws-primary-700);
+    --ws-primary-light: var(--ws-primary-400);
+    --ws-primary-soft: var(--ws-primary-50);
+    --ws-primary-border: rgba(37, 99, 235, 0.20);
+
+    --ws-focus-ring: rgba(37, 99, 235, 0.16);
+
+    --ws-gradient-brand:
+        linear-gradient(
+            135deg,
+            var(--ws-navy-950) 0%,
+            var(--ws-navy-800) 68%,
+            var(--ws-navy-700) 100%
+        );
+
+
+    /* ======================================================================
+       PALETA — NEUTROS / SUPERFÍCIES
+       ====================================================================== */
+
+    --ws-app-bg: #F4F7FB;
+
+    --ws-surface-card: #FFFFFF;
+    --ws-surface-soft: #F8FAFC;
+    --ws-surface-muted: #F6F8FB;
+    --ws-surface-subtle: #F2F4F7;
+
+    --ws-text-primary: #172033;
+    --ws-text-secondary: #35405A;
+    --ws-text-muted-strong: #526078;
+    --ws-text-muted: #667085;
+    --ws-text-subtle: #8A93A5;
+    --ws-text-placeholder: #98A2B3;
+
+    --ws-border: #DDE3EC;
+    --ws-border-strong: #C7CFDC;
+    --ws-border-soft: #E7EBF1;
+    --ws-border-subtle: #EDF0F4;
+
+    --ws-control-bg: #FFFFFF;
+    --ws-control-border: #D8DFE9;
+    --ws-control-disabled-bg: #F2F4F7;
+    --ws-control-readonly-bg: #F7F9FC;
+
+    --ws-table-bg: #FFFFFF;
+    --ws-table-head-bg: #F7F9FC;
+    --ws-table-head-text: #526078;
+    --ws-table-text: #35405A;
+    --ws-table-border: #E7EBF1;
+    --ws-table-row-hover: #F8FAFF;
+    --ws-table-footer-bg: #FFFFFF;
+
+    --ws-modal-footer-bg: #FAFBFC;
+
+    --ws-scroll-thumb: #C7CED9;
+    --ws-scroll-thumb-hover: #AEB8C7;
+
+
+    /* ======================================================================
+       STATUS
+       ====================================================================== */
+
+    --ws-success: #16A34A;
+    --ws-success-hover: #15803D;
+    --ws-success-soft: #F0FDF4;
+    --ws-success-border: #BBF7D0;
+
+    --ws-warning: #D97706;
+    --ws-warning-hover: #B45309;
+    --ws-warning-soft: #FFFBEB;
+    --ws-warning-border: #FDE68A;
+
+    --ws-danger: #D92D20;
+    --ws-danger-hover: #B42318;
+    --ws-danger-soft: #FEF3F2;
+    --ws-danger-border: #FECDCA;
+
+    --ws-info: #2563EB;
+    --ws-info-soft: #EFF6FF;
+    --ws-info-border: #DBEAFE;
+
+
+    /* ======================================================================
+       ESPAÇAMENTO
+       ====================================================================== */
+
+    --ws-space-3xs: 2px;
+    --ws-space-2xs: 4px;
+    --ws-space-xs: 6px;
+    --ws-space-sm: 8px;
+    --ws-space-md: 12px;
+    --ws-space-lg: 16px;
+    --ws-space-xl: 20px;
+    --ws-space-2xl: 24px;
+    --ws-space-3xl: 32px;
+    --ws-space-4xl: 40px;
+    --ws-space-5xl: 48px;
+
+
+    /* ======================================================================
+       RADIUS
+       ====================================================================== */
+
+    --ws-radius-xs: 6px;
+    --ws-radius-sm: 8px;
+    --ws-radius-md: 10px;
+    --ws-radius-lg: 12px;
+    --ws-radius-xl: 14px;
+    --ws-radius-2xl: 18px;
+    --ws-radius-modal: 20px;
+    --ws-radius-pill: 999px;
+    --ws-radius-round: 50%;
+
+
+    /* ======================================================================
+       ALTURAS DE CONTROLES
+       ====================================================================== */
+
+    --ws-control-height-sm: 32px;
+    --ws-control-height-md: 40px;
+    --ws-control-height-lg: 44px;
+
+    --ws-button-height-sm: 32px;
+    --ws-button-height-md: 38px;
+    --ws-button-height-lg: 44px;
+
+    --ws-icon-control-sm: 32px;
+    --ws-icon-control-md: 40px;
+    --ws-icon-control-lg: 44px;
+
+
+    /* ======================================================================
+       SOMBRAS
+       ====================================================================== */
+
+    --ws-shadow-xs:
+        0 1px 4px rgba(16, 28, 68, 0.08);
+
+    --ws-shadow-sm:
+        0 6px 18px rgba(16, 28, 68, 0.06);
+
+    --ws-shadow-md:
+        0 10px 28px rgba(16, 28, 68, 0.10);
+
+    --ws-shadow-lg:
+        0 20px 55px rgba(3, 7, 18, 0.18);
+
+    --ws-shadow-overlay:
+        0 24px 60px rgba(3, 7, 18, 0.24);
+
+    --ws-shadow-modal:
+        0 32px 90px rgba(3, 7, 18, 0.32);
+
+
+    /* ======================================================================
+       TRANSIÇÕES
+       ====================================================================== */
+
+    --ws-transition-fast: 0.14s ease;
+    --ws-transition-base: 0.18s ease;
+    --ws-transition-slow: 0.24s ease;
+
+
+    /* ======================================================================
+       Z-INDEX
+       ====================================================================== */
+
+    --ws-z-base: 1;
+    --ws-z-dropdown: 1200;
+    --ws-z-sticky: 2000;
+    --ws-z-overlay: 30000;
+    --ws-z-notification: 30010;
+    --ws-z-modal: 30100;
+    --ws-z-loading: 99999;
+    --ws-z-tooltip: 100000;
+
+
+    /* ======================================================================
+       COMPATIBILIDADE COM TOKENS LEGADOS DA NAVBAR
+       Mantidos durante a migração gradual.
+       ====================================================================== */
+
+    --workspace-blue: var(--ws-navy-950);
+    --workspace-blue-light: var(--ws-navy-800);
+    --workspace-primary: var(--ws-primary);
+    --workspace-primary-light: var(--ws-primary-light);
+    --workspace-white: var(--ws-surface-card);
+    --workspace-text-light: #DCE5F5;
+    --workspace-muted-light: #AEBBD2;
+    --workspace-line-light: rgba(255, 255, 255, 0.16);
+    --workspace-shadow: var(--ws-shadow-lg);
+}
+
+
+/* ==========================================================================
+   DARK MODE — BRIDGE
+   O mecanismo atual do projeto permanece responsável por adicionar
+   [data-theme="dark"], .dark ou .dark-mode.
+   ========================================================================== */
+
+[data-theme="dark"],
+.dark,
+.dark-mode {
+
+    --ws-app-bg: #09131F;
+
+    --ws-surface-card: #101D2B;
+    --ws-surface-soft: #142332;
+    --ws-surface-muted: #172837;
+    --ws-surface-subtle: #1B2D3D;
+
+    --ws-text-primary: #F4F7FA;
+    --ws-text-secondary: #DCE5ED;
+    --ws-text-muted-strong: #BAC7D2;
+    --ws-text-muted: #9AABBA;
+    --ws-text-subtle: #8195A6;
+    --ws-text-placeholder: #718696;
+
+    --ws-border: #2A4050;
+    --ws-border-strong: #3A5365;
+    --ws-border-soft: rgba(202, 221, 235, 0.10);
+    --ws-border-subtle: rgba(202, 221, 235, 0.07);
+
+    --ws-control-bg: #132634;
+    --ws-control-border: #2C4353;
+    --ws-control-disabled-bg: #172632;
+    --ws-control-readonly-bg: #162733;
+
+    --ws-table-bg: #101D2B;
+    --ws-table-head-bg: #142332;
+    --ws-table-head-text: #BAC7D2;
+    --ws-table-text: #DCE5ED;
+    --ws-table-border: rgba(202, 221, 235, 0.08);
+    --ws-table-row-hover: #192D3C;
+    --ws-table-footer-bg: #101D2B;
+
+    --ws-modal-footer-bg: #142332;
+
+    --ws-scroll-thumb: rgba(174, 196, 211, 0.24);
+    --ws-scroll-thumb-hover: rgba(174, 196, 211, 0.38);
+}

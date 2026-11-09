@@ -1,0 +1,318 @@
+/*
+ * Workspace Qore — Estilos globais de transição
+ *
+ * Objetivo:
+ * - consolidar Inter como tipografia oficial;
+ * - remover cores amarelas legadas da estrutura global;
+ * - permitir migração progressiva para o Workspace UI Core;
+ * - preservar páginas antigas até que recebam as classes ws-*.
+ */
+
+html {
+    margin: 0;
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    background:
+        var(
+            --ws-app-bg,
+            #F4F7FB
+        );
+}
+
+body {
+    margin: 0;
+
+    color:
+        var(
+            --ws-text-primary,
+            #172033
+        );
+
+    background:
+        var(
+            --ws-app-bg,
+            #F4F7FB
+        );
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    font-size:
+        var(
+            --ws-font-base,
+            0.875rem
+        );
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        );
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/*
+ * Compatibilidade temporária com páginas antigas.
+ * As páginas que já utilizam .ws-main passam a controlar o próprio padding
+ * pelo Workspace UI Core e não recebem o padding legado.
+ */
+main:not(.ws-main) {
+    min-width: 0;
+    max-width: 100%;
+
+    padding: 0 2rem;
+
+    min-height: 70vh;
+}
+
+main.ws-main {
+    min-width: 0;
+    max-width: 100%;
+
+    padding: 0;
+
+    min-height: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   LINKS / TEXTO
+   -------------------------------------------------------------------------- */
+
+.user-name {
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+}
+
+
+/*
+ * Regra antiga utilizava amarelo.
+ * O Workspace passa a usar o azul oficial também em páginas legadas.
+ */
+.sub-menu a:hover {
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+
+    background:
+        var(
+            --ws-primary-soft,
+            #EFF6FF
+        );
+
+    color:
+        var(
+            --ws-primary-hover,
+            #1D4ED8
+        );
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+}
+
+
+/* --------------------------------------------------------------------------
+   FILTROS LEGADOS
+   -------------------------------------------------------------------------- */
+
+.filter h3 {
+    margin-top: 70px;
+    margin-left: 40px;
+
+    color:
+        var(
+            --ws-text-primary,
+            #172033
+        );
+
+    font-size:
+        var(
+            --ws-font-xl,
+            1.125rem
+        );
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+.filter label {
+    color:
+        var(
+            --ws-text-muted-strong,
+            #526078
+        );
+
+    font-size:
+        var(
+            --ws-font-sm,
+            0.75rem
+        );
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+}
+
+
+/* --------------------------------------------------------------------------
+   PAINÉIS LEGADOS
+   -------------------------------------------------------------------------- */
+
+.panel {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap:
+        var(
+            --ws-space-md,
+            12px
+        );
+
+    justify-content: center;
+
+    margin-top:
+        var(
+            --ws-space-3xl,
+            32px
+        );
+}
+
+.panel-item {
+    width: 100px;
+
+    color:
+        var(
+            --ws-navy-800,
+            #101C44
+        );
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+
+    text-align: center;
+}
+
+.panel-item img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+
+    cursor: pointer;
+
+    transition:
+        transform
+        var(
+            --ws-transition-base,
+            0.18s ease
+        );
+}
+
+.panel-item img:hover {
+    transform: translateY(-2px);
+}
+
+.panel-item p {
+    margin-top:
+        var(
+            --ws-space-sm,
+            8px
+        );
+
+    font-size:
+        var(
+            --ws-font-base,
+            0.875rem
+        );
+}
+
+.hidden {
+    display: none;
+}
+
+.panel a:hover {
+    border-radius: 0;
+
+    background: transparent;
+}
+
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE LEGADA SEGURA
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 820px) {
+
+    main:not(.ws-main) {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .filter h3 {
+        margin-top: 40px;
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 640px) {
+
+    main:not(.ws-main) {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   REDUÇÃO DE MOVIMENTO
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .panel-item img {
+        transition: none;
+    }
+
+    .panel-item img:hover {
+        transform: none;
+    }
+}

@@ -1,0 +1,29 @@
+{% load static %}
+<header class="pedidos-navbar">
+    <a class="pedidos-brand" href="{% url 'home' %}">
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        <span>Controle de Pedidos</span>
+    </a>
+
+    {% if user.is_authenticated %}
+        <nav class="pedidos-nav" aria-label="Navegacao principal">
+            <a href="{% url 'pedidos' %}" {% if request.resolver_match.url_name == 'pedidos' %}aria-current="page"{% endif %}>Pedidos</a>
+            <a href="{% url 'pedido_novo' %}" {% if request.resolver_match.url_name == 'pedido_novo' %}aria-current="page"{% endif %}>Nova venda</a>
+            <a href="{% url 'cozinha' %}" {% if request.resolver_match.url_name == 'cozinha' %}aria-current="page"{% endif %}>Cozinha</a>
+            <a href="{% url 'delivery' %}" {% if request.resolver_match.url_name == 'delivery' %}aria-current="page"{% endif %}>Delivery</a>
+            <a href="{% url 'produtos' %}" {% if request.resolver_match.url_name == 'produtos' or request.resolver_match.url_name == 'produto_novo' %}aria-current="page"{% endif %}>Itens de venda</a>
+            <a href="{% url 'clientes' %}" {% if request.resolver_match.url_name == 'clientes' %}aria-current="page"{% endif %}>Clientes</a>
+            {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}">Admin</a>
+            {% endif %}
+        </nav>
+        <div class="pedidos-user">
+            <span>{{ user.get_full_name|default:user.username }}</span>
+            <a href="{% url 'logout' %}">Sair</a>
+        </div>
+    {% else %}
+        <nav class="pedidos-nav" aria-label="Acesso">
+            <a href="{% url 'login' %}">Entrar</a>
+        </nav>
+    {% endif %}
+</header>

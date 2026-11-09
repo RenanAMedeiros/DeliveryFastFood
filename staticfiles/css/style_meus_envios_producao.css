@@ -1,0 +1,6727 @@
+:root {
+    /*
+     * Workspace UI Core — ponte de compatibilidade.
+     * A identidade oficial vive em workspace_tokens.css.
+     * Os nomes --qore-* são mantidos para preservar o CSS funcional
+     * existente durante a migração gradual.
+     */
+    --qore-navy-950: var(--ws-navy-950, #071124);
+    --qore-navy-900: var(--ws-navy-900, #0B1832);
+    --qore-navy-800: var(--ws-navy-800, #101C44);
+
+    --qore-blue-700: var(--ws-primary-hover, #1D4ED8);
+    --qore-blue-600: var(--ws-primary, #2563EB);
+    --qore-blue-500: var(--ws-primary-500, #4689F5);
+    --qore-cyan-400: #38BDF8;
+
+    --qore-white: var(--ws-white, #FFFFFF);
+    --qore-bg: var(--ws-app-bg, #F4F7FB);
+    --qore-surface: var(--ws-surface-card, #FFFFFF);
+    --qore-surface-soft: var(--ws-surface-soft, #F8FAFC);
+
+    --qore-text: var(--ws-text-primary, #172033);
+    --qore-muted: var(--ws-text-muted, #667085);
+    --qore-muted-light: var(--ws-text-placeholder, #98A2B3);
+
+    --qore-border: var(--ws-border, #DDE3EC);
+    --qore-border-strong: var(--ws-border-strong, #C7CFDC);
+
+    --qore-success: var(--ws-success, #16A34A);
+    --qore-success-dark: var(--ws-success-hover, #15803D);
+    --qore-success-soft: var(--ws-success-soft, #F0FDF4);
+
+    --qore-info-soft: var(--ws-primary-soft, #EFF6FF);
+
+    --qore-shadow:
+        var(
+            --ws-shadow-md,
+            0 10px 28px rgba(16, 28, 68, 0.10)
+        );
+}
+
+
+/* =========================================================
+   BASE
+========================================================= */
+
+body.qore-production-history-page,
+body.qore-production-history-page *,
+body.qore-production-history-page *::before,
+body.qore-production-history-page *::after {
+    box-sizing: border-box;
+}
+
+
+html {
+    min-width: 320px;
+    min-height: 100%;
+}
+
+
+body.qore-production-history-page {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    color: var(--qore-text);
+
+    font-family:
+        "Inter",
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 4% 10%,
+            rgba(37, 99, 235, 0.10),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 96% 92%,
+            rgba(56, 189, 248, 0.08),
+            transparent 24%
+        ),
+        var(--qore-bg);
+}
+
+
+body.qore-production-history-page
+button,
+body.qore-production-history-page
+input,
+body.qore-production-history-page
+select {
+    font: inherit;
+}
+
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+========================================================= */
+
+body.qore-production-history-page
+.qore-production-main {
+    width: 100%;
+
+    padding:
+        24px
+        clamp(16px, 2.5vw, 42px)
+        40px;
+
+    flex: 1 0 auto;
+}
+
+
+body.qore-production-history-page
+.qore-production-shell {
+    width: min(1680px, 100%);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   Mesmo padrão visual do form_requisicao_metas
+========================================================= */
+
+body.qore-production-history-page
+.qore-page-header {
+    margin-bottom: 18px;
+
+    padding:
+        25px
+        clamp(22px, 3vw, 36px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    overflow: hidden;
+
+    color: var(--qore-white);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            circle at 88% 10%,
+            rgba(56, 189, 248, 0.22),
+            transparent 27%
+        ),
+        linear-gradient(
+            135deg,
+            var(--qore-navy-950),
+            var(--qore-navy-800)
+        );
+
+    box-shadow: var(--qore-shadow);
+}
+
+
+body.qore-production-history-page
+.qore-page-header-main {
+    min-width: 0;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+
+body.qore-production-history-page
+.qore-page-back {
+    width: 44px;
+    height: 44px;
+
+    margin-top: 2px;
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 44px;
+
+    color: var(--qore-white);
+    font-size: 14px;
+    text-decoration: none;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.20);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 10px 24px
+        rgba(3, 17, 41, 0.18);
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+body.qore-production-history-page
+.qore-page-back:hover,
+body.qore-production-history-page
+.qore-page-back:focus-visible {
+    color: var(--qore-white);
+    text-decoration: none;
+
+    border-color:
+        rgba(255, 255, 255, 0.36);
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    box-shadow:
+        0 13px 28px
+        rgba(3, 17, 41, 0.24);
+
+    outline: 0;
+
+    transform: translateX(-2px);
+}
+
+
+body.qore-production-history-page
+.qore-page-header-copy {
+    min-width: 0;
+}
+
+
+body.qore-production-history-page
+.qore-page-eyebrow {
+    margin-bottom: 9px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #79ccff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+
+body.qore-production-history-page
+.qore-page-eyebrow::before {
+    content: "";
+
+    width: 22px;
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: var(--qore-cyan-400);
+}
+
+
+body.qore-production-history-page
+.qore-page-header h1 {
+    margin: 0;
+
+    color: var(--qore-white);
+
+    font-size:
+        clamp(27px, 2.5vw, 38px);
+
+    font-weight: 800;
+    line-height: 1.15;
+
+    letter-spacing: -0.045em;
+}
+
+
+body.qore-production-history-page
+.qore-page-header p {
+    max-width: 920px;
+
+    margin: 9px 0 0;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+body.qore-production-history-page
+.qore-page-header-badge {
+    min-width: 220px;
+
+    padding: 13px 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(8px);
+}
+
+
+body.qore-production-history-page
+.qore-page-header-badge-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 40px;
+
+    color: #8ed8ff;
+
+    font-size: 15px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(37, 99, 235, 0.22);
+}
+
+
+body.qore-production-history-page
+.qore-page-header-badge strong,
+body.qore-production-history-page
+.qore-page-header-badge small {
+    display: block;
+}
+
+
+body.qore-production-history-page
+.qore-page-header-badge strong {
+    margin-bottom: 3px;
+
+    color: var(--qore-white);
+
+    font-size: 10px;
+}
+
+
+body.qore-production-history-page
+.qore-page-header-badge small {
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+.qore-history-summary {
+    margin-bottom: 18px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.qore-history-summary-card {
+    min-width: 0;
+    min-height: 98px;
+
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    border:
+        1px solid
+        rgba(16, 39, 87, 0.08);
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfcfe
+        );
+
+    box-shadow:
+        0 10px 26px
+        rgba(3, 17, 41, 0.055);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.qore-history-summary-card:hover {
+    border-color:
+        rgba(37, 99, 235, 0.18);
+
+    box-shadow:
+        0 14px 30px
+        rgba(3, 17, 41, 0.08);
+
+    transform: translateY(-2px);
+}
+
+
+.qore-history-summary-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 42px;
+
+    color: var(--qore-blue-700);
+
+    font-size: 15px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #eaf3ff,
+            #f4f9ff
+        );
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(37, 99, 235, 0.08);
+}
+
+
+.qore-history-summary-content {
+    min-width: 0;
+}
+
+
+.qore-history-summary-label,
+.qore-history-summary-help {
+    display: block;
+}
+
+
+.qore-history-summary-label {
+    color: var(--qore-muted);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+
+.qore-history-summary-value {
+    margin-top: 3px;
+
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--qore-text);
+
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.1;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.qore-history-summary-value--date {
+    font-size: 14px;
+}
+
+
+.qore-history-summary-help {
+    margin-top: 5px;
+
+    overflow: hidden;
+
+    color: var(--qore-muted-light);
+
+    font-size: 8px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CARD PRINCIPAL
+========================================================= */
+
+.qore-history-card {
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(16, 39, 87, 0.08);
+
+    border-radius: 18px;
+
+    background: var(--qore-surface);
+
+    box-shadow:
+        0 13px 34px
+        rgba(3, 17, 41, 0.07);
+}
+
+
+.qore-history-card-header {
+    min-height: 83px;
+
+    padding: 20px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-bottom:
+        1px solid
+        var(--qore-border);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfcfe
+        );
+}
+
+
+.qore-history-card-kicker {
+    margin-bottom: 5px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--qore-blue-700);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+}
+
+
+.qore-history-card-kicker::before {
+    content: "";
+
+    width: 16px;
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: var(--qore-blue-500);
+}
+
+
+.qore-history-card-header h2 {
+    margin: 0;
+
+    color: var(--qore-text);
+
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+
+.qore-history-card-header p {
+    margin: 5px 0 0;
+
+    color: var(--qore-muted);
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+.qore-history-new-button {
+    min-height: 40px;
+
+    padding: 0 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    flex: 0 0 auto;
+
+    color: var(--qore-white);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    border:
+        1px solid
+        var(--qore-blue-600);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--qore-blue-700),
+            var(--qore-blue-600)
+        );
+
+    box-shadow:
+        0 9px 20px
+        rgba(37, 99, 235, 0.18);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+
+.qore-history-new-button:hover,
+.qore-history-new-button:focus-visible {
+    color: var(--qore-white);
+
+    text-decoration: none;
+
+    box-shadow:
+        0 12px 24px
+        rgba(37, 99, 235, 0.24);
+
+    outline: 0;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   INFORMAÇÃO ACIMA DA TABELA
+========================================================= */
+
+.qore-history-table-meta {
+    min-height: 56px;
+
+    padding: 10px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    border-bottom:
+        1px solid
+        var(--qore-border);
+
+    background: var(--qore-surface-soft);
+}
+
+
+.qore-history-table-meta-copy {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.qore-history-table-meta-icon {
+    width: 30px;
+    height: 30px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 30px;
+
+    color: var(--qore-blue-700);
+
+    font-size: 10px;
+
+    border-radius: 9px;
+
+    background: var(--qore-info-soft);
+}
+
+
+.qore-history-table-meta-copy strong,
+.qore-history-table-meta-copy span {
+    display: block;
+}
+
+
+.qore-history-table-meta-copy strong {
+    color: #344054;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+.qore-history-table-meta-copy
+div > span {
+    margin-top: 2px;
+
+    color: var(--qore-muted);
+
+    font-size: 8px;
+}
+
+
+.qore-history-table-total {
+    flex: 0 0 auto;
+
+    padding: 6px 10px;
+
+    color: #344054;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    border:
+        1px solid
+        var(--qore-border);
+
+    border-radius: 999px;
+
+    background: var(--qore-white);
+}
+
+
+/* =========================================================
+   TABELA
+========================================================= */
+
+.qore-history-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: visible;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #c7d2e3
+        transparent;
+}
+
+
+.qore-history-table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+
+.qore-history-table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.qore-history-table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background: #c7d2e3;
+}
+
+
+.qore-history-table {
+    width: 100%;
+    min-width: 1040px;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    color: var(--qore-text);
+}
+
+
+.qore-history-table thead {
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc,
+            #f4f7fb
+        );
+}
+
+
+.qore-history-table th {
+    height: 42px;
+
+    padding: 10px 14px;
+
+    color: #475467;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.065em;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    border-bottom:
+        1px solid
+        var(--qore-border);
+}
+
+
+.qore-history-table td {
+    height: 68px;
+
+    padding: 11px 14px;
+
+    color: #344054;
+
+    font-size: 9px;
+
+    vertical-align: middle;
+
+    border-bottom:
+        1px solid
+        #edf1f6;
+
+    background: var(--qore-white);
+}
+
+
+.qore-history-table
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.qore-history-row {
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.qore-history-row:hover td {
+    background: #f8fbff;
+}
+
+
+.qore-history-row:hover
+td:first-child {
+    box-shadow:
+        inset 3px 0 0
+        var(--qore-blue-500);
+}
+
+
+.qore-history-col-date {
+    width: 190px;
+}
+
+
+.qore-history-col-wallets {
+    width: 150px;
+}
+
+
+.qore-history-col-status {
+    width: 135px;
+}
+
+
+.qore-history-date-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.qore-history-date-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 34px;
+
+    color: var(--qore-blue-700);
+
+    font-size: 11px;
+
+    border-radius: 10px;
+
+    background: var(--qore-info-soft);
+}
+
+
+.qore-history-date-cell strong,
+.qore-history-date-cell small {
+    display: block;
+}
+
+
+.qore-history-date-cell strong {
+    color: var(--qore-text);
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.qore-history-date-cell small {
+    margin-top: 3px;
+
+    color: var(--qore-muted-light);
+
+    font-size: 7px;
+}
+
+
+.qore-history-wallet-badge {
+    min-height: 31px;
+
+    padding: 0 10px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--qore-blue-700);
+
+    border:
+        1px solid
+        #d8e8ff;
+
+    border-radius: 9px;
+
+    background: #f4f8ff;
+
+    white-space: nowrap;
+}
+
+
+.qore-history-wallet-badge i {
+    margin-right: 2px;
+
+    font-size: 9px;
+}
+
+
+.qore-history-wallet-badge strong {
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.qore-history-wallet-badge span {
+    color: #52647c;
+
+    font-size: 8px;
+}
+
+
+.qore-history-datetime strong,
+.qore-history-datetime small {
+    display: block;
+}
+
+
+.qore-history-datetime strong {
+    color: #344054;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.qore-history-datetime small {
+    margin-top: 3px;
+
+    color: var(--qore-muted-light);
+
+    font-size: 8px;
+}
+
+
+.qore-history-status {
+    min-height: 29px;
+
+    padding: 0 10px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--qore-success-dark);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    border:
+        1px solid
+        #abefc6;
+
+    border-radius: 999px;
+
+    background: var(--qore-success-soft);
+
+    white-space: nowrap;
+}
+
+
+.qore-history-status-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--qore-success);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(18, 183, 106, 0.10);
+}
+
+
+/* =========================================================
+   VAZIO
+========================================================= */
+
+.qore-history-empty-cell {
+    padding: 0 !important;
+}
+
+
+.qore-history-empty {
+    min-height: 300px;
+
+    padding: 42px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(37, 99, 235, 0.05),
+            transparent 38%
+        ),
+        var(--qore-white);
+}
+
+
+.qore-history-empty-icon {
+    width: 54px;
+    height: 54px;
+
+    margin-bottom: 13px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--qore-blue-700);
+
+    font-size: 19px;
+
+    border-radius: 16px;
+
+    background: var(--qore-info-soft);
+}
+
+
+.qore-history-empty > strong {
+    color: var(--qore-text);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.qore-history-empty p {
+    max-width: 440px;
+
+    margin: 7px 0 16px;
+
+    color: var(--qore-muted);
+
+    font-size: 9px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RODAPÉ DO CARD
+========================================================= */
+
+.qore-history-card-footer {
+    min-height: 52px;
+
+    padding: 10px 18px;
+
+    display: flex;
+    align-items: center;
+
+    color: var(--qore-muted);
+
+    border-top:
+        1px solid
+        var(--qore-border);
+
+    background: var(--qore-surface-soft);
+}
+
+
+.qore-history-card-footer > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 8px;
+}
+
+
+.qore-history-card-footer i {
+    color: var(--qore-blue-700);
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+html[data-theme="dark"]
+body.qore-production-history-page {
+    --qore-bg: #09111f;
+    --qore-surface: #0f1929;
+    --qore-surface-soft: #111d2f;
+    --qore-text: #eef4ff;
+    --qore-muted: #a9b6c8;
+    --qore-muted-light: #8493a8;
+    --qore-border: #26354a;
+    --qore-border-strong: #33445b;
+
+    background:
+        radial-gradient(
+            circle at 4% 10%,
+            rgba(37, 99, 235, 0.13),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 96% 92%,
+            rgba(56, 189, 248, 0.08),
+            transparent 24%
+        ),
+        var(--qore-bg);
+}
+
+
+html[data-theme="dark"]
+.qore-history-summary-card,
+html[data-theme="dark"]
+.qore-history-card-header,
+html[data-theme="dark"]
+.qore-history-table td {
+    background: var(--qore-surface);
+}
+
+
+html[data-theme="dark"]
+.qore-history-summary-card {
+    border-color: var(--qore-border);
+}
+
+
+html[data-theme="dark"]
+.qore-history-card-header {
+    background:
+        linear-gradient(
+            180deg,
+            #101c2d,
+            #0f1929
+        );
+}
+
+
+html[data-theme="dark"]
+.qore-history-table thead {
+    background:
+        linear-gradient(
+            180deg,
+            #132033,
+            #101b2b
+        );
+}
+
+
+html[data-theme="dark"]
+.qore-history-table th {
+    color: #bdc9d8;
+}
+
+
+html[data-theme="dark"]
+.qore-history-table td,
+html[data-theme="dark"]
+.qore-history-date-cell strong,
+html[data-theme="dark"]
+.qore-history-datetime strong,
+html[data-theme="dark"]
+.qore-history-card-header h2,
+html[data-theme="dark"]
+.qore-history-table-meta-copy strong {
+    color: var(--qore-text);
+}
+
+
+html[data-theme="dark"]
+.qore-history-row:hover td {
+    background: #132239;
+}
+
+
+html[data-theme="dark"]
+.qore-history-table-total {
+    color: var(--qore-text);
+    background: #162236;
+}
+
+
+html[data-theme="dark"]
+.qore-history-wallet-badge {
+    color: #89c4ff;
+
+    border-color: #25466b;
+
+    background: #112843;
+}
+
+
+html[data-theme="dark"]
+.qore-history-wallet-badge span {
+    color: #b0bfd0;
+}
+
+
+html[data-theme="dark"]
+.qore-history-empty {
+    background: var(--qore-surface);
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media only screen and (max-width: 1366px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            18px
+            20px
+            32px;
+    }
+
+
+    .qore-history-summary-card {
+        min-height: 90px;
+
+        padding: 14px;
+    }
+
+
+    .qore-history-summary-value {
+        font-size: 20px;
+    }
+
+
+    .qore-history-summary-value--date {
+        font-size: 12px;
+    }
+
+
+    .qore-history-table td {
+        height: 62px;
+    }
+}
+
+
+@media only screen and (max-width: 1100px) {
+
+    .qore-history-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: flex-start;
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        min-width: 195px;
+    }
+}
+
+
+@media only screen and (max-width: 760px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            14px
+            12px
+            26px;
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-header {
+        padding: 20px;
+
+        align-items: stretch;
+        flex-direction: column;
+
+        border-radius: 16px;
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    .qore-history-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .qore-history-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .qore-history-new-button {
+        width: 100%;
+    }
+
+
+    .qore-history-table-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .qore-history-table-total {
+        align-self: flex-start;
+    }
+}
+
+
+@media only screen and (max-width: 420px) {
+
+    body.qore-production-history-page
+    .qore-page-header-main {
+        gap: 11px;
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-back {
+        width: 39px;
+        height: 39px;
+
+        flex-basis: 39px;
+    }
+
+
+    body.qore-production-history-page
+    .qore-page-header h1 {
+        font-size: 25px;
+    }
+}
+
+
+/* =========================================================
+   V2 — SUPERINTENDENTE + DETALHE LATERAL
+========================================================= */
+
+.qore-history-summary-value--text {
+    max-width: 220px;
+    font-size: 12px;
+}
+
+.qore-history-col-superintendent {
+    width: 235px;
+}
+
+.qore-history-table {
+    min-width: 1240px;
+}
+
+.qore-history-superintendent {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.qore-history-superintendent-icon {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    color: #0f6e91;
+    font-size: 12px;
+    border-radius: 10px;
+    background: #e4f7ff;
+}
+
+.qore-history-superintendent strong,
+.qore-history-superintendent small {
+    display: block;
+}
+
+.qore-history-superintendent strong {
+    max-width: 170px;
+    overflow: hidden;
+    color: var(--qore-text);
+    font-size: 9px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.qore-history-superintendent small {
+    margin-top: 3px;
+    color: var(--qore-muted-light);
+    font-size: 7px;
+}
+
+.qore-history-row-clickable {
+    cursor: pointer;
+}
+
+.qore-history-row-clickable:focus {
+    outline: 0;
+}
+
+.qore-history-row-clickable:focus td,
+.qore-history-row-clickable.is-selected td {
+    background: #f1f7ff;
+}
+
+.qore-history-row-clickable:focus td:first-child,
+.qore-history-row-clickable.is-selected td:first-child {
+    box-shadow:
+        inset 4px 0 0
+        var(--qore-blue-600);
+}
+
+.qore-detail-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1490;
+    background: rgba(3, 17, 41, 0.34);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.qore-detail-backdrop.is-visible {
+    opacity: 1;
+}
+
+.qore-detail-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1500;
+
+    width: min(72vw, 1220px);
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    border-left: 1px solid rgba(16, 39, 87, 0.12);
+
+    background: #f4f7fb;
+
+    box-shadow:
+        -24px 0 70px
+        rgba(3, 17, 41, 0.20);
+
+    transform: translateX(102%);
+
+    transition:
+        transform 0.26s ease;
+}
+
+.qore-detail-panel.is-open {
+    transform: translateX(0);
+}
+
+.qore-detail-panel-header {
+    min-height: 66px;
+    padding: 12px 16px 12px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    flex: 0 0 auto;
+
+    color: #ffffff;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+    background:
+        radial-gradient(
+            circle at 88% 10%,
+            rgba(56, 189, 248, 0.20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--qore-navy-950),
+            var(--qore-navy-800)
+        );
+}
+
+.qore-detail-panel-header span,
+.qore-detail-panel-header strong {
+    display: block;
+}
+
+.qore-detail-panel-header span {
+    margin-bottom: 4px;
+    color: #7dd3fc;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.qore-detail-panel-header strong {
+    max-width: 960px;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.qore-detail-close {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 38px;
+
+    color: #ffffff;
+    font-size: 13px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.qore-detail-close:hover,
+.qore-detail-close:focus-visible {
+    border-color:
+        rgba(255, 255, 255, 0.35);
+
+    background:
+        rgba(255, 255, 255, 0.16);
+
+    outline: 0;
+
+    transform: scale(1.03);
+}
+
+.qore-detail-frame-wrap {
+    position: relative;
+
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    overflow: hidden;
+
+    background: #f4f7fb;
+}
+
+.qore-detail-frame {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border: 0;
+
+    background: #f4f7fb;
+
+    opacity: 0;
+
+    transition: opacity 0.18s ease;
+}
+
+.qore-detail-frame.is-ready {
+    opacity: 1;
+}
+
+.qore-detail-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+
+    color: #667085;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    background: #f4f7fb;
+
+    transition:
+        opacity 0.18s ease,
+        visibility 0.18s ease;
+}
+
+.qore-detail-loading i {
+    color: var(--qore-blue-600);
+    font-size: 25px;
+}
+
+.qore-detail-loading.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+html[data-theme="dark"]
+.qore-detail-panel,
+html[data-theme="dark"]
+.qore-detail-frame-wrap,
+html[data-theme="dark"]
+.qore-detail-frame,
+html[data-theme="dark"]
+.qore-detail-loading {
+    background: #09111f;
+}
+
+html[data-theme="dark"]
+.qore-history-row-clickable:focus td,
+html[data-theme="dark"]
+.qore-history-row-clickable.is-selected td {
+    background: #142741;
+}
+
+@media only screen and (max-width: 1440px) {
+    .qore-detail-panel {
+        width: min(76vw, 1120px);
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+    .qore-detail-panel {
+        width: 88vw;
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    .qore-detail-panel {
+        width: 100vw;
+    }
+
+    .qore-detail-panel-header {
+        min-height: 60px;
+        padding: 10px 12px;
+    }
+}
+
+
+/* =========================================================
+   HISTÓRICO — O DETALHE ATUAL UTILIZA OVERLAY CENTRAL
+   Regras do split lateral V2.1 removidas por obsolescência.
+========================================================= */
+
+/* =========================================================
+   V2.2 — FILTROS, REMETENTE, TIPO, TOOLTIP E CARDS DINÂMICOS
+========================================================= */
+
+.qore-history-summary-value--money {
+    font-size: 15px;
+}
+
+/* ---------- FILTROS ---------- */
+
+.qore-history-filters {
+    margin-bottom: 16px;
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(16, 39, 87, 0.08);
+
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 10px 26px
+        rgba(3, 17, 41, 0.05);
+}
+
+.qore-history-filters-header {
+    min-height: 58px;
+    padding: 13px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    border-bottom: 1px solid var(--qore-border);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfcfe
+        );
+}
+
+.qore-history-filters-header h2 {
+    margin: 0;
+    color: var(--qore-text);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.qore-history-filter-clear {
+    min-height: 34px;
+    padding: 0 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    color: #475467;
+    font-size: 8px;
+    font-weight: 800;
+
+    border: 1px solid var(--qore-border);
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        color 0.16s ease,
+        border-color 0.16s ease,
+        background-color 0.16s ease;
+}
+
+.qore-history-filter-clear:hover,
+.qore-history-filter-clear:focus-visible {
+    color: var(--qore-blue-700);
+    border-color: #b2ccff;
+    background: #f5f9ff;
+    outline: 0;
+}
+
+.qore-history-filter-grid {
+    padding: 13px 16px 15px;
+
+    display: grid;
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.qore-history-filter-field {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.qore-history-filter-field > span {
+    color: #475467;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+}
+
+.qore-history-filter-field input,
+.qore-history-filter-field select {
+    width: 100%;
+    height: 36px;
+    min-width: 0;
+    padding: 0 10px;
+
+    color: #344054;
+    font-size: 9px;
+
+    border: 1px solid var(--qore-border-strong);
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    outline: none;
+
+    transition:
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.qore-history-filter-field input:focus,
+.qore-history-filter-field select:focus {
+    border-color: #84adff;
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.09);
+}
+
+.qore-history-filter-search-wrap {
+    position: relative;
+}
+
+.qore-history-filter-search-wrap i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+
+    color: #98a2b3;
+    font-size: 9px;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+}
+
+.qore-history-filter-search-wrap input {
+    padding-left: 29px;
+}
+
+/* ---------- NOVAS COLUNAS ---------- */
+
+.qore-history-table {
+    min-width: 1570px;
+}
+
+.qore-history-col-type {
+    width: 150px;
+}
+
+.qore-history-col-superintendent {
+    width: 220px;
+}
+
+.qore-history-col-sender {
+    width: 205px;
+}
+
+.qore-history-col-wallets {
+    width: 145px;
+}
+
+.qore-history-type-badge {
+    min-height: 29px;
+    padding: 0 9px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #175cd3;
+    font-size: 8px;
+    font-weight: 800;
+
+    border: 1px solid #b2ddff;
+    border-radius: 999px;
+
+    background: #eff8ff;
+
+    white-space: nowrap;
+}
+
+.qore-history-sender {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.qore-history-sender-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 34px;
+
+    color: #7a5af8;
+    font-size: 11px;
+
+    border-radius: 10px;
+
+    background: #f4f3ff;
+}
+
+.qore-history-sender strong,
+.qore-history-sender small {
+    display: block;
+}
+
+.qore-history-sender strong {
+    max-width: 145px;
+
+    overflow: hidden;
+
+    color: var(--qore-text);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.qore-history-sender small {
+    margin-top: 3px;
+
+    color: var(--qore-muted-light);
+
+    font-size: 7px;
+}
+
+.qore-wallet-info-icon {
+    margin-left: 2px;
+
+    color: #84adff;
+    font-size: 8px;
+}
+
+.qore-history-wallet-badge {
+    cursor: help;
+}
+
+/* ---------- TOOLTIP DAS CARTEIRAS ---------- */
+
+.qore-wallet-hover-card {
+    position: fixed;
+    z-index: 25000;
+
+    width: min(300px, calc(100vw - 24px));
+    max-height: 260px;
+    padding: 12px 13px;
+
+    overflow-y: auto;
+
+    color: #344054;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.65;
+
+    white-space: pre-line;
+
+    border: 1px solid #d0d9e6;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 18px 48px
+        rgba(3, 17, 41, 0.18);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transform: translateY(4px);
+
+    transition:
+        opacity 0.13s ease,
+        visibility 0.13s ease,
+        transform 0.13s ease;
+}
+
+.qore-wallet-hover-card::before {
+    content: "Carteiras enviadas";
+
+    margin-bottom: 6px;
+
+    display: block;
+
+    color: #155eef;
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.qore-wallet-hover-card.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ---------- EMPTY DE FILTRO ---------- */
+
+.qore-history-empty--filter {
+    min-height: 215px;
+}
+
+/* Regras do split lateral V2.2 removidas; o detalhe atual usa overlay. */
+
+/* ---------- DARK ---------- */
+
+html[data-theme="dark"]
+.qore-history-filters,
+html[data-theme="dark"]
+.qore-history-filters-header {
+    background: var(--qore-surface);
+}
+
+html[data-theme="dark"]
+.qore-history-filter-field input,
+html[data-theme="dark"]
+.qore-history-filter-field select,
+html[data-theme="dark"]
+.qore-history-filter-clear {
+    color: var(--qore-text);
+
+    border-color: var(--qore-border);
+
+    background: #121f31;
+}
+
+html[data-theme="dark"]
+.qore-wallet-hover-card {
+    color: #e6edf7;
+
+    border-color: #33445b;
+
+    background: #101b2b;
+}
+
+/* ---------- RESPONSIVO ---------- */
+
+@media only screen and (max-width: 1500px) {
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    .qore-history-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .qore-history-filters-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .qore-history-filter-clear {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   V2.3 — PAGINAÇÃO + SCROLL SOMENTE DENTRO DA TABELA
+========================================================= */
+
+:root {
+    --qore-history-page-size: 10;
+}
+
+/*
+   A página inteira fica presa à viewport.
+   Navbar e footer continuam ocupando seus espaços naturais;
+   o main usa apenas a área restante.
+*/
+html {
+    height: 100%;
+}
+
+body.qore-production-history-page {
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-production-main {
+    min-height: 0;
+    overflow: hidden;
+    flex: 1 1 auto;
+
+    padding-top: 14px;
+    padding-bottom: 12px;
+}
+
+body.qore-production-history-page
+.qore-production-shell {
+    height: 100%;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+/*
+   Cabeçalho, cards e filtros nunca recebem scroll próprio.
+*/
+body.qore-production-history-page
+.qore-page-header,
+body.qore-production-history-page
+.qore-history-summary,
+body.qore-production-history-page
+.qore-history-filters {
+    flex: 0 0 auto;
+}
+
+/*
+   O card do histórico absorve todo o espaço restante.
+*/
+body.qore-production-history-page
+.qore-history-card {
+    min-height: 0;
+
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-history-card-header,
+body.qore-production-history-page
+.qore-history-table-meta,
+body.qore-production-history-page
+.qore-history-pagination,
+body.qore-production-history-page
+.qore-history-card-footer {
+    flex: 0 0 auto;
+}
+
+/*
+   Somente esta área possui rolagem vertical e horizontal.
+*/
+body.qore-production-history-page
+.qore-history-table-wrapper {
+    width: 100%;
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    overflow-x: auto;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #b8c5d7
+        transparent;
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #b8c5d7;
+}
+
+/*
+   Cabeçalho da tabela permanece visível durante a rolagem das linhas.
+*/
+body.qore-production-history-page
+.qore-history-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc,
+            #f4f7fb
+        );
+
+    box-shadow:
+        0 1px 0
+        var(--qore-border);
+}
+
+/* =========================================================
+   PAGINAÇÃO
+========================================================= */
+
+.qore-history-pagination {
+    min-height: 48px;
+    padding: 7px 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    border-top:
+        1px solid
+        var(--qore-border);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfcfe
+        );
+}
+
+.qore-history-pagination-info {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--qore-muted);
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+#historyPaginationSummary {
+    color: #344054;
+    font-weight: 800;
+}
+
+.qore-history-page-size {
+    padding-left: 10px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    border-left:
+        1px solid
+        var(--qore-border);
+}
+
+.qore-history-page-size i {
+    color: var(--qore-blue-700);
+}
+
+.qore-history-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.qore-history-page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.qore-history-page-button {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+
+    display: inline-grid;
+    place-items: center;
+
+    color: #475467;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    border:
+        1px solid
+        var(--qore-border);
+
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.qore-history-page-button:hover:not(:disabled),
+.qore-history-page-button:focus-visible:not(:disabled) {
+    color: var(--qore-blue-700);
+
+    border-color: #b2ccff;
+
+    background: #f3f7ff;
+
+    outline: 0;
+
+    transform: translateY(-1px);
+}
+
+.qore-history-page-button.is-active {
+    color: #ffffff;
+
+    border-color: var(--qore-blue-700);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--qore-blue-700),
+            var(--qore-blue-600)
+        );
+
+    box-shadow:
+        0 5px 12px
+        rgba(37, 99, 235, 0.18);
+}
+
+.qore-history-page-button:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+
+.qore-history-page-ellipsis {
+    min-width: 20px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--qore-muted-light);
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   AJUSTE DE ALTURA PARA TELAS MENORES
+========================================================= */
+
+@media only screen and (max-height: 900px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 10px;
+        padding-bottom: 8px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 10px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        margin-bottom: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card {
+        min-height: 76px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters {
+        margin-bottom: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        padding-top: 9px;
+        padding-bottom: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-header {
+        min-height: 62px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-table-meta {
+        min-height: 44px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-footer {
+        min-height: 38px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+}
+
+/* Dark */
+html[data-theme="dark"]
+.qore-history-pagination {
+    border-color: var(--qore-border);
+
+    background:
+        linear-gradient(
+            180deg,
+            #101c2d,
+            #0f1929
+        );
+}
+
+html[data-theme="dark"]
+#historyPaginationSummary {
+    color: var(--qore-text);
+}
+
+html[data-theme="dark"]
+.qore-history-page-button {
+    color: #c5d0de;
+
+    border-color: var(--qore-border);
+
+    background: #142033;
+}
+
+html[data-theme="dark"]
+.qore-history-page-button.is-active {
+    color: #ffffff;
+
+    border-color: var(--qore-blue-600);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--qore-blue-700),
+            var(--qore-blue-600)
+        );
+}
+
+/* Responsivo */
+@media only screen and (max-width: 700px) {
+
+    .qore-history-pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .qore-history-pagination-info,
+    .qore-history-pagination-controls {
+        justify-content: center;
+    }
+}
+
+
+/* =========================================================
+   V2.4 — COMPACTAÇÃO VISUAL + 20 REGISTROS
+========================================================= */
+
+/* FILTROS — CABEÇALHO MAIS BAIXO */
+.qore-history-filters-header {
+    min-height: 46px !important;
+    padding: 8px 13px !important;
+    gap: 10px !important;
+}
+
+.qore-history-filters-header
+.qore-history-card-kicker {
+    margin-bottom: 2px !important;
+    font-size: 6px !important;
+}
+
+.qore-history-filters-header h2 {
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+}
+
+.qore-history-filter-clear {
+    min-height: 29px !important;
+    padding: 0 9px !important;
+    gap: 5px !important;
+    font-size: 7px !important;
+    border-radius: 8px !important;
+}
+
+/* FILTROS — GRID E FONTES MENORES */
+.qore-history-filter-grid {
+    padding: 8px 13px 10px !important;
+    gap: 7px !important;
+}
+
+.qore-history-filter-field {
+    gap: 3px !important;
+}
+
+.qore-history-filter-field > span {
+    font-size: 6px !important;
+    letter-spacing: 0.045em !important;
+}
+
+.qore-history-filter-field input,
+.qore-history-filter-field select {
+    height: 31px !important;
+    min-height: 31px !important;
+    padding: 0 8px !important;
+    font-size: 8px !important;
+    border-radius: 8px !important;
+}
+
+.qore-history-filter-search-wrap i {
+    left: 9px !important;
+    font-size: 8px !important;
+}
+
+.qore-history-filter-search-wrap input {
+    padding-left: 25px !important;
+}
+
+/* CABEÇALHO DO CARD DE HISTÓRICO */
+.qore-history-card-header {
+    min-height: 60px !important;
+    padding: 11px 15px !important;
+    gap: 12px !important;
+}
+
+.qore-history-card-header
+.qore-history-card-kicker {
+    margin-bottom: 3px !important;
+    font-size: 6px !important;
+}
+
+.qore-history-card-header h2 {
+    font-size: 15px !important;
+    line-height: 1.15 !important;
+}
+
+.qore-history-card-header p {
+    margin-top: 3px !important;
+    font-size: 8px !important;
+    line-height: 1.35 !important;
+}
+
+.qore-history-new-button {
+    min-height: 32px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+    font-size: 8px !important;
+    border-radius: 8px !important;
+}
+
+/* META FOI REMOVIDO DO HTML */
+.qore-history-table-meta {
+    display: none !important;
+}
+
+/* TABELA */
+.qore-history-table th {
+    height: 36px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+    font-size: 7px !important;
+}
+
+.qore-history-table td {
+    height: 56px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* PAGINAÇÃO MAIS DISCRETA */
+.qore-history-pagination {
+    min-height: 42px !important;
+    padding: 5px 10px !important;
+    gap: 10px !important;
+}
+
+.qore-history-pagination-info {
+    gap: 7px !important;
+    font-size: 7px !important;
+}
+
+#historyPaginationSummary {
+    font-size: 7px !important;
+}
+
+.qore-history-page-size {
+    padding-left: 7px !important;
+    gap: 4px !important;
+    font-size: 7px !important;
+}
+
+.qore-history-pagination-controls {
+    gap: 3px !important;
+}
+
+.qore-history-page-numbers {
+    gap: 2px !important;
+}
+
+.qore-history-page-button {
+    min-width: 25px !important;
+    height: 25px !important;
+    padding: 0 6px !important;
+    font-size: 7px !important;
+}
+
+.qore-history-page-nav {
+    width: 25px !important;
+    min-width: 25px !important;
+    padding: 0 !important;
+}
+
+.qore-history-page-ellipsis {
+    min-width: 14px !important;
+    font-size: 7px !important;
+}
+
+/* RODAPÉ DO CARD */
+.qore-history-card-footer {
+    min-height: 34px !important;
+    padding: 5px 10px !important;
+}
+
+.qore-history-card-footer > div {
+    gap: 5px !important;
+    font-size: 6px !important;
+}
+
+/* TELAS MAIS BAIXAS */
+@media only screen and (max-height: 900px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 8px !important;
+        padding-bottom: 6px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 8px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        margin-bottom: 8px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters {
+        margin-bottom: 8px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-header {
+        min-height: 54px !important;
+        padding: 8px 12px !important;
+    }
+
+    .qore-history-pagination {
+        min-height: 38px !important;
+    }
+
+    .qore-history-card-footer {
+        min-height: 30px !important;
+    }
+}
+
+/* O detalhe atual abre em overlay; compactação de split removida. */
+
+/* MOBILE */
+@media only screen and (max-width: 700px) {
+
+    .qore-history-pagination {
+        gap: 6px !important;
+    }
+
+    .qore-history-pagination-info {
+        gap: 5px !important;
+    }
+
+    .qore-history-page-button {
+        min-width: 24px !important;
+        height: 24px !important;
+    }
+}
+
+/* =========================================================
+   V2.5 — RESPONSIVIDADE FINAL CONSOLIDADA
+   Referência principal: 1920 × 1080
+   Ajustes exclusivamente estruturais e visuais.
+   ========================================================= */
+
+/* ---------- BASE SEGURA ---------- */
+
+html {
+    width: 100%;
+    max-width: 100%;
+}
+
+body.qore-production-history-page {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    overflow-x: hidden;
+}
+
+body.qore-production-history-page
+.qore-production-main,
+body.qore-production-history-page
+.qore-production-shell,
+.qore-history-summary,
+.qore-history-summary-card,
+.qore-history-summary-content,
+.qore-history-filters,
+.qore-history-filters-header,
+.qore-history-filter-grid,
+.qore-history-filter-field,
+.qore-history-filter-search-wrap,
+.qore-history-card,
+.qore-history-card-header,
+.qore-history-table-wrapper,
+.qore-history-pagination,
+.qore-history-pagination-info,
+.qore-history-pagination-controls,
+.qore-history-page-numbers,
+.qore-detail-panel,
+.qore-detail-panel-header,
+.qore-detail-frame-wrap {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.qore-production-history-page img,
+body.qore-production-history-page svg,
+body.qore-production-history-page canvas,
+body.qore-production-history-page iframe {
+    max-width: 100%;
+}
+
+body.qore-production-history-page
+.qore-production-shell {
+    width: min(1800px, 100%);
+}
+
+.qore-history-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+
+.qore-history-table {
+    max-width: none;
+}
+
+.qore-history-filter-field input,
+.qore-history-filter-field select,
+.qore-history-filter-clear,
+.qore-history-new-button,
+.qore-history-page-button {
+    max-width: 100%;
+}
+
+.qore-history-summary-content,
+.qore-page-header-copy,
+.qore-history-card-header > div,
+.qore-history-filters-header > div,
+.qore-history-superintendent > div,
+.qore-history-sender > div {
+    min-width: 0;
+}
+
+.qore-page-header-copy,
+.qore-page-header p,
+.qore-history-card-header p,
+.qore-history-card-footer,
+.qore-history-superintendent strong,
+.qore-history-sender strong {
+    overflow-wrap: anywhere;
+}
+
+/* ---------- FULL HD — REFERÊNCIA PRINCIPAL ---------- */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            20px
+            clamp(42px, 3.125vw, 60px)
+            18px;
+    }
+
+    body.qore-production-history-page
+    .qore-production-shell {
+        width: 100%;
+        max-width: 1800px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 16px;
+        padding: 24px 34px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header h1 {
+        font-size: 36px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header p {
+        max-width: 1040px;
+        font-size: 12px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        min-width: 245px;
+        padding: 14px 16px;
+    }
+
+    .qore-history-summary {
+        margin-bottom: 14px;
+        gap: 14px;
+    }
+
+    .qore-history-summary-card {
+        min-height: 88px;
+        padding: 14px 16px;
+    }
+
+    .qore-history-summary-icon {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+        font-size: 16px;
+    }
+
+    .qore-history-summary-label {
+        font-size: 8px;
+    }
+
+    .qore-history-summary-value {
+        font-size: 22px;
+    }
+
+    .qore-history-summary-value--date {
+        font-size: 15px;
+    }
+
+    .qore-history-summary-value--money {
+        font-size: 16px;
+    }
+
+    .qore-history-summary-help {
+        font-size: 8px;
+    }
+
+    /* Reequilibra a compactação da V2.4 apenas no Full HD. */
+    .qore-history-filters-header {
+        min-height: 52px !important;
+        padding: 10px 16px !important;
+    }
+
+    .qore-history-filters-header
+    .qore-history-card-kicker {
+        margin-bottom: 3px !important;
+        font-size: 7px !important;
+    }
+
+    .qore-history-filters-header h2 {
+        font-size: 13px !important;
+    }
+
+    .qore-history-filter-clear {
+        min-height: 34px !important;
+        padding: 0 11px !important;
+        font-size: 8px !important;
+    }
+
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(6, minmax(0, 1fr));
+        padding: 10px 16px 12px !important;
+        gap: 10px !important;
+    }
+
+    .qore-history-filter-field {
+        gap: 4px !important;
+    }
+
+    .qore-history-filter-field > span {
+        font-size: 7px !important;
+    }
+
+    .qore-history-filter-field input,
+    .qore-history-filter-field select {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 10px !important;
+        font-size: 9px !important;
+    }
+
+    .qore-history-filter-search-wrap i {
+        left: 10px !important;
+        font-size: 9px !important;
+    }
+
+    .qore-history-filter-search-wrap input {
+        padding-left: 29px !important;
+    }
+
+    .qore-history-card-header {
+        min-height: 66px !important;
+        padding: 12px 18px !important;
+    }
+
+    .qore-history-card-header
+    .qore-history-card-kicker {
+        font-size: 7px !important;
+    }
+
+    .qore-history-card-header h2 {
+        font-size: 17px !important;
+    }
+
+    .qore-history-card-header p {
+        font-size: 9px !important;
+    }
+
+    .qore-history-new-button {
+        min-height: 36px !important;
+        padding: 0 12px !important;
+        font-size: 9px !important;
+    }
+
+    .qore-history-table th {
+        height: 40px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        font-size: 8px !important;
+    }
+
+    .qore-history-table td {
+        height: 58px !important;
+        padding-top: 9px !important;
+        padding-bottom: 9px !important;
+    }
+
+    .qore-history-pagination {
+        min-height: 46px !important;
+        padding: 6px 12px !important;
+    }
+
+    .qore-history-pagination-info,
+    #historyPaginationSummary,
+    .qore-history-page-size {
+        font-size: 8px !important;
+    }
+
+    .qore-history-page-button {
+        min-width: 29px !important;
+        height: 29px !important;
+        padding: 0 7px !important;
+        font-size: 8px !important;
+    }
+
+    .qore-history-page-nav {
+        width: 29px !important;
+        min-width: 29px !important;
+    }
+
+    .qore-history-page-ellipsis {
+        min-width: 18px !important;
+        font-size: 8px !important;
+    }
+
+    .qore-history-card-footer {
+        min-height: 36px !important;
+        padding: 6px 12px !important;
+    }
+
+    .qore-history-card-footer > div {
+        font-size: 7px !important;
+    }
+}
+
+/* ---------- ULTRAWIDE ---------- */
+
+@media only screen and (min-width: 2200px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-left: 72px;
+        padding-right: 72px;
+    }
+
+    body.qore-production-history-page
+    .qore-production-shell {
+        max-width: 1920px;
+    }
+
+    :root {
+        --qore-history-list-width: 36vw;
+        --qore-history-detail-width: 64vw;
+    }
+}
+
+/* ---------- DESKTOP / NOTEBOOK GRANDE ---------- */
+
+@media only screen and (min-width: 1281px) and (max-width: 1599px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            14px
+            clamp(24px, 2.6vw, 42px)
+            12px;
+    }
+
+    body.qore-production-history-page
+    .qore-production-shell {
+        max-width: 1500px;
+    }
+
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .qore-history-summary {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* ---------- NOTEBOOK / 1024–1280 ---------- */
+
+@media only screen and (min-width: 981px) and (max-width: 1280px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            12px
+            clamp(18px, 2.4vw, 28px)
+            10px;
+    }
+
+    .qore-history-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    :root {
+        --qore-history-list-width: 40vw;
+        --qore-history-detail-width: 60vw;
+    }
+}
+
+/* ---------- TELAS DE ALTURA REDUZIDA ---------- */
+
+@media only screen and (min-width: 981px) and (max-height: 820px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 7px !important;
+        padding-bottom: 6px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 7px !important;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary,
+    body.qore-production-history-page
+    .qore-history-filters {
+        margin-bottom: 7px !important;
+    }
+
+    .qore-history-summary-card {
+        min-height: 70px;
+    }
+
+    .qore-history-card-header {
+        min-height: 50px !important;
+    }
+
+    .qore-history-pagination {
+        min-height: 36px !important;
+    }
+}
+
+/* ---------- TABLET ---------- */
+
+@media only screen and (min-width: 701px) and (max-width: 980px) {
+
+    body.qore-production-history-page {
+        height: 100dvh;
+    }
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            10px
+            16px
+            10px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        padding: 18px 20px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .qore-history-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    :root {
+        --qore-history-list-width: 100vw;
+        --qore-history-detail-width: 100vw;
+    }
+
+    .qore-detail-panel {
+        width: 100vw;
+    }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media only screen and (max-width: 700px) {
+
+    body.qore-production-history-page {
+        height: 100dvh;
+        min-height: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding:
+            8px
+            10px
+            8px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 8px;
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-main {
+        width: 100%;
+        gap: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-back {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header h1 {
+        font-size: clamp(24px, 7vw, 29px);
+    }
+
+    body.qore-production-history-page
+    .qore-page-header p {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .qore-history-summary {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .qore-history-summary-card {
+        min-height: 68px;
+        padding: 10px 12px;
+    }
+
+    .qore-history-summary-icon {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .qore-history-summary-value {
+        font-size: 18px;
+    }
+
+    .qore-history-filters {
+        margin-bottom: 8px;
+    }
+
+    .qore-history-filters-header {
+        align-items: stretch !important;
+        flex-direction: column;
+        min-height: 0 !important;
+        padding: 8px 10px !important;
+    }
+
+    .qore-history-filter-clear {
+        width: 100%;
+        min-height: 34px !important;
+    }
+
+    .qore-history-filter-grid {
+        grid-template-columns: 1fr;
+        padding: 8px 10px 10px !important;
+    }
+
+    .qore-history-filter-field input,
+    .qore-history-filter-field select {
+        height: 38px !important;
+        min-height: 38px !important;
+        font-size: 16px !important;
+    }
+
+    .qore-history-card-header {
+        align-items: stretch;
+        flex-direction: column;
+        min-height: 0 !important;
+        padding: 10px 12px !important;
+    }
+
+    .qore-history-new-button {
+        width: 100%;
+        min-height: 38px !important;
+    }
+
+    .qore-history-table-wrapper {
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .qore-history-pagination {
+        align-items: stretch;
+        flex-direction: column;
+        min-height: 0 !important;
+        padding: 7px 9px !important;
+    }
+
+    .qore-history-pagination-info {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px !important;
+    }
+
+    .qore-history-page-size {
+        padding-left: 0 !important;
+        border-left: 0;
+    }
+
+    .qore-history-pagination-controls {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .qore-history-page-numbers {
+        max-width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .qore-history-page-button {
+        min-width: 30px !important;
+        height: 30px !important;
+    }
+
+    .qore-history-card-footer {
+        display: none;
+    }
+
+}
+
+/* ---------- CELULARES PEQUENOS ---------- */
+
+@media only screen and (max-width: 420px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .qore-history-summary-card,
+    .qore-history-filters,
+    .qore-history-card {
+        border-radius: 13px;
+    }
+
+    .qore-history-page-size {
+        display: none;
+    }
+}
+
+/* ---------- TOUCH ---------- */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .qore-history-summary-card:hover,
+    .qore-history-new-button:hover,
+    .qore-history-filter-clear:hover,
+    .qore-history-page-button:hover,
+    .qore-detail-close:hover {
+        transform: none;
+    }
+
+    .qore-history-filter-clear,
+    .qore-history-new-button,
+    .qore-history-page-button,
+    .qore-detail-close,
+    .qore-history-wallet-badge {
+        min-height: 44px;
+    }
+}
+
+/* ---------- REDUÇÃO DE MOVIMENTO ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.qore-production-history-page
+    .qore-production-main,
+    .qore-detail-panel,
+    .qore-detail-frame,
+    .qore-history-summary-card,
+    .qore-history-page-button {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================================
+   ÍCONE DO SUPERINTENDENTE
+========================================================= */
+.qore-history-superintendent-icon > i {
+    display: block;
+    margin: 0;
+    color: inherit;
+    font-size: 12px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   RESUMO MENSAL — TOOLTIPS EXECUTIVOS v2.9.0
+   Total de Envios, Produção e Pagamento representam o mês atual.
+========================================================= */
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip {
+    position: relative;
+    overflow: visible;
+    cursor: help;
+    outline: 0;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus-visible {
+    border-color: rgba(37, 99, 235, 0.42);
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10),
+        0 14px 30px rgba(3, 17, 41, 0.08);
+}
+
+body.qore-production-history-page
+.qore-history-summary-info {
+    position: absolute;
+    top: 10px;
+    right: 11px;
+
+    width: 19px;
+    height: 19px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--qore-blue-600);
+    font-size: 9px;
+
+    border-radius: 999px;
+    background: #eff6ff;
+
+    opacity: 0.82;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 80;
+
+    width: min(470px, calc(100vw - 34px));
+    padding: 14px;
+
+    color: var(--qore-text);
+
+    border: 1px solid rgba(16, 39, 87, 0.12);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.985);
+
+    box-shadow:
+        0 22px 50px rgba(3, 17, 41, 0.18),
+        0 5px 14px rgba(3, 17, 41, 0.08);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(-4px);
+
+    transition:
+        opacity 0.16s ease,
+        visibility 0.16s ease,
+        transform 0.16s ease;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:nth-child(3)
+.qore-history-summary-tooltip,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:nth-child(4)
+.qore-history-summary-tooltip {
+    right: 0;
+    left: auto;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:hover
+.qore-history-summary-tooltip,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus
+.qore-history-summary-tooltip,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus-within
+.qore-history-summary-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+
+    border-bottom: 1px solid var(--qore-border);
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head strong,
+body.qore-production-history-page
+.qore-history-summary-tooltip-head span {
+    display: block;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head strong {
+    color: #172033;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head span {
+    margin-top: 3px;
+    color: var(--qore-muted);
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-grid section {
+    min-width: 0;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-title {
+    display: block;
+    margin-bottom: 7px;
+
+    color: var(--qore-blue-700);
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: grid;
+    gap: 5px;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip li {
+    min-width: 0;
+    min-height: 28px;
+    padding: 6px 7px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+
+    border: 1px solid #edf1f6;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip li > span {
+    min-width: 0;
+    overflow: hidden;
+
+    color: #475467;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.25;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip li > strong {
+    color: #172033;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1.25;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip li.is-empty {
+    display: block;
+    color: var(--qore-muted-light);
+    font-size: 8px;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip
+    .qore-history-summary-tooltip {
+        right: auto;
+        left: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip:nth-child(even)
+    .qore-history-summary-tooltip {
+        right: 0;
+        left: auto;
+    }
+}
+
+@media (max-width: 620px) {
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip
+    .qore-history-summary-tooltip,
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip:nth-child(even)
+    .qore-history-summary-tooltip {
+        right: auto;
+        left: 0;
+
+        width: min(360px, calc(100vw - 32px));
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-tooltip-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip {
+        cursor: pointer;
+    }
+}
+
+
+
+/* =========================================================
+   V2.10 — RESUMO EXECUTIVO / ÍCONES / TOOLTIP / TIPO CENTRAL
+========================================================= */
+
+/* Mantém os tooltips dos cards acima dos filtros subsequentes. */
+body.qore-production-history-page
+.qore-history-summary {
+    position: relative;
+    z-index: 40;
+    overflow: visible;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:hover,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus-within {
+    z-index: 120;
+}
+
+body.qore-production-history-page
+.qore-history-filters {
+    position: relative;
+    z-index: 1;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip {
+    z-index: 520;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:hover
+.qore-history-summary-tooltip,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus
+.qore-history-summary-tooltip,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus-within
+.qore-history-summary-tooltip {
+    pointer-events: auto;
+}
+
+/* Ícone do envio sem dependência de uma versão específica do Font Awesome. */
+body.qore-production-history-page
+.qore-paper-plane-svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+body.qore-production-history-page
+.qore-paper-plane-svg--badge {
+    width: 10px;
+    height: 10px;
+    stroke-width: 2;
+}
+
+/* Mini gráfico simbólico dos dias do mês com envios. */
+body.qore-production-history-page
+.qore-history-monthly-activity {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid var(--qore-border);
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head > div {
+    min-width: 0;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head strong,
+body.qore-production-history-page
+.qore-history-monthly-activity-head span {
+    display: block;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head strong {
+    color: #172033;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head span {
+    margin-top: 2px;
+    color: var(--qore-muted);
+    font-size: 7.5px;
+    line-height: 1.35;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity-head small {
+    flex: 0 0 auto;
+    color: #475467;
+    font-size: 7.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-bars {
+    --qore-month-days: 31;
+
+    height: 44px;
+    display: grid;
+    grid-template-columns:
+        repeat(
+            var(--qore-month-days),
+            minmax(2px, 1fr)
+        );
+    align-items: stretch;
+    gap: 2px;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-bar {
+    min-width: 0;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: default;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-bar::before {
+    content: "";
+    width: 100%;
+    min-height: 3px;
+    height: var(--qore-month-bar-height, 7%);
+    border-radius: 3px 3px 1px 1px;
+    background: #e4eaf2;
+    transition:
+        height 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-bar.is-active::before {
+    background:
+        linear-gradient(
+            180deg,
+            var(--qore-cyan-400),
+            var(--qore-blue-600)
+        );
+    box-shadow:
+        0 2px 5px
+        rgba(37, 99, 235, 0.16);
+}
+
+body.qore-production-history-page
+.qore-history-monthly-bar.is-active:hover::before {
+    background: var(--qore-blue-700);
+}
+
+body.qore-production-history-page
+.qore-history-monthly-axis {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--qore-muted-light);
+    font-size: 6.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Centralização real da coluna/badge de Tipo. */
+body.qore-production-history-page
+.qore-history-col-type,
+body.qore-production-history-page
+.qore-history-type-cell {
+    text-align: center;
+}
+
+body.qore-production-history-page
+.qore-history-type-cell {
+    vertical-align: middle;
+}
+
+body.qore-production-history-page
+.qore-history-type-badge {
+    min-width: 112px;
+    margin-inline: auto;
+    justify-content: center;
+    text-align: center;
+}
+
+@media (max-width: 620px) {
+    body.qore-production-history-page
+    .qore-history-monthly-activity-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-monthly-activity-head small {
+        white-space: normal;
+    }
+
+    body.qore-production-history-page
+    .qore-history-monthly-bars {
+        gap: 1px;
+    }
+}
+
+
+/* =========================================================
+   V2.11 — DETALHE SOBRE O HISTÓRICO + TOTAL ENVIOS SÓ GRÁFICO
+   O iframe deixa de dividir a tela lateralmente e passa a abrir
+   como uma camada central sobre Meus Envios.
+========================================================= */
+
+/* Total de Envios: tooltip compacto, dedicado somente ao gráfico diário. */
+body.qore-production-history-page
+.qore-history-summary-tooltip--activity-only {
+    width: min(430px, calc(100vw - 34px));
+    padding: 14px 15px 12px;
+}
+
+body.qore-production-history-page
+.qore-history-monthly-activity--only {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+/*
+ * Overlay do detalhe. A navbar continua visível e o histórico permanece
+ * exatamente na largura original por baixo da camada.
+ */
+body.qore-production-history-page.qore-detail-overlay-open {
+    overflow: hidden !important;
+}
+
+body.qore-production-history-page
+.qore-detail-backdrop {
+    display: block !important;
+    position: fixed;
+    top: var(--qore-history-navbar-height, 0px);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1480;
+
+    background: rgba(3, 17, 41, 0.42);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity 0.20s ease,
+        visibility 0.20s ease;
+}
+
+body.qore-production-history-page
+.qore-detail-backdrop.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay {
+    position: fixed !important;
+    top: calc(var(--qore-history-navbar-height, 0px) + 12px) !important;
+    right: auto !important;
+    bottom: 16px !important;
+    left: 50% !important;
+    z-index: 1500 !important;
+
+    /*
+     * O detalhe abre sobre o histórico, porém com largura controlada.
+     * Em monitores ultrawide ele não ocupa a tela inteira, permitindo
+     * que o próprio detalhe assuma uma composição mais vertical.
+     */
+    width: min(1350px, calc(100vw - 48px)) !important;
+    max-width: 1350px !important;
+    height: auto !important;
+    max-height: none !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid rgba(16, 39, 87, 0.14) !important;
+    border-radius: 18px !important;
+
+    background: #f4f7fb;
+
+    box-shadow:
+        0 30px 90px rgba(3, 17, 41, 0.30),
+        0 8px 24px rgba(3, 17, 41, 0.14) !important;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform:
+        translateX(-50%)
+        translateY(16px)
+        scale(0.992) !important;
+
+    transform-origin: center center;
+
+    transition:
+        opacity 0.20s ease,
+        visibility 0.20s ease,
+        transform 0.22s ease !important;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform:
+        translateX(-50%)
+        translateY(0)
+        scale(1) !important;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-header {
+    min-height: 58px;
+    padding: 10px 14px 10px 18px;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-header strong {
+    max-width: calc(100vw - 130px);
+    font-size: 11px;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame-wrap,
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+/*
+ * Segurança contra regras antigas do split: a classe antiga não é mais
+ * adicionada pelo JS, mas estas garantias evitam qualquer encolhimento se
+ * algum estado legado permanecer no DOM/cache.
+ */
+body.qore-production-history-page.qore-detail-overlay-open
+.qore-production-main {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+}
+
+body.qore-production-history-page.qore-detail-overlay-open
+.qore-production-shell {
+    width: min(1680px, 100%) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+}
+
+body.qore-production-history-page.qore-detail-overlay-open
+.qore-history-summary {
+    display: grid !important;
+}
+
+@media only screen and (max-width: 760px) {
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay {
+        top: calc(var(--qore-history-navbar-height, 0px) + 6px) !important;
+        right: 6px !important;
+        bottom: 6px !important;
+        left: 6px !important;
+
+        width: auto !important;
+        max-width: none !important;
+
+        border-radius: 14px !important;
+
+        transform:
+            translateY(16px)
+            scale(0.992) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay.is-open {
+        transform:
+            translateY(0)
+            scale(1) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay
+    .qore-detail-panel-header {
+        min-height: 54px;
+        padding: 8px 9px 8px 12px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-tooltip--activity-only {
+        width: min(360px, calc(100vw - 32px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay,
+    body.qore-production-history-page
+    .qore-detail-backdrop {
+        transition-duration: 0.01ms !important;
+    }
+}
+/* =========================================================
+   V2.12 — RESPONSIVIDADE CONSOLIDADA
+   Referência: 1920x1080, com adaptação progressiva até mobile.
+   Mantém rotas, IDs, data-attributes, eventos, filtros, tabela,
+   paginação, tooltips e iframe existentes.
+========================================================= */
+
+:root {
+    --qore-history-content-max: 1800px;
+    --qore-history-overlay-max: 1180px;
+    --qore-history-edge-gap: clamp(12px, 2vw, 36px);
+}
+
+/* ---------- VIEWPORT / CONTAINER ---------- */
+
+html {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+}
+
+body.qore-production-history-page {
+    width: 100%;
+    max-width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-production-main {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding:
+        clamp(10px, 1.25vw, 20px)
+        var(--qore-history-edge-gap)
+        clamp(8px, 1vw, 16px);
+    overflow: hidden;
+    flex: 1 1 auto;
+}
+
+body.qore-production-history-page
+.qore-production-shell {
+    width: min(var(--qore-history-content-max), 100%);
+    max-width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---------- CABEÇALHO ---------- */
+
+body.qore-production-history-page
+.qore-page-header {
+    min-width: 0;
+    margin-bottom: clamp(8px, 0.85vw, 14px);
+    padding:
+        clamp(16px, 1.35vw, 24px)
+        clamp(18px, 1.8vw, 32px);
+    gap: clamp(14px, 1.4vw, 24px);
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-page-header-main,
+body.qore-production-history-page
+.qore-page-header-copy {
+    min-width: 0;
+}
+
+body.qore-production-history-page
+.qore-page-header-copy {
+    flex: 1 1 auto;
+}
+
+body.qore-production-history-page
+.qore-page-header h1 {
+    font-size: clamp(26px, 1.85vw, 36px);
+}
+
+body.qore-production-history-page
+.qore-page-header p {
+    max-width: 1040px;
+    font-size: clamp(10px, 0.65vw, 12px);
+    line-height: 1.55;
+}
+
+body.qore-production-history-page
+.qore-page-header-badge {
+    min-width: min(245px, 28vw);
+    flex: 0 0 auto;
+}
+
+/* ---------- RESUMO ---------- */
+
+body.qore-production-history-page
+.qore-history-summary {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: clamp(8px, 0.75vw, 13px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(8px, 0.7vw, 13px);
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card {
+    min-width: 0;
+    min-height: clamp(76px, 4.8vw, 90px);
+    padding: clamp(11px, 0.8vw, 15px);
+    gap: clamp(9px, 0.7vw, 13px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-icon {
+    width: clamp(38px, 2.35vw, 44px);
+    height: clamp(38px, 2.35vw, 44px);
+    flex-basis: clamp(38px, 2.35vw, 44px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-label {
+    font-size: clamp(7.5px, 0.46vw, 8.5px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-value {
+    font-size: clamp(19px, 1.25vw, 23px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-value--date {
+    font-size: clamp(12px, 0.82vw, 15px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-value--money {
+    font-size: clamp(13px, 0.88vw, 16px);
+}
+
+body.qore-production-history-page
+.qore-history-summary-help {
+    font-size: clamp(7.5px, 0.45vw, 8.5px);
+}
+
+/* Tooltips sempre acima dos filtros, sem escapar da viewport em altura. */
+body.qore-production-history-page
+.qore-history-summary {
+    position: relative;
+    z-index: 40;
+    overflow: visible;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip {
+    position: relative;
+    overflow: visible;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:hover,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus,
+body.qore-production-history-page
+.qore-history-summary-card--tooltip:focus-within {
+    z-index: 120;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip {
+    width: min(470px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
+    max-height: min(430px, calc(100dvh - 150px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 520;
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip--activity-only {
+    width: min(430px, calc(100vw - 32px));
+}
+
+/* ---------- FILTROS ---------- */
+
+body.qore-production-history-page
+.qore-history-filters {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: clamp(8px, 0.7vw, 12px);
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header {
+    min-height: 48px !important;
+    padding: 9px clamp(12px, 0.9vw, 16px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header
+.qore-history-card-kicker {
+    margin-bottom: 3px !important;
+    font-size: 7px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header h2 {
+    font-size: clamp(11px, 0.68vw, 13px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-clear {
+    min-height: 32px !important;
+    padding-inline: 10px !important;
+    font-size: 8px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(7px, 0.55vw, 10px) !important;
+    padding:
+        9px
+        clamp(12px, 0.9vw, 16px)
+        11px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-field {
+    min-width: 0;
+    gap: 4px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-field > span {
+    font-size: 7px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-field input,
+body.qore-production-history-page
+.qore-history-filter-field select {
+    width: 100%;
+    min-width: 0;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding-inline: 9px !important;
+    font-size: 9px !important;
+}
+
+/* ---------- CARD / TABELA ---------- */
+
+body.qore-production-history-page
+.qore-history-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-history-card-header {
+    min-height: 60px !important;
+    padding: 10px clamp(12px, 0.95vw, 17px) !important;
+    gap: 12px !important;
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-card-header h2 {
+    font-size: clamp(14px, 0.88vw, 17px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-card-header p {
+    margin-top: 3px !important;
+    font-size: clamp(8px, 0.5vw, 9px) !important;
+    line-height: 1.4 !important;
+}
+
+body.qore-production-history-page
+.qore-history-new-button {
+    min-height: 34px !important;
+    padding-inline: 11px !important;
+    font-size: 8px !important;
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+
+body.qore-production-history-page
+.qore-history-table {
+    width: 100%;
+    min-width: 1400px;
+    max-width: none;
+    table-layout: fixed;
+}
+
+body.qore-production-history-page
+.qore-history-table th {
+    height: 38px !important;
+    padding:
+        8px
+        clamp(9px, 0.65vw, 13px) !important;
+    font-size: clamp(7px, 0.43vw, 8px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-table td {
+    height: 56px !important;
+    padding:
+        8px
+        clamp(9px, 0.65vw, 13px) !important;
+    font-size: clamp(8.5px, 0.5vw, 9.5px);
+}
+
+body.qore-production-history-page
+.qore-history-col-date {
+    width: 145px;
+}
+
+body.qore-production-history-page
+.qore-history-col-type {
+    width: 145px;
+}
+
+body.qore-production-history-page
+.qore-history-col-superintendent {
+    width: 210px;
+}
+
+body.qore-production-history-page
+.qore-history-col-sender {
+    width: 195px;
+}
+
+body.qore-production-history-page
+.qore-history-col-wallets {
+    width: 135px;
+}
+
+body.qore-production-history-page
+.qore-history-col-status {
+    width: 120px;
+}
+
+body.qore-production-history-page
+.qore-history-type-badge {
+    min-width: 112px;
+    max-width: 100%;
+    margin-inline: auto;
+    justify-content: center;
+    text-align: center;
+}
+
+/* ---------- PAGINAÇÃO ---------- */
+
+body.qore-production-history-page
+.qore-history-pagination {
+    min-height: 42px !important;
+    padding: 5px 10px !important;
+    gap: 10px !important;
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-pagination-info,
+body.qore-production-history-page
+#historyPaginationSummary,
+body.qore-production-history-page
+.qore-history-page-size {
+    font-size: 7.5px !important;
+}
+
+body.qore-production-history-page
+.qore-history-page-button {
+    min-width: 27px !important;
+    height: 27px !important;
+    padding-inline: 6px !important;
+    font-size: 7.5px !important;
+}
+
+body.qore-production-history-page
+.qore-history-page-nav {
+    width: 27px !important;
+    min-width: 27px !important;
+}
+
+/* ---------- IFRAME / OVERLAY ---------- */
+
+body.qore-production-history-page.qore-detail-overlay-open {
+    overflow: hidden !important;
+}
+
+body.qore-production-history-page
+.qore-detail-backdrop {
+    top: var(--qore-history-navbar-height, 0px);
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay {
+    position: fixed !important;
+    top: calc(var(--qore-history-navbar-height, 0px) + 12px) !important;
+    right: auto !important;
+    bottom: 12px !important;
+    left: 50% !important;
+
+    width: min(
+        var(--qore-history-overlay-max),
+        calc(100vw - 40px)
+    ) !important;
+
+    max-width: var(--qore-history-overlay-max) !important;
+    height: auto !important;
+    max-height:
+        calc(
+            100dvh -
+            var(--qore-history-navbar-height, 0px) -
+            24px
+        ) !important;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden !important;
+
+    transform:
+        translateX(-50%)
+        translateY(14px)
+        scale(0.994) !important;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay.is-open {
+    transform:
+        translateX(-50%)
+        translateY(0)
+        scale(1) !important;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-header {
+    min-height: 56px;
+    padding: 9px 12px 9px 16px;
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-header > div {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-header strong {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame-wrap {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: block;
+    border: 0;
+}
+
+/* O histórico não deve encolher quando o overlay estiver aberto. */
+body.qore-production-history-page.qore-detail-overlay-open
+.qore-production-main,
+body.qore-production-history-page.qore-detail-overlay-open
+.qore-production-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* ---------- DARK MODE PARA ELEMENTOS NOVOS/ATUALIZADOS ---------- */
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip {
+    color: var(--qore-text);
+    border-color: #33445b;
+    background: rgba(16, 27, 43, 0.99);
+    box-shadow:
+        0 22px 50px rgba(0, 0, 0, 0.34),
+        0 5px 14px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip-head {
+    border-color: #33445b;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip-head strong,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-monthly-activity-head strong {
+    color: #e6edf7;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip li {
+    border-color: #27384e;
+    background: #142033;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip li > span,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-monthly-activity-head span,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-monthly-activity-head small {
+    color: #aab7c8;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-summary-tooltip li > strong {
+    color: #f2f6fb;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-monthly-bar::before {
+    background: #33445b;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-history-monthly-axis {
+    color: #8190a4;
+}
+
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame-wrap,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-frame,
+html[data-theme="dark"]
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-loading {
+    background: #09111f;
+}
+
+/* ---------- 1600 / 1440 / 1366 ---------- */
+
+@media only screen and (max-width: 1599px) {
+    :root {
+        --qore-history-content-max: 1500px;
+        --qore-history-edge-gap: clamp(16px, 2.4vw, 34px);
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ---------- 1280 / 1024 ---------- */
+
+@media only screen and (max-width: 1280px) {
+    :root {
+        --qore-history-overlay-max: 1080px;
+        --qore-history-edge-gap: clamp(14px, 2vw, 24px);
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Em duas colunas: cards da esquerda abrem tooltip para a direita. */
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip
+    .qore-history-summary-tooltip {
+        right: auto;
+        left: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip:nth-child(even)
+    .qore-history-summary-tooltip {
+        right: 0;
+        left: auto;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    :root {
+        --qore-history-edge-gap: 14px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay {
+        width: calc(100vw - 24px) !important;
+        max-width: none !important;
+    }
+}
+
+/* ---------- TABLET ---------- */
+
+@media only screen and (max-width: 820px) {
+    :root {
+        --qore-history-edge-gap: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        gap: 8px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-header {
+        align-items: center;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination-controls {
+        margin-left: auto;
+    }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media only screen and (max-width: 620px) {
+    :root {
+        --qore-history-edge-gap: 8px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        padding: 14px 12px;
+        gap: 10px;
+        border-radius: 14px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-main {
+        gap: 9px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-back {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header h1 {
+        font-size: clamp(23px, 7.4vw, 28px);
+    }
+
+    body.qore-production-history-page
+    .qore-page-header p {
+        font-size: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card {
+        min-height: 68px;
+        padding: 10px 11px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-tooltip,
+    body.qore-production-history-page
+    .qore-history-summary-tooltip--activity-only,
+    body.qore-production-history-page
+    .qore-history-summary-card--tooltip:nth-child(even)
+    .qore-history-summary-tooltip {
+        right: auto;
+        left: 0;
+        width: min(360px, calc(100vw - 24px));
+        max-width: calc(100vw - 24px);
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-tooltip-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters-header,
+    body.qore-production-history-page
+    .qore-history-card-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-clear,
+    body.qore-production-history-page
+    .qore-history-new-button {
+        width: 100%;
+        min-height: 38px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-field input,
+    body.qore-production-history-page
+    .qore-history-filter-field select {
+        height: 40px !important;
+        min-height: 40px !important;
+        font-size: 16px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 7px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination-info {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-page-size {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination-controls {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    body.qore-production-history-page
+    .qore-history-page-numbers {
+        max-width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    body.qore-production-history-page
+    .qore-history-page-button {
+        min-width: 32px !important;
+        height: 32px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-footer {
+        display: none;
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay {
+        top: calc(var(--qore-history-navbar-height, 0px) + 6px) !important;
+        right: 6px !important;
+        bottom: 6px !important;
+        left: 6px !important;
+        width: auto !important;
+        max-width: none !important;
+        max-height:
+            calc(
+                100dvh -
+                var(--qore-history-navbar-height, 0px) -
+                12px
+            ) !important;
+
+        border-radius: 14px !important;
+
+        transform:
+            translateY(12px)
+            scale(0.995) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay.is-open {
+        transform:
+            translateY(0)
+            scale(1) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay
+    .qore-detail-panel-header {
+        min-height: 54px;
+        padding: 8px 9px 8px 12px;
+    }
+}
+
+/* ---------- TELAS BAIXAS / ZOOM ---------- */
+
+@media only screen and (max-height: 820px) and (min-width: 621px) {
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 6px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header p {
+        margin-top: 5px;
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary,
+    body.qore-production-history-page
+    .qore-history-filters {
+        margin-bottom: 6px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card {
+        min-height: 66px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters-header {
+        min-height: 42px !important;
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        padding-top: 6px !important;
+        padding-bottom: 7px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-field input,
+    body.qore-production-history-page
+    .qore-history-filter-field select {
+        height: 31px !important;
+        min-height: 31px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-header {
+        min-height: 50px !important;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        min-height: 36px !important;
+    }
+}
+
+/* ---------- TOUCH / MOVIMENTO ---------- */
+
+@media (hover: none) and (pointer: coarse) {
+    body.qore-production-history-page
+    .qore-history-filter-clear,
+    body.qore-production-history-page
+    .qore-history-new-button,
+    body.qore-production-history-page
+    .qore-history-page-button,
+    body.qore-production-history-page
+    .qore-detail-close,
+    body.qore-production-history-page
+    .qore-history-wallet-badge {
+        min-height: 44px;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card:hover,
+    body.qore-production-history-page
+    .qore-history-new-button:hover,
+    body.qore-production-history-page
+    .qore-history-filter-clear:hover,
+    body.qore-production-history-page
+    .qore-history-page-button:hover,
+    body.qore-production-history-page
+    .qore-detail-close:hover {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.qore-production-history-page
+    .qore-detail-panel.qore-detail-panel--overlay,
+    body.qore-production-history-page
+    .qore-detail-backdrop,
+    body.qore-production-history-page
+    .qore-history-summary-card,
+    body.qore-production-history-page
+    .qore-history-page-button {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================================
+   V2.14 — CABEÇALHO SIMPLES DO MODAL DE DETALHE
+========================================================= */
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-title {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-title > i {
+    color: #7dd3fc;
+    font-size: 11px;
+}
+
+body.qore-production-history-page
+.qore-detail-panel.qore-detail-panel--overlay
+.qore-detail-panel-title strong {
+    max-width: none;
+    overflow: visible;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+
+
+/* ==========================================================================
+   V2.15 — WORKSPACE UI CORE
+   PRIMEIRA PÁGINA OFICIAL MIGRADA
+
+   Regras:
+   - altura do documento é natural;
+   - browser zoom permanece nativo;
+   - nenhum cálculo de viewport controla a altura da tabela;
+   - tabela larga rola horizontalmente somente dentro do seu container;
+   - KPIs e filtros reorganizam por espaço disponível;
+   - tipografia segue a escala oficial do Workspace;
+   - classes e IDs funcionais existentes permanecem intactos.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   DOCUMENTO / PÁGINA
+   ========================================================================== */
+
+html {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+}
+
+body.qore-production-history-page {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+
+    overflow: visible !important;
+
+    color:
+        var(
+            --ws-text-primary,
+            var(--qore-text)
+        );
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+}
+
+body.qore-production-history-page
+.qore-production-main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 0;
+
+    padding:
+        clamp(12px, 1.2vw, 20px)
+        var(--qore-history-edge-gap)
+        clamp(20px, 1.6vw, 30px) !important;
+
+    flex: 1 0 auto;
+
+    overflow: visible !important;
+}
+
+body.qore-production-history-page
+.qore-production-shell {
+    width:
+        min(
+            var(--qore-history-content-max),
+            100%
+        );
+
+    max-width: 100%;
+
+    height: auto !important;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: visible !important;
+}
+
+
+/* ==========================================================================
+   HERO — MANTÉM O VISUAL APROVADO, MAS USA A ESCALA OFICIAL
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-page-header {
+    margin-bottom:
+        clamp(12px, 0.85vw, 16px);
+
+    padding:
+        clamp(18px, 1.35vw, 25px)
+        clamp(20px, 1.8vw, 34px);
+
+    gap:
+        clamp(14px, 1.4vw, 24px);
+
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-page-eyebrow {
+    margin-bottom: 8px;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        );
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        );
+
+    letter-spacing:
+        var(
+            --ws-tracking-kicker,
+            0.13em
+        );
+}
+
+body.qore-production-history-page
+.qore-page-header h1 {
+    font-size:
+        clamp(
+            28px,
+            1.8vw,
+            36px
+        );
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        );
+
+    line-height:
+        var(
+            --ws-line-tight,
+            1.15
+        );
+}
+
+body.qore-production-history-page
+.qore-page-header p {
+    max-width: 1040px;
+
+    margin-top: 8px;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        );
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.6
+        );
+}
+
+body.qore-production-history-page
+.qore-page-header-badge strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        );
+}
+
+body.qore-production-history-page
+.qore-page-header-badge small {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        );
+
+    line-height: 1.45;
+}
+
+
+/* ==========================================================================
+   KPIs — REFLUXO POR ESPAÇO REAL
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-summary {
+    width: 100%;
+    min-width: 0;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(240px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap:
+        clamp(9px, 0.7vw, 13px) !important;
+
+    margin-bottom:
+        clamp(12px, 0.8vw, 16px) !important;
+
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-summary-card {
+    min-width: 0;
+
+    min-height: 82px !important;
+
+    padding:
+        clamp(12px, 0.8vw, 15px) !important;
+
+    gap:
+        clamp(10px, 0.7vw, 13px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-summary-label {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    letter-spacing: 0.055em;
+}
+
+body.qore-production-history-page
+.qore-history-summary-value {
+    font-size:
+        clamp(
+            19px,
+            1.2vw,
+            23px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-summary-value--date {
+    font-size:
+        clamp(
+            14px,
+            0.85vw,
+            16px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-summary-value--money {
+    font-size:
+        clamp(
+            16px,
+            1vw,
+            20px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-summary-help {
+    margin-top: 5px;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   TOOLTIP DOS KPIs
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head strong,
+body.qore-production-history-page
+.qore-history-monthly-activity-head strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        );
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip-head span,
+body.qore-production-history-page
+.qore-history-monthly-activity-head span,
+body.qore-production-history-page
+.qore-history-monthly-activity-head small,
+body.qore-production-history-page
+.qore-history-summary-tooltip-title {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        );
+}
+
+body.qore-production-history-page
+.qore-history-summary-tooltip li > span,
+body.qore-production-history-page
+.qore-history-summary-tooltip li > strong,
+body.qore-production-history-page
+.qore-history-summary-tooltip li.is-empty {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        );
+}
+
+
+/* ==========================================================================
+   FILTROS
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-filters {
+    width: 100%;
+    min-width: 0;
+
+    margin-bottom:
+        clamp(12px, 0.8vw, 16px) !important;
+
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header {
+    min-height: 58px !important;
+
+    padding:
+        10px
+        clamp(14px, 1vw, 18px) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header
+.qore-history-card-kicker,
+body.qore-production-history-page
+.qore-history-card-header
+.qore-history-card-kicker {
+    margin-bottom: 4px !important;
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filters-header h2 {
+    font-size:
+        var(
+            --ws-font-base,
+            14px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+body.qore-production-history-page
+.qore-history-filter-clear {
+    min-height:
+        var(
+            --ws-button-height-md,
+            38px
+        ) !important;
+
+    padding-inline: 12px !important;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-grid {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(165px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap:
+        clamp(9px, 0.65vw, 12px) !important;
+
+    padding:
+        12px
+        clamp(14px, 1vw, 18px)
+        14px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-field {
+    min-width: 0;
+
+    gap: 6px !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-field > span {
+    color:
+        var(
+            --ws-text-muted-strong,
+            #526078
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-bold,
+            700
+        );
+}
+
+body.qore-production-history-page
+.qore-history-filter-field input,
+body.qore-production-history-page
+.qore-history-filter-field select {
+    width: 100%;
+    min-width: 0;
+
+    height:
+        var(
+            --ws-control-height-md,
+            40px
+        ) !important;
+
+    min-height:
+        var(
+            --ws-control-height-md,
+            40px
+        ) !important;
+
+    padding-inline: 11px !important;
+
+    font-size:
+        var(
+            --ws-font-md,
+            13px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-filter-search-wrap i {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   HISTÓRICO / TABELA
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    display: block !important;
+
+    flex: none !important;
+
+    /*
+     * Mantém o recorte visual do card.
+     * A tabela cuida do próprio scroll horizontal.
+     */
+    overflow: hidden;
+}
+
+body.qore-production-history-page
+.qore-history-card-header {
+    min-height: 68px !important;
+
+    padding:
+        13px
+        clamp(16px, 1.1vw, 20px) !important;
+
+    gap: 14px !important;
+}
+
+body.qore-production-history-page
+.qore-history-card-header h2 {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-heading,
+            1.25
+        );
+}
+
+body.qore-production-history-page
+.qore-history-card-header p {
+    margin-top: 4px !important;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-new-button {
+    min-height:
+        var(
+            --ws-button-height-md,
+            38px
+        ) !important;
+
+    padding-inline: 13px !important;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    flex: 0 0 auto;
+}
+
+
+/*
+ * PONTO PRINCIPAL DA CORREÇÃO DE ZOOM:
+ * o wrapper deixa de ser o "espaço restante da viewport".
+ * Sua altura agora é determinada pelo conteúdo.
+ */
+body.qore-production-history-page
+.qore-history-table-wrapper {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    flex: none !important;
+
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+
+    overscroll-behavior-x: contain;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-gutter: auto;
+}
+
+body.qore-production-history-page
+.qore-history-table {
+    width: 100%;
+    min-width: 1400px;
+    max-width: none;
+
+    table-layout: fixed;
+}
+
+body.qore-production-history-page
+.qore-history-table th {
+    height: auto !important;
+
+    padding:
+        10px
+        clamp(10px, 0.7vw, 14px) !important;
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height: 1.25;
+}
+
+body.qore-production-history-page
+.qore-history-table td {
+    height: auto !important;
+
+    padding:
+        10px
+        clamp(10px, 0.7vw, 14px) !important;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-base,
+            1.45
+        );
+}
+
+body.qore-production-history-page
+.qore-history-date-cell strong,
+body.qore-production-history-page
+.qore-history-superintendent strong,
+body.qore-production-history-page
+.qore-history-sender strong,
+body.qore-production-history-page
+.qore-history-datetime strong {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-date-cell small,
+body.qore-production-history-page
+.qore-history-superintendent small,
+body.qore-production-history-page
+.qore-history-sender small,
+body.qore-production-history-page
+.qore-history-datetime small {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-type-badge,
+body.qore-production-history-page
+.qore-history-status {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-wallet-badge strong {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-wallet-badge span,
+body.qore-production-history-page
+.qore-history-wallet-badge i,
+body.qore-production-history-page
+.qore-wallet-info-icon {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   PAGINAÇÃO
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-pagination {
+    min-height: 48px !important;
+
+    padding:
+        8px
+        12px !important;
+
+    gap: 10px !important;
+
+    flex: 0 0 auto;
+}
+
+body.qore-production-history-page
+.qore-history-pagination-info,
+body.qore-production-history-page
+#historyPaginationSummary,
+body.qore-production-history-page
+.qore-history-page-size {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-page-button {
+    min-width: 31px !important;
+    height: 31px !important;
+
+    padding-inline: 7px !important;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.qore-production-history-page
+.qore-history-page-nav {
+    width: 31px !important;
+    min-width: 31px !important;
+}
+
+body.qore-production-history-page
+.qore-history-card-footer > div {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   ESTADOS VAZIOS
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-empty p {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        );
+}
+
+
+/* ==========================================================================
+   DESKTOP / ZOOM MODERADO
+   Não transformamos o Hero em coluna apenas porque a largura virtual caiu.
+   ========================================================================== */
+
+@media only screen and (min-width: 821px) and (max-width: 1024px) {
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: center !important;
+
+        flex-direction: row !important;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: auto !important;
+        min-width: 220px !important;
+    }
+}
+
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+
+@media only screen and (max-width: 820px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 10px !important;
+        padding-bottom: 18px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        padding: 16px;
+
+        border-radius: 15px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header-badge {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(220px, 100%),
+                    1fr
+                )
+            ) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(150px, 100%),
+                    1fr
+                )
+            ) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        align-items: center;
+
+        flex-wrap: wrap;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination-controls {
+        margin-left: auto;
+    }
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media only screen and (max-width: 640px) {
+
+    body.qore-production-history-page
+    .qore-page-header {
+        padding: 14px 12px;
+
+        gap: 10px;
+
+        border-radius: 14px;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header h1 {
+        font-size:
+            clamp(
+                23px,
+                7vw,
+                28px
+            );
+    }
+
+    body.qore-production-history-page
+    .qore-page-header p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            );
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters-header,
+    body.qore-production-history-page
+    .qore-history-card-header {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-clear,
+    body.qore-production-history-page
+    .qore-history-new-button {
+        width: 100%;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /*
+     * 16px evita zoom automático de inputs em navegadores móveis.
+     */
+    body.qore-production-history-page
+    .qore-history-filter-field input,
+    body.qore-production-history-page
+    .qore-history-filter-field select {
+        height: 42px !important;
+        min-height: 42px !important;
+
+        font-size: 16px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination-controls {
+        width: 100%;
+
+        margin-left: 0;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+    }
+}
+
+
+/* ==========================================================================
+   TELAS BAIXAS / ZOOM
+   Deliberadamente NÃO reduzimos a altura da tabela nem comprimimos
+   tipografia para "caber na viewport". O documento cresce verticalmente.
+   ========================================================================== */
+
+@media only screen and (max-height: 820px) and (min-width: 641px) {
+
+    body.qore-production-history-page
+    .qore-production-main {
+        padding-top: 10px !important;
+        padding-bottom: 20px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-page-header {
+        margin-bottom: 12px !important;
+
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary,
+    body.qore-production-history-page
+    .qore-history-filters {
+        margin-bottom: 12px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-summary-card {
+        min-height: 82px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filters-header {
+        min-height: 58px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-filter-field input,
+    body.qore-production-history-page
+    .qore-history-filter-field select {
+        height:
+            var(
+                --ws-control-height-md,
+                40px
+            ) !important;
+
+        min-height:
+            var(
+                --ws-control-height-md,
+                40px
+            ) !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-card-header {
+        min-height: 68px !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-pagination {
+        min-height: 48px !important;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.qore-production-history-page
+    .qore-history-summary-card,
+    body.qore-production-history-page
+    .qore-history-new-button,
+    body.qore-production-history-page
+    .qore-history-filter-clear {
+        transition: none !important;
+    }
+}
+
+
+/* ==========================================================================
+   V2.16 — AJUSTES DE PADRONIZAÇÃO DA TABELA / FILTROS
+   Somente camada visual. IDs, regras, filtros e eventos permanecem intactos.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   SCROLL HORIZONTAL DA TABELA
+   -------------------------------------------------------------------------- */
+
+/*
+ * O wrapper da tabela continua sendo o scroll real.
+ * Este controle superior apenas espelha o mesmo scroll para que o usuário
+ * não precise chegar ao fim de uma tabela longa para mover as colunas.
+ */
+body.qore-production-history-page
+.qore-history-table-scrollbar {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: 15px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border-bottom:
+        1px solid
+        var(
+            --ws-border-soft,
+            #E7EBF1
+        );
+
+    background:
+        var(
+            --ws-surface-soft,
+            #F8FAFC
+        );
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        )
+        transparent;
+
+    overscroll-behavior-x: contain;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar[hidden] {
+    display: none !important;
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar::-webkit-scrollbar {
+    height: 9px;
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar::-webkit-scrollbar-thumb {
+    border-radius:
+        var(
+            --ws-radius-pill,
+            999px
+        );
+
+    background:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        );
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar::-webkit-scrollbar-thumb:hover {
+    background:
+        var(
+            --ws-scroll-thumb-hover,
+            #AEB8C7
+        );
+}
+
+body.qore-production-history-page
+.qore-history-table-scrollbar-spacer {
+    height: 1px;
+}
+
+
+/*
+ * A tabela não é comprimida para tentar encaixar todas as colunas.
+ * Full HD continua acomodando a estrutura normalmente.
+ * Em zoom/telas menores o overflow fica restrito ao próprio componente.
+ */
+body.qore-production-history-page
+.qore-history-table-wrapper {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+
+    scrollbar-gutter: stable;
+
+    overscroll-behavior-x: contain;
+}
+
+body.qore-production-history-page
+.qore-history-table {
+    width: 100%;
+
+    min-width: 1620px !important;
+
+    max-width: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   COLUNA TIPO — BADGE SEM CORTE
+   -------------------------------------------------------------------------- */
+
+body.qore-production-history-page
+.qore-history-col-type {
+    width: 185px !important;
+
+    text-align: center;
+}
+
+body.qore-production-history-page
+.qore-history-type-cell {
+    text-align: center;
+
+    vertical-align: middle;
+}
+
+body.qore-production-history-page
+.qore-history-type-badge {
+    width: max-content;
+
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin-inline: auto;
+
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+
+    justify-content: center;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   COLUNA SITUAÇÃO — CENTRALIZADA
+   -------------------------------------------------------------------------- */
+
+body.qore-production-history-page
+.qore-history-col-status,
+body.qore-production-history-page
+.qore-history-status-cell {
+    width: 135px !important;
+
+    text-align: center !important;
+}
+
+body.qore-production-history-page
+.qore-history-status-cell {
+    vertical-align: middle;
+}
+
+body.qore-production-history-page
+.qore-history-status {
+    width: max-content;
+
+    margin-inline: auto;
+
+    justify-content: center;
+}
+
+
+/* --------------------------------------------------------------------------
+   FILTRO CARTEIRA — SEM ÍCONE DE BUSCA
+   -------------------------------------------------------------------------- */
+
+body.qore-production-history-page
+.qore-history-filter-search-wrap input,
+body.qore-production-history-page
+#historyFilterWallet {
+    padding-right: 11px !important;
+    padding-left: 11px !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   MOBILE / TOUCH
+   O scroll superior deixa de ser necessário; o swipe continua funcionando
+   diretamente sobre a própria tabela.
+   -------------------------------------------------------------------------- */
+
+@media only screen and (max-width: 640px) {
+
+    body.qore-production-history-page
+    .qore-history-table-scrollbar {
+        display: none !important;
+    }
+
+    body.qore-production-history-page
+    .qore-history-table-wrapper {
+        scrollbar-width: thin;
+    }
+}
+
+
+/* ==========================================================================
+   V2.17 — SCROLL VERTICAL INTERNO DA TABELA
+   Ajuste exclusivamente visual.
+
+   Objetivo:
+   - a tabela passa a ter sua própria rolagem vertical;
+   - o cabeçalho permanece visível durante a rolagem;
+   - a página continua podendo crescer/rolar normalmente;
+   - não utilizamos height: calc(100vh - ...), evitando o problema de a
+     tabela desaparecer quando Hero/KPIs/Filtros ocuparem mais altura;
+   - scroll horizontal interno continua preservado.
+   ========================================================================== */
+
+body.qore-production-history-page
+.qore-history-table-wrapper {
+    /*
+     * Limite seguro:
+     * - mínimo mantém a tabela utilizável mesmo em viewport baixa/zoom;
+     * - 54vh deixa a área acompanhar telas maiores;
+     * - máximo evita uma tabela excessivamente alta em Full HD/ultrawide.
+     */
+    max-height:
+        clamp(
+            420px,
+            54vh,
+            620px
+        ) !important;
+
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior: contain;
+
+    scrollbar-gutter: stable;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        )
+        transparent;
+}
+
+
+/* Scroll vertical/horizontal no Chromium / Edge */
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar-track {
+    background:
+        var(
+            --ws-surface-soft,
+            #F8FAFC
+        );
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar-thumb {
+    border:
+        2px solid
+        var(
+            --ws-surface-soft,
+            #F8FAFC
+        );
+
+    border-radius:
+        var(
+            --ws-radius-pill,
+            999px
+        );
+
+    background:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        );
+}
+
+body.qore-production-history-page
+.qore-history-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background:
+        var(
+            --ws-scroll-thumb-hover,
+            #AEB8C7
+        );
+}
+
+
+/* Cabeçalho fixo dentro da própria tabela */
+body.qore-production-history-page
+.qore-history-table thead {
+    position: relative;
+
+    z-index: 6;
+}
+
+body.qore-production-history-page
+.qore-history-table thead th {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 7;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(
+                --ws-table-head-bg,
+                #F7F9FC
+            ),
+            var(
+                --ws-app-bg,
+                #F4F7FB
+            )
+        );
+
+    box-shadow:
+        inset 0 -1px 0
+        var(
+            --ws-table-border,
+            #E7EBF1
+        );
+}
+
+
+/*
+ * A barra horizontal superior criada na v2.16 continua aparecendo apenas
+ * quando houver overflow real no eixo X.
+ */
+body.qore-production-history-page
+.qore-history-table-scrollbar {
+    flex: 0 0 auto;
+}
+
+
+/* Tablet */
+@media only screen and (max-width: 820px) {
+
+    body.qore-production-history-page
+    .qore-history-table-wrapper {
+        max-height:
+            clamp(
+                400px,
+                58vh,
+                560px
+            ) !important;
+    }
+}
+
+
+/* Mobile */
+@media only screen and (max-width: 640px) {
+
+    body.qore-production-history-page
+    .qore-history-table-wrapper {
+        max-height:
+            clamp(
+                380px,
+                60vh,
+                520px
+            ) !important;
+    }
+}
+
+
+/*
+ * Em telas fisicamente baixas ou zoom elevado, nunca reduzimos a tabela
+ * abaixo de uma área funcional.
+ */
+@media only screen and (max-height: 760px) and (min-width: 641px) {
+
+    body.qore-production-history-page
+    .qore-history-table-wrapper {
+        max-height: 420px !important;
+    }
+}

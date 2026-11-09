@@ -1,0 +1,135 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Table Container
+Arquivo: components/ui/_table_container.html
+
+Objetivo:
+Padronizar a região de tabelas do Workspace sem alterar:
+- DataTables;
+- paginação;
+- ordenação;
+- filtros;
+- seleção;
+- eventos;
+- IDs;
+- names;
+- data-*;
+- backend;
+- JavaScript funcional.
+
+Parâmetros:
+- table_title                opcional
+- table_description          opcional
+- table_badge                opcional
+- table_dom_id               opcional
+- table_extra_class          opcional
+- table_actions_html         opcional
+- table_content              conteúdo HTML já renderizado da tabela
+- table_footer_html          opcional
+- table_compact              opcional (True/False)
+- table_no_panel             opcional (True/False)
+
+Uso recomendado:
+
+{% include "components/ui/_table_container.html" with
+    table_title="Envios registrados"
+    table_description="Clique em uma linha para consultar os detalhes."
+    table_badge="27 registros"
+    table_content=tabela_html
+%}
+
+IMPORTANTE:
+A tabela real continua sendo definida pela página.
+Este componente apenas fornece o container visual, overflow e estrutura.
+===============================================================================
+{% endcomment %}
+
+{% if table_no_panel %}
+<div
+    {% if table_dom_id %}id="{{ table_dom_id }}"{% endif %}
+    class="ws-table-region{% if table_compact %} ws-table-region--compact{% endif %}{% if table_extra_class %} {{ table_extra_class }}{% endif %}"
+>
+{% else %}
+<section
+    {% if table_dom_id %}id="{{ table_dom_id }}"{% endif %}
+    class="ws-panel ws-table-panel{% if table_compact %} ws-panel--compact ws-table-region--compact{% endif %}{% if table_extra_class %} {{ table_extra_class }}{% endif %}"
+>
+{% endif %}
+
+    {% if table_title or table_description or table_actions_html %}
+        <header class="ws-panel__header ws-table-panel__header">
+
+            <div class="ws-panel__heading">
+
+                <span class="ws-panel__icon ws-table-panel__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                        <rect
+                            x="3"
+                            y="4"
+                            width="18"
+                            height="16"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 9V20" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15 9V20" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </span>
+
+                <div class="ws-panel__heading-copy">
+
+                    <div class="ws-panel__title-row">
+                        {% if table_title %}
+                            <h2 class="ws-panel__title">
+                                {{ table_title }}
+                            </h2>
+                        {% endif %}
+
+                        {% if table_badge %}
+                            <span class="ws-panel__badge">
+                                {{ table_badge }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if table_description %}
+                        <p class="ws-panel__description">
+                            {{ table_description }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% if table_actions_html %}
+                <div class="ws-panel__actions ws-table-panel__actions">
+                    {{ table_actions_html|safe }}
+                </div>
+            {% endif %}
+
+        </header>
+    {% endif %}
+
+    <div class="ws-table-region">
+
+        <div class="ws-table-scroll">
+            {{ table_content|default:""|safe }}
+        </div>
+
+        {% if table_footer_html %}
+            <div class="ws-table-footer">
+                {{ table_footer_html|safe }}
+            </div>
+        {% endif %}
+
+    </div>
+
+{% if table_no_panel %}
+</div>
+{% else %}
+</section>
+{% endif %}

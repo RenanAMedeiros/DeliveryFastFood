@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Status Report | {{ snapshot.ticket_tiflux|default:"TiFlux" }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;padding:28px 12px;">
+<tr><td align="center">
+<table role="presentation" width="720" cellspacing="0" cellpadding="0" style="max-width:720px;width:100%;background:#ffffff;border:1px solid #dde5ef;border-radius:14px;overflow:hidden;">
+    <tr>
+        <td style="padding:24px 28px;background:#0f2d5c;color:#ffffff;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b9d6ff;">Status Report · Workspace</div>
+            <div style="margin-top:6px;font-size:21px;font-weight:800;line-height:1.25;">{{ snapshot.nome }}</div>
+            <div style="margin-top:6px;font-size:12px;color:#dce9fb;">
+                {% if snapshot.ticket_tiflux %}TiFlux {{ snapshot.ticket_tiflux }} · {% endif %}{{ snapshot.metodologia }}
+            </div>
+            <div style="margin-top:3px;font-size:11px;color:#a9c5e9;">ID Workspace: {{ snapshot.codigo }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:24px 28px;">
+            <p style="margin:0 0 16px;font-size:14px;line-height:1.6;">Olá,</p>
+            <p style="margin:0 0 18px;font-size:14px;line-height:1.6;">Segue o status executivo do projeto <strong>{{ snapshot.nome }}</strong>.</p>
+
+            <div style="padding:14px 16px;border:1px solid #dce7f5;border-left:4px solid #2563eb;border-radius:10px;background:#f8fbff;">
+                <div style="font-size:15px;font-weight:800;line-height:1.45;color:#172033;">
+                    {{ snapshot.codigo }} · {{ snapshot.nome }} — {{ snapshot.status }} ({{ snapshot.progresso|floatformat:0 }}%) ·
+                    {% if snapshot.saude == "Crítico" %}<span style="color:#b42318;">● {{ snapshot.saude }}</span>
+                    {% elif snapshot.saude == "Atenção" %}<span style="color:#b45309;">● {{ snapshot.saude }}</span>
+                    {% else %}<span style="color:#15803d;">● {{ snapshot.saude }}</span>{% endif %}
+                </div>
+                <div style="margin-top:5px;font-size:12px;line-height:1.5;color:#64748b;">Momento {{ snapshot.momento }} · Etapa atual {{ snapshot.etapa_atual }}</div>
+            </div>
+
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:14px;border-collapse:separate;border-spacing:6px;">
+                <tr>
+                    <td style="width:25%;padding:10px;background:#f7f9fc;border:1px solid #e4eaf2;border-radius:8px;"><div style="font-size:9px;color:#68758a;text-transform:uppercase;font-weight:700;">Status</div><div style="margin-top:4px;font-size:13px;font-weight:800;">{{ snapshot.status }}</div></td>
+                    <td style="width:25%;padding:10px;background:#f7f9fc;border:1px solid #e4eaf2;border-radius:8px;"><div style="font-size:9px;color:#68758a;text-transform:uppercase;font-weight:700;">Saúde</div><div style="margin-top:4px;font-size:13px;font-weight:800;">{{ snapshot.saude }}</div></td>
+                    <td style="width:25%;padding:10px;background:#f7f9fc;border:1px solid #e4eaf2;border-radius:8px;"><div style="font-size:9px;color:#68758a;text-transform:uppercase;font-weight:700;">Progresso</div><div style="margin-top:4px;font-size:13px;font-weight:800;">{{ snapshot.progresso|floatformat:0 }}%</div></td>
+                    <td style="width:25%;padding:10px;background:#f7f9fc;border:1px solid #e4eaf2;border-radius:8px;"><div style="font-size:9px;color:#68758a;text-transform:uppercase;font-weight:700;">Esperado</div><div style="margin-top:4px;font-size:13px;font-weight:800;">{{ snapshot.progresso_esperado|floatformat:0 }}%</div></td>
+                </tr>
+            </table>
+
+            <div style="margin-top:20px;padding:16px;background:#f7f9fc;border:1px solid #e4eaf2;border-radius:10px;">
+                <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#315a98;">Onde estamos agora</div>
+                {% if observacao %}
+                <div style="margin-top:10px;font-size:13px;line-height:1.65;color:#27364d;white-space:pre-line;">{{ observacao }}</div>
+                {% elif snapshot.analise %}
+                    {% for paragrafo in snapshot.analise %}
+                    <p style="margin:{% if forloop.first %}10px{% else %}8px{% endif %} 0 0;font-size:13px;line-height:1.6;color:#27364d;">{{ paragrafo }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if snapshot.tem_cslog %}
+            <div style="margin-top:22px;font-size:12px;font-weight:800;text-transform:uppercase;color:#9a5b08;">Timeline QORE × CSLOG</div>
+            <table role="presentation" width="100%" cellspacing="4" cellpadding="0" style="margin-top:7px;table-layout:fixed;font-size:11px;">
+                <tr>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #d97706;background:#fffbeb;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#8a6a3b;text-transform:uppercase;">Ticket aberto</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.cslog_ticket_aberto }}</div></td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #d97706;background:#fffbeb;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#8a6a3b;text-transform:uppercase;">Escopo fechado</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.cslog_escopo_fechado }}</div></td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #d97706;background:#fffbeb;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#8a6a3b;text-transform:uppercase;">Orçamento</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.cslog_orcamento_recebido }}</div>{% if snapshot.cslog_horas_tecnicas %}<div style="margin-top:2px;font-size:8px;color:#7b8797;">{{ snapshot.cslog_horas_tecnicas|floatformat:"-2" }} HTs</div>{% endif %}</td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #d97706;background:#fffbeb;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#8a6a3b;text-transform:uppercase;">Início contagem</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.cslog_data_inicio }}</div>{% if snapshot.cslog_prazo_dias_uteis %}<div style="margin-top:2px;font-size:8px;color:#7b8797;">{{ snapshot.cslog_prazo_dias_uteis }} dias úteis</div>{% endif %}</td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #d97706;background:#fffbeb;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#8a6a3b;text-transform:uppercase;">Entrega CSLOG</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.cslog_entrega_prevista }}</div><div style="margin-top:2px;font-size:8px;color:#7b8797;">{{ snapshot.cslog_status }}</div></td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #2563eb;background:#eff6ff;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#315a98;text-transform:uppercase;">Homologação</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.homologacao_prevista }}</div></td>
+                    <td style="padding:8px 5px;text-align:center;vertical-align:top;border-top:3px solid #2563eb;background:#eff6ff;border-radius:6px;"><div style="font-size:8px;font-weight:800;color:#315a98;text-transform:uppercase;">Go Live</div><div style="margin-top:4px;font-weight:800;color:#172033;">{{ snapshot.go_live_previsto }}</div></td>
+                </tr>
+            </table>
+            {% if snapshot.cslog_entrega_real != "—" %}
+            <div style="margin-top:6px;font-size:11px;color:#506078;">Entrega real CSLOG registrada em <strong>{{ snapshot.cslog_entrega_real }}</strong>.</div>
+            {% endif %}
+            {% endif %}
+
+            <div style="margin-top:22px;font-size:12px;font-weight:800;text-transform:uppercase;color:#315a98;">Compromissos atuais</div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:7px;border-collapse:collapse;font-size:13px;">
+                <tr><td style="padding:8px 0;color:#68758a;border-bottom:1px solid #edf1f6;">Homologação prevista</td><td align="right" style="padding:8px 0;font-weight:700;border-bottom:1px solid #edf1f6;">{{ snapshot.homologacao_prevista }}</td></tr>
+                <tr><td style="padding:8px 0;color:#68758a;border-bottom:1px solid #edf1f6;">Entrega / Go Live QORE</td><td align="right" style="padding:8px 0;font-weight:700;border-bottom:1px solid #edf1f6;">{{ snapshot.go_live_previsto }}</td></tr>
+                <tr><td style="padding:8px 0;color:#68758a;border-bottom:1px solid #edf1f6;">Conclusão prevista</td><td align="right" style="padding:8px 0;font-weight:700;border-bottom:1px solid #edf1f6;">{{ snapshot.conclusao_prevista }}</td></tr>
+            </table>
+
+            <div style="margin-top:20px;font-size:12px;font-weight:800;text-transform:uppercase;color:#315a98;">Referências do projeto</div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:8px;border-collapse:collapse;font-size:13px;">
+                <tr>
+                    <td style="width:50%;padding:9px 12px;background:#f9fbfd;border:1px solid #e8edf4;vertical-align:top;"><div style="font-size:10px;color:#68758a;text-transform:uppercase;font-weight:700;">Abertura / início</div><div style="margin-top:4px;font-weight:700;">{{ snapshot.data_abertura }} · {{ snapshot.data_inicio }}</div></td>
+                    <td style="width:50%;padding:9px 12px;background:#f9fbfd;border:1px solid #e8edf4;vertical-align:top;"><div style="font-size:10px;color:#68758a;text-transform:uppercase;font-weight:700;">Responsável(is)</div><div style="margin-top:4px;font-weight:700;">{{ snapshot.responsaveis_texto }}</div></td>
+                </tr>
+                <tr>
+                    <td style="padding:9px 12px;background:#f9fbfd;border:1px solid #e8edf4;vertical-align:top;"><div style="font-size:10px;color:#68758a;text-transform:uppercase;font-weight:700;">Cliente / empresa</div><div style="margin-top:4px;font-weight:700;">{{ snapshot.cliente }}{% if snapshot.empresa != "—" %} · {{ snapshot.empresa }}{% endif %}</div></td>
+                    <td style="padding:9px 12px;background:#f9fbfd;border:1px solid #e8edf4;vertical-align:top;"><div style="font-size:10px;color:#68758a;text-transform:uppercase;font-weight:700;">Owner / Stakeholder</div><div style="margin-top:4px;font-weight:700;">{{ snapshot.owner }}{% if snapshot.stakeholder != "—" %} · {{ snapshot.stakeholder }}{% endif %}</div></td>
+                </tr>
+            </table>
+
+            {% if snapshot.tarefas_atrasadas %}
+            <div style="margin-top:22px;">
+                <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#b42318;">Pontos de atenção</div>
+                <ul style="margin:10px 0 0;padding-left:20px;font-size:13px;line-height:1.55;">
+                    {% for item in snapshot.tarefas_atrasadas|slice:":6" %}
+                    <li style="margin-bottom:6px;"><strong>{{ item.nome }}</strong> — {{ item.dias_atraso }} dia(s) de atraso · {{ item.responsavel }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if projeto_url %}
+            <table role="presentation" cellspacing="0" cellpadding="0" style="margin-top:24px;">
+                <tr>
+                    <td bgcolor="#1D4ED8" style="border-radius:8px;background:#1D4ED8;">
+                        <a href="{{ projeto_url }}" style="display:inline-block;padding:12px 18px;color:#ffffff !important;text-decoration:none;font-size:13px;font-weight:700;line-height:1;background:#1D4ED8;border:1px solid #1D4ED8;border-radius:8px;">Abrir projeto no Workspace</a>
+                    </td>
+                </tr>
+            </table>
+            {% endif %}
+
+            <p style="margin:24px 0 0;font-size:12px;line-height:1.55;color:#68758a;">Os anexos representam o cronograma no momento deste envio. Snapshot gerado em {{ snapshot.gerado_em }}.</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:16px 28px;border-top:1px solid #e8edf4;background:#fafbfd;font-size:11px;color:#7a8799;">Enviado por {{ enviado_por }} · Workspace</td>
+    </tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

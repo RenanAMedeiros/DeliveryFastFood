@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Cozinha</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Preparo</span>
+                <h1>Cozinha</h1>
+                <p>Pedidos e itens necessários para preparo, com observações e adicionais.</p>
+            </div>
+            <a class="pedidos-primary" href="{% url 'pedido_novo' %}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Nova venda
+            </a>
+        </section>
+
+        <section class="operacao-grid">
+            {% for pedido in pedidos %}
+                <article class="operacao-card">
+                    <header>
+                        <div>
+                            <span>{{ pedido.get_status_display }}</span>
+                            <strong>{{ pedido.codigo }}</strong>
+                            <small>{{ pedido.cliente.nome }} · {{ pedido.get_canal_display }}</small>
+                        </div>
+                        <a href="{% url 'pedido_detalhe' pedido.id %}">Abrir</a>
+                    </header>
+                    <ul>
+                        {% for item in pedido.itens.all %}
+                            <li>
+                                <b>{{ item.quantidade }}x {{ item.produto.nome }}</b>
+                                {% if item.observacoes %}
+                                    <span>{{ item.observacoes }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <form method="post" action="{% url 'pedido_atualizar_status' pedido.id %}">
+                        {% csrf_token %}
+                        {% if pedido.status == "novo" %}
+                            <input type="hidden" name="status" value="em_preparo">
+                            <button class="pedidos-primary" type="submit">Iniciar preparo</button>
+                        {% elif pedido.status == "em_preparo" %}
+                            <input type="hidden" name="status" value="pronto">
+                            <button class="pedidos-primary" type="submit">Pedido pronto</button>
+                        {% else %}
+                            <input type="hidden" name="status" value="em_entrega">
+                            <button class="pedidos-secondary" type="submit">Saiu para entrega</button>
+                        {% endif %}
+                    </form>
+                </article>
+            {% empty %}
+                <div class="pedidos-empty produtos-empty">Nenhum pedido na cozinha agora.</div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

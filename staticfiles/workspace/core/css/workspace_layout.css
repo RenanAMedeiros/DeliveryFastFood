@@ -1,0 +1,288 @@
+/* ==========================================================================
+   WORKSPACE UI CORE
+   LAYOUT
+   Arquivo: workspace_layout.css
+
+   Objetivo:
+   Definir a estrutura global de enquadramento do Workspace.
+
+   PRINCÍPIOS:
+   - 1920 x 1080 como referência visual principal;
+   - width baseada no container, não em 100vw;
+   - min-width: 0 nos filhos de flex/grid;
+   - crescimento vertical natural;
+   - sem altura global forçada em 100vh;
+   - sem scroll horizontal global criado pelo Core.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   BOX MODEL
+   ========================================================================== */
+
+.ws-app,
+.ws-app *,
+.ws-app *::before,
+.ws-app *::after {
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   APP ROOT
+   ========================================================================== */
+
+.ws-app {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    color: var(--ws-text-primary);
+
+    background: var(--ws-app-bg);
+
+    font-family: var(--ws-font-family);
+}
+
+
+/* ==========================================================================
+   GLOBAL STRUCTURE
+   ========================================================================== */
+
+.ws-layout {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+
+    align-items: stretch;
+}
+
+
+/*
+   Sidebar:
+   o componente real existente pode receber esta classe adicional.
+*/
+.ws-sidebar {
+    min-width: 0;
+
+    flex: 0 0 auto;
+}
+
+
+/*
+   Região principal:
+   min-width: 0 é obrigatória para evitar que tabelas, gráficos e textos
+   empurrem o Workspace para fora da viewport.
+*/
+.ws-main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    flex: 1 1 auto;
+}
+
+
+/* ==========================================================================
+   CONTENT
+   ========================================================================== */
+
+.ws-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   PAGE
+   ========================================================================== */
+
+.ws-page {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/*
+   Container oficial das páginas Workspace.
+
+   Em Full HD utiliza praticamente toda a área útil.
+   Em telas maiores impede alongamento visual ilimitado.
+   Em telas menores reduz padding sem redesenhar a página.
+*/
+.ws-page-container {
+    width: 100%;
+    min-width: 0;
+    max-width: var(--ws-page-max-width);
+
+    margin-inline: auto;
+
+    padding:
+        var(--ws-page-padding-y)
+        var(--ws-page-padding-x);
+}
+
+
+/* ==========================================================================
+   PAGE STACK
+   ========================================================================== */
+
+.ws-page-stack {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: clamp(12px, 1vw, 18px);
+}
+
+
+/* ==========================================================================
+   GENERIC GRID
+   ========================================================================== */
+
+.ws-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: grid;
+
+    gap: clamp(12px, 1vw, 18px);
+}
+
+.ws-grid > * {
+    min-width: 0;
+}
+
+
+/* ==========================================================================
+   GENERIC FLEX
+   ========================================================================== */
+
+.ws-flex {
+    min-width: 0;
+
+    display: flex;
+}
+
+.ws-flex > * {
+    min-width: 0;
+}
+
+.ws-flex--wrap {
+    flex-wrap: wrap;
+}
+
+.ws-flex--column {
+    flex-direction: column;
+}
+
+.ws-flex--between {
+    justify-content: space-between;
+}
+
+.ws-flex--center {
+    align-items: center;
+}
+
+
+/* ==========================================================================
+   PAGE SECTION
+   ========================================================================== */
+
+.ws-section {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   CONTENT SAFETY
+   ========================================================================== */
+
+.ws-main,
+.ws-content,
+.ws-page,
+.ws-page-container,
+.ws-section,
+.ws-panel,
+.ws-table-region,
+.ws-chart-region,
+.ws-form-grid,
+.ws-filter-grid,
+.ws-kpi-grid {
+    min-width: 0;
+}
+
+
+/*
+   Imagens e mídias não devem ampliar a página.
+*/
+.ws-app img,
+.ws-app video {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/*
+   Iframes internos devem respeitar o container.
+*/
+.ws-app iframe {
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.ws-footer {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    margin-top: auto;
+}
+
+
+/* ==========================================================================
+   OVERFLOW CONTRACT
+   ========================================================================== */
+
+/*
+   Não aplicamos overflow-x: hidden globalmente para mascarar bugs.
+   Cada componente que exige scroll horizontal deve controlar seu próprio
+   overflow, como .ws-table-scroll.
+*/
+
+.ws-overflow-x-auto {
+    max-width: 100%;
+
+    overflow-x: auto;
+}
+
+.ws-overflow-y-auto {
+    overflow-y: auto;
+}
+
+
+/* ==========================================================================
+   VISIBILITY HELPERS
+   ========================================================================== */
+
+.ws-only-mobile {
+    display: none;
+}
+
+.ws-only-desktop {
+    display: initial;
+}

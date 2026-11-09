@@ -1,0 +1,5460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    {% include "components/_head.html" %}
+    <title>Projetos | Workspace Qore</title>
+
+    <!--
+        REFERÊNCIA VISUAL APENAS:
+        dashboard_metas.css fornece paleta, hero, guias, cards, tabelas e tipografia.
+        Toda a regra de dados desta página é exclusiva do Dashboard de Projetos.
+        Fonte: Microsoft Graph / Planner + responsáveis PMO do Workspace.
+    -->
+    <link rel="stylesheet" href="{% static 'css/dashboard_metas.css' %}?v=1.3.3">
+
+    <style id="dashboard-projetos-estilos">
+/* ============================================================
+   DASHBOARD DE PROJETOS
+   Extensão visual do dashboard_metas.css
+   ============================================================ */
+
+body.projetos-page {
+    background: var(--m-bg);
+    color: var(--m-text);
+}
+
+.projetos-main {
+    min-height: 100vh;
+}
+
+/* HERO */
+.projetos-hero .metas-hero-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.projetos-hero .metas-hero-mark {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    place-items: center;
+    color: #fff;
+    border-radius: 13px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--m-navy),
+            var(--m-blue2)
+        );
+    box-shadow:
+        0 10px 24px rgba(10,65,116,.20);
+}
+
+.projetos-hero .metas-hero-mark i {
+    font-size: 16px;
+}
+
+.projetos-refresh-link {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* FILTROS */
+.projetos-control-card {
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.projetos-filter-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(270px, 1.6fr)
+        repeat(4, minmax(145px, .8fr))
+        auto;
+    gap: 8px;
+    align-items: end;
+    padding: 12px 14px;
+}
+
+.projetos-filter {
+    min-width: 0;
+}
+
+.projetos-filter > span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--m-muted);
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.projetos-filter input,
+.projetos-filter select {
+    width: 100%;
+    min-height: 34px;
+    padding: 0 9px;
+    color: var(--m-text);
+    border: 1px solid var(--m-border);
+    border-radius: 9px;
+    outline: 0;
+    background: var(--m-card-soft);
+    font-size: 8.5px;
+}
+
+.projetos-filter input:focus,
+.projetos-filter select:focus {
+    border-color: rgba(47,127,255,.45);
+    box-shadow: 0 0 0 3px rgba(47,127,255,.08);
+}
+
+.projetos-search-box {
+    position: relative;
+}
+
+.projetos-search-box i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    z-index: 2;
+    color: var(--m-muted);
+    transform: translateY(-50%);
+}
+
+.projetos-search-box input {
+    padding-left: 29px;
+}
+
+.projetos-filter-actions {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* KPIs */
+.projetos-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(140px, 1fr));
+    gap: 8px;
+}
+
+.projetos-kpi {
+    transition:
+        transform .16s ease,
+        border-color .16s ease,
+        box-shadow .16s ease;
+}
+
+.projetos-kpi:hover {
+    transform: translateY(-1px);
+}
+
+.projetos-kpi:nth-child(2) .metas-kpi-top i {
+    color: var(--m-blue2);
+}
+
+.projetos-kpi:nth-child(3) .metas-kpi-top i,
+.projetos-kpi:nth-child(3) > strong {
+    color: var(--m-green);
+}
+
+.projetos-kpi:nth-child(5) .metas-kpi-top i,
+.projetos-kpi:nth-child(5) > strong {
+    color: var(--m-red);
+}
+
+/* VISÃO GERAL */
+.projetos-overview-grid {
+    margin-top: 9px;
+    grid-template-columns: minmax(390px, .9fr) minmax(0, 1.45fr);
+}
+
+.projetos-overview-bottom {
+    margin-top: 9px;
+}
+
+.projetos-health-body {
+    min-height: 210px;
+    padding: 13px 14px 15px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.projetos-health-donut {
+    width: 160px;
+    height: 160px;
+    flex: 0 0 160px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        conic-gradient(
+            var(--m-green) 0 20%,
+            var(--m-amber) 20% 35%,
+            var(--m-red) 35% 65%,
+            #71839a 65% 88%,
+            #d7e0e9 88% 100%
+        );
+    box-shadow:
+        0 12px 30px rgba(0,29,57,.08);
+}
+
+.projetos-health-center {
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    background: var(--m-card);
+    box-shadow:
+        inset 0 0 0 1px var(--m-border);
+}
+
+.projetos-health-center strong {
+    color: var(--m-text);
+    font-size: 25px;
+    line-height: 1;
+}
+
+.projetos-health-center span {
+    margin-top: 5px;
+    color: var(--m-muted);
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.projetos-health-legend {
+    flex: 1;
+    display: grid;
+    gap: 8px;
+}
+
+.projetos-health-legend-row {
+    display: grid;
+    grid-template-columns: 9px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--m-border);
+}
+
+.projetos-health-legend-row:last-child {
+    border-bottom: 0;
+}
+
+.projetos-health-legend-row i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.projetos-health-legend-row span {
+    color: var(--m-muted);
+    font-size: 8px;
+}
+
+.projetos-health-legend-row strong {
+    font-size: 9px;
+}
+
+.projetos-critical-wrap {
+    max-height: 255px;
+}
+
+.projetos-critical-table {
+    min-width: 620px;
+}
+
+.projetos-critical-table th:first-child,
+.projetos-critical-table td:first-child {
+    text-align: left;
+}
+
+.projetos-project-link {
+    max-width: 340px;
+    padding: 0;
+    color: var(--m-text);
+    text-align: left;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-weight: 900;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-project-link:hover {
+    color: var(--m-blue2);
+}
+
+.projetos-mini-progress {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.projetos-mini-progress-track,
+.projetos-progress-track {
+    overflow: hidden;
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(123,189,232,.16);
+}
+
+.projetos-mini-progress-track {
+    width: 72px;
+}
+
+.projetos-mini-progress-fill,
+.projetos-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            90deg,
+            var(--m-blue),
+            var(--m-blue2)
+        );
+}
+
+.projetos-mini-progress strong {
+    min-width: 28px;
+    text-align: right;
+    font-size: 8px;
+}
+
+.projetos-health-badge,
+.projetos-health-pill,
+.projetos-task-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 23px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 6.7px;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+.projetos-health-badge::before,
+.projetos-health-pill::before,
+.projetos-task-badge::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.is-health-good {
+    color: #17634f;
+    background: rgba(36,134,106,.13);
+}
+
+.is-health-warning {
+    color: #805b10;
+    background: rgba(197,139,34,.14);
+}
+
+.is-health-critical {
+    color: #8a3238;
+    background: rgba(201,91,98,.14);
+}
+
+.is-health-done {
+    color: var(--m-blue2);
+    background: rgba(123,189,232,.16);
+}
+
+.is-health-neutral {
+    color: var(--m-muted);
+    background: var(--m-card-soft);
+    border: 1px solid var(--m-border);
+}
+
+.projetos-progress-list {
+    padding: 11px 12px 14px;
+    display: grid;
+    gap: 10px;
+}
+
+.projetos-progress-row {
+    display: grid;
+    grid-template-columns: 120px minmax(0,1fr) 38px;
+    align-items: center;
+    gap: 8px;
+}
+
+.projetos-progress-row > span {
+    color: var(--m-muted);
+    font-size: 7.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-progress-row > strong {
+    text-align: right;
+    font-size: 8px;
+}
+
+/* INTELIGÊNCIA */
+.projetos-insight-grid {
+    grid-template-columns: repeat(4, minmax(0,1fr));
+}
+
+.projetos-insight-card {
+    min-height: 112px;
+    cursor: default;
+}
+
+.projetos-insight-card i {
+    font-size: 13px;
+}
+
+.projetos-insight-card.is-critical i,
+.projetos-insight-card.is-critical strong {
+    color: var(--m-red);
+}
+
+.projetos-insight-card.is-warning i,
+.projetos-insight-card.is-warning strong {
+    color: var(--m-amber);
+}
+
+.projetos-insight-card.is-good i,
+.projetos-insight-card.is-good strong {
+    color: var(--m-green);
+}
+
+.projetos-executive-read {
+    margin-top: 9px;
+    padding: 14px;
+    border: 1px solid rgba(84,131,179,.18);
+    border-radius: 15px;
+    display: flex;
+    gap: 11px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(193,232,255,.18),
+            rgba(47,127,255,.045)
+        ),
+        var(--m-card);
+}
+
+.projetos-executive-icon {
+    display: grid;
+    width: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+    place-items: center;
+    color: #fff;
+    border-radius: 10px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--m-blue),
+            var(--m-blue2)
+        );
+}
+
+.projetos-executive-read strong {
+    display: block;
+    font-size: 9.5px;
+}
+
+.projetos-executive-read p {
+    margin: 4px 0 0;
+    color: var(--m-muted);
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+.projetos-intelligence-grid {
+    margin-top: 9px;
+}
+
+.projetos-deadline-list {
+    max-height: 340px;
+    overflow: auto;
+    padding: 7px 9px 10px;
+}
+
+.projetos-deadline {
+    display: grid;
+    grid-template-columns: 40px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 9px;
+    min-height: 54px;
+    padding: 7px 4px;
+    border-bottom: 1px solid var(--m-border);
+}
+
+.projetos-deadline:last-child {
+    border-bottom: 0;
+}
+
+.projetos-deadline-date {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-content: center;
+    text-align: center;
+    border-radius: 10px;
+    background: var(--m-card-soft);
+}
+
+.projetos-deadline-date strong {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.projetos-deadline-date span {
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6px;
+    font-weight: 900;
+}
+
+.projetos-deadline-copy {
+    min-width: 0;
+}
+
+.projetos-deadline-copy strong,
+.projetos-deadline-copy span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-deadline-copy strong {
+    font-size: 8.5px;
+}
+
+.projetos-deadline-copy span {
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6.8px;
+}
+
+.projetos-day-pill {
+    min-height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--m-blue2);
+    background: rgba(123,189,232,.15);
+    font-size: 6.5px;
+    font-weight: 950;
+}
+
+.projetos-day-pill.is-near {
+    color: #805b10;
+    background: rgba(197,139,34,.14);
+}
+
+.projetos-risk-ranking {
+    max-height: 340px;
+    overflow: auto;
+    padding: 5px 9px 10px;
+}
+
+.projetos-risk-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 50px;
+    padding: 6px 3px;
+    border-bottom: 1px solid var(--m-border);
+}
+
+.projetos-risk-rank {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--m-card-soft);
+    font-size: 7px;
+    font-weight: 950;
+}
+
+.projetos-risk-copy {
+    min-width: 0;
+}
+
+.projetos-risk-copy strong,
+.projetos-risk-copy span {
+    display: block;
+}
+
+.projetos-risk-copy strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 8px;
+}
+
+.projetos-risk-copy span {
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6.8px;
+}
+
+.projetos-risk-value {
+    color: var(--m-red);
+    font-size: 9px;
+    font-weight: 950;
+}
+
+/* PORTFÓLIO */
+.projetos-section-head-actions {
+    align-items: center;
+}
+
+.projetos-project-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(230px,1fr));
+    gap: 8px;
+}
+
+.projetos-project-card {
+    min-width: 0;
+    padding: 11px;
+    border: 1px solid rgba(84,131,179,.18);
+    border-radius: 14px;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.99),
+            rgba(248,251,255,.95)
+        );
+    cursor: pointer;
+    transition:
+        transform .16s ease,
+        border-color .16s ease,
+        box-shadow .16s ease;
+}
+
+html[data-theme="dark"] .projetos-project-card {
+    background:
+        linear-gradient(
+            180deg,
+            var(--m-card),
+            var(--m-card-soft)
+        );
+}
+
+.projetos-project-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(47,127,255,.26);
+    box-shadow: 0 12px 28px rgba(47,127,255,.07);
+}
+
+.projetos-project-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.projetos-project-card-head > div {
+    min-width: 0;
+}
+
+.projetos-project-card h3 {
+    margin: 0;
+    color: var(--m-text);
+    font-size: 8.8px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-project-card .projetos-project-group {
+    display: block;
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-project-stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.projetos-project-stat {
+    min-width: 0;
+    padding: 7px;
+    border-radius: 9px;
+    background: var(--m-card-soft);
+}
+
+.projetos-project-stat strong,
+.projetos-project-stat span {
+    display: block;
+}
+
+.projetos-project-stat strong {
+    font-size: 11px;
+}
+
+.projetos-project-stat span {
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 5.8px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.projetos-project-progress {
+    margin-top: 9px;
+}
+
+.projetos-project-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    color: var(--m-muted);
+    font-size: 6.5px;
+}
+
+.projetos-project-progress-head strong {
+    color: var(--m-text);
+    font-size: 7.5px;
+}
+
+.projetos-project-footer {
+    margin-top: 8px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.projetos-pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.projetos-pagination button {
+    min-height: 29px;
+    padding: 0 9px;
+    color: var(--m-text);
+    border: 1px solid var(--m-border);
+    border-radius: 8px;
+    background: var(--m-card-soft);
+    font-size: 7px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.projetos-pagination button:disabled {
+    opacity: .42;
+    cursor: not-allowed;
+}
+
+/* GANTT */
+.projetos-project-select {
+    min-width: 330px !important;
+    max-width: 520px;
+}
+
+.projetos-gantt-legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 8px;
+    color: var(--m-muted);
+    font-size: 6.8px;
+    font-weight: 850;
+}
+
+.projetos-gantt-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.projetos-gantt-legend i {
+    width: 11px;
+    height: 5px;
+    border-radius: 99px;
+}
+
+.projetos-gantt-legend .is-active {
+    background: var(--m-blue2);
+}
+
+.projetos-gantt-legend .is-done {
+    background: var(--m-green);
+}
+
+.projetos-gantt-legend .is-overdue {
+    background: var(--m-red);
+}
+
+.projetos-gantt-legend .is-golive { background: var(--m-green); }
+
+.projetos-gantt-legend .is-today {
+    width: 2px;
+    height: 11px;
+    background: var(--m-red);
+}
+
+.projetos-gantt-card {
+    overflow: visible;
+}
+
+.projetos-gantt-scroll {
+    width: 100%;
+    overflow: auto;
+}
+
+.projetos-gantt {
+    min-width: 1080px;
+}
+
+.projetos-gantt-head,
+.projetos-gantt-row {
+    display: grid;
+    grid-template-columns: 300px minmax(740px,1fr);
+    min-height: 43px;
+    border-bottom: 1px solid var(--m-border);
+}
+
+.projetos-gantt-name {
+    position: sticky;
+    left: 0;
+    z-index: 6;
+    padding: 8px 10px;
+    border-right: 1px solid var(--m-border);
+    background: var(--m-card);
+}
+
+.projetos-gantt-head .projetos-gantt-name {
+    color: var(--m-muted);
+    background: var(--m-card-soft);
+    font-size: 7px;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.projetos-gantt-task-title {
+    font-size: 8px;
+    font-weight: 900;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projetos-gantt-task-meta {
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6.2px;
+}
+
+.projetos-gantt-axis,
+.projetos-gantt-track {
+    position: relative;
+}
+
+.projetos-gantt-axis {
+    height: 43px;
+    background: var(--m-card-soft);
+}
+
+.projetos-gantt-track {
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(84,131,179,.11) 1px,
+            transparent 1px
+        );
+    background-size: 5% 100%;
+}
+
+.projetos-gantt-month {
+    position: absolute;
+    top: 0;
+    height: 43px;
+    padding: 8px 5px;
+    color: var(--m-muted);
+    border-left: 1px solid var(--m-border);
+    font-size: 6.6px;
+    font-weight: 900;
+}
+
+.projetos-gantt-bar {
+    position: absolute;
+    top: 12px;
+    min-width: 5px;
+    height: 19px;
+    overflow: hidden;
+    border-radius: 6px;
+    background:
+        linear-gradient(
+            90deg,
+            var(--m-blue),
+            var(--m-blue2)
+        );
+    box-shadow:
+        0 4px 10px rgba(10,65,116,.16);
+}
+
+.projetos-gantt-bar.is-done {
+    background: var(--m-green);
+}
+
+.projetos-gantt-bar.is-overdue {
+    background: var(--m-red);
+}
+
+.projetos-gantt-bar span {
+    position: absolute;
+    left: 6px;
+    top: 3px;
+    color: #fff;
+    font-size: 6.3px;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+.projetos-gantt-today {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 4;
+    width: 2px;
+    background: var(--m-red);
+}
+
+.projetos-gantt-today::before {
+    content: "Hoje";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    color: var(--m-red);
+    font-size: 5.8px;
+    font-weight: 950;
+}
+
+/* STATUS REPORT */
+.projetos-status-hero {
+    padding: 16px;
+    border-radius: 15px;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 18px;
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            rgba(123,189,232,.26),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #001d39,
+            #0a4174 58%,
+            #175c96
+        );
+    box-shadow: 0 14px 34px rgba(0,29,57,.14);
+}
+
+.projetos-status-copy h3 {
+    margin: 2px 0 0;
+    font-size: 15px;
+}
+
+.projetos-status-copy p {
+    margin: 4px 0 0;
+    color: rgba(255,255,255,.72);
+    font-size: 7.5px;
+}
+
+.projetos-status-copy .metas-kicker {
+    color: rgba(255,255,255,.68);
+}
+
+.projetos-status-progress {
+    min-width: 180px;
+    text-align: right;
+}
+
+.projetos-status-progress > span {
+    display: block;
+    color: rgba(255,255,255,.68);
+    font-size: 6.5px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.projetos-status-progress > strong {
+    display: block;
+    margin-top: 2px;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.projetos-status-progress .projetos-health-pill {
+    margin-top: 7px;
+}
+
+.projetos-status-kpis {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 8px;
+    margin-top: 9px;
+}
+
+.projetos-status-kpis article {
+    min-height: 72px;
+    padding: 10px;
+    border: 1px solid var(--m-border);
+    border-radius: 12px;
+    background: var(--m-card);
+}
+
+.projetos-status-kpis span,
+.projetos-status-kpis strong {
+    display: block;
+}
+
+.projetos-status-kpis span {
+    color: var(--m-muted);
+    font-size: 6.5px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.projetos-status-kpis strong {
+    margin-top: 7px;
+    font-size: 17px;
+}
+
+.projetos-status-kpis strong.is-date {
+    font-size: 10px;
+}
+
+.projetos-status-grid {
+    margin-top: 9px;
+}
+
+.projetos-status-narrative {
+    min-height: 135px;
+    padding: 13px;
+    display: flex;
+    gap: 10px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(123,189,232,.10),
+            transparent
+        );
+}
+
+.projetos-status-narrative-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    place-items: center;
+    color: var(--m-blue2);
+    border-radius: 9px;
+    background: rgba(123,189,232,.15);
+}
+
+.projetos-status-narrative strong {
+    display: block;
+    font-size: 9px;
+}
+
+.projetos-status-narrative p {
+    margin: 4px 0 0;
+    color: var(--m-muted);
+    font-size: 7.5px;
+    line-height: 1.55;
+}
+
+.projetos-alert-list {
+    max-height: 170px;
+    overflow: auto;
+    padding: 7px 9px 10px;
+}
+
+.projetos-alert {
+    display: flex;
+    gap: 8px;
+    padding: 7px 3px;
+    border-bottom: 1px solid var(--m-border);
+}
+
+.projetos-alert:last-child {
+    border-bottom: 0;
+}
+
+.projetos-alert-icon {
+    display: grid;
+    width: 27px;
+    height: 27px;
+    flex: 0 0 27px;
+    place-items: center;
+    color: var(--m-red);
+    border-radius: 8px;
+    background: rgba(201,91,98,.12);
+}
+
+.projetos-alert strong,
+.projetos-alert p {
+    display: block;
+}
+
+.projetos-alert strong {
+    font-size: 8px;
+}
+
+.projetos-alert p {
+    margin: 2px 0 0;
+    color: var(--m-muted);
+    font-size: 6.8px;
+    line-height: 1.45;
+}
+
+.projetos-status-task-card {
+    margin-top: 9px;
+}
+
+.projetos-status-table {
+    min-width: 1050px;
+}
+
+.projetos-status-table th:first-child,
+.projetos-status-table td:first-child {
+    text-align: left;
+}
+
+/* BASE */
+.projetos-base-table {
+    min-width: 1450px;
+}
+
+.projetos-base-table th:first-child,
+.projetos-base-table td:first-child {
+    text-align: left;
+}
+
+/* EMPTY */
+.projetos-empty {
+    padding: 25px !important;
+    color: var(--m-muted) !important;
+    text-align: center !important;
+    font-size: 8px !important;
+}
+
+/* DARK MODE */
+html[data-theme="dark"] .projetos-health-center,
+html[data-theme="dark"] .projetos-status-kpis article {
+    background: var(--m-card);
+}
+
+/* RESPONSIVO */
+@media (max-width: 1500px) {
+    .projetos-kpi-grid {
+        grid-template-columns: repeat(3,minmax(150px,1fr));
+    }
+
+    .projetos-project-grid {
+        grid-template-columns: repeat(3,minmax(220px,1fr));
+    }
+
+    .projetos-filter-grid {
+        grid-template-columns:
+            minmax(250px,1.4fr)
+            repeat(3,minmax(140px,1fr));
+    }
+
+    .projetos-filter-actions {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 1100px) {
+    .projetos-overview-grid,
+    .projetos-intelligence-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .projetos-project-grid {
+        grid-template-columns: repeat(2,minmax(220px,1fr));
+    }
+
+    .projetos-insight-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .projetos-filter-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .projetos-kpi-grid,
+    .projetos-status-kpis,
+    .projetos-project-grid,
+    .projetos-insight-grid,
+    .projetos-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .projetos-health-body {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .projetos-health-donut {
+        align-self: center;
+    }
+
+    .projetos-status-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .projetos-status-progress {
+        text-align: left;
+    }
+
+    .projetos-project-select {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .projetos-section-head-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .projetos-section-head-actions .metas-toolbar {
+        width: 100%;
+    }
+
+    .projetos-section-head-actions .metas-toolbar select {
+        width: 100%;
+    }
+}
+
+
+/* ============================================================
+   STATUS / ERRO DE CARREGAMENTO VIA API
+   ============================================================ */
+
+#projetosStatus {
+    margin-top: 10px;
+}
+
+#projetosStatus.is-success {
+    color: #174f3e;
+    border-color: rgba(36,134,106,.30);
+    background: rgba(36,134,106,.08);
+}
+
+#projetosStatus.is-error {
+    color: #8a3238;
+    border-color: rgba(201,91,98,.35);
+    background: rgba(201,91,98,.09);
+}
+
+#projetosStatus strong {
+    margin-right: 4px;
+}
+
+
+
+/* ============================================================
+   V5 — BACKLOG + SPRINTS + NAVEGAÇÃO FIXA
+   ============================================================ */
+.projetos-filter-grid {
+    grid-template-columns: minmax(230px,1.35fr) repeat(5,minmax(125px,.72fr)) auto;
+}
+#projetosSectionNav.is-docked {
+    position: fixed !important;
+    z-index: 5000 !important;
+    margin: 0 !important;
+    border-color: rgba(84,131,179,.24) !important;
+    background: rgba(248,251,255,.98) !important;
+    box-shadow: 0 14px 38px rgba(2,16,36,.14), 0 0 18px rgba(47,127,255,.07) !important;
+    backdrop-filter: blur(18px);
+}
+html[data-theme="dark"] #projetosSectionNav.is-docked { background: rgba(14,23,36,.98) !important; }
+.projetos-sprint-summary-card { margin-top: 2px; }
+.projetos-sprint-summary-table { min-width: 980px; }
+.projetos-sprint-summary-table th:first-child, .projetos-sprint-summary-table td:first-child { text-align:left; }
+.projetos-sprint-name { color:var(--m-blue); font-size:8px; font-weight:950; }
+.projetos-sprint-task-count { color:var(--m-red); font-size:6.5px; }
+.projetos-sprint-blocks { display:grid; gap:9px; margin-top:9px; }
+.projetos-sprint-block { overflow:hidden; border:1px solid var(--m-border); border-radius:14px; background:var(--m-card); box-shadow:0 8px 22px rgba(0,29,57,.045); }
+.projetos-sprint-block-head { min-height:58px; padding:9px 12px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid var(--m-border); background:linear-gradient(135deg,rgba(10,65,116,.055),rgba(123,189,232,.025)),var(--m-card); }
+.projetos-sprint-block-title { display:flex; align-items:center; gap:9px; min-width:0; }
+.projetos-sprint-number { width:32px; height:32px; flex:0 0 32px; display:grid; place-items:center; color:#fff; border-radius:9px; background:linear-gradient(135deg,var(--m-navy),var(--m-blue2)); font-size:10px; font-weight:950; }
+.projetos-sprint-block-title strong,.projetos-sprint-block-title span { display:block; }
+.projetos-sprint-block-title strong { color:var(--m-text); font-size:9px; }
+.projetos-sprint-block-title > div > span { margin-top:3px; color:var(--m-muted); font-size:6.8px; }
+.projetos-sprint-block-status { display:flex; align-items:center; gap:9px; }
+.projetos-sprint-block-status > strong { min-width:40px; color:var(--m-text); text-align:right; font-size:12px; }
+.projetos-sprint-task-wrap { max-height:390px; }
+.projetos-sprint-task-table { min-width:980px; }
+.projetos-sprint-task-table th:first-child,.projetos-sprint-task-table td:first-child { text-align:left; }
+.projetos-gantt-sprint-divider { display:grid; grid-template-columns:300px minmax(740px,1fr); min-height:34px; border-bottom:1px solid rgba(84,131,179,.14); background:linear-gradient(90deg,rgba(123,189,232,.11),rgba(123,189,232,.025)); }
+.projetos-gantt-sprint-label { position:sticky; left:0; z-index:7; min-width:0; padding:6px 10px; display:flex; align-items:center; gap:7px; border-right:1px solid var(--m-border); background:var(--m-card-soft); }
+.projetos-gantt-sprint-label > span { width:22px; height:22px; flex:0 0 22px; display:grid; place-items:center; color:#fff; border-radius:7px; background:var(--m-blue); font-size:7px; font-weight:950; }
+.projetos-gantt-sprint-label strong { color:var(--m-blue); font-size:7.5px; font-weight:950; }
+.projetos-gantt-sprint-line { background:linear-gradient(90deg,rgba(10,65,116,.08),rgba(123,189,232,.025)); }
+@media(max-width:1500px){.projetos-filter-grid{grid-template-columns:repeat(4,minmax(140px,1fr));}}
+@media(max-width:900px){#projetosSectionNav.is-docked{left:6px!important;right:6px!important;width:auto!important;}}
+@media(max-width:720px){.projetos-filter-grid{grid-template-columns:1fr;}.projetos-sprint-block-head{align-items:flex-start;flex-direction:column;}}
+
+
+/* ============================================================
+   V6 — FILTROS AVANÇADOS / MATRIZ / GOLIVE / NAVBAR OFFSET
+   ============================================================ */
+
+:root {
+    --projetos-nav-fixed-top: 76px;
+    --projetos-section-offset: 138px;
+}
+
+.projetos-filter-grid {
+    grid-template-columns: minmax(320px, 1.55fr) minmax(260px, 1.1fr) minmax(180px,.72fr) auto !important;
+}
+
+.projetos-filter-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.projetos-filter-advanced {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px,1fr));
+    gap: 8px;
+    padding: 0 14px 12px;
+    border-top: 1px solid var(--m-border);
+    padding-top: 10px;
+}
+
+.projetos-filter-advanced[hidden] {
+    display: none !important;
+}
+
+.metas-section-anchor {
+    scroll-margin-top: var(--projetos-section-offset) !important;
+}
+
+#projetosSectionNav.is-docked {
+    position: fixed !important;
+    top: var(--projetos-nav-fixed-top) !important;
+    z-index: 5000 !important;
+    margin: 0 !important;
+    background: rgba(248,251,255,.985) !important;
+    box-shadow: 0 14px 38px rgba(2,16,36,.15) !important;
+}
+
+html[data-theme="dark"] #projetosSectionNav.is-docked {
+    background: rgba(14,23,36,.985) !important;
+}
+
+.projetos-sprint-matrix-wrap {
+    overflow: auto;
+}
+
+.projetos-sprint-summary-table {
+    min-width: 1120px;
+}
+
+.projetos-col-expand {
+    width: 38px;
+}
+
+.projetos-sprint-row {
+    cursor: pointer;
+}
+
+.projetos-sprint-row:hover td {
+    background: rgba(123,189,232,.07) !important;
+}
+
+.projetos-expand-button {
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--m-border);
+    border-radius: 7px;
+    color: var(--m-blue);
+    background: var(--m-card-soft);
+    cursor: pointer;
+}
+
+.projetos-expand-button i {
+    transition: transform .16s ease;
+}
+
+.projetos-sprint-row.is-expanded .projetos-expand-button i,
+.projetos-gantt-sprint-row.is-expanded .projetos-expand-button i {
+    transform: rotate(90deg);
+}
+
+.projetos-sprint-detail-row > td {
+    padding: 0 !important;
+    background: rgba(248,251,255,.65) !important;
+}
+
+.projetos-sprint-detail-panel {
+    padding: 8px 12px 12px 50px;
+}
+
+.projetos-sprint-detail-table {
+    min-width: 920px;
+}
+
+.projetos-gantt-sprint-row {
+    display: grid;
+    grid-template-columns: 300px minmax(740px,1fr);
+    min-height: 46px;
+    border-bottom: 1px solid var(--m-border);
+    background: linear-gradient(90deg, rgba(10,65,116,.07), rgba(123,189,232,.025));
+}
+
+.projetos-gantt-sprint-row .projetos-gantt-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 950;
+}
+
+.projetos-gantt-sprint-meta {
+    display: block;
+    margin-top: 2px;
+    color: var(--m-muted);
+    font-size: 6.3px;
+}
+
+.projetos-gantt-sprint-bar {
+    position: absolute;
+    top: 12px;
+    height: 21px;
+    min-width: 5px;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #052659, #2f7fff);
+    box-shadow: 0 4px 10px rgba(10,65,116,.18);
+}
+
+.projetos-gantt-sprint-bar.is-done { background: var(--m-green); }
+.projetos-gantt-sprint-bar.is-overdue { background: var(--m-red); }
+
+.projetos-gantt-sprint-bar span {
+    position: absolute;
+    left: 7px;
+    top: 4px;
+    color: #fff;
+    font-size: 6.5px;
+    font-weight: 950;
+}
+
+.projetos-gantt-task-row.is-collapsed {
+    display: none;
+}
+
+.projetos-golive-state {
+    display: block;
+    margin-top: 4px;
+    color: var(--m-muted);
+    font-size: 6.4px;
+    font-weight: 850;
+}
+
+.projetos-project-golive {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 7px;
+    color: var(--m-muted);
+    font-size: 6.4px;
+}
+
+.projetos-project-golive.is-overdue { color: var(--m-red); }
+.projetos-project-golive.is-near { color: var(--m-amber); }
+
+@media (max-width: 1200px) {
+    .projetos-filter-grid, .projetos-filter-advanced {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    }
+}
+
+@media (max-width: 720px) {
+    .projetos-filter-grid, .projetos-filter-advanced {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+
+/* ============================================================
+   V7 — MARCOS DE SPRINT / MATRIZ SEPARADA / STICKY NAV / GOLIVE
+   ============================================================ */
+
+#projetosSectionNavSlot {
+    position: sticky !important;
+    top: var(--projetos-nav-fixed-top) !important;
+    z-index: 5000 !important;
+    min-height: 52px !important;
+}
+
+#projetosSectionNav {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    background: rgba(248,251,255,.985) !important;
+    box-shadow: 0 10px 28px rgba(2,16,36,.10) !important;
+    backdrop-filter: blur(18px);
+}
+
+html[data-theme="dark"] #projetosSectionNav {
+    background: rgba(14,23,36,.985) !important;
+}
+
+.projetos-sprint-task-matrix-card {
+    margin-top: 9px;
+}
+
+.projetos-sprint-task-matrix-table {
+    min-width: 1080px;
+}
+
+.projetos-sprint-task-matrix-table th:nth-child(2),
+.projetos-sprint-task-matrix-table td:nth-child(2),
+.projetos-sprint-task-matrix-table th:nth-child(3),
+.projetos-sprint-task-matrix-table td:nth-child(3) {
+    text-align: left;
+}
+
+.projetos-sprint-summary-table {
+    min-width: 1180px;
+}
+
+.projetos-sprint-summary-table th:first-child,
+.projetos-sprint-summary-table td:first-child,
+.projetos-sprint-summary-table th:nth-child(2),
+.projetos-sprint-summary-table td:nth-child(2) {
+    text-align: left;
+}
+
+.projetos-gantt-golive {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    z-index: 5;
+    background: var(--m-green);
+    box-shadow: 0 0 0 1px rgba(36,134,106,.10);
+}
+
+.projetos-gantt-golive > span {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    padding: 2px 5px;
+    color: #fff;
+    border-radius: 5px;
+    background: var(--m-green);
+    font-size: 5.8px;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+.metas-section-anchor {
+    scroll-margin-top: var(--projetos-section-offset) !important;
+}
+
+
+
+/* ============================================================
+   V8 — CRONOGRAMA PMO + RESPONSÁVEIS MANUAIS
+   ============================================================ */
+.projetos-pmo-table { min-width: 1380px; }
+.projetos-pmo-table th:first-child,
+.projetos-pmo-table td:first-child { text-align: left; }
+.projetos-pmo-marco td { background: rgba(10,65,116,.045); font-weight: 800; }
+.projetos-pmo-golive td { background: rgba(36,134,106,.06); }
+.projetos-pmo-type {
+    display:inline-flex; align-items:center; min-height:21px; padding:0 7px;
+    border-radius:999px; background:var(--m-card-soft); color:var(--m-muted);
+    font-size:6.4px; font-weight:900; white-space:nowrap;
+}
+.projetos-pmo-type.is-marco { color:var(--m-blue); background:rgba(123,189,232,.14); }
+.projetos-pmo-type.is-golive { color:var(--m-green); background:rgba(36,134,106,.13); }
+.projetos-responsible-stack { display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
+.projetos-responsible-chip {
+    display:inline-flex; align-items:center; gap:4px; min-height:22px; padding:0 7px;
+    border-radius:999px; background:var(--m-card-soft); border:1px solid var(--m-border);
+    color:var(--m-text); font-size:6.5px; font-weight:800;
+}
+.projetos-responsible-chip.is-manual { color:#0a4174; background:rgba(123,189,232,.12); }
+.projetos-responsible-chip button { border:0; padding:0; background:transparent; color:inherit; cursor:pointer; }
+.projetos-responsible-add {
+    width:25px; height:25px; display:inline-grid; place-items:center; border-radius:8px;
+    border:1px solid var(--m-border); background:var(--m-card); color:var(--m-blue);
+    cursor:pointer; font-weight:900;
+}
+.projetos-status-team {
+    margin-top:9px; padding:9px 11px; display:flex; align-items:center; justify-content:space-between;
+    gap:10px; border:1px solid rgba(255,255,255,.14); border-radius:11px;
+    background:rgba(255,255,255,.06);
+}
+.projetos-status-team-copy { min-width:0; }
+.projetos-status-team-copy > span { display:block; color:rgba(255,255,255,.66); font-size:6.3px; font-weight:900; text-transform:uppercase; }
+.projetos-status-team-list { margin-top:4px; color:#fff; font-size:7px; }
+.projetos-status-team .projetos-responsible-add { flex:0 0 auto; background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2); }
+.projetos-manual-modal {
+    position:fixed; inset:0; z-index:9000; display:none; align-items:center; justify-content:center;
+    padding:18px; background:rgba(0,18,38,.52); backdrop-filter:blur(5px);
+}
+.projetos-manual-modal.is-open { display:flex; }
+.projetos-manual-dialog {
+    width:min(650px,96vw); max-height:90vh; overflow:auto; border-radius:16px;
+    border:1px solid var(--m-border); background:var(--m-card); box-shadow:0 28px 80px rgba(0,20,45,.28);
+}
+.projetos-manual-head { padding:14px 16px; display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--m-border); }
+.projetos-manual-head h3 { margin:0; font-size:11px; }
+.projetos-manual-head p { margin:3px 0 0; color:var(--m-muted); font-size:7px; }
+.projetos-manual-close { width:30px; height:30px; border-radius:9px; border:1px solid var(--m-border); background:var(--m-card-soft); cursor:pointer; }
+.projetos-manual-body { padding:14px 16px; }
+.projetos-manual-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.projetos-manual-field { display:grid; gap:4px; }
+.projetos-manual-field.is-full { grid-column:1/-1; }
+.projetos-manual-field span { color:var(--m-muted); font-size:6.4px; font-weight:900; text-transform:uppercase; }
+.projetos-manual-field input,
+.projetos-manual-field select,
+.projetos-manual-field textarea { width:100%; border:1px solid var(--m-border); border-radius:9px; background:var(--m-card-soft); color:var(--m-text); padding:8px 9px; font-size:8px; outline:0; }
+.projetos-manual-field textarea { min-height:70px; resize:vertical; }
+.projetos-manual-footer { padding:11px 16px; display:flex; justify-content:flex-end; gap:7px; border-top:1px solid var(--m-border); }
+.projetos-base-table { min-width:1280px; }
+@media (max-width:720px) { .projetos-manual-grid { grid-template-columns:1fr; } }
+
+</style>
+
+</head>
+
+<body class="metas-page projetos-page">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="metas-main projetos-main" id="projetosDashboard" data-build="v7-sprint-marcos-matriz" data-url="{% url 'dashboard_projetos' %}">
+        <div class="metas-shell">
+
+            <!-- =====================================================
+                 HERO — MESMO PADRÃO DO DASHBOARD METAS
+            ====================================================== -->
+            <header class="metas-hero projetos-hero">
+                <div class="metas-hero-brand">
+                    <span class="metas-hero-mark">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                    </span>
+
+                    <div class="metas-hero-copy">
+                        <span class="metas-eyebrow">
+                            Workspace / Monitoramento Executivo
+                        </span>
+
+                        <h1>Projetos, Cronograma e Entregas</h1>
+
+                        <p>
+                            Visão consolidada dos projetos BACKLOG do Microsoft Planner,
+                            com andamento, Sprints, riscos, responsáveis, cronograma,
+                            Gantt e status report automático.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="metas-hero-actions">
+                    <div class="metas-source-pill">
+                        <i class="fa fa-database" aria-hidden="true"></i>
+                        <span>
+                            <small>Fonte</small>
+                            <strong>Microsoft Planner / Graph</strong>
+                        </span>
+                    </div>
+
+                    <div class="metas-source-pill">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <span>
+                            <small>Atualização</small>
+                            <strong id="projetosUpdatedAt">—</strong>
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="metas-button metas-button-ghost"
+                        id="projetosThemeButton"
+                    >
+                        <i
+                            class="fa fa-moon-o"
+                            id="projetosThemeIcon"
+                            aria-hidden="true"
+                        ></i>
+                        <span id="projetosThemeText">Modo escuro</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="metas-button metas-button-primary projetos-refresh-link"
+                        id="projetosRefreshButton"
+                    >
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Atualizar dados
+                    </button>
+                </div>
+            </header>
+
+            <!-- =====================================================
+                 GUIAS — MESMA ESTRUTURA DO DASHBOARD METAS
+            ====================================================== -->
+            <div
+                class="metas-section-nav-slot"
+                id="projetosSectionNavSlot"
+            >
+                <nav
+                    class="metas-section-nav"
+                    id="projetosSectionNav"
+                    aria-label="Navegação do dashboard"
+                >
+                    <div class="metas-section-nav-inner">
+
+                        <a
+                            href="#projetos-section-overview"
+                            class="metas-section-nav-item is-active"
+                            data-section-nav="projetos-section-overview"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-th-large" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Visão Geral</strong>
+                                <small>KPIs e saúde</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-intelligence"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-intelligence"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Inteligência</strong>
+                                <small>Leitura automática</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-portfolio"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-portfolio"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-folder-open" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Projetos</strong>
+                                <small>Portfólio completo</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-sprints"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-sprints"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Sprints</strong>
+                                <small>Planejamento por bloco</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-gantt"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-gantt"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Cronograma</strong>
+                                <small>Gantt e prazos</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-status"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-status"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Status Report</strong>
+                                <small>Projeto selecionado</small>
+                            </span>
+                        </a>
+
+                        <a
+                            href="#projetos-section-base"
+                            class="metas-section-nav-item"
+                            data-section-nav="projetos-section-base"
+                        >
+                            <span class="metas-section-nav-icon">
+                                <i class="fa fa-table" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                                <strong>Base</strong>
+                                <small>Tarefas analíticas</small>
+                            </span>
+                        </a>
+
+                    </div>
+                </nav>
+            </div>
+<!-- =====================================================
+                 FILTROS
+            ====================================================== -->
+            <section
+                class="metas-control-card projetos-control-card"
+                id="projetos-section-filters"
+                aria-label="Controles do dashboard"
+            >
+                <form id="projetosFilters" autocomplete="off">
+                    <div class="projetos-filter-grid">
+
+                        <label class="projetos-filter projetos-filter-search">
+                            <span>Pesquisar</span>
+                            <div class="projetos-search-box">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                <input type="search" id="projetosSearch"
+                                       placeholder="Projeto, tarefa, Sprint ou responsável...">
+                            </div>
+                        </label>
+
+                        <label class="projetos-filter projetos-filter-project">
+                            <span>Projeto</span>
+                            <select id="projetosProjectFilter">
+                                <option value="">Todos os projetos</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Portfólio</span>
+                            <select id="projetosPortfolioView">
+                                <option value="ativos" selected>Projetos ativos</option>
+                                <option value="concluidos">Projetos concluídos</option>
+                                <option value="sem_tarefas">Sem tarefas</option>
+                                <option value="todos">Todos os BACKLOGs</option>
+                            </select>
+                        </label>
+
+                        <div class="projetos-filter-actions">
+                            <button type="button" class="metas-button metas-button-ghost"
+                                    id="projetosAdvancedToggle" aria-expanded="false">
+                                <i class="fa fa-sliders" aria-hidden="true"></i>
+                                Filtros
+                            </button>
+                            <button type="button" class="metas-button metas-button-ghost"
+                                    id="projetosClearButton">
+                                <i class="fa fa-eraser" aria-hidden="true"></i>
+                                Limpar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="projetos-filter-advanced" id="projetosAdvancedFilters" hidden>
+                        <label class="projetos-filter">
+                            <span>Status do projeto</span>
+                            <select id="projetosStatusFilter">
+                                <option value="">Todos</option>
+                                <option value="Ativo">Ativo</option>
+                                <option value="Concluído">Concluído</option>
+                                <option value="Sem tarefas">Sem tarefas</option>
+                                <option value="Erro">Erro</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Saúde</span>
+                            <select id="projetosHealthFilter">
+                                <option value="">Todas</option>
+                                <option value="Saudável">Saudável</option>
+                                <option value="Atenção">Atenção</option>
+                                <option value="Crítico">Crítico</option>
+                                <option value="Concluído">Concluído</option>
+                                <option value="Sem tarefas">Sem tarefas</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Grupo / Área</span>
+                            <select id="projetosGroupFilter"><option value="">Todos</option></select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Responsável</span>
+                            <select id="projetosResponsibleFilter"><option value="">Todos</option></select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Data analisada</span>
+                            <select id="projetosDateField">
+                                <option value="golive">Go-live planejado</option>
+                                <option value="fim_planejado">Fim planejado</option>
+                                <option value="proximo_vencimento">Próximo vencimento</option>
+                                <option value="inicio">Início do projeto</option>
+                                <option value="vencimento_tarefa">Vencimento de tarefa</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Data inicial</span>
+                            <input type="date" id="projetosDateStart">
+                        </label>
+
+                        <label class="projetos-filter">
+                            <span>Data final</span>
+                            <input type="date" id="projetosDateEnd">
+                        </label>
+                    </div>
+                </form>
+
+                <div
+                    class="metas-active-filters"
+                    id="projetosActiveFilters"
+                ></div>
+            </section>
+
+            <!-- =====================================================
+                 VISÃO GERAL
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-overview"
+            >
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Visão geral</span>
+                        <h2>Saúde e andamento do portfólio</h2>
+                        <p>
+                            Projeto é considerado concluído quando todas as tarefas
+                            estão em 100%. Planos sem tarefas são tratados separadamente.
+                        </p>
+                    </div>
+                </header>
+
+                <div class="projetos-kpi-grid">
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Projetos</span>
+                            <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiTotal">0</strong>
+                        <small id="projetosKpiTotalSub">0 tarefas na seleção</small>
+                    </article>
+
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Ativos</span>
+                            <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiActive">0</strong>
+                        <small>Possuem tarefa ainda não concluída</small>
+                    </article>
+
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Concluídos</span>
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiDone">0</strong>
+                        <small class="is-good">100% das tarefas concluídas</small>
+                    </article>
+
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Tarefas abertas</span>
+                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiOpen">0</strong>
+                        <small id="projetosKpiOpenSub">—</small>
+                    </article>
+
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Em atraso</span>
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiOverdue">0</strong>
+                        <small class="is-bad" id="projetosKpiOverdueSub">—</small>
+                    </article>
+
+                    <article class="metas-kpi projetos-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Conclusão média</span>
+                            <i class="fa fa-line-chart" aria-hidden="true"></i>
+                        </div>
+                        <strong id="projetosKpiProgress">0%</strong>
+                        <small>Média dos projetos filtrados</small>
+                    </article>
+                </div>
+
+                <div class="metas-grid-2 projetos-overview-grid">
+                    <article class="metas-card projetos-health-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Saúde dos projetos</h3>
+                                <p>
+                                    Distribuição automática por criticidade.
+                                </p>
+                            </div>
+                            <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                        </header>
+
+                        <div class="projetos-health-body">
+                            <div
+                                class="projetos-health-donut"
+                                id="projetosHealthDonut"
+                            >
+                                <div class="projetos-health-center">
+                                    <strong id="projetosHealthTotal">0</strong>
+                                    <span>projetos</span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="projetos-health-legend"
+                                id="projetosHealthLegend"
+                            ></div>
+                        </div>
+                    </article>
+
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Projetos que exigem atenção</h3>
+                                <p>
+                                    Priorizados por atraso e baixo progresso.
+                                </p>
+                            </div>
+                            <i class="fa fa-warning" aria-hidden="true"></i>
+                        </header>
+
+                        <div class="metas-table-wrap projetos-critical-wrap">
+                            <table class="metas-table projetos-critical-table">
+                                <thead>
+                                    <tr>
+                                        <th>Projeto</th>
+                                        <th>Progresso</th>
+                                        <th>Atrasadas</th>
+                                        <th>Saúde</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projetosCriticalBody"></tbody>
+                            </table>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="metas-grid-3 projetos-overview-bottom">
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Distribuição de progresso</h3>
+                                <p>Projetos por faixa de execução.</p>
+                            </div>
+                        </header>
+                        <div class="projetos-progress-list" id="projetosProgressDistribution"></div>
+                    </article>
+
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Responsáveis mais carregados</h3>
+                                <p>Tarefas abertas atribuídas.</p>
+                            </div>
+                        </header>
+                        <div class="projetos-progress-list" id="projetosWorkload"></div>
+                    </article>
+
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Qualidade do planejamento</h3>
+                                <p>Cobertura de prazo, início e responsável.</p>
+                            </div>
+                        </header>
+                        <div class="projetos-progress-list" id="projetosQuality"></div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 INTELIGÊNCIA
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-intelligence"
+            >
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Leitura inteligente</span>
+                        <h2>Insights automáticos do portfólio</h2>
+                        <p>
+                            Sinais gerados a partir do recorte atual para ajudar
+                            na priorização de atuação.
+                        </p>
+                    </div>
+                </header>
+
+                <div
+                    class="metas-insight-grid projetos-insight-grid"
+                    id="projetosInsightGrid"
+                ></div>
+
+                <article class="projetos-executive-read">
+                    <span class="projetos-executive-icon">
+                        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    </span>
+                    <div>
+                        <span class="metas-kicker">Resumo executivo</span>
+                        <strong>Leitura do recorte atual</strong>
+                        <p id="projetosExecutiveNarrative">
+                            Calculando análise...
+                        </p>
+                    </div>
+                </article>
+
+                <div class="metas-grid-2 projetos-intelligence-grid">
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Próximos vencimentos</h3>
+                                <p>Tarefas abertas com menor prazo futuro.</p>
+                            </div>
+                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                        </header>
+
+                        <div
+                            class="projetos-deadline-list"
+                            id="projetosDeadlineList"
+                        ></div>
+                    </article>
+
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Projetos críticos</h3>
+                                <p>Ranking por volume de pendências vencidas.</p>
+                            </div>
+                            <i class="fa fa-fire" aria-hidden="true"></i>
+                        </header>
+
+                        <div
+                            class="projetos-risk-ranking"
+                            id="projetosRiskRanking"
+                        ></div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 PORTFÓLIO
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-portfolio"
+            >
+                <header class="metas-section-head projetos-section-head-actions">
+                    <div>
+                        <span class="metas-kicker">Portfólio</span>
+                        <h2>Projetos encontrados no Microsoft Planner</h2>
+                        <p>
+                            Clique em um projeto para atualizar o Status Report
+                            e o Gantt.
+                        </p>
+                    </div>
+
+                    <div class="metas-toolbar">
+                        <select id="projetosSort">
+                            <option value="risk">Maior risco</option>
+                            <option value="progressAsc">Menor progresso</option>
+                            <option value="progressDesc">Maior progresso</option>
+                            <option value="name">Nome do projeto</option>
+                        </select>
+                    </div>
+                </header>
+
+                <div
+                    class="projetos-project-grid"
+                    id="projetosProjectGrid"
+                ></div>
+
+                <div class="metas-table-footer projetos-project-footer">
+                    <span id="projetosProjectPagerInfo">—</span>
+
+                    <div class="projetos-pagination">
+                        <button type="button" id="projetosPrevPage">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                            Anterior
+                        </button>
+
+                        <button type="button" id="projetosNextPage">
+                            Próxima
+                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 SPRINTS
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-sprints"
+            >
+                <header class="metas-section-head projetos-section-head-actions">
+                    <div>
+                        <span class="metas-kicker">Planejamento por Sprint</span>
+                        <h2>Marcos das Sprints</h2>
+                        <p>
+                            O marco da Sprint é a tarefa que possui o rótulo SPRINT 1,
+                            SPRINT 2, SPRINT 3... no Planner. As datas, vencimento,
+                            progresso e status vêm diretamente dessa tarefa.
+                        </p>
+                    </div>
+
+                    <div class="metas-toolbar">
+                        <select id="projetosSprintProject" class="projetos-project-select"></select>
+                    </div>
+                </header>
+
+                <article class="metas-card projetos-sprint-summary-card">
+                    <header class="metas-card-head">
+                        <div>
+                            <h3>Marcos das Sprints</h3>
+                            <p>Somente as tarefas que possuem o rótulo SPRINT N no Planner.</p>
+                        </div>
+                        <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                    </header>
+
+                    <div class="metas-table-wrap projetos-sprint-matrix-wrap">
+                        <table class="metas-table projetos-sprint-summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Sprint</th>
+                                    <th>Marco</th>
+                                    <th>Data de início</th>
+                                    <th>Data de conclusão</th>
+                                    <th>Concluído em</th>
+                                    <th>Dias úteis</th>
+                                    <th>Dias para vencer</th>
+                                    <th>Dias em atraso</th>
+                                    <th>Progresso</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projetosSprintSummaryBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- =====================================================
+                 GANTT
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-gantt"
+            >
+                <header class="metas-section-head projetos-section-head-actions">
+                    <div>
+                        <span class="metas-kicker">Cronograma</span>
+                        <h2>Gantt do projeto selecionado</h2>
+                        <p>
+                            Construído com datas de início, prazo e conclusão
+                            retornadas pelo Planner.
+                        </p>
+                    </div>
+
+                    <div class="metas-toolbar">
+                        <select
+                            id="projetosGanttProject"
+                            class="projetos-project-select"
+                        ></select>
+                    </div>
+                </header>
+
+                <div class="projetos-gantt-legend">
+                    <span><i class="is-active"></i> Em andamento</span>
+                    <span><i class="is-done"></i> Concluída</span>
+                    <span><i class="is-overdue"></i> Atrasada</span>
+                    <span><i class="is-today"></i> Hoje</span>
+                    <span><i class="is-golive"></i> Go-live</span>
+                </div>
+
+                <article class="metas-card projetos-gantt-card">
+                    <div class="projetos-gantt-scroll">
+                        <div
+                            class="projetos-gantt"
+                            id="projetosGanttChart"
+                        ></div>
+                    </div>
+                </article>
+
+
+                <header class="metas-section-head projetos-cronograma-pmo-head">
+                    <div>
+                        <span class="metas-kicker">Cronograma PMO</span>
+                        <h2>Planejamento detalhado do projeto</h2>
+                        <p>Visão operacional por Sprint, marco, tarefa, responsável, prazo, progresso e atraso.</p>
+                    </div>
+                </header>
+
+                <article class="metas-card projetos-status-task-card projetos-cronograma-pmo-card">
+                                    <header class="metas-card-head">
+                                        <div>
+                                            <h3>Cronograma do Projeto</h3>
+                                            <p>
+                                                Visão PMO por Sprint, tarefa/marco, responsável,
+                                                início, fim planejado, prazo e situação.
+                                            </p>
+                                        </div>
+                                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                    </header>
+
+                                    <div class="metas-table-wrap is-large">
+                                        <table class="metas-table projetos-pmo-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sprint</th>
+                                                    <th>Tarefa / Marco</th>
+                                                    <th>Responsáveis</th>
+                                                    <th>Início</th>
+                                                    <th>Fim planejado</th>
+                                                    <th>Dias</th>
+                                                    <th>Progresso</th>
+                                                    <th>Status</th>
+                                                    <th>Atraso</th>
+                                                    <th>Tipo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="projetosCronogramaBody"></tbody>
+                                        </table>
+                                    </div>
+                                </article>
+            </section>
+
+            <!-- =====================================================
+                 STATUS REPORT
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-status"
+            >
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Status Report</span>
+                        <h2>Leitura executiva do projeto selecionado</h2>
+                        <p>
+                            Resumo de progresso, pendências, riscos e próximos
+                            passos.
+                        </p>
+                    </div>
+                </header>
+
+                <article class="projetos-status-hero">
+                    <div class="projetos-status-copy">
+                        <span class="metas-kicker">Projeto selecionado</span>
+                        <h3 id="projetosStatusName">—</h3>
+                        <p id="projetosStatusMeta">—</p>
+
+                        <div class="projetos-status-team">
+                            <div class="projetos-status-team-copy">
+                                <span>Responsáveis / stakeholders PMO</span>
+                                <div id="projetosStatusTeamList" class="projetos-status-team-list">—</div>
+                            </div>
+                            <button
+                                type="button"
+                                class="projetos-responsible-add"
+                                id="projetosAddProjectResponsible"
+                                title="Adicionar responsável ao projeto"
+                            >+</button>
+                        </div>
+                    </div>
+
+                    <div class="projetos-status-progress">
+                        <span>Progresso médio</span>
+                        <strong id="projetosStatusProgress">0%</strong>
+                        <em id="projetosStatusHealth" class="projetos-health-pill">
+                            —
+                        </em>
+                    </div>
+                </article>
+
+                <div class="projetos-status-kpis">
+                    <article>
+                        <span>Total de tarefas</span>
+                        <strong id="projetosStatusTotal">0</strong>
+                    </article>
+
+                    <article>
+                        <span>Concluídas</span>
+                        <strong id="projetosStatusDone">0</strong>
+                    </article>
+
+                    <article>
+                        <span>Em atraso</span>
+                        <strong id="projetosStatusOverdue">0</strong>
+                    </article>
+
+                    <article>
+                        <span>Próximo vencimento</span>
+                        <strong
+                            id="projetosStatusNext"
+                            class="is-date"
+                        >
+                            —
+                        </strong>
+                    </article>
+
+                    <article>
+                        <span>Go-live planejado</span>
+                        <strong id="projetosStatusGolive" class="is-date">—</strong>
+                        <small id="projetosStatusGoliveState" class="projetos-golive-state">—</small>
+                    </article>
+                </div>
+
+                <div class="metas-grid-2 projetos-status-grid">
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Status automático</h3>
+                                <p>
+                                    Síntese gerada a partir das tarefas atuais.
+                                </p>
+                            </div>
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        </header>
+
+                        <div class="projetos-status-narrative">
+                            <span class="projetos-status-narrative-icon">
+                                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                            </span>
+
+                            <div>
+                                <strong id="projetosStatusHeadline">
+                                    Leitura do projeto
+                                </strong>
+                                <p id="projetosStatusNarrative">—</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="metas-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Riscos e alertas</h3>
+                                <p>
+                                    Pontos que merecem acompanhamento.
+                                </p>
+                            </div>
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        </header>
+
+                        <div
+                            class="projetos-alert-list"
+                            id="projetosAlertList"
+                        ></div>
+                    </article>
+                </div>
+
+            </section>
+
+            <!-- =====================================================
+                 BASE ANALÍTICA
+            ====================================================== -->
+            <section
+                class="metas-section metas-section-anchor"
+                id="projetos-section-base"
+            >
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Base analítica</span>
+                        <h2>Tarefas do recorte atual</h2>
+                        <p>
+                            Visão detalhada para conferência e análise.
+                        </p>
+                    </div>
+                </header>
+
+                <article class="metas-card">
+                    <div class="metas-table-wrap is-large">
+                        <table class="metas-table projetos-base-table">
+                            <thead>
+                                <tr>
+                                    <th>Projeto</th>
+                                    <th>Sprint</th>
+                                    <th>Tarefa</th>
+                                    <th>Bucket</th>
+                                    <th>Responsável</th>
+                                    <th>Início</th>
+                                    <th>Fim</th>
+                                    <th>Progresso</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projetosBaseBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="metas-table-footer">
+                        <span id="projetosBaseInfo">—</span>
+                    </div>
+                </article>
+            </section>
+
+        </div>
+    </main>
+
+
+    <!-- =========================================================
+         RESPONSÁVEL MANUAL / PMO
+    ========================================================== -->
+    <div class="projetos-manual-modal" id="projetosResponsibleModal" aria-hidden="true">
+        <div class="projetos-manual-dialog" role="dialog" aria-modal="true" aria-labelledby="projetosResponsibleModalTitle">
+            <header class="projetos-manual-head">
+                <div>
+                    <h3 id="projetosResponsibleModalTitle">Adicionar responsável</h3>
+                    <p id="projetosResponsibleModalContext">Projeto</p>
+                </div>
+                <button type="button" class="projetos-manual-close" id="projetosResponsibleModalClose">×</button>
+            </header>
+
+            <form id="projetosResponsibleForm">
+                {% csrf_token %}
+                <div class="projetos-manual-body">
+                    <input type="hidden" id="projetosRespPlanId">
+                    <input type="hidden" id="projetosRespPlanNome">
+                    <input type="hidden" id="projetosRespEscopo" value="projeto">
+                    <input type="hidden" id="projetosRespSprintNumero">
+                    <input type="hidden" id="projetosRespTaskId">
+                    <input type="hidden" id="projetosRespTaskNome">
+
+                    <div class="projetos-manual-grid">
+                        <label class="projetos-manual-field">
+                            <span>Tipo</span>
+                            <select id="projetosRespTipoPessoa">
+                                <option value="externo">Externo</option>
+                                <option value="interno">Interno</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-manual-field">
+                            <span>Papel</span>
+                            <select id="projetosRespPapel">
+                                <option value="responsavel">Responsável</option>
+                                <option value="executor">Executor</option>
+                                <option value="aprovador">Aprovador</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="fornecedor">Fornecedor</option>
+                                <option value="sponsor">Sponsor</option>
+                                <option value="ponto_focal">Ponto focal</option>
+                            </select>
+                        </label>
+
+                        <label class="projetos-manual-field is-full">
+                            <span>Nome *</span>
+                            <input type="text" id="projetosRespNome" required maxlength="255">
+                        </label>
+
+                        <label class="projetos-manual-field">
+                            <span>E-mail</span>
+                            <input type="email" id="projetosRespEmail">
+                        </label>
+
+                        <label class="projetos-manual-field">
+                            <span>Empresa</span>
+                            <input type="text" id="projetosRespEmpresa">
+                        </label>
+
+                        <label class="projetos-manual-field">
+                            <span>Departamento</span>
+                            <input type="text" id="projetosRespDepartamento">
+                        </label>
+
+                        <label class="projetos-manual-field">
+                            <span>Cargo</span>
+                            <input type="text" id="projetosRespCargo">
+                        </label>
+
+                        <label class="projetos-manual-field is-full">
+                            <span>Observação</span>
+                            <textarea id="projetosRespObservacao" placeholder="Ex.: aprovação do cliente, dependência externa, fornecedor responsável..."></textarea>
+                        </label>
+                    </div>
+                </div>
+
+                <footer class="projetos-manual-footer">
+                    <button type="button" class="metas-button metas-button-ghost" id="projetosResponsibleCancel">Cancelar</button>
+                    <button type="submit" class="metas-button metas-button-primary">Salvar responsável</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    {% include "components/_footer.html" %}
+
+    <div class="metas-loading" id="projetosLoading" aria-hidden="true">
+        <div class="metas-loading-card">
+            <div class="metas-loading-bars">
+                <span></span><span></span><span></span>
+            </div>
+            <strong>Atualizando Projetos</strong>
+            <p>Consultando Microsoft Planner...</p>
+        </div>
+    </div>
+
+    <script id="dashboard-projetos-script">
+(() => {
+    "use strict";
+
+    const PAGE_SIZE = 20;
+    const BASE_LIMIT = 500;
+
+    let metadata = {};
+    let resumo = {};
+    let activeProjects = [];
+    let completedProjects = [];
+    let emptyProjects = [];
+    let projects = [];
+    let filteredProjects = [];
+    let selectedProjectId = null;
+    let currentPage = 1;
+    const expandedSprints = new Set();
+    const expandedGanttSprints = new Set();
+
+    const els = {};
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    async function init() {
+        cacheElements();
+        initTheme();
+        initSectionNavigation();
+        bindEvents();
+
+        await loadDashboardData(false);
+    }
+
+    function cacheElements() {
+        [
+            "projetosUpdatedAt",
+            "projetosStatus",
+            "projetosThemeButton",
+            "projetosThemeIcon",
+            "projetosThemeText",
+            "projetosRefreshButton",
+            "projetosLoading",
+
+            "projetosSearch",
+            "projetosProjectFilter",
+            "projetosPortfolioView",
+            "projetosAdvancedToggle",
+            "projetosAdvancedFilters",
+            "projetosDateField",
+            "projetosDateStart",
+            "projetosDateEnd",
+            "projetosStatusFilter",
+            "projetosHealthFilter",
+            "projetosGroupFilter",
+            "projetosResponsibleFilter",
+            "projetosClearButton",
+            "projetosActiveFilters",
+
+            "projetosKpiTotal",
+            "projetosKpiTotalSub",
+            "projetosKpiActive",
+            "projetosKpiDone",
+            "projetosKpiOpen",
+            "projetosKpiOpenSub",
+            "projetosKpiOverdue",
+            "projetosKpiOverdueSub",
+            "projetosKpiProgress",
+
+            "projetosHealthDonut",
+            "projetosHealthTotal",
+            "projetosHealthLegend",
+            "projetosCriticalBody",
+            "projetosProgressDistribution",
+            "projetosWorkload",
+            "projetosQuality",
+
+            "projetosInsightGrid",
+            "projetosExecutiveNarrative",
+            "projetosDeadlineList",
+            "projetosRiskRanking",
+
+            "projetosSort",
+            "projetosProjectGrid",
+            "projetosProjectPagerInfo",
+            "projetosPrevPage",
+            "projetosNextPage",
+
+            "projetosSprintProject",
+            "projetosSprintSummaryBody",
+            "projetosSprintMatrixBody",
+            "projetosSprintBlocks",
+            "projetosGanttProject",
+            "projetosGanttChart",
+
+            "projetosStatusName",
+            "projetosStatusMeta",
+            "projetosStatusProgress",
+            "projetosStatusHealth",
+            "projetosStatusTotal",
+            "projetosStatusDone",
+            "projetosStatusOverdue",
+            "projetosStatusNext",
+            "projetosStatusGolive",
+            "projetosStatusGoliveState",
+            "projetosStatusHeadline",
+            "projetosStatusNarrative",
+            "projetosAlertList",
+            "projetosStatusTeamList",
+            "projetosAddProjectResponsible",
+            "projetosCronogramaBody",
+
+            "projetosBaseBody",
+            "projetosBaseInfo",
+            "projetosResponsibleModal",
+            "projetosResponsibleModalClose",
+            "projetosResponsibleModalContext",
+            "projetosResponsibleForm",
+            "projetosResponsibleCancel",
+            "projetosRespPlanId",
+            "projetosRespPlanNome",
+            "projetosRespEscopo",
+            "projetosRespSprintNumero",
+            "projetosRespTaskId",
+            "projetosRespTaskNome",
+            "projetosRespTipoPessoa",
+            "projetosRespPapel",
+            "projetosRespNome",
+            "projetosRespEmail",
+            "projetosRespEmpresa",
+            "projetosRespDepartamento",
+            "projetosRespCargo",
+            "projetosRespObservacao",
+        ].forEach((id) => {
+            els[id] = document.getElementById(id);
+        });
+    }
+
+    function bindEvents() {
+        [
+            els.projetosSearch,
+            els.projetosProjectFilter,
+            els.projetosStatusFilter,
+            els.projetosHealthFilter,
+            els.projetosGroupFilter,
+            els.projetosResponsibleFilter,
+            els.projetosDateField,
+            els.projetosDateStart,
+            els.projetosDateEnd,
+        ].forEach((control) => {
+            if (!control) return;
+
+            control.addEventListener(
+                control.tagName === "INPUT" ? "input" : "change",
+                applyFilters
+            );
+        });
+
+        els.projetosPortfolioView?.addEventListener(
+            "change",
+            () => applyPortfolioView(true)
+        );
+
+        els.projetosClearButton?.addEventListener(
+            "click",
+            clearFilters
+        );
+
+        els.projetosAddProjectResponsible?.addEventListener(
+            "click",
+            () => {
+                const project = findSelectedProject();
+                if (project) {
+                    openResponsibleModal({
+                        planId: project.id,
+                        planName: project.name,
+                        scope: "projeto",
+                    });
+                }
+            }
+        );
+
+        els.projetosResponsibleModalClose?.addEventListener("click", closeResponsibleModal);
+        els.projetosResponsibleCancel?.addEventListener("click", closeResponsibleModal);
+        els.projetosResponsibleModal?.addEventListener("click", (event) => {
+            if (event.target === els.projetosResponsibleModal) closeResponsibleModal();
+        });
+        els.projetosResponsibleForm?.addEventListener("submit", saveManualResponsible);
+
+        els.projetosThemeButton?.addEventListener(
+            "click",
+            toggleTheme
+        );
+
+        els.projetosRefreshButton?.addEventListener(
+            "click",
+            async () => {
+                await loadDashboardData(true);
+            }
+        );
+
+        els.projetosSort?.addEventListener(
+            "change",
+            renderProjectGrid
+        );
+
+        els.projetosPrevPage?.addEventListener(
+            "click",
+            () => {
+                currentPage -= 1;
+                renderProjectGrid();
+            }
+        );
+
+        els.projetosNextPage?.addEventListener(
+            "click",
+            () => {
+                currentPage += 1;
+                renderProjectGrid();
+            }
+        );
+
+        els.projetosSprintProject?.addEventListener(
+            "change",
+            (event) => selectProject(event.target.value, false)
+        );
+
+        els.projetosGanttProject?.addEventListener(
+            "change",
+            (event) => {
+                selectProject(event.target.value, false);
+            }
+        );
+    }
+
+    async function loadDashboardData(forceRefresh = false) {
+        const root = document.getElementById("projetosDashboard");
+        const baseUrl = root?.dataset.url || window.location.pathname;
+
+        const params = new URLSearchParams();
+        params.set("dados", "1");
+
+        if (forceRefresh) {
+            params.set("refresh", "1");
+        }
+
+        const separator = baseUrl.includes("?") ? "&" : "?";
+        const url = `${baseUrl}${separator}${params.toString()}`;
+
+        console.info(
+            "[Dashboard Projetos] Endpoint de dados:",
+            url
+        );
+
+        showLoading(true);
+        setApiStatus(
+            forceRefresh
+                ? "Atualizando dados diretamente no Microsoft Planner..."
+                : "Carregando dados do portfólio...",
+            "loading"
+        );
+
+        try {
+            const response = await fetch(
+                url,
+                {
+                    method: "GET",
+                    credentials: "same-origin",
+                    headers: {
+                        "Accept": "application/json",
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    cache: "no-store",
+                }
+            );
+
+            const contentType = (
+                response.headers.get("content-type")
+                || ""
+            ).toLowerCase();
+
+            if (!contentType.includes("application/json")) {
+                const rawText = await response.text();
+
+                throw new Error(
+                    `A URL de dados respondeu HTTP ${response.status} `
+                    + `com Content-Type "${contentType || "não informado"}". `
+                    + `Esperado: application/json. `
+                    + `Início da resposta: ${rawText.slice(0, 180)}`
+                );
+            }
+
+            const payload = await response.json();
+
+            if (!response.ok || payload.erro) {
+                throw new Error(
+                    payload.detalhe
+                    || payload.mensagem
+                    || `Erro HTTP ${response.status}`
+                );
+            }
+
+            metadata = payload.metadata || {};
+            resumo = payload.resumo || {};
+            activeProjects = (payload.projetos || []).map(normalizeProject);
+            completedProjects = (payload.projetos_concluidos || []).map(normalizeProject);
+            emptyProjects = (payload.projetos_sem_tarefas || []).map(normalizeProject);
+            projects = [...activeProjects];
+
+            selectedProjectId = (
+                projects.find((project) => project.total > 0)
+                || projects[0]
+                || completedProjects[0]
+                || null
+            )?.id || null;
+
+            populateFilters();
+            populateProjectSelector();
+            populateSprintProjectSelector();
+            renderUpdatedAt();
+            applyFilters();
+
+            setApiStatus(
+                `${number(projects.length)} projetos carregados do Microsoft Planner.`,
+                "success",
+                true
+            );
+
+            console.info(
+                "[Dashboard Projetos] Payload carregado:",
+                {
+                    metadata,
+                    resumo,
+                    ativos: activeProjects.length,
+                    concluidos: completedProjects.length,
+                    semTarefas: emptyProjects.length,
+                    projetos: projects.length,
+                    tarefas: projects.reduce(
+                        (acc, project) => acc + project.total,
+                        0
+                    ),
+                }
+            );
+
+        } catch (error) {
+            console.error(
+                "[Dashboard Projetos] Erro ao carregar API:",
+                error
+            );
+
+            projects = [];
+            filteredProjects = [];
+            selectedProjectId = null;
+
+            applyFilters();
+
+            setApiStatus(
+                `Não foi possível carregar os dados: ${error.message}`,
+                "error"
+            );
+
+        } finally {
+            showLoading(false);
+        }
+    }
+
+
+    function setApiStatus(message, type = "loading", autoHide = false) {
+        if (!els.projetosStatus) {
+            return;
+        }
+
+        els.projetosStatus.hidden = false;
+        els.projetosStatus.classList.remove(
+            "is-error",
+            "is-success"
+        );
+
+        if (type === "error") {
+            els.projetosStatus.classList.add("is-error");
+        } else if (type === "success") {
+            els.projetosStatus.classList.add("is-success");
+        }
+
+        els.projetosStatus.textContent = message;
+
+        if (autoHide) {
+            window.clearTimeout(
+                window.__projetosStatusTimer
+            );
+
+            window.__projetosStatusTimer = window.setTimeout(
+                () => {
+                    if (els.projetosStatus) {
+                        els.projetosStatus.hidden = true;
+                    }
+                },
+                4500
+            );
+        }
+    }
+
+
+    function normalizeProject(project) {
+        const tasks = (project.tarefas || []).map((task) => ({
+            id: task.id || "",
+            title: task.titulo || "Sem título",
+            bucket: task.bucket || "Sem bucket",
+            progress: Number(task.percentual || 0),
+            status: task.status || "",
+            done: Boolean(task.concluida),
+            overdue: Boolean(task.atrasada),
+            priority: task.prioridade || "",
+            start: parseDate(task.inicio),
+            due: parseDate(task.prazo),
+            completed: parseDate(task.concluida_em),
+            created: parseDate(task.criada_em),
+            plannedStart: parseDate(task.inicio_planejado),
+            labels: task.rotulos || [],
+            isGolive: Boolean(task.golive),
+            isSprintMarker: Boolean(task.sprint_marco),
+            sprintLabelNumber: (
+                task.sprint_rotulo_numero === null
+                || task.sprint_rotulo_numero === undefined
+            ) ? null : Number(task.sprint_rotulo_numero),
+            sprintLabel: task.sprint_rotulo || "",
+            sprintNumber: (task.sprint_numero === null || task.sprint_numero === undefined) ? null : Number(task.sprint_numero),
+            sprint: task.sprint || "Sem Sprint",
+            responsibleDetails: task.responsaveis || [],
+            manualResponsibles: task.responsaveis_manuais || [],
+            responsibles: (task.responsaveis || [])
+                .map((item) => item.nome)
+                .filter(Boolean),
+            hasDescription: Boolean(task.tem_descricao),
+            plannerOrder: task.ordem_planner || "",
+            sequence: Number(task.ordem_coleta ?? 999999),
+        }));
+
+        return {
+            id: project.id || "",
+            name: project.nome || "Projeto sem nome",
+            group: project.grupo?.nome || "Sem grupo",
+            groupEmail: project.grupo?.email || "",
+            status: project.status || "",
+            health: project.saude || "",
+            progress: Number(project.progresso_medio || 0),
+
+            total: Number(project.quantidade_tarefas || 0),
+            done: Number(project.tarefas_concluidas || 0),
+            open: Number(project.tarefas_abertas || 0),
+            overdue: Number(project.tarefas_atrasadas || 0),
+            next7: Number(project.tarefas_proximos_7_dias || 0),
+            unassigned: Number(project.tarefas_sem_responsavel || 0),
+            undated: Number(project.tarefas_sem_prazo || 0),
+
+            responsibles: project.responsaveis || [],
+            manualResponsibles: project.responsaveis_manuais || [],
+            allManualResponsibles: project.responsaveis_manuais_todos || [],
+
+            created: parseDate(project.criado_em),
+            start: parseDate(project.inicio_projeto),
+            plannedEnd: parseDate(project.fim_planejado),
+            nextDeadline: parseDate(project.proximo_vencimento),
+            golive: parseDate(project.golive_planejado),
+            goliveDays: (
+                project.dias_para_golive === null
+                || project.dias_para_golive === undefined
+            ) ? null : Number(project.dias_para_golive),
+            goliveStatus: project.golive_status || "Sem Go-live",
+            goliveTasks: project.tarefas_golive || [],
+
+            sprints: (project.sprints || []).map((sprint) => ({
+                number: (sprint.numero === null || sprint.numero === undefined) ? null : Number(sprint.numero),
+                name: sprint.nome || "Sem Sprint",
+                markerId: sprint.marco_id || "",
+                markerTitle: sprint.marco_titulo || "",
+                start: parseDate(sprint.data_inicio),
+                end: parseDate(sprint.data_conclusao),
+                completedAt: parseDate(sprint.concluida_em),
+                businessDays: Number(sprint.dias_uteis || 0),
+                daysUntilDue: (
+                    sprint.dias_para_vencer === null
+                    || sprint.dias_para_vencer === undefined
+                ) ? null : Number(sprint.dias_para_vencer),
+                daysOverdue: (
+                    sprint.dias_em_atraso === null
+                    || sprint.dias_em_atraso === undefined
+                ) ? null : Number(sprint.dias_em_atraso),
+                progress: Number(sprint.progresso || 0),
+                status: sprint.status || "",
+                total: Number(sprint.quantidade_tarefas || 0),
+                done: Number(sprint.tarefas_concluidas || 0),
+                overdue: Number(sprint.tarefas_atrasadas || 0),
+                responsibles: sprint.responsaveis || [],
+                manualResponsibles: sprint.responsaveis_manuais || [],
+                taskIds: sprint.tarefas_ids || [],
+            })),
+            sprintCount: Number(project.quantidade_sprints || 0),
+            tasks,
+            error: project.erro || "",
+        };
+    }
+
+    function applyPortfolioView(render = true) {
+        const mode = els.projetosPortfolioView?.value || "ativos";
+        if (mode === "concluidos") projects = [...completedProjects];
+        else if (mode === "sem_tarefas") projects = [...emptyProjects];
+        else if (mode === "todos") projects = [...activeProjects, ...completedProjects, ...emptyProjects];
+        else projects = [...activeProjects];
+
+        if (!projects.some((project) => project.id === selectedProjectId)) {
+            selectedProjectId = (projects.find((project) => project.total > 0) || projects[0] || null)?.id || null;
+        }
+        populateFilters();
+        populateProjectSelector();
+        populateSprintProjectSelector();
+        if (render) applyFilters();
+    }
+
+    function normalizeDateBoundary(value, endOfDay = false) {
+        if (!value) return null;
+        const dateValue = new Date(`${value}T${endOfDay ? "23:59:59.999" : "00:00:00"}`);
+        return Number.isNaN(dateValue.getTime()) ? null : dateValue;
+    }
+
+    function projectMatchesDate(project, field, startDate, endDate) {
+        if (!startDate && !endDate) return true;
+
+        let dates = [];
+
+        if (field === "golive") dates = [project.golive];
+        else if (field === "fim_planejado") dates = [project.plannedEnd];
+        else if (field === "proximo_vencimento") dates = [project.nextDeadline];
+        else if (field === "inicio") dates = [project.start];
+        else if (field === "vencimento_tarefa") dates = project.tasks.map((task) => task.due);
+
+        dates = dates.filter(validDate);
+        if (!dates.length) return false;
+
+        return dates.some((dateValue) => (
+            (!startDate || dateValue >= startDate)
+            && (!endDate || dateValue <= endDate)
+        ));
+    }
+
+
+    function applyFilters() {
+        const search = (
+            els.projetosSearch?.value || ""
+        ).trim().toLocaleLowerCase("pt-BR");
+
+        const selectedProject = els.projetosProjectFilter?.value || "";
+        const status = els.projetosStatusFilter?.value || "";
+        const health = els.projetosHealthFilter?.value || "";
+        const group = els.projetosGroupFilter?.value || "";
+        const responsible = els.projetosResponsibleFilter?.value || "";
+        const dateField = els.projetosDateField?.value || "golive";
+        const dateStart = normalizeDateBoundary(els.projetosDateStart?.value, false);
+        const dateEnd = normalizeDateBoundary(els.projetosDateEnd?.value, true);
+
+        filteredProjects = projects.filter((project) => {
+            const haystack = [
+                project.name,
+                project.group,
+                ...project.responsibles,
+                ...project.tasks.slice(0, 80).map((task) => task.title),
+            ]
+                .join(" ")
+                .toLocaleLowerCase("pt-BR");
+
+            return (
+                (!search || haystack.includes(search))
+                && (!selectedProject || project.id === selectedProject)
+                && (!status || project.status === status)
+                && (!health || project.health === health)
+                && (!group || project.group === group)
+                && (
+                    !responsible
+                    || project.responsibles.includes(responsible)
+                )
+                && projectMatchesDate(
+                    project,
+                    dateField,
+                    dateStart,
+                    dateEnd
+                )
+            );
+        });
+
+        // Mantém Portfólio, Status Report, Sprints e Gantt no MESMO projeto.
+        if (!filteredProjects.length) {
+            selectedProjectId = null;
+        } else if (
+            filteredProjects.length
+            && !filteredProjects.some(
+                (project) => project.id === selectedProjectId
+            )
+        ) {
+            selectedProjectId = (
+                filteredProjects.find((project) => project.total > 0)
+                || filteredProjects[0]
+            ).id;
+
+            if (els.projetosGanttProject) {
+                els.projetosGanttProject.value = selectedProjectId;
+            }
+            if (els.projetosSprintProject) {
+                els.projetosSprintProject.value = selectedProjectId;
+            }
+        }
+
+        currentPage = 1;
+
+        renderActiveFilters();
+        renderAll();
+    }
+
+    function renderAll() {
+        renderKpis();
+        renderHealth();
+        renderCritical();
+        renderProgressDistribution();
+        renderWorkload();
+        renderQuality();
+        renderInsights();
+        renderDeadlines();
+        renderRiskRanking();
+        renderProjectGrid();
+        renderSprints();
+        renderGantt();
+        renderStatus();
+        renderBase();
+    }
+
+    function renderKpis() {
+        const totalProjects = filteredProjects.length;
+
+        const active = filteredProjects.filter(
+            (project) => project.status === "Ativo"
+        ).length;
+
+        const done = filteredProjects.filter(
+            (project) => project.status === "Concluído"
+        ).length;
+
+        const totalTasks = sum(
+            filteredProjects,
+            "total"
+        );
+
+        const open = sum(
+            filteredProjects,
+            "open"
+        );
+
+        const overdue = sum(
+            filteredProjects,
+            "overdue"
+        );
+
+        const averageProgress = totalProjects
+            ? Math.round(
+                filteredProjects.reduce(
+                    (acc, project) => acc + project.progress,
+                    0
+                ) / totalProjects
+            )
+            : 0;
+
+        setText("projetosKpiTotal", number(totalProjects));
+        setText("projetosKpiActive", number(active));
+        setText("projetosKpiDone", number(done));
+        setText("projetosKpiOpen", number(open));
+        setText("projetosKpiOverdue", number(overdue));
+        setText("projetosKpiProgress", `${averageProgress}%`);
+
+        setText(
+            "projetosKpiTotalSub",
+            `${number(totalTasks)} tarefas na seleção`
+        );
+
+        setText(
+            "projetosKpiOpenSub",
+            totalTasks
+                ? `${Math.round(open / totalTasks * 100)}% do total`
+                : "Sem tarefas"
+        );
+
+        setText(
+            "projetosKpiOverdueSub",
+            open
+                ? `${Math.round(overdue / open * 100)}% das tarefas abertas`
+                : "Sem tarefas abertas"
+        );
+    }
+
+    function renderHealth() {
+        const categories = [
+            ["Saudável", "#24866a"],
+            ["Atenção", "#c58b22"],
+            ["Crítico", "#c95b62"],
+            ["Concluído", "#175c96"],
+            ["Sem tarefas", "#a7b7c7"],
+        ];
+
+        const total = Math.max(filteredProjects.length, 1);
+
+        const counts = categories.map(
+            ([name]) => filteredProjects.filter(
+                (project) => project.health === name
+            ).length
+        );
+
+        let cursor = 0;
+        const gradient = [];
+
+        categories.forEach(([name, color], index) => {
+            const start = cursor;
+            cursor += counts[index] / total * 100;
+
+            gradient.push(
+                `${color} ${start}% ${cursor}%`
+            );
+        });
+
+        if (els.projetosHealthDonut) {
+            els.projetosHealthDonut.style.background = (
+                `conic-gradient(${gradient.join(",")})`
+            );
+        }
+
+        setText(
+            "projetosHealthTotal",
+            number(filteredProjects.length)
+        );
+
+        if (els.projetosHealthLegend) {
+            els.projetosHealthLegend.innerHTML = categories
+                .map(([name, color], index) => `
+                    <div class="projetos-health-legend-row">
+                        <i style="background:${color}"></i>
+                        <span>${escapeHtml(name)}</span>
+                        <strong>${number(counts[index])}</strong>
+                    </div>
+                `)
+                .join("");
+        }
+    }
+
+    function renderCritical() {
+        const critical = [...filteredProjects]
+            .filter((project) => project.status === "Ativo")
+            .sort((a, b) => (
+                b.overdue - a.overdue
+                || a.progress - b.progress
+            ))
+            .slice(0, 9);
+
+        if (!els.projetosCriticalBody) return;
+
+        if (!critical.length) {
+            els.projetosCriticalBody.innerHTML = emptyRow(
+                4,
+                "Nenhum projeto ativo no recorte."
+            );
+            return;
+        }
+
+        els.projetosCriticalBody.innerHTML = critical
+            .map((project) => `
+                <tr>
+                    <td>
+                        <button
+                            type="button"
+                            class="projetos-project-link"
+                            data-project-id="${escapeHtml(project.id)}"
+                        >
+                            ${escapeHtml(project.name)}
+                        </button>
+                    </td>
+                    <td>${miniProgress(project.progress)}</td>
+                    <td class="${project.overdue ? "is-low" : ""}">
+                        ${number(project.overdue)}
+                    </td>
+                    <td>${healthBadge(project.health)}</td>
+                </tr>
+            `)
+            .join("");
+
+        bindProjectButtons();
+    }
+
+    function renderProgressDistribution() {
+        const bands = [
+            ["0–24%", 0, 24],
+            ["25–49%", 25, 49],
+            ["50–74%", 50, 74],
+            ["75–99%", 75, 99],
+            ["100%", 100, 100],
+        ];
+
+        const values = bands.map(([, min, max]) => {
+            return filteredProjects.filter(
+                (project) => (
+                    project.progress >= min
+                    && project.progress <= max
+                )
+            ).length;
+        });
+
+        renderProgressRows(
+            els.projetosProgressDistribution,
+            bands.map(([label], index) => ({
+                label,
+                value: values[index],
+                display: number(values[index]),
+            }))
+        );
+    }
+
+    function renderWorkload() {
+        const counts = {};
+
+        filteredProjects.forEach((project) => {
+            project.tasks.forEach((task) => {
+                if (task.done) return;
+
+                task.responsibles.forEach((name) => {
+                    counts[name] = (counts[name] || 0) + 1;
+                });
+            });
+        });
+
+        const items = Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 6)
+            .map(([label, value]) => ({
+                label,
+                value,
+                display: number(value),
+            }));
+
+        renderProgressRows(
+            els.projetosWorkload,
+            items,
+            "Sem atribuições no recorte."
+        );
+    }
+
+    function renderQuality() {
+        const tasks = allTasks();
+
+        const total = Math.max(tasks.length, 1);
+
+        const values = [
+            ["Com prazo", tasks.filter((task) => validDate(task.due)).length],
+            ["Com início", tasks.filter((task) => validDate(task.start)).length],
+            ["Com responsável", tasks.filter((task) => task.responsibles.length).length],
+            ["Com descrição", tasks.filter((task) => task.hasDescription).length],
+        ];
+
+        renderProgressRows(
+            els.projetosQuality,
+            values.map(([label, value]) => ({
+                label,
+                value,
+                display: `${Math.round(value / total * 100)}%`,
+                percent: value / total * 100,
+            }))
+        );
+    }
+
+    function renderInsights() {
+        const critical = filteredProjects.filter(
+            (project) => project.health === "Crítico"
+        ).length;
+
+        const active = filteredProjects.filter(
+            (project) => project.status === "Ativo"
+        ).length;
+
+        const overdue = sum(filteredProjects, "overdue");
+        const unassigned = sum(filteredProjects, "unassigned");
+        const undated = sum(filteredProjects, "undated");
+        const next7 = sum(filteredProjects, "next7");
+
+        const insights = [
+            {
+                icon: "fa-exclamation-triangle",
+                title: "Pressão de prazo",
+                text: overdue
+                    ? `${number(overdue)} tarefas abertas já ultrapassaram o prazo.`
+                    : "Nenhuma tarefa vencida no recorte.",
+                className: overdue ? "is-critical" : "is-good",
+            },
+            {
+                icon: "fa-heartbeat",
+                title: "Saúde do portfólio",
+                text: active
+                    ? `${number(critical)} de ${number(active)} projetos ativos estão classificados como críticos.`
+                    : "Não há projetos ativos no recorte.",
+                className: critical ? "is-warning" : "is-good",
+            },
+            {
+                icon: "fa-user-times",
+                title: "Responsabilidade",
+                text: unassigned
+                    ? `${number(unassigned)} tarefas estão sem responsável definido.`
+                    : "Todas as tarefas possuem responsável.",
+                className: unassigned ? "is-warning" : "is-good",
+            },
+            {
+                icon: "fa-calendar-times-o",
+                title: "Planejamento",
+                text: undated
+                    ? `${number(undated)} tarefas não possuem prazo de conclusão.`
+                    : `${number(next7)} tarefas vencem nos próximos 7 dias.`,
+                className: undated ? "is-warning" : "is-good",
+            },
+        ];
+
+        if (els.projetosInsightGrid) {
+            els.projetosInsightGrid.innerHTML = insights
+                .map((item) => `
+                    <article class="metas-insight projetos-insight-card ${item.className}">
+                        <i class="fa ${item.icon}" aria-hidden="true"></i>
+                        <strong>${escapeHtml(item.title)}</strong>
+                        <p>${escapeHtml(item.text)}</p>
+                    </article>
+                `)
+                .join("");
+        }
+
+        renderExecutiveNarrative();
+    }
+
+    function renderExecutiveNarrative() {
+        if (!els.projetosExecutiveNarrative) return;
+
+        if (!filteredProjects.length) {
+            els.projetosExecutiveNarrative.textContent = (
+                "Nenhum projeto corresponde aos filtros atuais."
+            );
+            return;
+        }
+
+        const active = filteredProjects.filter(
+            (project) => project.status === "Ativo"
+        );
+
+        const done = filteredProjects.filter(
+            (project) => project.status === "Concluído"
+        );
+
+        const overdue = sum(filteredProjects, "overdue");
+
+        const critical = filteredProjects.filter(
+            (project) => project.health === "Crítico"
+        );
+
+        const worst = [...filteredProjects]
+            .sort((a, b) => (
+                b.overdue - a.overdue
+                || a.progress - b.progress
+            ))[0];
+
+        let text = (
+            `O recorte atual contém ${number(filteredProjects.length)} projetos, `
+            + `sendo ${number(active.length)} ativos e ${number(done.length)} concluídos. `
+        );
+
+        if (overdue) {
+            text += (
+                `Existem ${number(overdue)} tarefas vencidas e `
+                + `${number(critical.length)} projetos em situação crítica. `
+            );
+        } else {
+            text += "Não existem tarefas vencidas neste recorte. ";
+        }
+
+        if (worst?.overdue) {
+            text += (
+                `A maior concentração de risco está em “${worst.name}”, `
+                + `com ${number(worst.overdue)} tarefas atrasadas `
+                + `e ${Math.round(worst.progress)}% de progresso médio.`
+            );
+        }
+
+        els.projetosExecutiveNarrative.textContent = text;
+    }
+
+    function renderDeadlines() {
+        const items = [];
+
+        filteredProjects.forEach((project) => {
+            project.tasks.forEach((task) => {
+                if (
+                    task.done
+                    || !validDate(task.due)
+                    || task.due < new Date()
+                ) {
+                    return;
+                }
+
+                items.push({
+                    project,
+                    task,
+                });
+            });
+        });
+
+        items.sort(
+            (a, b) => a.task.due - b.task.due
+        );
+
+        const top = items.slice(0, 8);
+
+        if (!els.projetosDeadlineList) return;
+
+        if (!top.length) {
+            els.projetosDeadlineList.innerHTML = emptyDiv(
+                "Sem vencimentos futuros no recorte."
+            );
+            return;
+        }
+
+        els.projetosDeadlineList.innerHTML = top
+            .map(({ project, task }) => {
+                const days = Math.max(
+                    0,
+                    Math.ceil(
+                        (
+                            task.due.getTime()
+                            - Date.now()
+                        )
+                        / 86400000
+                    )
+                );
+
+                return `
+                    <div class="projetos-deadline">
+                        <div class="projetos-deadline-date">
+                            <strong>${String(task.due.getDate()).padStart(2, "0")}</strong>
+                            <span>${month(task.due)}</span>
+                        </div>
+
+                        <div class="projetos-deadline-copy">
+                            <strong>${escapeHtml(task.title)}</strong>
+                            <span>
+                                ${escapeHtml(project.name)}
+                                ·
+                                ${escapeHtml(
+                                    task.responsibles.join(", ")
+                                    || "Sem responsável"
+                                )}
+                            </span>
+                        </div>
+
+                        <span class="projetos-day-pill ${days <= 7 ? "is-near" : ""}">
+                            ${days === 0 ? "Hoje" : `${days}d`}
+                        </span>
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+    function renderRiskRanking() {
+        const ranking = [...filteredProjects]
+            .filter((project) => project.status === "Ativo")
+            .sort((a, b) => (
+                b.overdue - a.overdue
+                || a.progress - b.progress
+            ))
+            .slice(0, 8);
+
+        if (!els.projetosRiskRanking) return;
+
+        if (!ranking.length) {
+            els.projetosRiskRanking.innerHTML = emptyDiv(
+                "Nenhum projeto ativo no recorte."
+            );
+            return;
+        }
+
+        els.projetosRiskRanking.innerHTML = ranking
+            .map((project, index) => `
+                <button
+                    type="button"
+                    class="projetos-risk-row projetos-project-link"
+                    data-project-id="${escapeHtml(project.id)}"
+                >
+                    <span class="projetos-risk-rank">
+                        ${index + 1}
+                    </span>
+
+                    <span class="projetos-risk-copy">
+                        <strong>${escapeHtml(project.name)}</strong>
+                        <span>
+                            ${Math.round(project.progress)}% concluído
+                            · ${number(project.open)} abertas
+                        </span>
+                    </span>
+
+                    <strong class="projetos-risk-value">
+                        ${number(project.overdue)}
+                    </strong>
+                </button>
+            `)
+            .join("");
+
+        bindProjectButtons();
+    }
+
+    function renderProjectGrid() {
+        if (!els.projetosProjectGrid) return;
+
+        const sorted = sortProjects(filteredProjects);
+
+        const pages = Math.max(
+            1,
+            Math.ceil(sorted.length / PAGE_SIZE)
+        );
+
+        currentPage = clamp(
+            currentPage,
+            1,
+            pages
+        );
+
+        const start = (
+            currentPage - 1
+        ) * PAGE_SIZE;
+
+        const pageItems = sorted.slice(
+            start,
+            start + PAGE_SIZE
+        );
+
+        if (!pageItems.length) {
+            els.projetosProjectGrid.innerHTML = emptyDiv(
+                "Nenhum projeto encontrado."
+            );
+        } else {
+            els.projetosProjectGrid.innerHTML = pageItems
+                .map((project) => `
+                    <article
+                        class="projetos-project-card"
+                        data-project-id="${escapeHtml(project.id)}"
+                    >
+                        <div class="projetos-project-card-head">
+                            <div>
+                                <h3 title="${escapeHtml(project.name)}">
+                                    ${escapeHtml(project.name)}
+                                </h3>
+                                <span class="projetos-project-group">
+                                    ${escapeHtml(project.group)}
+                                </span>
+                            </div>
+
+                            ${healthBadge(project.health)}
+                        </div>
+
+                        <div class="projetos-project-stats">
+                            <div class="projetos-project-stat">
+                                <strong>${number(project.total)}</strong>
+                                <span>Tarefas</span>
+                            </div>
+
+                            <div class="projetos-project-stat">
+                                <strong>${number(project.done)}</strong>
+                                <span>Concluídas</span>
+                            </div>
+
+                            <div class="projetos-project-stat">
+                                <strong class="${project.overdue ? "is-low" : ""}">
+                                    ${number(project.overdue)}
+                                </strong>
+                                <span>Atrasadas</span>
+                            </div>
+                        </div>
+
+                        <div class="projetos-project-golive ${project.goliveDays !== null && project.goliveDays < 0 ? "is-overdue" : project.goliveDays !== null && project.goliveDays <= 30 ? "is-near" : ""}">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            <span>Go-live: ${validDate(project.golive) ? date(project.golive) : "não definido"}</span>
+                        </div>
+
+                        <div class="projetos-project-progress">
+                            <div class="projetos-project-progress-head">
+                                <span>Progresso</span>
+                                <strong>${Math.round(project.progress)}%</strong>
+                            </div>
+
+                            <div class="projetos-progress-track">
+                                <div
+                                    class="projetos-progress-fill"
+                                    style="width:${clamp(project.progress, 0, 100)}%"
+                                ></div>
+                            </div>
+                        </div>
+                    </article>
+                `)
+                .join("");
+        }
+
+        setText(
+            "projetosProjectPagerInfo",
+            `${number(sorted.length)} projetos · página ${currentPage} de ${pages}`
+        );
+
+        if (els.projetosPrevPage) {
+            els.projetosPrevPage.disabled = currentPage <= 1;
+        }
+
+        if (els.projetosNextPage) {
+            els.projetosNextPage.disabled = currentPage >= pages;
+        }
+
+        bindProjectCards();
+    }
+
+    function renderSprints() {
+        const project = projects.find((item) => item.id === selectedProjectId)
+            || activeProjects.find((item) => item.id === selectedProjectId)
+            || completedProjects.find((item) => item.id === selectedProjectId);
+
+        if (!project) {
+            if (els.projetosSprintSummaryBody) {
+                els.projetosSprintSummaryBody.innerHTML = emptyRow(8, "Selecione um projeto.");
+            }
+            if (els.projetosSprintMatrixBody) {
+                els.projetosSprintMatrixBody.innerHTML = emptyRow(7, "Selecione um projeto.");
+            }
+            return;
+        }
+
+        const sprints = [...(project.sprints || [])]
+            .sort((a, b) => (a.number ?? 9999) - (b.number ?? 9999));
+
+        renderSprintMilestones(sprints);
+    }
+
+    function renderSprintMilestones(sprints) {
+        if (!els.projetosSprintSummaryBody) return;
+
+        if (!sprints.length) {
+            els.projetosSprintSummaryBody.innerHTML = emptyRow(
+                10,
+                "Nenhum marco SPRINT N identificado pelos rótulos do Planner."
+            );
+            return;
+        }
+
+        els.projetosSprintSummaryBody.innerHTML = sprints.map((sprint) => `
+            <tr>
+                <td>
+                    <strong class="projetos-sprint-name">
+                        ${escapeHtml(sprint.name)}
+                    </strong>
+                </td>
+                <td>${escapeHtml(sprint.markerTitle || "—")}</td>
+                <td>${validDate(sprint.start) ? date(sprint.start) : "—"}</td>
+                <td>${validDate(sprint.end) ? date(sprint.end) : "—"}</td>
+                <td>${validDate(sprint.completedAt) ? date(sprint.completedAt) : "—"}</td>
+                <td>${number(sprint.businessDays)}</td>
+                <td class="${(sprint.daysUntilDue ?? 0) > 0 ? "is-high" : ""}">
+                    ${sprint.daysUntilDue === null ? "—" : number(sprint.daysUntilDue)}
+                </td>
+                <td class="${(sprint.daysOverdue ?? 0) > 0 ? "is-low" : ""}">
+                    ${sprint.daysOverdue === null ? "—" : number(sprint.daysOverdue)}
+                </td>
+                <td>${miniProgress(sprint.progress)}</td>
+                <td>${sprintStatusBadge(sprint.status)}</td>
+            </tr>
+        `).join("");
+    }
+
+    function renderSprintTaskMatrix(project, sprints) {
+        if (!els.projetosSprintMatrixBody) return;
+
+        if (!sprints.length) {
+            els.projetosSprintMatrixBody.innerHTML = emptyRow(
+                7,
+                "Nenhuma Sprint disponível para a matriz."
+            );
+            return;
+        }
+
+        els.projetosSprintMatrixBody.innerHTML = sprints.map((sprint) => {
+            const key = `${project.id}:${sprint.number ?? "sem"}`;
+            const expanded = expandedSprints.has(key);
+            const taskIds = new Set(sprint.taskIds || []);
+            const sprintTasks = project.tasks
+                .filter((task) => taskIds.has(task.id))
+                .sort((a, b) => (
+                    (a.plannedStart || a.start || a.created || new Date(8640000000000000))
+                    -
+                    (b.plannedStart || b.start || b.created || new Date(8640000000000000))
+                    ||
+                    (a.due || new Date(8640000000000000))
+                    -
+                    (b.due || new Date(8640000000000000))
+                ));
+
+            const taskRows = sprintTasks.map((task) => `
+                <tr>
+                    <td>
+                        ${escapeHtml(task.title)}
+                        ${task.isGolive ? ' <span class="projetos-task-badge is-health-done">Go-live</span>' : ''}
+                    </td>
+                    <td>
+                        ${renderResponsibleCell(
+                            task.responsibleDetails,
+                            {
+                                planId: project.id,
+                                planName: project.name,
+                                scope: "tarefa",
+                                sprintNumber: sprint.number,
+                                taskId: task.id,
+                                taskName: task.title,
+                            }
+                        )}
+                    </td>
+                    <td>${validDate(task.plannedStart || task.start) ? date(task.plannedStart || task.start) : "—"}</td>
+                    <td>${validDate(task.due) ? date(task.due) : "—"}</td>
+                    <td>${miniProgress(task.progress)}</td>
+                    <td>${taskBadge(task)}</td>
+                </tr>
+            `).join("");
+
+            return `
+                <tr
+                    class="projetos-sprint-row ${expanded ? "is-expanded" : ""}"
+                    data-sprint-key="${escapeHtml(key)}"
+                >
+                    <td>
+                        <button
+                            type="button"
+                            class="projetos-expand-button"
+                            aria-label="Abrir tarefas da Sprint"
+                        >
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </td>
+                    <td><strong class="projetos-sprint-name">${escapeHtml(sprint.name)}</strong></td>
+                    <td>
+                        ${validDate(sprint.start) ? date(sprint.start) : "—"}
+                        →
+                        ${validDate(sprint.end) ? date(sprint.end) : "—"}
+                    </td>
+                    <td>${number(sprint.total)}</td>
+                    <td>${number(sprint.done)}</td>
+                    <td class="${sprint.overdue ? "is-low" : ""}">${number(sprint.overdue)}</td>
+                    <td>
+                        ${renderResponsibleCell(
+                            [
+                                ...(sprint.responsibles || [])
+                                    .filter((nome) => !(sprint.manualResponsibles || []).some(
+                                        (item) => String(item.nome || "").toLocaleLowerCase("pt-BR") === String(nome || "").toLocaleLowerCase("pt-BR")
+                                    ))
+                                    .map((nome) => ({ nome, manual: false, origem: "Planner" })),
+                                ...(sprint.manualResponsibles || []),
+                            ],
+                            {
+                                planId: project.id,
+                                planName: project.name,
+                                scope: "sprint",
+                                sprintNumber: sprint.number,
+                            }
+                        )}
+                    </td>
+                </tr>
+                <tr
+                    class="projetos-sprint-detail-row"
+                    data-sprint-detail="${escapeHtml(key)}"
+                    ${expanded ? "" : "hidden"}
+                >
+                    <td colspan="7">
+                        <div class="projetos-sprint-detail-panel">
+                            <div class="metas-table-wrap">
+                                <table class="metas-table projetos-sprint-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarefa</th>
+                                            <th>Responsável</th>
+                                            <th>Início</th>
+                                            <th>Prazo</th>
+                                            <th>Progresso</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${taskRows || emptyRow(6, "Nenhuma tarefa adicional dentro do período desta Sprint.")}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        els.projetosSprintMatrixBody
+            .querySelectorAll(".projetos-sprint-row")
+            .forEach((row) => {
+                row.addEventListener("click", (event) => {
+                    if (event.target.closest("a, button")) return;
+                    const key = row.dataset.sprintKey;
+                    if (expandedSprints.has(key)) expandedSprints.delete(key);
+                    else expandedSprints.add(key);
+                    renderSprints();
+                });
+            });
+
+        bindResponsibleActions();
+    }
+
+    function sprintStatusBadge(status) {
+        let cls = "is-health-neutral";
+        if (status === "Concluída") cls = "is-health-good";
+        else if (status === "Atrasada") cls = "is-health-critical";
+        else if (status === "Em andamento") cls = "is-health-warning";
+        return `<span class="projetos-task-badge ${cls}">${escapeHtml(status || "—")}</span>`;
+    }
+
+    function plannerTaskOrder(a, b) {
+        const orderA = String(a.plannerOrder || "");
+        const orderB = String(b.plannerOrder || "");
+
+        if (orderA && orderB && orderA !== orderB) {
+            return orderA.localeCompare(orderB);
+        }
+
+        if (orderA && !orderB) return -1;
+        if (!orderA && orderB) return 1;
+
+        return Number(a.sequence ?? 999999) - Number(b.sequence ?? 999999);
+    }
+
+
+    function renderGantt() {
+        if (!els.projetosGanttChart) return;
+
+        const project = projects.find((item) => item.id === selectedProjectId)
+            || activeProjects.find((item) => item.id === selectedProjectId)
+            || completedProjects.find((item) => item.id === selectedProjectId);
+
+        if (!project || !project.tasks.length) {
+            els.projetosGanttChart.innerHTML = emptyDiv("Projeto sem tarefas.");
+            return;
+        }
+
+        const sprints = [...(project.sprints || [])]
+            .filter((sprint) => validDate(sprint.start) || validDate(sprint.end))
+            .sort((a,b) => (a.number ?? 9999) - (b.number ?? 9999));
+
+        if (!sprints.length) {
+            els.projetosGanttChart.innerHTML = emptyDiv("Não há Sprints com datas válidas para o Gantt.");
+            return;
+        }
+
+        const allDates = [];
+        sprints.forEach((sprint) => {
+            [sprint.start, sprint.end].forEach((d) => { if (validDate(d)) allDates.push(d); });
+            const ids = new Set(sprint.taskIds || []);
+            project.tasks.filter((task) => ids.has(task.id)).forEach((task) => {
+                [task.plannedStart, task.start, task.due, task.completed].forEach((d) => { if (validDate(d)) allDates.push(d); });
+            });
+        });
+
+        if (validDate(project.golive)) {
+            allDates.push(project.golive);
+        }
+
+        let minDate = new Date(Math.min(...allDates.map((d) => d.getTime())));
+        let maxDate = new Date(Math.max(...allDates.map((d) => d.getTime())));
+        if (maxDate - minDate < 30 * 86400000) maxDate = new Date(minDate.getTime() + 30 * 86400000);
+        const span = Math.max(maxDate - minDate, 86400000);
+        const position = (d) => clamp((d - minDate) / span * 100, 0, 100);
+
+        const months = [];
+        let cursor = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+        while (cursor <= maxDate && months.length < 36) {
+            const next = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+            months.push({date: new Date(cursor), left: position(cursor), width: position(next) - position(cursor)});
+            cursor = next;
+        }
+
+        const today = new Date();
+        const todayPercent = today >= minDate && today <= maxDate ? position(today) : null;
+        const golivePercent = validDate(project.golive) && project.golive >= minDate && project.golive <= maxDate
+            ? position(project.golive)
+            : null;
+
+        const timelineMarkers = `${todayPercent !== null ? `<div class="projetos-gantt-today" style="left:${todayPercent}%"></div>` : ""}${golivePercent !== null ? `<div class="projetos-gantt-golive" style="left:${golivePercent}%"><span>Go-live</span></div>` : ""}`;
+
+        let html = `<div class="projetos-gantt-head"><div class="projetos-gantt-name">Sprint / Tarefa</div><div class="projetos-gantt-axis">${months.map((item) => `<div class="projetos-gantt-month" style="left:${item.left}%;width:${Math.max(item.width,4)}%">${month(item.date)}/${String(item.date.getFullYear()).slice(-2)}</div>`).join("")}${timelineMarkers}</div></div>`;
+
+        sprints.forEach((sprint) => {
+            const key = `${project.id}:${sprint.number ?? "sem"}`;
+            const expanded = expandedGanttSprints.has(key);
+            const sprintStart = sprint.start || sprint.end;
+            const sprintEnd = sprint.end || sprint.start;
+            const left = position(sprintStart);
+            const width = Math.max(position(sprintEnd) - left, .8);
+            const cls = sprint.status === "Concluída" ? "is-done" : sprint.status === "Atrasada" ? "is-overdue" : "";
+
+            html += `<div class="projetos-gantt-sprint-row ${expanded ? "is-expanded" : ""}" data-gantt-sprint="${escapeHtml(key)}"><div class="projetos-gantt-name"><button type="button" class="projetos-expand-button"><i class="fa fa-chevron-right"></i></button><div><strong>${escapeHtml(sprint.name)}</strong><span class="projetos-gantt-sprint-meta">${validDate(sprint.start) ? date(sprint.start) : "—"} → ${validDate(sprint.end) ? date(sprint.end) : "—"} · ${number(sprint.total)} tarefas</span></div></div><div class="projetos-gantt-track">${timelineMarkers}<div class="projetos-gantt-sprint-bar ${cls}" style="left:${left}%;width:${width}%"><span>${Math.round(sprint.progress)}%</span></div></div></div>`;
+
+            if (expanded) {
+                const ids = new Set(sprint.taskIds || []);
+                const tasks = project.tasks
+                    .filter((task) => ids.has(task.id))
+                    .sort(plannerTaskOrder);
+                tasks.forEach((task) => {
+                    let start = task.plannedStart || task.start || task.created || task.due;
+                    let end = task.due || task.completed || new Date(start.getTime() + 86400000);
+                    if (end < start) [start,end] = [end,start];
+                    const taskLeft = position(start), taskWidth = Math.max(position(end) - taskLeft, .8), taskCls = task.done ? "is-done" : task.overdue ? "is-overdue" : "";
+                    html += `<div class="projetos-gantt-row projetos-gantt-task-row"><div class="projetos-gantt-name"><div class="projetos-gantt-task-title">${escapeHtml(task.title)}${task.isGolive ? ' <span class="projetos-task-badge is-health-done">Golive</span>' : ''}</div><div class="projetos-gantt-task-meta">${escapeHtml(task.responsibles.join(", ") || "Sem responsável")}</div></div><div class="projetos-gantt-track">${timelineMarkers}<div class="projetos-gantt-bar ${taskCls}" style="left:${taskLeft}%;width:${taskWidth}%" title="${date(start)} → ${date(end)}"><span>${Math.round(task.progress)}%</span></div></div></div>`;
+                });
+            }
+        });
+
+        els.projetosGanttChart.innerHTML = html;
+        els.projetosGanttChart.querySelectorAll("[data-gantt-sprint]").forEach((row) => {
+            row.addEventListener("click", () => {
+                const key = row.dataset.ganttSprint;
+                if (expandedGanttSprints.has(key)) expandedGanttSprints.delete(key);
+                else expandedGanttSprints.add(key);
+                renderGantt();
+            });
+        });
+    }
+
+    function renderStatus() {
+        const project = (
+            projects.find((item) => item.id === selectedProjectId)
+            || activeProjects.find((item) => item.id === selectedProjectId)
+            || completedProjects.find((item) => item.id === selectedProjectId)
+            || projects[0]
+        );
+
+        if (!project) {
+            setText("projetosStatusName", "Nenhum projeto no recorte");
+            setText("projetosStatusMeta", "—");
+            setText("projetosStatusProgress", "0%");
+            setText("projetosStatusTotal", "0");
+            setText("projetosStatusDone", "0");
+            setText("projetosStatusOverdue", "0");
+            setText("projetosStatusNext", "—");
+            setText("projetosStatusGolive", "—");
+            if (els.projetosCronogramaBody) {
+                els.projetosCronogramaBody.innerHTML = emptyRow(10, "Nenhum projeto selecionado.");
+            }
+            return;
+        }
+
+        setText("projetosStatusName", project.name);
+
+        setText(
+            "projetosStatusMeta",
+            `${project.group} · ${project.status} · `
+            + (
+                project.responsibles
+                    .slice(0, 5)
+                    .join(", ")
+                || "Sem responsável definido"
+            )
+        );
+
+        setText(
+            "projetosStatusProgress",
+            `${Math.round(project.progress)}%`
+        );
+
+        if (els.projetosStatusHealth) {
+            els.projetosStatusHealth.className = (
+                `projetos-health-pill ${healthClass(project.health)}`
+            );
+
+            els.projetosStatusHealth.textContent = project.health || "—";
+        }
+
+        setText("projetosStatusTotal", number(project.total));
+        setText("projetosStatusDone", number(project.done));
+        setText("projetosStatusOverdue", number(project.overdue));
+
+        setText(
+            "projetosStatusNext",
+            validDate(project.nextDeadline)
+                ? date(project.nextDeadline)
+                : "—"
+        );
+
+        setText(
+            "projetosStatusGolive",
+            validDate(project.golive)
+                ? date(project.golive)
+                : "—"
+        );
+
+        setText(
+            "projetosStatusGoliveState",
+            project.goliveStatus || "Sem Go-live"
+        );
+
+        let headline = "Execução dentro do esperado";
+
+        if (project.status === "Concluído") {
+            headline = "Projeto concluído";
+        } else if (project.health === "Crítico") {
+            headline = "Ação executiva recomendada";
+        } else if (project.health === "Atenção") {
+            headline = "Projeto requer acompanhamento";
+        } else if (project.status === "Sem tarefas") {
+            headline = "Projeto sem tarefas";
+        }
+
+        setText(
+            "projetosStatusHeadline",
+            headline
+        );
+
+        let narrative;
+
+        if (project.status === "Sem tarefas") {
+            narrative = (
+                "O plano não possui tarefas e, por isso, não é tratado "
+                + "automaticamente como concluído."
+            );
+        } else if (project.status === "Concluído") {
+            narrative = (
+                `Todas as ${number(project.total)} tarefas estão concluídas. `
+                + `O projeto é considerado encerrado, com `
+                + `${Math.round(project.progress)}% de progresso médio.`
+            );
+        } else {
+            const openPercent = project.total
+                ? Math.round(project.open / project.total * 100)
+                : 0;
+
+            narrative = (
+                `O projeto possui ${number(project.open)} tarefas abertas `
+                + `(${openPercent}% do total), `
+                + `${number(project.overdue)} em atraso e `
+                + `${Math.round(project.progress)}% de progresso médio. `
+            );
+
+            if (validDate(project.nextDeadline)) {
+                narrative += `O próximo vencimento está previsto para ${date(project.nextDeadline)}. `;
+            }
+
+            if (validDate(project.golive)) {
+                narrative += `O Go-live planejado está definido para ${date(project.golive)} (${project.goliveStatus}).`;
+            } else if (!validDate(project.nextDeadline)) {
+                narrative += "Não há próximo vencimento futuro nem Go-live definido.";
+            }
+        }
+
+        setText(
+            "projetosStatusNarrative",
+            narrative
+        );
+
+        renderStatusTeam(project);
+        renderAlerts(project);
+        renderCronograma(project);
+    }
+
+    function renderAlerts(project) {
+        const alerts = [];
+
+        if (project.overdue) {
+            alerts.push([
+                "Prazo",
+                `${number(project.overdue)} tarefa(s) vencida(s) ainda não concluída(s).`,
+                "fa-clock-o",
+            ]);
+        }
+
+        if (project.unassigned) {
+            alerts.push([
+                "Responsável",
+                `${number(project.unassigned)} tarefa(s) sem responsável atribuído.`,
+                "fa-user-times",
+            ]);
+        }
+
+        if (project.undated) {
+            alerts.push([
+                "Planejamento",
+                `${number(project.undated)} tarefa(s) sem prazo de conclusão.`,
+                "fa-calendar-times-o",
+            ]);
+        }
+
+        if (project.error) {
+            alerts.push([
+                "Integração",
+                project.error,
+                "fa-plug",
+            ]);
+        }
+
+        if (!alerts.length) {
+            alerts.push([
+                "Sem alerta",
+                "Nenhum risco estrutural detectado pelas regras automáticas atuais.",
+                "fa-check",
+            ]);
+        }
+
+        if (!els.projetosAlertList) return;
+
+        els.projetosAlertList.innerHTML = alerts
+            .map(([title, text, icon]) => `
+                <div class="projetos-alert">
+                    <span class="projetos-alert-icon">
+                        <i class="fa ${icon}" aria-hidden="true"></i>
+                    </span>
+
+                    <div>
+                        <strong>${escapeHtml(title)}</strong>
+                        <p>${escapeHtml(text)}</p>
+                    </div>
+                </div>
+            `)
+            .join("");
+    }
+
+    function manualResponsibleChips(items) {
+        if (!items?.length) return "";
+        return items.map((item) => `
+            <span class="projetos-responsible-chip is-manual" title="${escapeHtml(item.papel_nome || item.papel || "Responsável")}${item.empresa ? ` · ${escapeHtml(item.empresa)}` : ""}">
+                ${escapeHtml(item.nome)}
+                <button
+                    type="button"
+                    data-delete-responsible="${item.id}"
+                    title="Remover responsável manual"
+                >×</button>
+            </span>
+        `).join("");
+    }
+
+    function renderResponsibleCell(details, context) {
+        const planner = (details || []).filter((item) => !item.manual);
+        const manual = (details || []).filter((item) => item.manual);
+
+        return `
+            <div class="projetos-responsible-stack">
+                ${planner.map((item) => `
+                    <span class="projetos-responsible-chip" title="Planner">
+                        ${escapeHtml(item.nome || "—")}
+                    </span>
+                `).join("")}
+                ${manualResponsibleChips(manual)}
+                <button
+                    type="button"
+                    class="projetos-responsible-add"
+                    data-add-responsible
+                    data-plan-id="${escapeHtml(context.planId)}"
+                    data-plan-name="${escapeHtml(context.planName)}"
+                    data-scope="${escapeHtml(context.scope)}"
+                    data-sprint="${context.sprintNumber ?? ""}"
+                    data-task-id="${escapeHtml(context.taskId || "")}"
+                    data-task-name="${escapeHtml(context.taskName || "")}"
+                    title="Adicionar responsável"
+                >+</button>
+            </div>
+        `;
+    }
+
+    function renderStatusTeam(project) {
+        if (!els.projetosStatusTeamList) return;
+
+        const manual = project.manualResponsibles || [];
+
+        if (!manual.length) {
+            els.projetosStatusTeamList.innerHTML = "Nenhum responsável PMO adicional";
+            return;
+        }
+
+        els.projetosStatusTeamList.innerHTML = `
+            <div class="projetos-responsible-stack">
+                ${manualResponsibleChips(manual)}
+            </div>
+        `;
+
+        bindResponsibleActions();
+    }
+
+    function daysBetween(start, end) {
+        if (!validDate(start) || !validDate(end)) return "—";
+        const ms = Math.max(0, end.getTime() - start.getTime());
+        return Math.max(1, Math.ceil(ms / 86400000) + 1);
+    }
+
+    function renderCronograma(project) {
+        if (!els.projetosCronogramaBody) return;
+
+        const tasks = [...project.tasks].sort((a, b) => {
+            const sprintA = a.sprintNumber ?? 9999;
+            const sprintB = b.sprintNumber ?? 9999;
+
+            if (sprintA !== sprintB) {
+                return sprintA - sprintB;
+            }
+
+            return plannerTaskOrder(a, b);
+        });
+
+        if (!tasks.length) {
+            els.projetosCronogramaBody.innerHTML = emptyRow(10, "Projeto sem tarefas.");
+            return;
+        }
+
+        els.projetosCronogramaBody.innerHTML = tasks.map((task) => {
+            const inicio = task.plannedStart || task.start;
+            const tipo = task.isGolive
+                ? "Go-live"
+                : task.isSprintMarker
+                    ? "Marco Sprint"
+                    : "Tarefa";
+            const rowClass = task.isGolive
+                ? "projetos-pmo-golive"
+                : task.isSprintMarker
+                    ? "projetos-pmo-marco"
+                    : "";
+            const atraso = task.overdue && validDate(task.due)
+                ? `${Math.max(1, Math.ceil((Date.now() - task.due.getTime()) / 86400000))}d`
+                : "—";
+
+            return `
+                <tr class="${rowClass}">
+                    <td>${escapeHtml(task.sprint || "Sem Sprint")}</td>
+                    <td>${escapeHtml(task.title)}</td>
+                    <td>
+                        ${renderResponsibleCell(
+                            task.responsibleDetails,
+                            {
+                                planId: project.id,
+                                planName: project.name,
+                                scope: "tarefa",
+                                sprintNumber: task.sprintNumber,
+                                taskId: task.id,
+                                taskName: task.title,
+                            }
+                        )}
+                    </td>
+                    <td>${validDate(inicio) ? date(inicio) : "—"}</td>
+                    <td>${validDate(task.due) ? date(task.due) : "—"}</td>
+                    <td>${daysBetween(inicio, task.due)}</td>
+                    <td>${miniProgress(task.progress)}</td>
+                    <td>${taskBadge(task)}</td>
+                    <td class="${task.overdue ? "is-low" : ""}">${atraso}</td>
+                    <td>
+                        <span class="projetos-pmo-type ${task.isGolive ? "is-golive" : task.isSprintMarker ? "is-marco" : ""}">
+                            ${tipo}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        bindResponsibleActions();
+    }
+
+    function renderBase() {
+        if (!els.projetosBaseBody) return;
+
+        const rows = [];
+
+        filteredProjects.forEach((project) => {
+            project.tasks.forEach((task) => {
+                rows.push({
+                    project,
+                    task,
+                });
+            });
+        });
+
+        rows.sort((a, b) => {
+            return (
+                String(a.project.name).localeCompare(
+                    String(b.project.name),
+                    "pt-BR"
+                )
+                || ((a.task.sprintNumber ?? 9999) - (b.task.sprintNumber ?? 9999))
+                || Number(b.task.overdue) - Number(a.task.overdue)
+            );
+        });
+
+        const visible = rows.slice(0, BASE_LIMIT);
+
+        if (!visible.length) {
+            els.projetosBaseBody.innerHTML = emptyRow(
+                9,
+                "Nenhuma tarefa encontrada."
+            );
+        } else {
+            els.projetosBaseBody.innerHTML = visible
+                .map(({ project, task }) => `
+                    <tr>
+                        <td>${escapeHtml(project.name)}</td>
+                        <td>${escapeHtml(task.sprint || "Sem Sprint")}</td>
+                        <td>${escapeHtml(task.title)}</td>
+                        <td>${escapeHtml(task.bucket)}</td>
+                        <td>${escapeHtml(task.responsibles.join(", ") || "—")}</td>
+                        <td>${validDate(task.plannedStart || task.start) ? date(task.plannedStart || task.start) : "—"}</td>
+                        <td>${validDate(task.due) ? date(task.due) : "—"}</td>
+                        <td>${Math.round(task.progress)}%</td>
+                        <td>${taskBadge(task)}</td>
+                    </tr>
+                `)
+                .join("");
+        }
+
+        setText(
+            "projetosBaseInfo",
+            rows.length > BASE_LIMIT
+                ? `Exibindo ${number(BASE_LIMIT)} de ${number(rows.length)} tarefas do recorte`
+                : `${number(rows.length)} tarefas no recorte`
+        );
+    }
+
+    function findSelectedProject() {
+        return (
+            projects.find((item) => item.id === selectedProjectId)
+            || activeProjects.find((item) => item.id === selectedProjectId)
+            || completedProjects.find((item) => item.id === selectedProjectId)
+            || emptyProjects.find((item) => item.id === selectedProjectId)
+            || null
+        );
+    }
+
+    function csrfToken() {
+        const input = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        return input?.value || "";
+    }
+
+    function openResponsibleModal(context) {
+        if (!els.projetosResponsibleModal) return;
+
+        els.projetosRespPlanId.value = context.planId || "";
+        els.projetosRespPlanNome.value = context.planName || "";
+        els.projetosRespEscopo.value = context.scope || "projeto";
+        els.projetosRespSprintNumero.value = context.sprintNumber ?? "";
+        els.projetosRespTaskId.value = context.taskId || "";
+        els.projetosRespTaskNome.value = context.taskName || "";
+
+        els.projetosRespTipoPessoa.value = "externo";
+        els.projetosRespPapel.value = "responsavel";
+        els.projetosRespNome.value = "";
+        els.projetosRespEmail.value = "";
+        els.projetosRespEmpresa.value = "";
+        els.projetosRespDepartamento.value = "";
+        els.projetosRespCargo.value = "";
+        els.projetosRespObservacao.value = "";
+
+        const contextLabel = context.scope === "tarefa"
+            ? `Tarefa: ${context.taskName || ""}`
+            : context.scope === "sprint"
+                ? `Sprint ${context.sprintNumber || ""}`
+                : `Projeto: ${context.planName || ""}`;
+
+        els.projetosResponsibleModalContext.textContent = contextLabel;
+        els.projetosResponsibleModal.classList.add("is-open");
+        els.projetosResponsibleModal.setAttribute("aria-hidden", "false");
+        window.setTimeout(() => els.projetosRespNome?.focus(), 80);
+    }
+
+    function closeResponsibleModal() {
+        els.projetosResponsibleModal?.classList.remove("is-open");
+        els.projetosResponsibleModal?.setAttribute("aria-hidden", "true");
+    }
+
+    async function saveManualResponsible(event) {
+        event.preventDefault();
+
+        const nome = els.projetosRespNome?.value.trim();
+        if (!nome) return;
+
+        showLoading(true);
+
+        try {
+            const response = await fetch(
+                document.getElementById("projetosDashboard")?.dataset.url || window.location.pathname,
+                {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "X-CSRFToken": csrfToken(),
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: JSON.stringify({
+                        acao: "salvar_responsavel",
+                        plan_id: els.projetosRespPlanId.value,
+                        plan_nome: els.projetosRespPlanNome.value,
+                        escopo: els.projetosRespEscopo.value,
+                        sprint_numero: els.projetosRespSprintNumero.value,
+                        task_id: els.projetosRespTaskId.value,
+                        task_nome: els.projetosRespTaskNome.value,
+                        tipo_pessoa: els.projetosRespTipoPessoa.value,
+                        papel: els.projetosRespPapel.value,
+                        nome,
+                        email: els.projetosRespEmail.value.trim(),
+                        empresa: els.projetosRespEmpresa.value.trim(),
+                        departamento: els.projetosRespDepartamento.value.trim(),
+                        cargo: els.projetosRespCargo.value.trim(),
+                        observacao: els.projetosRespObservacao.value.trim(),
+                    }),
+                }
+            );
+
+            const payload = await response.json();
+            if (!response.ok || payload.erro) {
+                throw new Error(payload.detalhe || payload.mensagem || "Erro ao salvar responsável.");
+            }
+
+            closeResponsibleModal();
+            await loadDashboardData(false);
+            setApiStatus("Responsável incluído no cronograma PMO.", "success", true);
+        } catch (error) {
+            setApiStatus(`Não foi possível salvar o responsável: ${error.message}`, "error");
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    async function deleteManualResponsible(responsavelId) {
+        if (!responsavelId) return;
+        if (!window.confirm("Remover este responsável manual?")) return;
+
+        showLoading(true);
+        try {
+            const response = await fetch(
+                document.getElementById("projetosDashboard")?.dataset.url || window.location.pathname,
+                {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "X-CSRFToken": csrfToken(),
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: JSON.stringify({
+                        acao: "excluir_responsavel",
+                        responsavel_id: responsavelId,
+                    }),
+                }
+            );
+            const payload = await response.json();
+            if (!response.ok || payload.erro) {
+                throw new Error(payload.detalhe || payload.mensagem || "Erro ao remover responsável.");
+            }
+            await loadDashboardData(false);
+        } catch (error) {
+            setApiStatus(`Não foi possível remover o responsável: ${error.message}`, "error");
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function bindResponsibleActions() {
+        document.querySelectorAll("[data-add-responsible]").forEach((button) => {
+            button.onclick = () => openResponsibleModal({
+                planId: button.dataset.planId,
+                planName: button.dataset.planName,
+                scope: button.dataset.scope,
+                sprintNumber: button.dataset.sprint || null,
+                taskId: button.dataset.taskId || "",
+                taskName: button.dataset.taskName || "",
+            });
+        });
+
+        document.querySelectorAll("[data-delete-responsible]").forEach((button) => {
+            button.onclick = () => deleteManualResponsible(button.dataset.deleteResponsible);
+        });
+    }
+
+    function selectProject(projectId, scrollToStatus = true) {
+        if (!projectId) return;
+
+        selectedProjectId = projectId;
+
+        if (els.projetosGanttProject) els.projetosGanttProject.value = projectId;
+        if (els.projetosSprintProject) els.projetosSprintProject.value = projectId;
+
+        renderSprints();
+        renderGantt();
+        renderStatus();
+
+        if (scrollToStatus) {
+            document
+                .getElementById("projetos-section-status")
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+        }
+    }
+
+    function bindProjectButtons() {
+        document
+            .querySelectorAll("button[data-project-id]")
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    () => selectProject(
+                        button.dataset.projectId
+                    )
+                );
+            });
+    }
+
+    function bindProjectCards() {
+        document
+            .querySelectorAll(".projetos-project-card[data-project-id]")
+            .forEach((card) => {
+                card.addEventListener(
+                    "click",
+                    () => selectProject(
+                        card.dataset.projectId
+                    )
+                );
+            });
+    }
+
+    function populateFilters() {
+        fillProjectSelect();
+
+        fillSelect(
+            els.projetosGroupFilter,
+            unique(
+                projects.map((project) => project.group)
+            ).sort(localeSort),
+            "Todos"
+        );
+
+        fillSelect(
+            els.projetosResponsibleFilter,
+            unique(
+                projects.flatMap(
+                    (project) => project.responsibles
+                )
+            ).sort(localeSort),
+            "Todos"
+        );
+    }
+
+    function fillProjectSelect() {
+        if (!els.projetosProjectFilter) {
+            return;
+        }
+
+        const current = els.projetosProjectFilter.value;
+
+        const items = [...projects]
+            .sort((a, b) => localeSort(a.name, b.name));
+
+        els.projetosProjectFilter.innerHTML = `
+            <option value="">Todos os projetos</option>
+            ${items.map((project) => `
+                <option value="${escapeHtml(project.id)}">
+                    ${escapeHtml(project.name)}
+                </option>
+            `).join("")}
+        `;
+
+        if (items.some((project) => project.id === current)) {
+            els.projetosProjectFilter.value = current;
+        }
+    }
+
+
+    function populateProjectSelector() {
+        if (!els.projetosGanttProject) return;
+
+        const items = projects
+            .filter((project) => project.total > 0)
+            .sort((a, b) => localeSort(a.name, b.name));
+
+        els.projetosGanttProject.innerHTML = items
+            .map((project) => `
+                <option value="${escapeHtml(project.id)}">
+                    ${escapeHtml(project.name)}
+                </option>
+            `)
+            .join("");
+
+        if (
+            selectedProjectId
+            && items.some(
+                (project) => project.id === selectedProjectId
+            )
+        ) {
+            els.projetosGanttProject.value = selectedProjectId;
+        }
+    }
+
+    function populateSprintProjectSelector() {
+        if (!els.projetosSprintProject) return;
+        const items = projects.filter((project) => project.total > 0).sort((a,b) => localeSort(a.name,b.name));
+        els.projetosSprintProject.innerHTML = items.map((project) => `
+            <option value="${escapeHtml(project.id)}">${escapeHtml(project.name)}</option>
+        `).join("");
+        if (selectedProjectId && items.some((project) => project.id === selectedProjectId)) {
+            els.projetosSprintProject.value = selectedProjectId;
+        }
+    }
+
+    function renderActiveFilters() {
+        if (!els.projetosActiveFilters) return;
+
+        const chips = [];
+
+        const values = [
+            ["Busca", els.projetosSearch?.value],
+            ["Projeto", els.projetosProjectFilter?.selectedOptions?.[0]?.textContent?.trim() !== "Todos os projetos" ? els.projetosProjectFilter?.selectedOptions?.[0]?.textContent?.trim() : ""],
+            ["Status", els.projetosStatusFilter?.value],
+            ["Saúde", els.projetosHealthFilter?.value],
+            ["Grupo", els.projetosGroupFilter?.value],
+            ["Responsável", els.projetosResponsibleFilter?.value],
+            ["Data inicial", els.projetosDateStart?.value],
+            ["Data final", els.projetosDateEnd?.value],
+        ];
+
+        values.forEach(([label, value]) => {
+            if (!value) return;
+
+            chips.push(
+                `<span class="metas-filter-chip">${escapeHtml(label)}: ${escapeHtml(value)}</span>`
+            );
+        });
+
+        els.projetosActiveFilters.innerHTML = chips.join("");
+    }
+
+    function clearFilters() {
+        if (els.projetosPortfolioView) els.projetosPortfolioView.value = "ativos";
+        projects = [...activeProjects];
+        populateFilters();
+        populateProjectSelector();
+        populateSprintProjectSelector();
+        if (els.projetosSearch) els.projetosSearch.value = "";
+        if (els.projetosProjectFilter) els.projetosProjectFilter.value = "";
+        if (els.projetosStatusFilter) els.projetosStatusFilter.value = "";
+        if (els.projetosHealthFilter) els.projetosHealthFilter.value = "";
+        if (els.projetosGroupFilter) els.projetosGroupFilter.value = "";
+        if (els.projetosResponsibleFilter) els.projetosResponsibleFilter.value = "";
+        if (els.projetosDateField) els.projetosDateField.value = "golive";
+        if (els.projetosDateStart) els.projetosDateStart.value = "";
+        if (els.projetosDateEnd) els.projetosDateEnd.value = "";
+
+        applyFilters();
+    }
+
+    function renderProgressRows(element, items, emptyText = "Sem dados.") {
+        if (!element) return;
+
+        if (!items.length) {
+            element.innerHTML = emptyDiv(emptyText);
+            return;
+        }
+
+        const maxValue = Math.max(
+            1,
+            ...items.map((item) => item.value)
+        );
+
+        element.innerHTML = items
+            .map((item) => {
+                const percent = item.percent ?? (
+                    item.value / maxValue * 100
+                );
+
+                return `
+                    <div class="projetos-progress-row">
+                        <span title="${escapeHtml(item.label)}">
+                            ${escapeHtml(item.label)}
+                        </span>
+
+                        <div class="projetos-progress-track">
+                            <div
+                                class="projetos-progress-fill"
+                                style="width:${clamp(percent, 0, 100)}%"
+                            ></div>
+                        </div>
+
+                        <strong>${escapeHtml(item.display)}</strong>
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+    function sortProjects(items) {
+        const mode = els.projetosSort?.value || "risk";
+        const sorted = [...items];
+
+        if (mode === "progressAsc") {
+            return sorted.sort(
+                (a, b) => a.progress - b.progress
+            );
+        }
+
+        if (mode === "progressDesc") {
+            return sorted.sort(
+                (a, b) => b.progress - a.progress
+            );
+        }
+
+        if (mode === "name") {
+            return sorted.sort(
+                (a, b) => localeSort(a.name, b.name)
+            );
+        }
+
+        return sorted.sort((a, b) => (
+            b.overdue - a.overdue
+            || healthWeight(b.health) - healthWeight(a.health)
+            || a.progress - b.progress
+        ));
+    }
+
+    function healthWeight(health) {
+        return {
+            "Crítico": 6,
+            "Atenção": 5,
+            "Saudável": 4,
+            "Concluído": 3,
+            "Sem tarefas": 2,
+            "Erro": 7,
+        }[health] || 0;
+    }
+
+    function healthBadge(health) {
+        return `
+            <span class="projetos-health-badge ${healthClass(health)}">
+                ${escapeHtml(health || "—")}
+            </span>
+        `;
+    }
+
+    function healthClass(health) {
+        return {
+            "Saudável": "is-health-good",
+            "Atenção": "is-health-warning",
+            "Crítico": "is-health-critical",
+            "Concluído": "is-health-done",
+            "Sem tarefas": "is-health-neutral",
+            "Erro": "is-health-critical",
+        }[health] || "is-health-neutral";
+    }
+
+    function taskBadge(task) {
+        const status = task.status || (
+            task.done
+                ? "Concluída"
+                : task.overdue
+                    ? "Atrasada"
+                    : task.progress > 0
+                        ? "Em andamento"
+                        : "Não iniciada"
+        );
+
+        let cls = "is-health-neutral";
+
+        if (status === "Concluída") {
+            cls = "is-health-good";
+        } else if (status === "Atrasada") {
+            cls = "is-health-critical";
+        } else if (status === "Em andamento") {
+            cls = "is-health-done";
+        }
+
+        return `
+            <span class="projetos-task-badge ${cls}">
+                ${escapeHtml(status)}
+            </span>
+        `;
+    }
+
+    function miniProgress(value) {
+        const progress = clamp(
+            Number(value || 0),
+            0,
+            100
+        );
+
+        return `
+            <div class="projetos-mini-progress">
+                <div class="projetos-mini-progress-track">
+                    <div
+                        class="projetos-mini-progress-fill"
+                        style="width:${progress}%"
+                    ></div>
+                </div>
+                <strong>${Math.round(progress)}%</strong>
+            </div>
+        `;
+    }
+
+    function initSectionNavigation() {
+        const nav = document.getElementById("projetosSectionNav");
+        const slot = document.getElementById("projetosSectionNavSlot");
+        if (!nav || !slot) return;
+
+        const links = [...nav.querySelectorAll("[data-section-nav]")];
+        const sections = links
+            .map((link) => document.getElementById(link.dataset.sectionNav))
+            .filter(Boolean);
+
+        function workspaceNavbarBottom() {
+            const selectors = [
+                "body > nav",
+                "body > header",
+                ".navbar",
+                "[class*='navbar']",
+                "[class*='topbar']",
+                "[role='navigation']",
+            ];
+
+            let bottom = 0;
+            const seen = new Set();
+
+            selectors.forEach((selector) => {
+                document.querySelectorAll(selector).forEach((element) => {
+                    if (seen.has(element)) return;
+                    seen.add(element);
+                    if (element === nav || nav.contains(element) || slot.contains(element)) return;
+
+                    const rect = element.getBoundingClientRect();
+                    if (rect.height < 28 || rect.height > 150) return;
+                    if (rect.width < window.innerWidth * .55) return;
+                    if (rect.top > 16 || rect.bottom <= 0) return;
+
+                    bottom = Math.max(bottom, rect.bottom);
+                });
+            });
+
+            return Math.max(0, Math.round(bottom));
+        }
+
+        function syncStickyOffset() {
+            const navbarBottom = workspaceNavbarBottom();
+            const top = navbarBottom + 8;
+            document.documentElement.style.setProperty(
+                "--projetos-nav-fixed-top",
+                `${top}px`
+            );
+            document.documentElement.style.setProperty(
+                "--projetos-section-offset",
+                `${top + slot.offsetHeight + 16}px`
+            );
+        }
+
+        function syncActive() {
+            const marker = parseInt(
+                getComputedStyle(document.documentElement)
+                    .getPropertyValue("--projetos-section-offset"),
+                10
+            ) || 150;
+
+            let current = sections[0]?.id;
+            sections.forEach((section) => {
+                if (section.getBoundingClientRect().top <= marker) {
+                    current = section.id;
+                }
+            });
+
+            links.forEach((link) => {
+                link.classList.toggle(
+                    "is-active",
+                    link.dataset.sectionNav === current
+                );
+            });
+        }
+
+        links.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const section = document.getElementById(link.dataset.sectionNav);
+                if (!section) return;
+                event.preventDefault();
+
+                syncStickyOffset();
+                const offset = parseInt(
+                    getComputedStyle(document.documentElement)
+                        .getPropertyValue("--projetos-section-offset"),
+                    10
+                ) || 150;
+
+                const targetY = section.getBoundingClientRect().top
+                    + window.scrollY
+                    - offset;
+
+                window.history.replaceState(null, "", `#${section.id}`);
+                window.scrollTo({
+                    top: Math.max(0, targetY),
+                    behavior: "smooth",
+                });
+
+                links.forEach((item) => item.classList.remove("is-active"));
+                link.classList.add("is-active");
+            });
+        });
+
+        let ticking = false;
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                syncActive();
+                ticking = false;
+            });
+        };
+
+        window.addEventListener("scroll", onScroll, {passive: true});
+        window.addEventListener("resize", () => {
+            syncStickyOffset();
+            syncActive();
+        });
+        window.addEventListener("load", () => {
+            syncStickyOffset();
+            syncActive();
+        });
+
+        if (window.ResizeObserver) {
+            const observer = new ResizeObserver(() => syncStickyOffset());
+            document.querySelectorAll("body > nav, body > header, .navbar, [class*='navbar']")
+                .forEach((element) => {
+                    if (!slot.contains(element)) observer.observe(element);
+                });
+        }
+
+        syncStickyOffset();
+        syncActive();
+    }
+
+    function initTheme() {
+        const saved = localStorage.getItem(
+            "workspace-dashboard-theme"
+        );
+
+        if (saved === "dark" || saved === "light") {
+            document.documentElement.setAttribute(
+                "data-theme",
+                saved
+            );
+        }
+
+        updateThemeButton();
+    }
+
+    function toggleTheme() {
+        const current = (
+            document.documentElement.getAttribute("data-theme")
+            || "light"
+        );
+
+        const next = current === "dark"
+            ? "light"
+            : "dark";
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            next
+        );
+
+        localStorage.setItem(
+            "workspace-dashboard-theme",
+            next
+        );
+
+        updateThemeButton();
+    }
+
+    function updateThemeButton() {
+        const dark = (
+            document.documentElement.getAttribute("data-theme")
+            === "dark"
+        );
+
+        if (els.projetosThemeIcon) {
+            els.projetosThemeIcon.className = dark
+                ? "fa fa-sun-o"
+                : "fa fa-moon-o";
+        }
+
+        setText(
+            "projetosThemeText",
+            dark
+                ? "Modo claro"
+                : "Modo escuro"
+        );
+    }
+
+    function showLoading(show) {
+        if (!els.projetosLoading) return;
+
+        els.projetosLoading.classList.toggle(
+            "is-visible",
+            Boolean(show)
+        );
+    }
+
+    function renderUpdatedAt() {
+        const value = parseDate(
+            metadata.gerado_em
+        );
+
+        setText(
+            "projetosUpdatedAt",
+            validDate(value)
+                ? dateTime(value)
+                : "—"
+        );
+    }
+
+    function fillSelect(element, items, allLabel) {
+        if (!element) return;
+
+        element.innerHTML = `
+            <option value="">${escapeHtml(allLabel)}</option>
+            ${items.map((item) => `
+                <option value="${escapeHtml(item)}">
+                    ${escapeHtml(item)}
+                </option>
+            `).join("")}
+        `;
+    }
+
+    function allTasks() {
+        return filteredProjects.flatMap(
+            (project) => project.tasks
+        );
+    }
+
+    function sum(items, field) {
+        return items.reduce(
+            (acc, item) => (
+                acc + Number(item[field] || 0)
+            ),
+            0
+        );
+    }
+
+    function readJson(id, fallback) {
+        const element = document.getElementById(id);
+
+        if (!element) return fallback;
+
+        try {
+            return JSON.parse(element.textContent);
+        } catch (error) {
+            console.error(
+                `Falha ao ler ${id}`,
+                error
+            );
+
+            return fallback;
+        }
+    }
+
+    function parseDate(value) {
+        if (!value) return null;
+
+        const parsed = new Date(value);
+
+        return Number.isNaN(
+            parsed.getTime()
+        )
+            ? null
+            : parsed;
+    }
+
+    function validDate(value) {
+        return (
+            value instanceof Date
+            && !Number.isNaN(value.getTime())
+            && value.getFullYear() >= 2000
+            && value.getFullYear() <= 2100
+        );
+    }
+
+    function date(value) {
+        if (!validDate(value)) return "—";
+
+        return value.toLocaleDateString(
+            "pt-BR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+            }
+        );
+    }
+
+    function dateTime(value) {
+        if (!validDate(value)) return "—";
+
+        return value.toLocaleString(
+            "pt-BR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            }
+        );
+    }
+
+    function month(value) {
+        return value
+            .toLocaleDateString(
+                "pt-BR",
+                { month: "short" }
+            )
+            .replace(".", "")
+            .toUpperCase();
+    }
+
+    function number(value) {
+        return Number(value || 0)
+            .toLocaleString("pt-BR");
+    }
+
+    function unique(items) {
+        return [
+            ...new Set(
+                items.filter(Boolean)
+            ),
+        ];
+    }
+
+    function localeSort(a, b) {
+        return String(a || "").localeCompare(
+            String(b || ""),
+            "pt-BR",
+            { sensitivity: "base" }
+        );
+    }
+
+    function clamp(value, min, max) {
+        return Math.max(
+            min,
+            Math.min(max, value)
+        );
+    }
+
+    function setText(id, value) {
+        if (els[id]) {
+            els[id].textContent = value;
+        }
+    }
+
+    function emptyRow(columns, text) {
+        return `
+            <tr>
+                <td
+                    colspan="${columns}"
+                    class="projetos-empty"
+                >
+                    ${escapeHtml(text)}
+                </td>
+            </tr>
+        `;
+    }
+
+    function emptyDiv(text) {
+        return `
+            <div class="projetos-empty">
+                ${escapeHtml(text)}
+            </div>
+        `;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(
+                /[&<>"']/g,
+                (char) => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#039;",
+                })[char]
+            );
+    }
+})();
+</script>
+
+</body>
+</html>

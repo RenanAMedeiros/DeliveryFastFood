@@ -1,0 +1,1818 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    {% include "components/_head.html" %}
+
+    <title>Configurações | Taskflow</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/configuracoes.css' %}?v=3.3.2">
+
+</head>
+
+<body class="configuracoes-page">
+
+    {% include "components/navbar/_notificacao.html" %}
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="config-page">
+
+        <!--
+            CONTROLES DE NAVEGAÇÃO
+
+            Estes inputs permitem alternar entre as áreas somente com CSS.
+            Não altere os IDs caso o JavaScript futuro utilize esses elementos.
+        -->
+        <input
+            type="radio"
+            name="configuracao-aba"
+            id="configMinhaConta"
+            class="config-tab-control"
+            checked
+        >
+
+                <input
+            type="radio"
+            name="configuracao-aba"
+            id="configSessoes"
+            class="config-tab-control"
+            disabled
+            aria-disabled="true"
+        >
+
+        <input
+            type="radio"
+            name="configuracao-aba"
+            id="configPreferencias"
+            class="config-tab-control"
+        >
+
+        {% if simulacao %}
+        <!--
+            Aba exclusiva de superusuário. A view só popula `simulacao` para
+            superusuário, então para os demais nem o controle nem o painel
+            chegam ao HTML.
+
+            Fica marcada (checked) sempre que a URL traz o parâmetro `simular`,
+            mesmo vazio. Isso cobre dois casos: o formulário de busca é um GET
+            que recarrega a página (sem isto o usuário voltaria para a aba
+            "Minha Conta" a cada pesquisa) e o retorno do aviso de simulação,
+            que manda o usuário direto para /configuracao/?simular=.
+        -->
+        <input
+            type="radio"
+            name="configuracao-aba"
+            id="configSimulacao"
+            class="config-tab-control"
+            {% if simulacao.aberta %}checked{% endif %}
+        >
+        {% endif %}
+
+        <!-- Cabeçalho da página -->
+        <header class="config-page-header">
+
+            <div class="config-page-title">
+
+                <div class="config-page-title-icon">
+                    <i class="fas fa-cog" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <h1>Configurações</h1>
+
+                    <p>
+                        Gerencie seus dados, preferências e informações da sua conta.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="config-header-status">
+
+                <span class="config-status-indicator"></span>
+
+                <div>
+                    <strong>Conta conectada</strong>
+                    <small>{{ request.user.email|default:"Usuário autenticado" }}</small>
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="config-layout">
+
+            <!-- ======================================================
+                 MENU LATERAL
+            ======================================================= -->
+            <aside class="config-sidebar">
+
+                <div class="config-user-summary">
+
+                    <div class="config-user-avatar" aria-label="Iniciais do usuário">
+                        {% with nome_completo=request.user.get_full_name %}
+                            {% if nome_completo %}
+                                {% with partes=nome_completo.split %}
+                                    <span class="config-user-initials">
+                                        {{ partes.0|slice:":1"|upper }}{% if partes.1 %}{{ partes.1|slice:":1"|upper }}{% endif %}
+                                    </span>
+                                {% endwith %}
+                            {% else %}
+                                <span class="config-user-initials">
+                                    {{ request.user.username|slice:":2"|upper }}
+                                </span>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="config-user-summary-text">
+
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>
+                            {{ request.user.email|default:"E-mail não informado" }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <nav class="config-navigation" aria-label="Menu de configurações">
+
+                    <span class="config-navigation-title">
+                        Configurações do usuário
+                    </span>
+
+                    <label
+                        for="configMinhaConta"
+                        class="config-navigation-item config-nav-account"
+                        tabindex="0"
+                    >
+
+                        <span class="config-navigation-icon">
+                            <i class="far fa-user" aria-hidden="true"></i>
+                        </span>
+
+                        <span class="config-navigation-info">
+                            <strong>Minha Conta</strong>
+                            <small>Dados pessoais e profissionais</small>
+                        </span>
+
+                        <i
+                            class="fas fa-chevron-right config-navigation-arrow"
+                            aria-hidden="true"
+                        ></i>
+
+                    </label>
+
+                    <label
+                        for="configPreferencias"
+                        class="config-navigation-item config-nav-preferences"
+                        tabindex="0"
+                    >
+
+                        <span class="config-navigation-icon config-navigation-icon-preferences">
+                            <i class="fas fa-sliders-h" aria-hidden="true"></i>
+                        </span>
+
+                        <span class="config-navigation-info">
+                            <strong>Preferências</strong>
+                            <small>Aparência e comportamento</small>
+                        </span>
+
+                        <i
+                            class="fas fa-chevron-right config-navigation-arrow"
+                            aria-hidden="true"
+                        ></i>
+
+                    </label>
+
+                    {% if simulacao %}
+                    <span class="config-navigation-title">
+                        Administração
+                    </span>
+
+                    <label
+                        for="configSimulacao"
+                        class="config-navigation-item config-nav-simulation"
+                        tabindex="0"
+                    >
+
+                        <span class="config-navigation-icon config-navigation-icon-simulation">
+                            <i class="fas fa-user-secret" aria-hidden="true"></i>
+                        </span>
+
+                        <span class="config-navigation-info">
+                            <strong>Simular usuário</strong>
+                            <small>Acessar o sistema como outra pessoa</small>
+                        </span>
+
+                        <i
+                            class="fas fa-chevron-right config-navigation-arrow"
+                            aria-hidden="true"
+                        ></i>
+
+                    </label>
+                    {% endif %}
+
+                </nav>
+
+                <a
+                    href="mailto:monitoramento@treo.com.br?subject=Suporte%20Taskflow"
+                    class="config-sidebar-help"
+                    title="Enviar e-mail para monitoramento@treo.com.br"
+                    aria-label="Enviar e-mail para o monitoramento do Taskflow"
+                >
+                    <div class="config-sidebar-help-icon">
+                        <i class="far fa-question-circle" aria-hidden="true"></i>
+                    </div>
+
+                    <div>
+                        <strong>Precisa de ajuda?</strong>
+                        <span>Fale com o monitoramento.</span>
+                    </div>
+                </a>
+
+            </aside>
+
+            <!-- ======================================================
+                 CONTEÚDO CENTRAL
+            ======================================================= -->
+            <section class="config-content">
+
+                <!-- ==================================================
+                     PAINEL: MINHA CONTA
+                =================================================== -->
+                <article class="config-panel config-panel-account">
+
+                    <div class="config-panel-header">
+
+                        <div>
+                            <span class="config-panel-eyebrow">
+                                Perfil do usuário
+                            </span>
+
+                            <h2>Minha Conta</h2>
+
+                            <p>
+                                Consulte e atualize suas informações pessoais.
+                            </p>
+                        </div>
+
+                        <span class="config-panel-badge">
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                            Conta ativa
+                        </span>
+
+                    </div>
+
+                    <form
+                        method="post"
+                        action=""
+                        enctype="multipart/form-data"
+                        class="config-account-form"
+                        id="configAccountForm"
+                    >
+
+                        {% csrf_token %}
+
+                        <div class="config-profile-line">
+
+                            <div class="config-profile-photo">
+
+                                <div class="config-profile-photo-preview">
+
+                                    {% if request.user.profile.foto %}
+                                        <img
+                                            src="{{ request.user.profile.foto.url }}"
+                                            alt="Foto atual do usuário"
+                                            id="configPhotoPreview"
+                                        >
+                                    {% else %}
+                                        {% with nome_completo=request.user.get_full_name %}
+                                            {% if nome_completo %}
+                                                {% with partes=nome_completo.split %}
+                                                    <span class="config-profile-initials">
+                                                        {{ partes.0|slice:":1"|upper }}{% if partes.1 %}{{ partes.1|slice:":1"|upper }}{% endif %}
+                                                    </span>
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="config-profile-initials">
+                                                    {{ request.user.username|slice:":2"|upper }}
+                                                </span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="config-profile-photo-information">
+
+                                    <strong>Foto de perfil</strong>
+
+                                    <span>
+                                        JPG ou PNG. Tamanho máximo recomendado: 2 MB.
+                                    </span>
+
+                                    <div class="config-profile-photo-actions">
+
+                                        <label
+                                            for="configProfilePhoto"
+                                            class="config-button config-button-secondary"
+                                        >
+                                            <i
+                                                class="fas fa-camera"
+                                                aria-hidden="true"
+                                            ></i>
+
+                                            Alterar foto
+                                        </label>
+
+                                        <input
+                                            type="file"
+                                            name="foto_perfil"
+                                            id="configProfilePhoto"
+                                            accept=".jpg,.jpeg,.png"
+                                            hidden
+                                        >
+
+                                        {% if request.user.profile.foto %}
+                                            <button
+                                                type="button"
+                                                class="config-button config-button-danger-outline"
+                                                id="configRemovePhoto"
+                                            >
+                                                <i
+                                                    class="far fa-trash-alt"
+                                                    aria-hidden="true"
+                                                ></i>
+
+                                                Remover
+                                            </button>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="config-form-section">
+
+                            <div class="config-form-section-title">
+
+                                <div>
+                                    <h3>Dados pessoais</h3>
+                                    <p>Informações básicas da sua conta.</p>
+                                </div>
+
+                            </div>
+
+                            <div class="config-form-grid">
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configNome">
+                                        Nome completo
+                                        <span class="config-required">*</span>
+                                    </label>
+
+                                    <div class="config-input-container">
+
+                                        <i
+                                            class="far fa-user config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            name="nome"
+                                            id="configNome"
+                                            value="{{ request.user.get_full_name }}"
+                                            placeholder="Informe seu nome completo"
+                                            required
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configEmail">
+                                        E-mail
+                                        <span class="config-required">*</span>
+                                    </label>
+
+                                    <div class="config-input-container">
+
+                                        <i
+                                            class="far fa-envelope config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="configEmail"
+                                            value="{{ request.user.email }}"
+                                            placeholder="nome@empresa.com.br"
+                                            required
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configTelefone">
+                                        Telefone
+                                    </label>
+
+                                    <div class="config-input-container">
+
+                                        <i
+                                            class="fas fa-phone-alt config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            name="telefone"
+                                            id="configTelefone"
+                                            value="{{ usuario.telefone|default:'' }}"
+                                            placeholder="(00) 00000-0000"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configRamal">
+                                        Ramal
+                                    </label>
+
+                                    <div class="config-input-container">
+
+                                        <i
+                                            class="fas fa-headset config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            name="ramal"
+                                            id="configRamal"
+                                            value="{{ usuario.ramal|default:'' }}"
+                                            placeholder="0000"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configLogin">
+                                        Login
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="fas fa-at config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            name="login"
+                                            id="configLogin"
+                                            value="{{ request.user.username }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            title="Campo administrado pelo sistema"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="config-form-section">
+
+                            <div class="config-form-section-title">
+
+                                <div>
+                                    <h3>Estrutura organizacional</h3>
+
+                                    <p>
+                                        Dados vinculados ao seu cadastro corporativo.
+                                    </p>
+                                </div>
+
+                                <span class="config-readonly-message">
+                                    <i class="fas fa-lock" aria-hidden="true"></i>
+                                    Campos administrados pela empresa
+                                </span>
+
+                            </div>
+
+                            <div class="config-form-grid config-organization-grid">
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configCliente">
+                                        Cliente
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="fas fa-building config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configCliente"
+                                            value="{% if request.user.cliente_id %}{{ request.user.cliente.nome }}{% else %}Não informado{% endif %}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configEmpresas">
+                                        Empresa(s) com acesso
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="far fa-building config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configEmpresas"
+                                            value="{{ estrutura_organizacional.empresas|default:'Não informado' }}"
+                                            title="{{ estrutura_organizacional.empresas|default:'Não informado' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configPerfil">
+                                        Perfil de acesso
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="fas fa-user-shield config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configPerfil"
+                                            value="{% if request.user.role == 'admin' %}Administrador{% elif request.user.role == 'gestor' %}Gestor{% elif request.user.role == 'head' %}Head{% elif request.user.role == 'rh' %}Recursos Humanos{% elif request.user.role == 'socio' %}Sócio{% else %}Usuário{% endif %}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group config-grid-span-2">
+
+                                    <label for="configCarteiras">
+                                        Carteiras vinculadas
+                                        {% if estrutura_organizacional.total_carteiras %}
+                                            <span class="config-organization-count">
+                                                {{ estrutura_organizacional.total_carteiras }}
+                                            </span>
+                                        {% endif %}
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="fas fa-briefcase config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configCarteiras"
+                                            value="{{ estrutura_organizacional.carteiras|default:'Nenhuma carteira vinculada' }}"
+                                            title="{{ estrutura_organizacional.carteiras_titulo|default:'' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configDiretor">
+                                        Diretor
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="far fa-user config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configDiretor"
+                                            value="{{ estrutura_organizacional.diretor|default:'Não informado' }}"
+                                            title="{{ estrutura_organizacional.diretor|default:'Não informado' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configSuperintendente">
+                                        Superintendente
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="far fa-user config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configSuperintendente"
+                                            value="{{ estrutura_organizacional.superintendente|default:'Não informado' }}"
+                                            title="{{ estrutura_organizacional.superintendente|default:'Não informado' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configGerente">
+                                        Gerente
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="far fa-user config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configGerente"
+                                            value="{{ estrutura_organizacional.gerente|default:'Não informado' }}"
+                                            title="{{ estrutura_organizacional.gerente|default:'Não informado' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="config-form-group">
+
+                                    <label for="configCoordenador">
+                                        Coordenador
+                                    </label>
+
+                                    <div class="config-input-container config-input-readonly">
+
+                                        <i
+                                            class="far fa-user config-input-icon"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        <input
+                                            type="text"
+                                            id="configCoordenador"
+                                            value="{{ estrutura_organizacional.coordenador|default:'Não informado' }}"
+                                            title="{{ estrutura_organizacional.coordenador|default:'Não informado' }}"
+                                            readonly
+                                        >
+
+                                        <i
+                                            class="fas fa-lock config-input-lock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="config-form-footer">
+
+                            <div class="config-form-footer-message">
+
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+
+                                <span>
+                                    As alterações pessoais serão aplicadas ao seu perfil.
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="config-button config-button-primary"
+                                id="configSaveAccount"
+                            >
+                                <i class="far fa-save" aria-hidden="true"></i>
+                                Salvar alterações
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </article>
+
+                <!-- ==================================================
+                     PAINEL: SESSÕES
+                =================================================== -->
+                <article class="config-panel config-panel-sessions">
+
+                    <div class="config-panel-header">
+
+                        <div>
+                            <span class="config-panel-eyebrow">
+                                Segurança da conta
+                            </span>
+
+                            <h2>Sessões conectadas</h2>
+
+                            <p>
+                                Consulte os dispositivos que acessaram sua conta.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="config-button config-button-danger-outline"
+                            id="configEndOtherSessions"
+                        >
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            Encerrar outras sessões
+                        </button>
+
+                    </div>
+
+                    <div class="config-security-alert">
+
+                        <div class="config-security-alert-icon">
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                        </div>
+
+                        <div>
+                            <strong>Proteja sua conta</strong>
+
+                            <span>
+                                Encerre qualquer sessão que você não reconheça.
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="config-session-list">
+
+                        <article class="config-session-list-item is-current">
+
+                            <div class="config-session-device-icon">
+                                <i class="fas fa-desktop" aria-hidden="true"></i>
+                            </div>
+
+                            <div class="config-session-device-info">
+
+                                <div class="config-session-device-title">
+
+                                    <strong>
+                                        {{ sessao_atual.navegador|default:"Navegador atual" }}
+                                        no
+                                        {{ sessao_atual.sistema_operacional|default:"dispositivo atual" }}
+                                    </strong>
+
+                                    <span class="config-current-session-badge">
+                                        <span></span>
+                                        Sessão atual
+                                    </span>
+
+                                </div>
+
+                                <div class="config-session-device-data">
+
+                                    <span>
+                                        <i
+                                            class="fas fa-network-wired"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        IP:
+                                        {{ sessao_atual.ip|default:request.META.REMOTE_ADDR }}
+                                    </span>
+
+                                    <span>
+                                        <i
+                                            class="far fa-clock"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        Acesso:
+                                        {{ request.user.last_login|date:"d/m/Y H:i" }}
+                                    </span>
+
+                                    <span>
+                                        <i
+                                            class="fas fa-map-marker-alt"
+                                            aria-hidden="true"
+                                        ></i>
+
+                                        {{ sessao_atual.localizacao|default:"Localização não identificada" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <span class="config-session-protected">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                                Em uso
+                            </span>
+
+                        </article>
+
+                        {% for sessao in sessoes|slice:":3" %}
+
+                            {% if not sessao.atual %}
+
+                                <article class="config-session-list-item">
+
+                                    <div class="config-session-device-icon">
+                                        <i
+                                            class="fas fa-laptop"
+                                            aria-hidden="true"
+                                        ></i>
+                                    </div>
+
+                                    <div class="config-session-device-info">
+
+                                        <div class="config-session-device-title">
+
+                                            <strong>
+                                                {{ sessao.navegador }}
+                                                no
+                                                {{ sessao.sistema_operacional }}
+                                            </strong>
+
+                                            <span class="config-inactive-session-badge">
+                                                Outra sessão
+                                            </span>
+
+                                        </div>
+
+                                        <div class="config-session-device-data">
+
+                                            <span>
+                                                <i
+                                                    class="fas fa-network-wired"
+                                                    aria-hidden="true"
+                                                ></i>
+
+                                                IP: {{ sessao.ip }}
+                                            </span>
+
+                                            <span>
+                                                <i
+                                                    class="far fa-clock"
+                                                    aria-hidden="true"
+                                                ></i>
+
+                                                {{ sessao.data|date:"d/m/Y H:i" }}
+                                            </span>
+
+                                            <span>
+                                                <i
+                                                    class="fas fa-map-marker-alt"
+                                                    aria-hidden="true"
+                                                ></i>
+
+                                                {{ sessao.localizacao|default:"Não identificada" }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="config-button config-button-danger-outline config-session-end-button"
+                                    >
+                                        Encerrar
+                                    </button>
+
+                                </article>
+
+                            {% endif %}
+
+                        {% empty %}
+
+                            <div class="config-no-other-sessions">
+
+                                <i class="fas fa-check-circle" aria-hidden="true"></i>
+
+                                <div>
+                                    <strong>Nenhuma outra sessão conectada</strong>
+
+                                    <span>
+                                        Sua conta está conectada somente neste dispositivo.
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </article>
+
+                <!-- ==================================================
+                     PAINEL: PREFERÊNCIAS
+                =================================================== -->
+                <article class="config-panel config-panel-preferences">
+
+                    <div class="config-panel-header">
+
+                        <div>
+                            <span class="config-panel-eyebrow">
+                                Personalização
+                            </span>
+
+                            <h2>Preferências</h2>
+
+                            <p>
+                                Personalize a aparência e o comportamento do Taskflow.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <form
+                        method="post"
+                        action=""
+                        class="config-preferences-form"
+                        id="configPreferencesForm"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="acao"
+                            value="salvar_preferencias"
+                        >
+
+                        <section class="config-preference-section">
+
+                            <div class="config-preference-section-header">
+
+                                <span class="config-preference-section-icon">
+                                    <i class="fas fa-palette" aria-hidden="true"></i>
+                                </span>
+
+                                <div>
+                                    <h3>Aparência</h3>
+                                    <p>Escolha como deseja visualizar o sistema.</p>
+                                </div>
+
+                            </div>
+
+                            <!--
+                                O theme.js sincroniza estes radios automaticamente
+                                com a preferência salva no localStorage. Não mantenha
+                                nenhum atributo checked fixo nestas opções.
+                            -->
+                            <div class="config-theme-options config-theme-options-two">
+
+                                <label class="config-theme-option">
+
+                                    <input
+                                        type="radio"
+                                        name="tema"
+                                        value="light"
+                                        aria-label="Ativar modo claro"
+                                    >
+
+                                    <span class="config-theme-preview config-theme-light">
+
+                                        <span class="config-theme-preview-sidebar"></span>
+
+                                        <span class="config-theme-preview-content">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </span>
+
+                                    </span>
+
+                                    <span class="config-theme-option-text">
+                                        <strong>Claro</strong>
+                                        <small>Tema claro padrão</small>
+                                    </span>
+
+                                    <span class="config-theme-check">
+                                        <i class="fas fa-sun" aria-hidden="true"></i>
+                                    </span>
+
+                                </label>
+
+                                <label class="config-theme-option">
+
+                                    <input
+                                        type="radio"
+                                        name="tema"
+                                        value="auto"
+                                        aria-label="Ativar tema azul do Taskflow"
+                                    >
+
+                                    <span class="config-theme-preview config-theme-auto">
+
+                                        <span class="config-theme-preview-sidebar"></span>
+
+                                        <span class="config-theme-preview-content">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </span>
+
+                                    </span>
+
+                                    <span class="config-theme-option-text">
+                                        <strong>Automático</strong>
+                                        <small>Tema azul-escuro do Taskflow</small>
+                                    </span>
+
+                                    <span class="config-theme-check">
+                                        <i class="fas fa-moon" aria-hidden="true"></i>
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </section>
+
+                        <section class="config-preference-section">
+
+                            <div class="config-preference-section-header">
+
+                                <span class="config-preference-section-icon">
+                                    <i class="fas fa-desktop" aria-hidden="true"></i>
+                                </span>
+
+                                <div>
+                                    <h3>Comportamento do sistema</h3>
+                                    <p>Defina suas preferências de navegação.</p>
+                                </div>
+
+                            </div>
+
+                            <div class="config-preference-items">
+
+                                <label class="config-preference-item is-disabled" aria-disabled="true">
+
+                                    <div class="config-preference-item-info">
+
+                                        <span class="config-preference-item-icon">
+                                            <i
+                                                class="far fa-window-restore"
+                                                aria-hidden="true"
+                                            ></i>
+                                        </span>
+
+                                        <span>
+                                            <strong>Utilizar abas no sistema</strong>
+
+                                            <small>
+                                                Abra módulos em abas internas do Taskflow.
+                                            </small>
+                                        </span>
+
+                                    </div>
+
+                                    <span class="config-switch">
+
+                                        <input
+                                            type="checkbox"
+                                            name="utilizar_abas"
+                                            disabled
+                                            aria-disabled="true"
+                                        >
+
+                                        <span class="config-switch-slider"></span>
+
+                                    </span>
+
+                                </label>
+
+                                <label class="config-preference-item">
+
+                                    <div class="config-preference-item-info">
+
+                                        <span class="config-preference-item-icon">
+                                            <i
+                                                class="fas fa-bell"
+                                                aria-hidden="true"
+                                            ></i>
+                                        </span>
+
+                                        <span>
+                                            <strong>Notificações no sistema</strong>
+
+                                            <small>
+                                                Ative ou desative o som dos alertas de solicitações e aprovações.
+                                            </small>
+                                        </span>
+
+                                    </div>
+
+                                    <span class="config-switch">
+
+                                        <input
+                                            type="checkbox"
+                                            name="notificacoes_sistema"
+                                            id="configSystemNotifications"
+                                            aria-label="Ativar som das notificações do sistema"
+                                        >
+
+                                        <span class="config-switch-slider"></span>
+
+                                    </span>
+
+                                </label>
+
+                                <label class="config-preference-item is-disabled" aria-disabled="true">
+
+                                    <div class="config-preference-item-info">
+
+                                        <span class="config-preference-item-icon">
+                                            <i
+                                                class="fas fa-magic"
+                                                aria-hidden="true"
+                                            ></i>
+                                        </span>
+
+                                        <span>
+                                            <strong>Reduzir animações</strong>
+
+                                            <small>
+                                                Diminua movimentos e transições da interface.
+                                            </small>
+                                        </span>
+
+                                    </div>
+
+                                    <span class="config-switch">
+
+                                        <input
+                                            type="checkbox"
+                                            name="reduzir_animacoes"
+                                            disabled
+                                            aria-disabled="true"
+                                        >
+
+                                        <span class="config-switch-slider"></span>
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </section>
+
+                        <div class="config-form-footer">
+
+                            <div class="config-form-footer-message">
+
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+
+                                <span>
+                                    O tema é aplicado imediatamente e mantido nas próximas sessões.
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="config-button config-button-primary"
+                            >
+                                <i class="far fa-save" aria-hidden="true"></i>
+                                Salvar preferências
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </article>
+
+                {% if simulacao %}
+                <!-- ==================================================
+                     PAINEL: SIMULAR USUÁRIO (somente superusuário)
+
+                     Cada linha posta para hijack:acquire com o user_pk do
+                     colaborador. O django-hijack revalida a permissão no
+                     servidor (superusers_only), então o botão daqui não é a
+                     única barreira — é só o atalho para não precisar abrir o
+                     /admin só para personificar alguém.
+                =================================================== -->
+                <article class="config-panel config-panel-simulation">
+
+                    <div class="config-panel-header">
+
+                        <div>
+                            <span class="config-panel-eyebrow">
+                                Administração
+                            </span>
+
+                            <h2>Simular usuário</h2>
+
+                            <p>
+                                Acesse o sistema como outro colaborador para conferir o que ele enxerga.
+                            </p>
+                        </div>
+
+                        <span class="config-panel-badge">
+                            <i class="fas fa-user-shield" aria-hidden="true"></i>
+                            Somente superusuário
+                        </span>
+
+                    </div>
+
+                    <div class="config-form-section">
+
+                        <div class="config-form-section-title">
+
+                            <strong>Escolha o colaborador</strong>
+
+                            <span>
+                                A simulação começa na home do Workspace. Para voltar à sua conta,
+                                use o aviso que aparece no rodapé da tela.
+                            </span>
+
+                        </div>
+
+                        <form
+                            method="get"
+                            action="{% url 'configuracao' %}"
+                            class="config-simulation-search"
+                        >
+
+                            <div class="config-input-container">
+
+                                <i
+                                    class="fas fa-search config-input-icon"
+                                    aria-hidden="true"
+                                ></i>
+
+                                <input
+                                    type="search"
+                                    name="simular"
+                                    value="{{ simulacao.busca }}"
+                                    placeholder="Buscar por nome, login ou e-mail"
+                                    aria-label="Buscar colaborador para simular"
+                                >
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="config-button config-button-secondary"
+                            >
+                                Buscar
+                            </button>
+
+                            {% if simulacao.busca %}
+                            <a
+                                href="{% url 'configuracao' %}?simular="
+                                class="config-button config-button-secondary"
+                            >
+                                Limpar
+                            </a>
+                            {% endif %}
+
+                        </form>
+
+                        <ul class="config-simulation-list">
+
+                            {% for pessoa in simulacao.usuarios %}
+                            <li class="config-simulation-item">
+
+                                <span class="config-simulation-avatar" aria-hidden="true">
+                                    {{ pessoa.username|slice:":2"|upper }}
+                                </span>
+
+                                <span class="config-simulation-info">
+
+                                    <strong>
+                                        {{ pessoa.nome|default:pessoa.get_full_name|default:pessoa.username }}
+                                    </strong>
+
+                                    <small>
+                                        {{ pessoa.username }}
+                                        {% if pessoa.email %}• {{ pessoa.email }}{% endif %}
+                                    </small>
+
+                                    <small>
+                                        {{ pessoa.get_role_display }}
+                                        {% if pessoa.cliente %}• {{ pessoa.cliente.nome }}{% endif %}
+                                    </small>
+
+                                </span>
+
+                                <form
+                                    method="post"
+                                    action="{% url 'hijack:acquire' %}"
+                                    class="config-simulation-action"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="user_pk"
+                                        value="{{ pessoa.pk }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="next"
+                                        value="{% url 'home' %}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="config-button config-button-primary"
+                                    >
+                                        <i class="fas fa-user-secret" aria-hidden="true"></i>
+                                        Personificar
+                                    </button>
+
+                                </form>
+
+                            </li>
+                            {% empty %}
+                            <li class="config-simulation-empty">
+                                {% if simulacao.busca %}
+                                    Nenhum colaborador encontrado para "{{ simulacao.busca }}".
+                                {% else %}
+                                    Nenhum colaborador disponível para simulação.
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+
+                        </ul>
+
+                        {% if simulacao.ocultos %}
+                        <div class="config-form-footer-message">
+
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+
+                            <span>
+                                Exibindo {{ simulacao.limite }} de {{ simulacao.total }} colaboradores.
+                                Use a busca para encontrar os outros {{ simulacao.ocultos }}.
+                            </span>
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+                {% endif %}
+
+            </section>
+
+            <!-- ======================================================
+                 CARD FIXO DA SESSÃO ATUAL
+            ======================================================= -->
+            <aside class="config-session-aside">
+
+                <div class="config-session-card">
+
+                    <div class="config-session-card-header">
+
+                        <div>
+                            <span class="config-panel-eyebrow">
+                                Dispositivo conectado
+                            </span>
+
+                            <h3>Sessão atual</h3>
+                        </div>
+
+                        <span class="config-session-online">
+                            <span></span>
+                            Online
+                        </span>
+
+                    </div>
+
+                    <div class="config-session-main-icon">
+                        <i class="fas fa-desktop" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="config-session-main-title">
+
+                        <strong>
+                            {{ sessao_atual.navegador|default:"Navegador atual" }}
+                        </strong>
+
+                        <span>
+                            {{ sessao_atual.sistema_operacional|default:"Sistema não identificado" }}
+                        </span>
+
+                    </div>
+
+                    <div class="config-session-details">
+
+                        <div class="config-session-detail">
+
+                            <span class="config-session-detail-icon">
+                                <i
+                                    class="fas fa-network-wired"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+
+                            <div>
+                                <small>Endereço IP</small>
+
+                                <strong>
+                                    {{ sessao_atual.ip|default:request.META.REMOTE_ADDR }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="config-session-detail">
+
+                            <span class="config-session-detail-icon">
+                                <i
+                                    class="far fa-calendar-alt"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+
+                            <div>
+                                <small>Último login</small>
+
+                                <strong>
+                                    {{ request.user.last_login|date:"d/m/Y H:i" }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="config-session-detail">
+
+                            <span class="config-session-detail-icon">
+                                <i
+                                    class="fas fa-map-marker-alt"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+
+                            <div>
+                                <small>Localização aproximada</small>
+
+                                <strong>
+                                    {{ sessao_atual.localizacao|default:"Não identificada" }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="config-session-detail">
+
+                            <span class="config-session-detail-icon">
+                                <i
+                                    class="fas fa-user-shield"
+                                    aria-hidden="true"
+                                ></i>
+                            </span>
+
+                            <div>
+                                <small>Status de segurança</small>
+                                <strong class="config-secure-text">Protegida</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="config-security-tip">
+
+                    <div class="config-security-tip-icon">
+                        <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                    </div>
+
+                    <div>
+                        <strong>Dica de segurança</strong>
+
+                        <span>
+                            Nunca compartilhe sua senha ou código de acesso.
+                        </span>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var themeInputs = document.querySelectorAll(
+                '.config-theme-option input[name="tema"]'
+            );
+            var themeColor = document.getElementById("taskflow-theme-color");
+            var notificationSoundInput = document.getElementById(
+                "configSystemNotifications"
+            );
+            var NOTIFICATION_SOUND_STORAGE_KEY =
+                "taskflow-notification-sound";
+
+            /*
+             * O som começa ativo quando ainda não existe uma preferência.
+             * O valor "false" é preservado quando o usuário o desativa.
+             */
+            if (
+                localStorage.getItem(
+                    NOTIFICATION_SOUND_STORAGE_KEY
+                ) === null
+            ) {
+                localStorage.setItem(
+                    NOTIFICATION_SOUND_STORAGE_KEY,
+                    "true"
+                );
+            }
+
+            function getNotificationSoundPreference() {
+                return localStorage.getItem(
+                    NOTIFICATION_SOUND_STORAGE_KEY
+                ) !== "false";
+            }
+
+            function syncNotificationSoundPreference() {
+                if (!notificationSoundInput) return;
+
+                notificationSoundInput.checked =
+                    getNotificationSoundPreference();
+            }
+
+            function applyNotificationSoundPreference(enabled) {
+                localStorage.setItem(
+                    NOTIFICATION_SOUND_STORAGE_KEY,
+                    String(Boolean(enabled))
+                );
+
+                /*
+                 * O _notificacao.html recebe este evento imediatamente.
+                 * Ao ativar, o clique também libera e testa o áudio.
+                 */
+                document.dispatchEvent(
+                    new CustomEvent(
+                        "taskflow:notification-sound-change",
+                        {
+                            detail: {
+                                enabled: Boolean(enabled),
+                                testar: Boolean(enabled)
+                            }
+                        }
+                    )
+                );
+
+                syncNotificationSoundPreference();
+            }
+
+            function getThemePreference() {
+                var currentTheme =
+                    document.documentElement.getAttribute("data-theme") ||
+                    localStorage.getItem("taskflow-theme") ||
+                    "light";
+
+                return currentTheme === "dark" ? "auto" : "light";
+            }
+
+            function syncThemeCards() {
+                var preference = getThemePreference();
+
+                themeInputs.forEach(function (input) {
+                    input.checked = input.value === preference;
+                });
+            }
+
+            function updateLegacyThemeButton(theme) {
+                var themeButton = document.getElementById("theme-toggle");
+                var themeLabel = document.getElementById("theme-toggle-label");
+                var themeIcon = document.getElementById("theme-toggle-icon");
+                var isDark = theme === "dark";
+
+                if (themeButton) {
+                    themeButton.setAttribute("aria-pressed", String(isDark));
+                    themeButton.setAttribute(
+                        "aria-label",
+                        isDark ? "Ativar modo claro" : "Ativar modo escuro"
+                    );
+                }
+
+                if (themeLabel) {
+                    themeLabel.textContent = isDark
+                        ? "Modo claro"
+                        : "Modo escuro";
+                }
+
+                if (themeIcon) {
+                    themeIcon.className = isDark
+                        ? "fa fa-sun-o"
+                        : "fa fa-moon-o";
+                }
+            }
+
+            function applyThemePreference(preference) {
+                /*
+                 * O tema global atual do Taskflow possui dois estados:
+                 * light = claro
+                 * dark  = azul-escuro institucional.
+                 *
+                 * Na tela, o modo dark global é apresentado como Automático.
+                 */
+                var theme = preference === "auto" ? "dark" : "light";
+
+                if (
+                    window.TaskflowTheme &&
+                    typeof window.TaskflowTheme.set === "function"
+                ) {
+                    window.TaskflowTheme.set(theme);
+                } else {
+                    document.documentElement.setAttribute(
+                        "data-theme",
+                        theme
+                    );
+                    document.documentElement.style.colorScheme = theme;
+                    localStorage.setItem("taskflow-theme", theme);
+                    localStorage.setItem("theme", theme);
+                    localStorage.setItem(
+                        "adminTheme",
+                        JSON.stringify(theme)
+                    );
+                }
+
+                if (themeColor) {
+                    themeColor.setAttribute(
+                        "content",
+                        theme === "dark" ? "#080F22" : "#101C44"
+                    );
+                }
+
+                updateLegacyThemeButton(theme);
+                syncThemeCards();
+            }
+
+            themeInputs.forEach(function (input) {
+                input.addEventListener("change", function () {
+                    if (input.checked) {
+                        applyThemePreference(input.value);
+                    }
+                });
+            });
+
+            notificationSoundInput?.addEventListener(
+                "change",
+                function () {
+                    applyNotificationSoundPreference(
+                        notificationSoundInput.checked
+                    );
+                }
+            );
+
+            document.addEventListener(
+                "taskflow:themechange",
+                syncThemeCards
+            );
+
+            window.addEventListener("storage", function (event) {
+                if (
+                    event.key === "taskflow-theme" ||
+                    event.key === "theme" ||
+                    event.key === "adminTheme"
+                ) {
+                    syncThemeCards();
+                }
+
+                if (
+                    event.key === NOTIFICATION_SOUND_STORAGE_KEY
+                ) {
+                    syncNotificationSoundPreference();
+                }
+            });
+
+            syncThemeCards();
+            syncNotificationSoundPreference();
+        });
+    </script>
+
+</body>
+
+</html>

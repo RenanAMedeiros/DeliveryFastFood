@@ -1,0 +1,699 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {% include "components/_head.html" %}
+    <title>Simulador de liberações | Workspace Qore</title>
+    <link rel="stylesheet" href="{% static 'css/simulador_liberacoes.css' %}?v=1.1.0">
+</head>
+
+<body class="access-simulator-page">
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="access-page">
+        <div class="access-shell">
+            <header class="qore-page-header">
+                <div class="qore-page-header-main">
+                    <div class="qore-page-header-copy">
+                        <span class="qore-page-eyebrow">
+                            Administração de acessos
+                        </span>
+                        <h1>Simulador de liberações</h1>
+                        <p>
+                            Consulte exatamente quais dashboards e ações de solicitação
+                            estão disponíveis para um colaborador, sem alterar o cadastro.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="qore-page-header-badge">
+                    <span class="qore-page-header-badge-icon" aria-hidden="true">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </span>
+                    <div>
+                        <strong>Somente leitura</strong>
+                        <small>Modo de consulta</small>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="access-view-switch" aria-label="Tipo de visão do simulador">
+                <a
+                    href="{% url 'simulador_liberacoes' %}?visao=micro"
+                    class="access-view-switch__item{% if not visao_macro %} access-view-switch__item--active{% endif %}"
+                    {% if not visao_macro %}aria-current="page"{% endif %}>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    <span>
+                        <strong>Por colaborador</strong>
+                        <small>Consulta individual e detalhada</small>
+                    </span>
+                </a>
+                <a
+                    href="{% url 'simulador_liberacoes' %}?visao=macro"
+                    class="access-view-switch__item{% if visao_macro %} access-view-switch__item--active{% endif %}"
+                    {% if visao_macro %}aria-current="page"{% endif %}>
+                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                    <span>
+                        <strong>Visão geral</strong>
+                        <small>Perfis, dashboards e BIs</small>
+                    </span>
+                </a>
+            </nav>
+
+            {% if visao_macro %}
+                <section class="macro-kpi-grid" aria-label="Indicadores gerais de acesso">
+                    <article class="macro-kpi macro-kpi--blue">
+                        <span class="macro-kpi__icon"><i class="fa fa-users"></i></span>
+                        <span>
+                            <small>Colaboradores</small>
+                            <strong>{{ macro.metricas.usuarios }}</strong>
+                            <em>{{ macro.metricas.usuarios_ativos }} contas ativas</em>
+                        </span>
+                    </article>
+                    <article class="macro-kpi macro-kpi--green">
+                        <span class="macro-kpi__icon"><i class="fa fa-dashboard"></i></span>
+                        <span>
+                            <small>Com algum dashboard</small>
+                            <strong>{{ macro.metricas.usuarios_com_dashboard }}</strong>
+                            <em>possuem categoria liberada</em>
+                        </span>
+                    </article>
+                    <article class="macro-kpi macro-kpi--yellow">
+                        <span class="macro-kpi__icon"><i class="fa fa-tasks"></i></span>
+                        <span>
+                            <small>Com solicitações</small>
+                            <strong>{{ macro.metricas.usuarios_solicitacoes }}</strong>
+                            <em>{{ macro.metricas.usuarios_importacoes }} com importações</em>
+                        </span>
+                    </article>
+                    <article class="macro-kpi macro-kpi--purple">
+                        <span class="macro-kpi__icon"><i class="fa fa-link"></i></span>
+                        <span>
+                            <small>BIs / carteiras</small>
+                            <strong>{{ macro.metricas.empresas }}</strong>
+                            <em>{{ macro.metricas.empresas_com_link }} com link configurado</em>
+                        </span>
+                    </article>
+                </section>
+
+                <section class="access-results" aria-labelledby="macroRolesTitle">
+                    <header class="access-results__header">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--blue">
+                                <i class="fa fa-id-badge" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="macroRolesTitle">Liberações por perfil</h2>
+                                <p>Comparativo de cobertura por role, módulos e quantidade de BIs vinculados.</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="macro-table-wrap">
+                        <table class="macro-table">
+                            <thead>
+                                <tr>
+                                    <th>Perfil</th>
+                                    <th>Colaboradores</th>
+                                    <th>Ativos</th>
+                                    <th>Com dashboard</th>
+                                    <th>Solicitações</th>
+                                    <th>Importações</th>
+                                    <th>Categorias</th>
+                                    <th>BIs vinculados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for role in macro.roles %}
+                                    <tr>
+                                        <td>
+                                            <span class="macro-role-name">
+                                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                <span><strong>{{ role.rotulo }}</strong><small>{{ role.role }}</small></span>
+                                            </span>
+                                        </td>
+                                        <td><strong>{{ role.total }}</strong></td>
+                                        <td>{{ role.ativos }}</td>
+                                        <td>
+                                            <span class="macro-coverage">
+                                                <span><i style="width: {{ role.cobertura_dashboard }}%"></i></span>
+                                                <small>{{ role.com_dashboard }} · {{ role.cobertura_dashboard }}%</small>
+                                            </span>
+                                        </td>
+                                        <td>{{ role.solicitacoes }}</td>
+                                        <td>{{ role.importacoes }}</td>
+                                        <td>{{ role.total_categorias }}</td>
+                                        <td>
+                                            <strong>{{ role.total_empresas }}</strong>
+                                            <small class="macro-cell-note">{{ role.total_links }} com link</small>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="8" class="macro-table-empty">Nenhum perfil encontrado.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="access-results" aria-labelledby="macroDashboardTitle">
+                    <header class="access-results__header">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--yellow">
+                                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="macroDashboardTitle">Cobertura por dashboard</h2>
+                                <p>Quantidade de colaboradores, vínculos e links configurados em cada categoria.</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="macro-dashboard-grid">
+                        {% for dashboard in macro.dashboards %}
+                            <article class="macro-dashboard-card" data-category-shortcut="{{ dashboard.categoria }}">
+                                <header>
+                                    <span class="macro-dashboard-card__icon">
+                                        <i class="fa {{ dashboard.icone }}" aria-hidden="true"></i>
+                                    </span>
+                                    <span>
+                                        <small>{{ dashboard.grupo }}</small>
+                                        <strong>{{ dashboard.titulo }}</strong>
+                                    </span>
+                                    <b>{{ dashboard.cobertura }}%</b>
+                                </header>
+                                <div class="macro-dashboard-card__bar">
+                                    <i style="width: {{ dashboard.cobertura }}%"></i>
+                                </div>
+                                <dl>
+                                    <div><dt>Colaboradores</dt><dd>{{ dashboard.total_usuarios }}</dd></div>
+                                    <div><dt>Ativos</dt><dd>{{ dashboard.usuarios_ativos }}</dd></div>
+                                    <div><dt>BIs/carteiras</dt><dd>{{ dashboard.total_empresas }}</dd></div>
+                                    <div><dt>Com link</dt><dd>{{ dashboard.total_links }}</dd></div>
+                                    <div><dt>Vínculos</dt><dd>{{ dashboard.vinculos }}</dd></div>
+                                </dl>
+                                <button type="button" class="macro-dashboard-filter" data-filter-category="{{ dashboard.categoria }}">
+                                    Ver BIs desta categoria
+                                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                </button>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="access-results macro-inventory" id="macroBiInventory" aria-labelledby="macroBiTitle">
+                    <header class="access-results__header">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--blue">
+                                <i class="fa fa-database" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="macroBiTitle">Listagem unitária de BI por carteira</h2>
+                                <p>Audite cada empresa/BI, sua categoria, o link e todos os colaboradores vinculados.</p>
+                            </div>
+                        </div>
+                        <span class="macro-result-count" id="macroResultCount">
+                            {{ macro.empresas|length }} registro{{ macro.empresas|length|pluralize }}
+                        </span>
+                    </header>
+
+                    <div class="macro-filters">
+                        <label class="macro-filter macro-filter--search">
+                            <span>Pesquisar BI ou colaborador</span>
+                            <span class="access-input-wrap">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                <input type="search" id="macroBiSearch" placeholder="Nome, razão social, usuário ou cliente..." autocomplete="off">
+                            </span>
+                        </label>
+                        <label class="macro-filter">
+                            <span>Perfil vinculado</span>
+                            <select id="macroRoleFilter">
+                                <option value="">Todos os perfis</option>
+                                {% for role in macro.roles_filtro %}
+                                    <option value="{{ role.valor }}">{{ role.rotulo }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="macro-filter">
+                            <span>Categoria</span>
+                            <select id="macroCategoryFilter">
+                                <option value="">Todas as categorias</option>
+                                {% for dashboard in macro.dashboards %}
+                                    <option value="{{ dashboard.categoria }}">{{ dashboard.titulo }}</option>
+                                {% endfor %}
+                                <option value="__invalid__">Sem categoria / inválida</option>
+                            </select>
+                        </label>
+                        <label class="macro-filter">
+                            <span>Liberação</span>
+                            <select id="macroAssignmentFilter">
+                                <option value="">Todos os vínculos</option>
+                                <option value="assigned">Com colaboradores</option>
+                                <option value="unassigned">Sem colaboradores</option>
+                            </select>
+                        </label>
+                        <label class="macro-filter">
+                            <span>Link do BI</span>
+                            <select id="macroLinkFilter">
+                                <option value="">Todos</option>
+                                <option value="linked">Link configurado</option>
+                                <option value="unlinked">Sem link</option>
+                            </select>
+                        </label>
+                        <button type="button" class="macro-clear-filters" id="macroClearFilters">
+                            <i class="fa fa-eraser" aria-hidden="true"></i>
+                            Limpar filtros
+                        </button>
+                    </div>
+
+                    <div class="macro-bi-list" id="macroBiList">
+                        {% for empresa_bi in macro.empresas %}
+                            <details
+                                class="macro-bi-card"
+                                data-search="{{ empresa_bi.nome }} {{ empresa_bi.razao_social }} {{ empresa_bi.cliente }} {% for usuario_bi in empresa_bi.usuarios %}{{ usuario_bi.nome }} {{ usuario_bi.username }} {% endfor %}"
+                                data-roles="{{ empresa_bi.roles_filtro }}"
+                                data-category="{% if empresa_bi.categoria_valida %}{{ empresa_bi.categoria }}{% else %}__invalid__{% endif %}"
+                                data-assignment="{% if empresa_bi.usuarios %}assigned{% else %}unassigned{% endif %}"
+                                data-link="{% if empresa_bi.link_bi %}linked{% else %}unlinked{% endif %}">
+                                <summary>
+                                    <span class="macro-bi-card__icon">
+                                        <i class="fa fa-building-o" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="macro-bi-card__identity">
+                                        <small>{{ empresa_bi.cliente|default:"Cliente não vinculado" }}</small>
+                                        <strong>{{ empresa_bi.nome }}</strong>
+                                        <em>{{ empresa_bi.razao_social|default:"Razão social não informada" }}</em>
+                                    </span>
+                                    <span class="macro-bi-card__category macro-bi-card__category--{% if empresa_bi.categoria_valida %}valid{% else %}invalid{% endif %}">
+                                        {{ empresa_bi.categoria_titulo }}
+                                    </span>
+                                    <span class="macro-bi-card__metric">
+                                        <strong>{{ empresa_bi.total_usuarios }}</strong>
+                                        <small>colaborador{% if empresa_bi.total_usuarios != 1 %}es{% endif %}</small>
+                                    </span>
+                                    <span class="macro-bi-card__link macro-bi-card__link--{% if empresa_bi.link_bi %}yes{% else %}no{% endif %}">
+                                        <i class="fa {% if empresa_bi.link_bi %}fa-link{% else %}fa-unlink{% endif %}" aria-hidden="true"></i>
+                                        {% if empresa_bi.link_bi %}Com link{% else %}Sem link{% endif %}
+                                    </span>
+                                    <i class="fa fa-angle-down macro-bi-card__chevron" aria-hidden="true"></i>
+                                </summary>
+
+                                <div class="macro-bi-card__details">
+                                    <div class="macro-bi-card__rule">
+                                        <span>
+                                            <small>Categoria técnica</small>
+                                            <code>{{ empresa_bi.categoria|default:"não informada" }}</code>
+                                        </span>
+                                        {% if empresa_bi.link_bi %}
+                                            <a href="{{ empresa_bi.link_bi }}" target="_blank" rel="noopener noreferrer">
+                                                Abrir BI <i class="fa fa-external-link"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if empresa_bi.usuarios %}
+                                        <div class="macro-user-grid">
+                                            {% for usuario_bi in empresa_bi.usuarios %}
+                                                <a href="{% url 'simulador_liberacoes' %}?visao=micro&amp;colaborador={{ usuario_bi.id }}" class="macro-user-card">
+                                                    <span class="macro-user-card__avatar">{{ usuario_bi.nome|slice:":2"|upper }}</span>
+                                                    <span>
+                                                        <strong>{{ usuario_bi.nome }}</strong>
+                                                        <small>{{ usuario_bi.username }} · {{ usuario_bi.role_label }}</small>
+                                                    </span>
+                                                    <span class="macro-user-card__flags">
+                                                        {% if not usuario_bi.ativo %}<i class="fa fa-ban" title="Conta inativa"></i>{% endif %}
+                                                        {% if usuario_bi.solicitacoes %}<i class="fa fa-tasks" title="Solicitações liberadas"></i>{% endif %}
+                                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="macro-bi-empty">
+                                            <i class="fa fa-user-times" aria-hidden="true"></i>
+                                            <span><strong>Nenhum colaborador vinculado</strong><small>Este BI está cadastrado, mas não libera acesso para ninguém no escopo consultado.</small></span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </details>
+                        {% empty %}
+                            <div class="macro-bi-empty">
+                                <i class="fa fa-database" aria-hidden="true"></i>
+                                <span><strong>Nenhum BI cadastrado</strong><small>Não existem empresas/carteiras disponíveis neste escopo.</small></span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="macro-no-results" id="macroNoResults" hidden>
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <strong>Nenhum BI corresponde aos filtros</strong>
+                        <small>Altere ou limpe os filtros para visualizar os registros.</small>
+                    </div>
+                </section>
+            {% else %}
+            <section class="access-selector" aria-labelledby="selectorTitle">
+                <div class="access-section-heading">
+                    <span class="access-section-heading__icon">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                    </span>
+                    <div>
+                        <h2 id="selectorTitle">Selecione o colaborador</h2>
+                        <p>Pesquise por nome, usuário, e-mail ou cliente.</p>
+                    </div>
+                </div>
+
+                <form method="get" class="access-selector__form" id="accessSimulatorForm">
+                    <input type="hidden" name="visao" value="micro">
+                    <label class="access-search" for="collaboratorSearch">
+                        <span>Pesquisar</span>
+                        <span class="access-input-wrap">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            <input
+                                type="search"
+                                id="collaboratorSearch"
+                                placeholder="Digite para filtrar os colaboradores..."
+                                autocomplete="off"
+                            >
+                        </span>
+                    </label>
+
+                    <label class="access-select" for="collaboratorSelect">
+                        <span>Colaborador</span>
+                        <span class="access-input-wrap">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <select name="colaborador" id="collaboratorSelect" required>
+                                <option value="">Selecione um colaborador...</option>
+                                {% for usuario_simulado in colaboradores %}
+                                    <option
+                                        value="{{ usuario_simulado.pk }}"
+                                        data-search="{{ usuario_simulado.nome }} {{ usuario_simulado.get_full_name }} {{ usuario_simulado.username }} {{ usuario_simulado.email }} {{ usuario_simulado.cliente.nome }}"
+                                        {% if colaborador and usuario_simulado.pk == colaborador.pk %}selected{% endif %}
+                                    >
+                                        {% if usuario_simulado.nome %}
+                                            {{ usuario_simulado.nome }}
+                                        {% elif usuario_simulado.get_full_name %}
+                                            {{ usuario_simulado.get_full_name }}
+                                        {% else %}
+                                            {{ usuario_simulado.username }}
+                                        {% endif %}
+                                        — {{ usuario_simulado.username }}
+                                        {% if usuario_simulado.cliente %} · {{ usuario_simulado.cliente.nome }}{% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <i class="fa fa-angle-down access-select-chevron" aria-hidden="true"></i>
+                        </span>
+                    </label>
+
+                    <button type="submit" class="access-primary-button">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        Simular liberações
+                    </button>
+                </form>
+
+                <p class="access-filter-feedback" id="filterFeedback" aria-live="polite"></p>
+            </section>
+
+            {% if colaborador %}
+                <section class="access-profile" aria-label="Colaborador simulado">
+                    <span class="access-profile__avatar" aria-hidden="true">
+                        {% if colaborador.first_name or colaborador.last_name %}
+                            {{ colaborador.first_name|slice:":1"|upper }}{{ colaborador.last_name|slice:":1"|upper }}
+                        {% else %}
+                            {{ colaborador.username|slice:":2"|upper }}
+                        {% endif %}
+                    </span>
+
+                    <div class="access-profile__identity">
+                        <small>Simulação atual</small>
+                        <h2>
+                            {% if colaborador.nome %}
+                                {{ colaborador.nome }}
+                            {% elif colaborador.get_full_name %}
+                                {{ colaborador.get_full_name }}
+                            {% else %}
+                                {{ colaborador.username }}
+                            {% endif %}
+                        </h2>
+                        <p>
+                            <span><i class="fa fa-user-o"></i> {{ colaborador.username }}</span>
+                            <span><i class="fa fa-envelope-o"></i> {{ colaborador.email|default:"E-mail não informado" }}</span>
+                            <span><i class="fa fa-building-o"></i> {{ colaborador.cliente.nome|default:"Cliente não vinculado" }}</span>
+                        </p>
+                    </div>
+
+                    <div class="access-profile__status access-profile__status--{% if colaborador.is_active %}active{% else %}inactive{% endif %}">
+                        <i class="fa {% if colaborador.is_active %}fa-check-circle{% else %}fa-ban{% endif %}" aria-hidden="true"></i>
+                        <span>
+                            <small>Status da conta</small>
+                            <strong>{% if colaborador.is_active %}Ativa{% else %}Inativa{% endif %}</strong>
+                        </span>
+                    </div>
+                </section>
+
+                {% if not colaborador.is_active %}
+                    <div class="access-alert access-alert--warning" role="alert">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span>
+                            <strong>A conta está inativa.</strong>
+                            As liberações abaixo permanecem cadastradas, mas o colaborador não consegue entrar no Workspace.
+                        </span>
+                    </div>
+                {% endif %}
+
+                <section class="access-summary-grid" aria-label="Resumo das liberações">
+                    <article class="access-summary-card access-summary-card--blue">
+                        <span class="access-summary-card__icon">
+                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                        </span>
+                        <span class="access-summary-card__copy">
+                            <small>Dashboards liberados</small>
+                            <strong>{{ total_liberados }} <span>de {{ total_dashboards }}</span></strong>
+                            <em>categorias disponíveis na navbar</em>
+                        </span>
+                    </article>
+
+                    <article class="access-summary-card access-summary-card--{% if colaborador.acesso_solicitacoes %}green{% else %}red{% endif %}">
+                        <span class="access-summary-card__icon">
+                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                        </span>
+                        <span class="access-summary-card__copy">
+                            <small>Tarefas e solicitações</small>
+                            <strong>{% if colaborador.acesso_solicitacoes %}Liberado{% else %}Bloqueado{% endif %}</strong>
+                            <em>Abrir solicitação e Meus Envios</em>
+                        </span>
+                    </article>
+
+                    <article class="access-summary-card access-summary-card--neutral">
+                        <span class="access-summary-card__icon">
+                            <i class="fa fa-id-badge" aria-hidden="true"></i>
+                        </span>
+                        <span class="access-summary-card__copy">
+                            <small>Perfil do colaborador</small>
+                            <strong>{{ colaborador.get_role_display }}</strong>
+                            <em>{{ colaborador.empresa|default:"Empresa não informada" }}</em>
+                        </span>
+                    </article>
+                </section>
+
+                <section class="access-results" aria-labelledby="dashboardAccessTitle">
+                    <header class="access-results__header">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--blue">
+                                <i class="fa fa-dashboard" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="dashboardAccessTitle">Liberações de dashboards</h2>
+                                <p>Cada categoria é liberada por pelo menos uma empresa vinculada ao colaborador.</p>
+                            </div>
+                        </div>
+
+                        <button type="button" class="access-secondary-button" id="toggleDashboardDetails" aria-pressed="false">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            <span>Expandir detalhes</span>
+                        </button>
+                    </header>
+
+                    <div class="access-dashboard-grid">
+                        {% for dashboard in dashboards %}
+                            <details class="access-dashboard-card access-dashboard-card--{% if dashboard.liberado %}allowed{% else %}blocked{% endif %}">
+                                <summary>
+                                    <span class="access-dashboard-card__icon">
+                                        <i class="fa {{ dashboard.icone }}" aria-hidden="true"></i>
+                                    </span>
+
+                                    <span class="access-dashboard-card__heading">
+                                        <small>{{ dashboard.grupo }}</small>
+                                        <strong>{{ dashboard.titulo }}</strong>
+                                        <em>{{ dashboard.descricao }}</em>
+                                    </span>
+
+                                    <span class="access-status-pill">
+                                        <i class="fa {% if dashboard.liberado %}fa-unlock-alt{% else %}fa-lock{% endif %}" aria-hidden="true"></i>
+                                        {% if dashboard.liberado %}Liberado{% else %}Bloqueado{% endif %}
+                                    </span>
+
+                                    <i class="fa fa-angle-down access-dashboard-card__chevron" aria-hidden="true"></i>
+                                </summary>
+
+                                <div class="access-dashboard-card__details">
+                                    {% if dashboard.empresas %}
+                                        <p class="access-calculation">
+                                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                            A categoria <code>{{ dashboard.categoria }}</code> foi encontrada em {{ dashboard.empresas|length }} vínculo{{ dashboard.empresas|length|pluralize }}.
+                                        </p>
+                                        <ul class="access-company-list">
+                                            {% for empresa_dashboard in dashboard.empresas %}
+                                                <li>
+                                                    <span class="access-company-list__icon">
+                                                        <i class="fa fa-building-o" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span>
+                                                        <strong>{{ empresa_dashboard.nome }}</strong>
+                                                        <small>
+                                                            {{ empresa_dashboard.razao_social|default:"Razão social não informada" }}
+                                                            {% if empresa_dashboard.link_bi %} · Painel específico configurado{% endif %}
+                                                        </small>
+                                                    </span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="access-calculation access-calculation--blocked">
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            Nenhuma empresa vinculada usa a categoria <code>{{ dashboard.categoria }}</code>.
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </details>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="access-results" aria-labelledby="requestAccessTitle">
+                    <header class="access-results__header">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--yellow">
+                                <i class="fa fa-tasks" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="requestAccessTitle">Permissões para solicitações</h2>
+                                <p>Resultado efetivo da opção “Acesso a Tarefas e Solicitações” do cadastro.</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="access-action-grid">
+                        <article class="access-action-card access-action-card--{% if colaborador.acesso_solicitacoes %}allowed{% else %}blocked{% endif %}">
+                            <span class="access-action-card__icon"><i class="fa fa-plus"></i></span>
+                            <span>
+                                <small>Tarefas e Solicitações</small>
+                                <strong>Abrir solicitação</strong>
+                                <em>Acesso aos formulários de produção e envio de metas.</em>
+                            </span>
+                            <span class="access-status-pill">
+                                <i class="fa {% if colaborador.acesso_solicitacoes %}fa-unlock-alt{% else %}fa-lock{% endif %}"></i>
+                                {% if colaborador.acesso_solicitacoes %}Liberado{% else %}Bloqueado{% endif %}
+                            </span>
+                        </article>
+
+                        <article class="access-action-card access-action-card--{% if colaborador.acesso_solicitacoes %}allowed{% else %}blocked{% endif %}">
+                            <span class="access-action-card__icon"><i class="fa fa-history"></i></span>
+                            <span>
+                                <small>Tarefas e Solicitações</small>
+                                <strong>Meus Envios</strong>
+                                <em>Consulta das produções enviadas pelo colaborador.</em>
+                            </span>
+                            <span class="access-status-pill">
+                                <i class="fa {% if colaborador.acesso_solicitacoes %}fa-unlock-alt{% else %}fa-lock{% endif %}"></i>
+                                {% if colaborador.acesso_solicitacoes %}Liberado{% else %}Bloqueado{% endif %}
+                            </span>
+                        </article>
+                    </div>
+
+                    <div class="access-rule-explanation access-rule-explanation--{% if colaborador.acesso_solicitacoes %}allowed{% else %}blocked{% endif %}">
+                        <i class="fa fa-code" aria-hidden="true"></i>
+                        <span>
+                            <strong>Como o resultado foi calculado</strong>
+                            <small>
+                                <code>acesso_solicitacoes = {{ colaborador.acesso_solicitacoes|yesno:"True,False" }}</code>.
+                                A mesma permissão controla os dois itens da navbar e também protege as respectivas páginas.
+                            </small>
+                        </span>
+                    </div>
+                </section>
+
+                {% if categorias_desconhecidas or carteiras_sem_categoria %}
+                    <section class="access-diagnostics" aria-labelledby="diagnosticsTitle">
+                        <div class="access-section-heading">
+                            <span class="access-section-heading__icon access-section-heading__icon--warning">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <h2 id="diagnosticsTitle">Pontos de atenção no cadastro</h2>
+                                <p>Estes vínculos não geram uma opção funcional na navbar atual.</p>
+                            </div>
+                        </div>
+
+                        <div class="access-diagnostic-list">
+                            {% for diagnostico in categorias_desconhecidas %}
+                                <article>
+                                    <i class="fa fa-code-fork" aria-hidden="true"></i>
+                                    <span>
+                                        <strong>Categoria desconhecida: <code>{{ diagnostico.categoria }}</code></strong>
+                                        <small>
+                                            Empresas:
+                                            {% for empresa_dashboard in diagnostico.empresas %}
+                                                {{ empresa_dashboard.nome }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}.
+                                            O texto não corresponde a nenhuma categoria usada pela navbar.
+                                        </small>
+                                    </span>
+                                </article>
+                            {% endfor %}
+
+                            {% if carteiras_sem_categoria %}
+                                <article>
+                                    <i class="fa fa-tag" aria-hidden="true"></i>
+                                    <span>
+                                        <strong>{{ carteiras_sem_categoria|length }} vínculo{{ carteiras_sem_categoria|length|pluralize }} sem categoria de dashboard</strong>
+                                        <small>
+                                            {% for empresa_dashboard in carteiras_sem_categoria %}
+                                                {{ empresa_dashboard.nome }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}.
+                                        </small>
+                                    </span>
+                                </article>
+                            {% endif %}
+                        </div>
+                    </section>
+                {% endif %}
+            {% else %}
+                <section class="access-empty-state">
+                    <span class="access-empty-state__illustration">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </span>
+                    <h2>Nenhum colaborador selecionado</h2>
+                    <p>
+                        Use os campos acima para escolher um colaborador. O simulador mostrará
+                        os acessos liberados, bloqueados e possíveis inconsistências do cadastro.
+                    </p>
+                    <div class="access-empty-state__steps">
+                        <span><strong>1</strong> Pesquise o colaborador</span>
+                        <i class="fa fa-angle-right"></i>
+                        <span><strong>2</strong> Execute a simulação</span>
+                        <i class="fa fa-angle-right"></i>
+                        <span><strong>3</strong> Confira as liberações</span>
+                    </div>
+                </section>
+            {% endif %}
+            {% endif %}
+        </div>
+    </main>
+
+    {% include "components/_footer.html" %}
+    <script src="{% static 'js/simulador_liberacoes.js' %}?v=1.1.0"></script>
+</body>
+</html>

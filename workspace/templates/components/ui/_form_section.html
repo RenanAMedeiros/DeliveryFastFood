@@ -1,0 +1,54 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Form Section
+Arquivo: components/ui/_form_section.html
+
+Objetivo:
+Agrupar campos relacionados em uma seção visual opcional.
+
+Parâmetros:
+- form_section_title          opcional
+- form_section_description    opcional
+- form_section_content        conteúdo HTML já renderizado
+- form_section_dom_id         opcional
+- form_section_extra_class    opcional
+- form_section_divider        opcional (True/False)
+
+Uso:
+{% include "components/ui/_form_section.html" with
+    form_section_title="Dados principais"
+    form_section_description="Preencha as informações obrigatórias."
+    form_section_content=campos_html
+%}
+===============================================================================
+{% endcomment %}
+
+<section
+    {% if form_section_dom_id %}id="{{ form_section_dom_id }}"{% endif %}
+    class="ws-form-section{% if form_section_divider %} ws-form-section--divider{% endif %}{% if form_section_extra_class %} {{ form_section_extra_class }}{% endif %}"
+>
+
+    {% if form_section_title or form_section_description %}
+        <header class="ws-form-section__header">
+
+            {% if form_section_title %}
+                <h3 class="ws-form-section__title">
+                    {{ form_section_title }}
+                </h3>
+            {% endif %}
+
+            {% if form_section_description %}
+                <p class="ws-form-section__description">
+                    {{ form_section_description }}
+                </p>
+            {% endif %}
+
+        </header>
+    {% endif %}
+
+    <div class="ws-form-section__body">
+        {{ form_section_content|default:""|safe }}
+    </div>
+
+</section>

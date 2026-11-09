@@ -1,0 +1,1251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+{% include "components/_head.html" %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/style_detalhe_envio_producao.css' %}?v=2.5.0"
+>
+
+<style>
+    /*
+     * Workspace UI Core — grid auxiliar do detalhe.
+     * Mantém múltiplas colunas enquanto houver espaço real.
+     */
+    .qore-production-detail-page .qore-grid-4 {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(210px, 100%),
+                    1fr
+                )
+            );
+        gap: clamp(12px, 0.85vw, 16px);
+    }
+
+    .qore-production-detail-page .qore-grid-4 + .qore-grid-3,
+    .qore-production-detail-page .qore-grid-3 + .qore-grid-4 {
+        margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+        .qore-production-detail-page .qore-grid-4 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<body
+    class="qore-production-page
+           qore-production-detail-page
+           ws-app
+           {% if modo_embed %}qore-detail-embed{% endif %}">
+
+    {% if not modo_embed %}
+        {% include "components/navbar/_navbar.html" %}
+    {% endif %}
+
+    <main class="qore-production-main ws-main">
+        <div class="qore-production-shell ws-page">
+
+            <div class="qore-form-layout">
+
+                <section
+                    class="qore-form-card ws-panel"
+                    aria-label="Formulário de produção enviado">
+
+                    <header class="qore-form-card-header">
+                        <div>
+                            <h2>Produção das carteiras</h2>
+                            <p>
+                                Registro já enviado. Informações exibidas
+                                somente para consulta.
+                            </p>
+                        </div>
+
+                        <div
+                            class="qore-form-progress"
+                            aria-label="Status da consulta">
+
+                            <div
+                                class="qore-progress-dots"
+                                aria-hidden="true">
+
+                                <span
+                                    class="qore-progress-dot is-complete">
+                                    <i class="fa fa-check"></i>
+                                </span>
+
+                                <span
+                                    class="qore-progress-dot is-complete">
+                                    <i class="fa fa-check"></i>
+                                </span>
+
+                                <span
+                                    class="qore-progress-dot is-complete">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                            </div>
+
+                            <span
+                                class="qore-progress-text is-complete">
+                                Envio concluído
+                            </span>
+                        </div>
+                    </header>
+
+
+                    <div class="qore-form-body">
+
+                        <div class="qore-consultation-note">
+                            <i
+                                class="fa fa-lock"
+                                aria-hidden="true"></i>
+
+                            <div>
+                                <strong>Modo consulta</strong>
+                                <span>
+                                    Este formulário representa os valores
+                                    atualmente salvos para esta data,
+                                    superintendente e carteiras.
+                                    Nenhuma informação pode ser alterada
+                                    nesta tela.
+                                </span>
+                            </div>
+                        </div>
+
+
+                        <section aria-labelledby="empresa-lote-title">
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">01</span>
+
+                                <div>
+                                    <h3 id="empresa-lote-title">
+                                        Superintendente, carteiras e data
+                                        única do lançamento
+                                    </h3>
+
+                                    <p>
+                                        Contexto utilizado no envio
+                                        selecionado.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-context-stack">
+                                <div
+                                    class="qore-company-panel
+                                           qore-superintendent-panel">
+
+                                    <div class="qore-company-field">
+                                        <label for="superintendentSelect">
+                                            <span>
+                                                Superintendente
+                                            </span>
+                                        </label>
+
+                                        <div
+                                            class="qore-company-control-wrap">
+
+                                            <i
+                                                class="fa fa-user-circle-o
+                                                       qore-company-icon"
+                                                aria-hidden="true">
+                                            </i>
+
+                                            <select
+                                                id="superintendentSelect"
+                                                class="qore-company-control"
+                                                disabled>
+
+                                                <option selected>
+                                                    {{ superintendente_nome }}
+                                                </option>
+                                            </select>
+
+                                            <i
+                                                class="fa fa-angle-down
+                                                       qore-company-select-arrow"
+                                                aria-hidden="true">
+                                            </i>
+                                        </div>
+
+                                        <div
+                                            class="qore-company-status
+                                                   is-success">
+                                            Superintendente do envio
+                                            selecionado.
+                                        </div>
+                                    </div>
+
+
+                                    <div class="qore-date-field">
+                                        <div
+                                            class="qore-inline-field-heading">
+
+                                            <label for="batchDateField">
+                                                <span>
+                                                    Data da produção
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div
+                                            class="qore-date-control-wrap">
+
+                                            <i
+                                                class="fa fa-calendar"
+                                                aria-hidden="true"></i>
+
+                                            <input
+                                                type="date"
+                                                id="batchDateField"
+                                                class="qore-date-control"
+                                                value="{{ data_producao|date:'Y-m-d' }}"
+                                                disabled>
+                                        </div>
+
+                                        <div
+                                            class="qore-date-status
+                                                   is-locked">
+                                            Data utilizada em todas
+                                            as carteiras deste envio.
+                                        </div>
+                                    </div>
+
+
+                                    <div class="qore-context-guidance">
+                                        <div
+                                            class="qore-context-guidance-item">
+
+                                            <span
+                                                class="qore-context-guidance-icon"
+                                                aria-hidden="true">
+                                                <i class="fa fa-sitemap"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>
+                                                    Seleção organizada
+                                                    por responsável
+                                                </strong>
+
+                                                <span>
+                                                    Este detalhe contém
+                                                    somente as carteiras
+                                                    vinculadas ao
+                                                    superintendente exibido.
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="qore-context-guidance-item">
+
+                                            <span
+                                                class="qore-context-guidance-icon"
+                                                aria-hidden="true">
+                                                <i
+                                                    class="fa fa-calendar-check-o">
+                                                </i>
+                                            </span>
+
+                                            <div>
+                                                <strong>
+                                                    Uma data por envio
+                                                </strong>
+
+                                                <span>
+                                                    Todas as linhas abaixo
+                                                    utilizam a mesma data
+                                                    de produção.
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <section
+                            class="qore-automatic-section"
+                            aria-labelledby="automatic-info-title">
+
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">02</span>
+
+                                <div>
+                                    <h3 id="automatic-info-title">
+                                        Informações automáticas
+                                    </h3>
+
+                                    <p>
+                                        Selecione uma carteira do envio
+                                        para consultar as informações
+                                        vinculadas a ela.
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="qore-auto-overview-selector">
+                                <div>
+                                    <label for="automaticWalletSelect">
+                                        Carteira para consulta
+                                    </label>
+
+                                    <div
+                                        class="qore-company-control-wrap">
+
+                                        <i
+                                            class="fa fa-briefcase
+                                                   qore-company-icon"
+                                            aria-hidden="true">
+                                        </i>
+
+                                        <select
+                                            id="automaticWalletSelect"
+                                            class="qore-company-control">
+
+                                            {% for row in detalhe_rows %}
+                                                <option
+                                                    value="{{ forloop.counter0 }}">
+                                                    {{ row.empresa_nome }} —
+                                                    {{ row.carteira_nome }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <i
+                                            class="fa fa-angle-down
+                                                   qore-company-select-arrow"
+                                            aria-hidden="true">
+                                        </i>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="qore-auto-overview-status"
+                                    id="automaticWalletStatus">
+
+                                    <strong>
+                                        {{ primeiro_row.empresa_nome }} —
+                                        {{ primeiro_row.carteira_nome }}
+                                    </strong>
+
+                                    Informações automáticas da carteira
+                                    selecionada.
+                                </div>
+                            </div>
+
+
+                            <div class="qore-grid-4">
+                                <div class="qore-field">
+                                    <label for="competenciaMetaField" class="qore-field-label">
+                                        <span>Competência</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-calendar qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="competenciaMetaField"
+                                            value="{{ primeiro_row.competencia_meta|default:'Não informada' }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="metaField" class="qore-field-label">
+                                        <span>Meta</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-bullseye qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="metaField"
+                                            value="{{ primeiro_row.meta }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="modalidadeField" class="qore-field-label">
+                                        <span>Modalidade</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-object-group qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="modalidadeField"
+                                            value="{{ primeiro_row.modalidade }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="ultimaAtualizacaoMetaField" class="qore-field-label">
+                                        <span>Última atualização</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-history qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="ultimaAtualizacaoMetaField"
+                                            value="{{ primeiro_row.ultima_atualizacao_meta|default:'Não informada' }}"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="qore-grid-3">
+                                <div class="qore-field">
+                                    <label for="tipoField" class="qore-field-label">
+                                        <span>Tipo</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-tags qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="tipoField"
+                                            value="{{ primeiro_row.tipo }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="producaoField" class="qore-field-label">
+                                        <span>Produção</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-cogs qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="producaoField"
+                                            value="{{ primeiro_row.producao }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="digitalField" class="qore-field-label">
+                                        <span>Digital</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-laptop qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="digitalField"
+                                            value="{{ primeiro_row.digital }}"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="qore-grid-3">
+                                <div class="qore-field">
+                                    <label for="superintendenteField" class="qore-field-label">
+                                        <span>Superintendente</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-user-circle-o qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="superintendenteField"
+                                            value="{{ primeiro_row.superintendente }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="gerenteField" class="qore-field-label">
+                                        <span>Gerente</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-user-circle-o qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="gerenteField"
+                                            value="{{ primeiro_row.gerente }}"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label for="coordenadorField" class="qore-field-label">
+                                        <span>Coordenador</span>
+                                        <span class="qore-readonly-badge">Automático</span>
+                                    </label>
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-user-circle-o qore-control-icon" aria-hidden="true"></i>
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="coordenadorField"
+                                            value="{{ primeiro_row.coordenador }}"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <section class="qore-totals-section" aria-labelledby="totais-title">
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">03</span>
+
+                                <div>
+                                    <h3 id="totais-title">
+                                        Totalizadores do preenchimento
+                                    </h3>
+
+                                    <p>
+                                        Totais calculados a partir dos
+                                        registros salvos deste envio.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-totals-grid">
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-briefcase"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Carteiras carregadas</span>
+                                        <strong>
+                                            {{ totais.carteiras }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-check-circle-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Carteiras preenchidas</span>
+                                        <strong>
+                                            {{ totais.preenchidas }}
+                                            de
+                                            {{ totais.carteiras }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-line-chart"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Produção diária</span>
+                                        <strong>
+                                            {{ totais.producao }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-money"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Pagamento</span>
+                                        <strong>
+                                            {{ totais.pagamento }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-list-ol"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Quantidade base</span>
+                                        <strong>
+                                            {{ totais.quantidade_base }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-folder-open-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Valor carteira</span>
+                                        <strong>
+                                            {{ totais.valor_carteira }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-calculator"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Valor HO</span>
+                                        <strong>
+                                            {{ totais.valor_ho }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                                <article class="qore-total-card">
+                                    <span class="qore-total-icon">
+                                        <i
+                                            class="fa fa-handshake-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    <div>
+                                        <span>Entrega amigável</span>
+                                        <strong>
+                                            {{ totais.entrega_amigavel }}
+                                        </strong>
+                                    </div>
+                                </article>
+
+                            </div>
+                        </section>
+
+
+                        <section
+                            class="qore-table-section"
+                            id="productionTableSection"
+                            aria-labelledby="tabela-producao-title">
+
+                            <div class="qore-table-heading">
+                                <div class="qore-table-heading-copy">
+                                    <span class="qore-section-number">04</span>
+
+                                    <div>
+                                        <h3 id="tabela-producao-title">
+                                            Dados de produção por carteira
+                                        </h3>
+
+                                        <p>
+                                            Todas as linhas abaixo correspondem
+                                            ao envio selecionado e estão
+                                            bloqueadas para edição.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="qore-table-meta">
+                                    <span class="qore-table-badge">
+                                        <i
+                                            class="fa fa-arrows-h"
+                                            aria-hidden="true"></i>
+                                        Role horizontalmente para visualizar
+                                        todos os campos
+                                    </span>
+
+                                    <span class="qore-consultation-badge">
+                                        <i
+                                            class="fa fa-lock"
+                                            aria-hidden="true"></i>
+                                        Somente leitura
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="qore-table-shell">
+                                <div
+                                    class="qore-table-scroll ws-table-scroll"
+                                    id="productionTableScroll"
+                                    tabindex="0"
+                                    aria-label="Tabela de produção enviada por carteira">
+
+                                    <table
+                                        class="qore-production-table ws-table--wide"
+                                        id="productionTable">
+
+                                        <thead>
+                                            <tr>
+                                                <th class="qore-col-number">
+                                                    #
+                                                </th>
+
+                                                <th class="qore-col-company">
+                                                    Empresa
+                                                </th>
+
+                                                <th class="qore-col-wallet">
+                                                    Carteira
+                                                </th>
+
+                                                <th class="qore-col-date">
+                                                    Data
+                                                </th>
+
+                                                <th class="qore-col-money">
+                                                    Produção diária
+                                                </th>
+
+                                                <th class="qore-col-money">
+                                                    Pagamento
+                                                </th>
+
+                                                <th class="qore-col-quantity">
+                                                    Quantidade base
+                                                </th>
+
+                                                <th class="qore-col-money">
+                                                    Valor carteira
+                                                </th>
+
+                                                <th class="qore-col-money">
+                                                    Valor HO
+                                                </th>
+
+                                                <th class="qore-col-money">
+                                                    Entrega amigável
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                            {% for row in detalhe_rows %}
+                                                <tr>
+                                                    <td class="qore-col-number">
+                                                        <span
+                                                            class="qore-row-number">
+                                                            {{ forloop.counter|stringformat:"02d" }}
+                                                        </span>
+                                                    </td>
+
+
+                                                    <td class="qore-col-company">
+                                                        <div
+                                                            class="qore-table-context-block
+                                                                   is-company">
+
+                                                            <div
+                                                                class="qore-table-context-heading">
+
+                                                                <span
+                                                                    class="qore-table-context-icon">
+                                                                    <i
+                                                                        class="fa fa-building-o"
+                                                                        aria-hidden="true">
+                                                                    </i>
+                                                                </span>
+
+                                                                <div>
+                                                                    <strong
+                                                                        class="qore-context-title">
+                                                                        {{ row.empresa_nome }}
+                                                                    </strong>
+
+                                                                    <span
+                                                                        class="qore-context-subtitle">
+                                                                        ID {{ row.empresa_id|default:"-" }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+
+                                                    <td class="qore-col-wallet">
+                                                        <div
+                                                            class="qore-table-context-block
+                                                                   is-wallet">
+
+                                                            <div
+                                                                class="qore-table-context-heading">
+
+                                                                <span
+                                                                    class="qore-table-context-icon">
+                                                                    <i
+                                                                        class="fa fa-briefcase"
+                                                                        aria-hidden="true">
+                                                                    </i>
+                                                                </span>
+
+                                                                <div>
+                                                                    <strong
+                                                                        class="qore-context-title">
+                                                                        {{ row.carteira_nome }}
+                                                                    </strong>
+
+                                                                    <span
+                                                                        class="qore-context-subtitle">
+                                                                        ID {{ row.carteira_id }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <details
+                                                                class="qore-auto-details">
+
+                                                                <summary>
+                                                                    Dados automáticos
+                                                                </summary>
+
+                                                                <div
+                                                                    class="qore-auto-grid">
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Competência</span>
+                                                                        <strong>
+                                                                            {{ row.competencia_meta|default:"Não informada" }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Meta</span>
+                                                                        <strong>
+                                                                            {{ row.meta }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Modalidade</span>
+                                                                        <strong>
+                                                                            {{ row.modalidade }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Última atualização</span>
+                                                                        <strong>
+                                                                            {{ row.ultima_atualizacao_meta|default:"Não informada" }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Tipo</span>
+                                                                        <strong>
+                                                                            {{ row.tipo }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Produção</span>
+                                                                        <strong>
+                                                                            {{ row.producao }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Digital</span>
+                                                                        <strong>
+                                                                            {{ row.digital }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Superint.</span>
+                                                                        <strong>
+                                                                            {{ row.superintendente }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Gerente</span>
+                                                                        <strong>
+                                                                            {{ row.gerente }}
+                                                                        </strong>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="qore-auto-line">
+                                                                        <span>Coordenador</span>
+                                                                        <strong>
+                                                                            {{ row.coordenador }}
+                                                                        </strong>
+                                                                    </div>
+                                                                </div>
+                                                            </details>
+                                                        </div>
+                                                    </td>
+
+
+                                                    <td class="qore-col-date">
+                                                        <input
+                                                            type="date"
+                                                            class="qore-table-input"
+                                                            value="{{ row.data_producao|date:'Y-m-d' }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-money">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.producao_realizada }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-money">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.pagamento }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-quantity">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.quantidade_base }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-money">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.valor_carteira }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-money">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.valor_ho }}"
+                                                            disabled>
+                                                    </td>
+
+
+                                                    <td class="qore-col-money">
+                                                        <input
+                                                            type="text"
+                                                            class="qore-table-input"
+                                                            value="{{ row.entrega_amigavel }}"
+                                                            disabled>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                <div class="qore-table-footer">
+                                    <span>
+                                        <i
+                                            class="fa fa-info-circle"
+                                            aria-hidden="true"></i>
+
+                                        Os dados automáticos continuam
+                                        disponíveis abaixo do nome de
+                                        cada carteira.
+                                    </span>
+
+                                    <span>
+                                        {{ quantidade_carteiras }}
+                                        {% if quantidade_carteiras == 1 %}
+                                            carteira carregada
+                                        {% else %}
+                                            carteiras carregadas
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <!-- ==================================================
+                             05 — DADOS DO ENVIO
+                        =================================================== -->
+                        <section
+                            class="qore-form-section qore-send-audit-section"
+                            aria-labelledby="dados-envio-title">
+
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">05</span>
+
+                                <div>
+                                    <h3 id="dados-envio-title">
+                                        Dados do envio
+                                    </h3>
+
+                                    <p>
+                                        Auditoria e horários registrados para a solicitação.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-detail-data-grid">
+                                <div class="qore-field">
+                                    <label class="qore-field-label">
+                                        <span>Enviado por</span>
+                                        <span class="qore-readonly-badge">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                            Consulta
+                                        </span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-user qore-control-icon" aria-hidden="true"></i>
+                                        <div
+                                            class="qore-consultation-value{% if not enviado_por_nome %} is-empty{% endif %}"
+                                            id="detailSentByValue">
+                                            {{ enviado_por_nome|default:"Não informado" }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label class="qore-field-label">
+                                        <span>Início do preenchimento</span>
+                                        <span class="qore-readonly-badge">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                            Consulta
+                                        </span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-clock-o qore-control-icon" aria-hidden="true"></i>
+                                        <div
+                                            class="qore-consultation-value{% if not inicio_envio %} is-empty{% endif %}"
+                                            id="detailStartValue">
+                                            {% if inicio_envio %}
+                                                {{ inicio_envio|date:"d/m/Y H:i:s" }}
+                                            {% else %}
+                                                Não informado
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label class="qore-field-label">
+                                        <span>Fim do envio</span>
+                                        <span class="qore-readonly-badge">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                            Consulta
+                                        </span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-check-circle qore-control-icon" aria-hidden="true"></i>
+                                        <div
+                                            class="qore-consultation-value{% if not fim_envio %} is-empty{% endif %}"
+                                            id="detailEndValue">
+                                            {% if fim_envio %}
+                                                {{ fim_envio|date:"d/m/Y H:i:s" }}
+                                            {% else %}
+                                                Não informado
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="qore-field">
+                                    <label class="qore-field-label">
+                                        <span>Última atualização</span>
+                                        <span class="qore-readonly-badge">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                            Consulta
+                                        </span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-history qore-control-icon" aria-hidden="true"></i>
+                                        <div
+                                            class="qore-consultation-value{% if not ultima_atualizacao %} is-empty{% endif %}"
+                                            id="detailUpdatedValue">
+                                            {% if ultima_atualizacao %}
+                                                {{ ultima_atualizacao|date:"d/m/Y H:i:s" }}
+                                            {% else %}
+                                                Não informado
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+
+                    {% if not modo_embed %}
+                        <footer class="qore-form-actions">
+                            <div class="qore-actions-left">
+                                <span class="qore-consultation-badge">
+                                    <i
+                                        class="fa fa-lock"
+                                        aria-hidden="true"></i>
+                                    Registro enviado
+                                </span>
+                            </div>
+
+                            <div class="qore-actions-right">
+                                <button
+                                    type="button"
+                                    class="qore-button
+                                           qore-button-primary
+                                           qore-consultation-close-button"
+                                    id="closeDetailButton">
+
+                                    <i
+                                        class="fa fa-times"
+                                        aria-hidden="true"></i>
+
+                                    Fechar consulta
+                                </button>
+                            </div>
+                        </footer>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </main>
+
+
+    {% if not modo_embed %}
+        {% include "components/_footer.html" %}
+    {% endif %}
+
+
+    {{ dados_automaticos|json_script:"productionAutomaticData" }}
+
+    <script
+        src="{% static 'js/detalhe_envio_producao.js' %}?v=2.3.0"
+        defer>
+    </script>
+
+    <script>
+        (function () {
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+                    const select = document.getElementById(
+                        "automaticWalletSelect"
+                    );
+                    const dataElement = document.getElementById(
+                        "productionAutomaticData"
+                    );
+
+                    if (!select || !dataElement) {
+                        return;
+                    }
+
+                    let automaticData = [];
+
+                    try {
+                        automaticData = JSON.parse(
+                            dataElement.textContent || "[]"
+                        );
+                    } catch (error) {
+                        automaticData = [];
+                    }
+
+                    function setField(id, value, fallback) {
+                        const field = document.getElementById(id);
+
+                        if (!field) {
+                            return;
+                        }
+
+                        const normalized = value === null
+                            || value === undefined
+                            || String(value).trim() === ""
+                            ? fallback
+                            : String(value);
+
+                        field.value = normalized;
+                    }
+
+                    function syncSnapshotFields() {
+                        const index = Number(select.value);
+                        const item = automaticData[index];
+
+                        if (!item) {
+                            return;
+                        }
+
+                        setField(
+                            "competenciaMetaField",
+                            item.competencia,
+                            "Não informada"
+                        );
+                        setField(
+                            "modalidadeField",
+                            item.modalidade,
+                            "Não cadastrada"
+                        );
+                        setField(
+                            "ultimaAtualizacaoMetaField",
+                            item.ultima_atualizacao_meta,
+                            "Não informada"
+                        );
+                        setField(
+                            "digitalField",
+                            item.digital,
+                            "Não informado"
+                        );
+                    }
+
+                    select.addEventListener(
+                        "change",
+                        syncSnapshotFields
+                    );
+
+                    syncSnapshotFields();
+                }
+            );
+        })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Novo item de venda</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Cardapio da loja</span>
+                <h1>Novo item de venda</h1>
+                <p>Cadastre o item vendido pela loja com foto para aparecer no detalhe dos pedidos.</p>
+            </div>
+            <a class="pedidos-secondary" href="{% url 'produtos' %}">Voltar</a>
+        </section>
+
+        <section class="pedidos-panel">
+            <form class="pedidos-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Nome do item<input name="nome" required placeholder="Ex: X-Burger"></label>
+                <label>Codigo/SKU<input name="sku" placeholder="Ex: LAN-001"></label>
+                <label>Categoria
+                    <select name="categoria">
+                        {% for valor, rotulo in categoria_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Preco<input name="preco_unitario" placeholder="R$ 0,00"></label>
+                <label>Tempo de preparo (min)<input name="tempo_preparo_minutos" type="number" min="0" value="0"></label>
+                <label>Foto do item<input name="foto" type="file" accept="image/*"></label>
+                <label class="pedidos-checkbox">
+                    <input name="ativo" type="checkbox" checked>
+                    <span>Item ativo para venda</span>
+                </label>
+                <label class="pedidos-form-wide">Descricao<textarea name="descricao" rows="4" placeholder="Ingredientes, tamanho, observacoes do item"></textarea></label>
+                <div class="pedidos-form-actions">
+                    <button class="pedidos-primary" type="submit">Salvar item</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

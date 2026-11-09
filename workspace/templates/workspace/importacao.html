@@ -1,0 +1,1252 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    {% include "components/_head.html" %}
+
+    <title>Upload de Arquivos | Workspace Qore</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style_importacao.css' %}?v=1.2.0">
+</head>
+
+<body class="workspace-import-page">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="import-page">
+        <div class="import-shell">
+
+            <!-- CABEÇALHO -->
+            <section class="import-hero">
+                <div class="import-hero-copy">
+                    <span class="import-eyebrow">
+                        Importações
+                    </span>
+
+                    <h1>
+                        Upload de arquivos
+                    </h1>
+
+                    <p>
+                        Envie arquivos para importação, processamento e
+                        conferência dentro do Workspace Qore.
+                    </p>
+                </div>
+
+                <span
+                    class="import-hero-icon"
+                    aria-hidden="true">
+
+                    <i class="fa fa-download"></i>
+                </span>
+            </section>
+
+            <!-- MENSAGENS DO DJANGO -->
+            {% if messages %}
+                <section
+                    class="import-messages"
+                    aria-label="Mensagens do sistema">
+
+                    {% for message in messages %}
+                        <div
+                            class="
+                                import-message
+                                {% if message.tags %}
+                                    import-message-{{ message.tags }}
+                                {% endif %}
+                            "
+                            role="status">
+
+                            <i
+                                class="
+                                    fa
+                                    {% if 'success' in message.tags %}
+                                        fa-check-circle
+                                    {% elif 'error' in message.tags %}
+                                        fa-exclamation-circle
+                                    {% elif 'warning' in message.tags %}
+                                        fa-exclamation-triangle
+                                    {% else %}
+                                        fa-info-circle
+                                    {% endif %}
+                                "
+                                aria-hidden="true">
+                            </i>
+
+                            <span>
+                                {{ message }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            <section class="import-layout">
+
+                <!-- FORMULÁRIO -->
+                <form
+                    class="import-card import-form"
+                    id="importUploadForm"
+                    method="post"
+                    action="{% url 'importacao' %}"
+                    enctype="multipart/form-data"
+                    novalidate>
+
+                    {% csrf_token %}
+
+                    <header class="import-card-header">
+                        <div>
+                            <span class="import-section-eyebrow">
+                                Novo envio
+                            </span>
+
+                            <h2>
+                                Arquivos para importação
+                            </h2>
+
+                            <p>
+                                Descreva o conteúdo e selecione um ou mais
+                                arquivos antes de enviar.
+                            </p>
+                        </div>
+
+                        <span class="import-step-badge">
+                            Etapa única
+                        </span>
+                    </header>
+
+                    <div class="import-form-body">
+
+                        <!-- DESCRIÇÃO OBRIGATÓRIA -->
+                        <div class="import-field">
+                            <div class="import-label-row">
+                                <label for="importDescription">
+                                    Descrição do envio
+                                    <span aria-hidden="true">*</span>
+                                </label>
+
+                                <small>
+                                    <span id="importDescriptionCounter">0</span>/500
+                                </small>
+                            </div>
+
+                            <textarea
+                                id="importDescription"
+                                name="descricao"
+                                rows="5"
+                                maxlength="500"
+                                placeholder="Informe o conteúdo dos arquivos, a finalidade da importação e qualquer orientação necessária para o processamento."
+                                required>{{ descricao|default:"" }}</textarea>
+
+                            <div class="import-field-footer">
+                                <p>
+                                    Explique o que está sendo enviado para
+                                    facilitar a conferência e o processamento.
+                                </p>
+
+                                <span
+                                    class="import-field-error"
+                                    id="importDescriptionError"
+                                    role="alert">
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- ÁREA DE ARRASTAR -->
+                        <div class="import-field">
+                            <span class="import-file-label">
+                                Arquivos
+                                <span aria-hidden="true">*</span>
+                            </span>
+
+                            <div
+                                class="import-dropzone"
+                                id="importDropzone"
+                                role="button"
+                                tabindex="0"
+                                aria-controls="importFileInput"
+                                aria-describedby="importDropzoneHelp">
+
+                                <input
+                                    type="file"
+                                    id="importFileInput"
+                                    name="arquivos"
+                                    accept=".csv,.tsv,.xlsx,.xls,.xlsm,.ods,.txt,.json,.xml,.parquet,.sql,.log,.dat,.zip,.rar,.7z,.gz,.pdf"
+                                    multiple
+                                    hidden>
+
+                                <span
+                                    class="import-dropzone-icon"
+                                    aria-hidden="true">
+
+                                    <i class="fa fa-arrow-down"></i>
+                                </span>
+
+                                <div class="import-dropzone-copy">
+                                    <strong>
+                                        Arraste os arquivos para esta área
+                                    </strong>
+
+                                    <p>
+                                        ou utilize o botão para selecionar no
+                                        seu computador.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="import-select-button"
+                                    id="importSelectButton">
+
+                                    <i
+                                        class="fa fa-folder-open"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    Selecionar arquivos
+                                </button>
+                            </div>
+
+                            <div
+                                class="import-dropzone-help"
+                                id="importDropzoneHelp">
+
+                                <span>
+                                    <i
+                                        class="fa fa-info-circle"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    Os arquivos somente serão enviados após
+                                    clicar em “Enviar arquivos”.
+                                </span>
+
+                                <span
+                                    class="import-file-error"
+                                    id="importFileError"
+                                    role="alert">
+                                </span>
+                            </div>
+
+                            <section
+                                class="import-upload-policy"
+                                aria-label="Formatos e limites do upload">
+
+                                <article class="import-upload-policy-item">
+                                    <span
+                                        class="import-upload-policy-icon"
+                                        aria-hidden="true">
+
+                                        
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                            focusable="false">
+                                            <path
+                                                d="M6 2.75h8.4L19.25 7.6V21.25H6V2.75Z"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linejoin="round">
+                                            </path>
+                                            <path
+                                                d="M14 2.75V8h5.25M9 12h7M9 15.5h7M9 19h4.5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                            </path>
+                                        </svg>
+                                    </span>
+
+                                    <div>
+                                        <strong>Formatos aceitos</strong>
+
+                                        <p>
+                                            CSV, TSV, XLSX, XLS, XLSM, ODS,
+                                            TXT, JSON, XML, Parquet, SQL, LOG,
+                                            DAT, ZIP, RAR, 7Z, GZ e PDF.
+                                        </p>
+                                    </div>
+                                </article>
+
+                                <article class="import-upload-policy-item">
+                                    <span
+                                        class="import-upload-policy-icon"
+                                        aria-hidden="true">
+
+                                        
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                            focusable="false">
+                                            <rect
+                                                x="3.5"
+                                                y="5"
+                                                width="17"
+                                                height="14"
+                                                rx="2.5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8">
+                                            </rect>
+                                            <path
+                                                d="M7 9h10M7 13h5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round">
+                                            </path>
+                                            <circle
+                                                cx="16.5"
+                                                cy="15.5"
+                                                r="1.1"
+                                                fill="currentColor">
+                                            </circle>
+                                        </svg>
+                                    </span>
+
+                                    <div>
+                                        <strong>Limite por arquivo</strong>
+
+                                        <p>
+                                            Até 5 GB por arquivo.
+                                        </p>
+                                    </div>
+                                </article>
+
+                                <article class="import-upload-policy-item">
+                                    <span
+                                        class="import-upload-policy-icon"
+                                        aria-hidden="true">
+
+                                        
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                            focusable="false">
+                                            <path
+                                                d="M8 4.25h8.25A1.75 1.75 0 0 1 18 6v12.25H8A1.75 1.75 0 0 1 6.25 16.5V6A1.75 1.75 0 0 1 8 4.25Z"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linejoin="round">
+                                            </path>
+                                            <path
+                                                d="M6.25 7H5.5A1.75 1.75 0 0 0 3.75 8.75V19.5h10.5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                            </path>
+                                        </svg>
+                                    </span>
+
+                                    <div>
+                                        <strong>Limite do envio</strong>
+
+                                        <p>
+                                            Até 20 GB somando todos os arquivos.
+                                        </p>
+                                    </div>
+                                </article>
+                            </section>
+                        </div>
+
+                        <!-- RESUMO DA SELEÇÃO -->
+                        <section
+                            class="import-selection-summary"
+                            id="importSelectionSummary"
+                            hidden
+                            aria-live="polite">
+
+                            <div class="import-selection-stat">
+                                <span>
+                                    Arquivos selecionados
+                                </span>
+
+                                <strong id="importFileCount">
+                                    0
+                                </strong>
+                            </div>
+
+                            <div class="import-selection-stat">
+                                <span>
+                                    Tamanho total
+                                </span>
+
+                                <strong id="importTotalSize">
+                                    0 KB
+                                </strong>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="import-clear-selection"
+                                id="importClearSelection">
+
+                                <i
+                                    class="fa fa-trash-o"
+                                    aria-hidden="true">
+                                </i>
+
+                                Limpar seleção
+                            </button>
+                        </section>
+
+                        <!-- LISTA DE ARQUIVOS -->
+                        <ul
+                            class="import-file-list"
+                            id="importFileList"
+                            aria-label="Arquivos selecionados">
+                        </ul>
+                    </div>
+
+                    <footer class="import-form-footer">
+                        <div class="import-required-note">
+                            <i
+                                class="fa fa-asterisk"
+                                aria-hidden="true">
+                            </i>
+
+                            Campos obrigatórios
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="import-submit-button"
+                            id="importSubmitButton"
+                            disabled>
+
+                            <i
+                                class="fa fa-download"
+                                aria-hidden="true">
+                            </i>
+
+                            Enviar arquivos
+                        </button>
+                    </footer>
+                </form>
+
+                <!-- ORIENTAÇÕES -->
+                <aside class="import-guidance">
+                    <section class="import-guidance-card">
+                        <header>
+                            <span class="import-guidance-icon">
+                                <i
+                                    class="fa fa-list-ol"
+                                    aria-hidden="true">
+                                </i>
+                            </span>
+
+                            <div>
+                                <span>Como enviar</span>
+                                <h2>Fluxo da importação</h2>
+                            </div>
+                        </header>
+
+                        <ol class="import-steps">
+                            <li>
+                                <span>1</span>
+
+                                <div>
+                                    <strong>Descreva o envio</strong>
+
+                                    <p>
+                                        Informe o conteúdo, a finalidade e as
+                                        orientações importantes.
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li>
+                                <span>2</span>
+
+                                <div>
+                                    <strong>Adicione os arquivos</strong>
+
+                                    <p>
+                                        Arraste para a área de upload ou
+                                        selecione pelo computador.
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li>
+                                <span>3</span>
+
+                                <div>
+                                    <strong>Confira a seleção</strong>
+
+                                    <p>
+                                        Valide o nome, o formato e o tamanho
+                                        antes do envio.
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li>
+                                <span>4</span>
+
+                                <div>
+                                    <strong>Envie para processamento</strong>
+
+                                    <p>
+                                        O sistema encaminhará os arquivos para
+                                        a rotina configurada.
+                                    </p>
+                                </div>
+                            </li>
+                        </ol>
+                    </section>
+
+                    <section class="import-guidance-card">
+                        <header>
+                            <span class="import-guidance-icon">
+                                <i
+                                    class="fa fa-check-circle"
+                                    aria-hidden="true">
+                                </i>
+                            </span>
+
+                            <div>
+                                <span>Boas práticas</span>
+                                <h2>Antes de enviar</h2>
+                            </div>
+                        </header>
+
+                        <ul class="import-check-list">
+                            <li>
+                                <i
+                                    class="fa fa-check"
+                                    aria-hidden="true">
+                                </i>
+
+                                Confirme se o arquivo pertence ao período
+                                correto.
+                            </li>
+
+                            <li>
+                                <i
+                                    class="fa fa-check"
+                                    aria-hidden="true">
+                                </i>
+
+                                Evite arquivos duplicados ou versões
+                                desatualizadas.
+                            </li>
+
+                            <li>
+                                <i
+                                    class="fa fa-check"
+                                    aria-hidden="true">
+                                </i>
+
+                                Utilize nomes claros para facilitar a
+                                identificação.
+                            </li>
+
+                            <li>
+                                <i
+                                    class="fa fa-check"
+                                    aria-hidden="true">
+                                </i>
+
+                                Não feche a página durante o processamento.
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section class="import-security-note">
+                        <i
+                            class="fa fa-lock"
+                            aria-hidden="true">
+                        </i>
+
+                        <div>
+                            <strong>Envio controlado</strong>
+
+                            <p>
+                                Nenhum arquivo é enviado automaticamente ao
+                                selecionar ou arrastar para a área.
+                            </p>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                "use strict";
+
+                const form =
+                    document.getElementById(
+                        "importUploadForm"
+                    );
+
+                const description =
+                    document.getElementById(
+                        "importDescription"
+                    );
+
+                const descriptionCounter =
+                    document.getElementById(
+                        "importDescriptionCounter"
+                    );
+
+                const descriptionError =
+                    document.getElementById(
+                        "importDescriptionError"
+                    );
+
+                const dropzone =
+                    document.getElementById(
+                        "importDropzone"
+                    );
+
+                const fileInput =
+                    document.getElementById(
+                        "importFileInput"
+                    );
+
+                const selectButton =
+                    document.getElementById(
+                        "importSelectButton"
+                    );
+
+                const fileError =
+                    document.getElementById(
+                        "importFileError"
+                    );
+
+                const summary =
+                    document.getElementById(
+                        "importSelectionSummary"
+                    );
+
+                const fileCount =
+                    document.getElementById(
+                        "importFileCount"
+                    );
+
+                const totalSize =
+                    document.getElementById(
+                        "importTotalSize"
+                    );
+
+                const clearSelection =
+                    document.getElementById(
+                        "importClearSelection"
+                    );
+
+                const fileList =
+                    document.getElementById(
+                        "importFileList"
+                    );
+
+                const submitButton =
+                    document.getElementById(
+                        "importSubmitButton"
+                    );
+
+                let selectedFiles = [];
+
+                const ACCEPTED_EXTENSIONS =
+                    new Set([
+                        "csv",
+                        "tsv",
+                        "xlsx",
+                        "xls",
+                        "xlsm",
+                        "ods",
+                        "txt",
+                        "json",
+                        "xml",
+                        "parquet",
+                        "sql",
+                        "log",
+                        "dat",
+                        "zip",
+                        "rar",
+                        "7z",
+                        "gz",
+                        "pdf"
+                    ]);
+
+                const MAX_FILE_SIZE_BYTES =
+                    5 * 1024 * 1024 * 1024;
+
+                const MAX_TOTAL_SIZE_BYTES =
+                    20 * 1024 * 1024 * 1024;
+
+                function formatFileSize(bytes) {
+                    if (!Number.isFinite(bytes) || bytes <= 0) {
+                        return "0 KB";
+                    }
+
+                    const units = [
+                        "B",
+                        "KB",
+                        "MB",
+                        "GB"
+                    ];
+
+                    const unitIndex =
+                        Math.min(
+                            Math.floor(
+                                Math.log(bytes) /
+                                Math.log(1024)
+                            ),
+                            units.length - 1
+                        );
+
+                    const value =
+                        bytes /
+                        Math.pow(
+                            1024,
+                            unitIndex
+                        );
+
+                    return (
+                        value.toLocaleString(
+                            "pt-BR",
+                            {
+                                maximumFractionDigits:
+                                    unitIndex === 0
+                                        ? 0
+                                        : 2
+                            }
+                        ) +
+                        " " +
+                        units[unitIndex]
+                    );
+                }
+
+                function getFileExtension(fileName) {
+                    const parts =
+                        String(fileName || "")
+                            .split(".");
+
+                    if (parts.length < 2) {
+                        return "ARQ";
+                    }
+
+                    return parts
+                        .pop()
+                        .slice(0, 7)
+                        .toUpperCase();
+                }
+
+                function getNormalizedExtension(fileName) {
+                    const parts =
+                        String(fileName || "")
+                            .toLowerCase()
+                            .split(".");
+
+                    if (parts.length < 2) {
+                        return "";
+                    }
+
+                    return parts.pop();
+                }
+
+                function getSelectedTotalSize() {
+                    return selectedFiles.reduce(
+                        function (total, file) {
+                            return total + file.size;
+                        },
+                        0
+                    );
+                }
+
+                function createFileKey(file) {
+                    return [
+                        file.name,
+                        file.size,
+                        file.lastModified
+                    ].join("-");
+                }
+
+                function syncInputFiles() {
+                    const transfer =
+                        new DataTransfer();
+
+                    selectedFiles.forEach(
+                        function (file) {
+                            transfer.items.add(file);
+                        }
+                    );
+
+                    fileInput.files =
+                        transfer.files;
+                }
+
+                function validateForm() {
+                    const hasDescription =
+                        description.value
+                            .trim()
+                            .length > 0;
+
+                    const hasFiles =
+                        selectedFiles.length > 0;
+
+                    submitButton.disabled =
+                        !hasDescription ||
+                        !hasFiles;
+
+                    if (hasDescription) {
+                        descriptionError.textContent = "";
+                        description.classList.remove(
+                            "is-invalid"
+                        );
+                    }
+
+                    if (hasFiles) {
+                        fileError.textContent = "";
+                        dropzone.classList.remove(
+                            "is-invalid"
+                        );
+                    }
+
+                    return (
+                        hasDescription &&
+                        hasFiles
+                    );
+                }
+
+                function renderFiles() {
+                    fileList.innerHTML = "";
+
+                    const totalBytes =
+                        selectedFiles.reduce(
+                            function (total, file) {
+                                return total + file.size;
+                            },
+                            0
+                        );
+
+                    summary.hidden =
+                        selectedFiles.length === 0;
+
+                    fileCount.textContent =
+                        selectedFiles.length;
+
+                    totalSize.textContent =
+                        formatFileSize(
+                            totalBytes
+                        );
+
+                    selectedFiles.forEach(
+                        function (file, index) {
+                            const item =
+                                document.createElement(
+                                    "li"
+                                );
+
+                            item.className =
+                                "import-file-item";
+
+                            const icon =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            icon.className =
+                                "import-file-type";
+
+                            icon.textContent =
+                                getFileExtension(
+                                    file.name
+                                );
+
+                            const copy =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            copy.className =
+                                "import-file-copy";
+
+                            const name =
+                                document.createElement(
+                                    "strong"
+                                );
+
+                            name.textContent =
+                                file.name;
+
+                            name.title =
+                                file.name;
+
+                            const metadata =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            metadata.textContent =
+                                [
+                                    formatFileSize(
+                                        file.size
+                                    ),
+                                    file.type ||
+                                    "Tipo não informado"
+                                ].join(" • ");
+
+                            copy.appendChild(name);
+                            copy.appendChild(metadata);
+
+                            const status =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            status.className =
+                                "import-file-status";
+
+                            status.innerHTML =
+                                '<i class="fa fa-check-circle" aria-hidden="true"></i> Pronto';
+
+                            const removeButton =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            removeButton.type =
+                                "button";
+
+                            removeButton.className =
+                                "import-file-remove";
+
+                            removeButton.setAttribute(
+                                "aria-label",
+                                "Remover " +
+                                file.name
+                            );
+
+                            removeButton.title =
+                                "Remover arquivo";
+
+                            removeButton.innerHTML =
+                                '<i class="fa fa-trash-o" aria-hidden="true"></i>';
+
+                            removeButton.addEventListener(
+                                "click",
+                                function () {
+                                    selectedFiles.splice(
+                                        index,
+                                        1
+                                    );
+
+                                    syncInputFiles();
+                                    renderFiles();
+                                    validateForm();
+                                }
+                            );
+
+                            item.appendChild(icon);
+                            item.appendChild(copy);
+                            item.appendChild(status);
+                            item.appendChild(
+                                removeButton
+                            );
+
+                            fileList.appendChild(item);
+                        }
+                    );
+
+                    validateForm();
+                }
+
+                function addFiles(files) {
+                    const existingKeys =
+                        new Set(
+                            selectedFiles.map(
+                                createFileKey
+                            )
+                        );
+
+                    let currentTotalSize =
+                        getSelectedTotalSize();
+
+                    const validationMessages = [];
+
+                    Array.from(files || [])
+                        .forEach(
+                            function (file) {
+                                const key =
+                                    createFileKey(file);
+
+                                const extension =
+                                    getNormalizedExtension(
+                                        file.name
+                                    );
+
+                                if (
+                                    existingKeys.has(
+                                        key
+                                    )
+                                ) {
+                                    validationMessages.push(
+                                        file.name +
+                                        ": arquivo já selecionado."
+                                    );
+
+                                    return;
+                                }
+
+                                if (
+                                    !ACCEPTED_EXTENSIONS.has(
+                                        extension
+                                    )
+                                ) {
+                                    validationMessages.push(
+                                        file.name +
+                                        ": formato não permitido."
+                                    );
+
+                                    return;
+                                }
+
+                                if (
+                                    file.size >
+                                    MAX_FILE_SIZE_BYTES
+                                ) {
+                                    validationMessages.push(
+                                        file.name +
+                                        ": excede o limite de 5 GB."
+                                    );
+
+                                    return;
+                                }
+
+                                if (
+                                    currentTotalSize +
+                                    file.size >
+                                    MAX_TOTAL_SIZE_BYTES
+                                ) {
+                                    validationMessages.push(
+                                        file.name +
+                                        ": o envio ultrapassaria 20 GB."
+                                    );
+
+                                    return;
+                                }
+
+                                selectedFiles.push(
+                                    file
+                                );
+
+                                existingKeys.add(
+                                    key
+                                );
+
+                                currentTotalSize +=
+                                    file.size;
+                            }
+                        );
+
+                    fileError.textContent =
+                        validationMessages.join(" ");
+
+                    if (
+                        validationMessages.length > 0
+                    ) {
+                        dropzone.classList.add(
+                            "is-invalid"
+                        );
+                    } else {
+                        dropzone.classList.remove(
+                            "is-invalid"
+                        );
+                    }
+
+                    syncInputFiles();
+                    renderFiles();
+                }
+
+                description.addEventListener(
+                    "input",
+                    function () {
+                        descriptionCounter.textContent =
+                            description.value.length;
+
+                        validateForm();
+                    }
+                );
+
+                selectButton.addEventListener(
+                    "click",
+                    function (event) {
+                        event.stopPropagation();
+                        fileInput.click();
+                    }
+                );
+
+                dropzone.addEventListener(
+                    "click",
+                    function () {
+                        fileInput.click();
+                    }
+                );
+
+                dropzone.addEventListener(
+                    "keydown",
+                    function (event) {
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+                            event.preventDefault();
+                            fileInput.click();
+                        }
+                    }
+                );
+
+                fileInput.addEventListener(
+                    "change",
+                    function () {
+                        addFiles(
+                            fileInput.files
+                        );
+                    }
+                );
+
+                [
+                    "dragenter",
+                    "dragover"
+                ].forEach(
+                    function (eventName) {
+                        dropzone.addEventListener(
+                            eventName,
+                            function (event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                dropzone.classList.add(
+                                    "is-dragging"
+                                );
+                            }
+                        );
+                    }
+                );
+
+                [
+                    "dragleave",
+                    "drop"
+                ].forEach(
+                    function (eventName) {
+                        dropzone.addEventListener(
+                            eventName,
+                            function (event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                dropzone.classList.remove(
+                                    "is-dragging"
+                                );
+                            }
+                        );
+                    }
+                );
+
+                dropzone.addEventListener(
+                    "drop",
+                    function (event) {
+                        addFiles(
+                            event.dataTransfer.files
+                        );
+                    }
+                );
+
+                clearSelection.addEventListener(
+                    "click",
+                    function () {
+                        selectedFiles = [];
+                        fileInput.value = "";
+                        renderFiles();
+                    }
+                );
+
+                form.addEventListener(
+                    "submit",
+                    function (event) {
+                        const isValid =
+                            validateForm();
+
+                        if (!isValid) {
+                            event.preventDefault();
+
+                            if (
+                                description.value
+                                    .trim()
+                                    .length === 0
+                            ) {
+                                descriptionError.textContent =
+                                    "Informe a descrição do envio.";
+
+                                description.classList.add(
+                                    "is-invalid"
+                                );
+
+                                description.focus();
+                            }
+
+                            if (
+                                selectedFiles.length === 0
+                            ) {
+                                fileError.textContent =
+                                    "Selecione pelo menos um arquivo.";
+
+                                dropzone.classList.add(
+                                    "is-invalid"
+                                );
+                            }
+
+                            return;
+                        }
+
+                        submitButton.disabled = true;
+
+                        submitButton.innerHTML = `
+                            <i
+                                class="fa fa-spinner fa-spin"
+                                aria-hidden="true">
+                            </i>
+
+                            Enviando
+                        `;
+
+                        if (
+                            typeof window
+                                .showWorkspaceLoading ===
+                            "function"
+                        ) {
+                            window.showWorkspaceLoading(
+                                "Enviando arquivos",
+                                "Aguarde enquanto preparamos a importação."
+                            );
+                        }
+                    }
+                );
+
+                descriptionCounter.textContent =
+                    description.value.length;
+
+                renderFiles();
+            }
+        );
+    </script>
+</body>
+</html>

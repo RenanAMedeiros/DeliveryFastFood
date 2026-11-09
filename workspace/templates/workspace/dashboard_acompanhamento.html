@@ -1,0 +1,1469 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        {% include "components/_head.html" %}
+        <title>
+            Dashboards de acompanhamento | Workspace Qore
+        </title>
+        <link rel="stylesheet" href="{% static 'css/style_meus_dashboards.css' %}?v=1.0.0">
+    
+        <style id="db-acompanhamento-responsive-final">
+            /* =========================================================
+               RESPONSIVIDADE FINAL — DASHBOARDS DE ACOMPANHAMENTO
+               Referência principal: 1920 × 1080
+               Ajustes exclusivamente estruturais e visuais.
+            ========================================================= */
+
+            html {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            body {
+                min-width: 320px;
+                min-height: 100vh;
+                margin: 0;
+                overflow-x: hidden;
+            }
+
+            .db-page,
+            .db-shell,
+            .db-hero,
+            .db-nav,
+            .db-workspace,
+            .db-sidebar,
+            .db-side-head,
+            .db-side-top,
+            .db-search,
+            .db-list,
+            .db-card,
+            .db-card-copy,
+            .db-viewer,
+            .db-view-head,
+            .db-view-heading,
+            .db-view-copy,
+            .db-tags,
+            .db-actions,
+            .db-frame-wrap,
+            .db-frame,
+            .db-loading {
+                min-width: 0;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .db-page {
+                width: 100%;
+                padding:
+                    20px
+                    clamp(16px, 2.5vw, 48px)
+                    30px;
+            }
+
+            .db-shell {
+                width: min(1800px, 100%);
+                margin: 0 auto;
+            }
+
+            .db-hero {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+            }
+
+            .db-hero > div:first-child {
+                min-width: 0;
+            }
+
+            .db-hero h1,
+            .db-hero p,
+            .db-card-copy strong,
+            .db-card-copy small,
+            .db-view-copy h2,
+            .db-view-copy p,
+            .db-tag span {
+                overflow-wrap: anywhere;
+            }
+
+            .db-nav {
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                overscroll-behavior-x: contain;
+                scrollbar-width: thin;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .db-workspace {
+                width: 100%;
+                display: grid;
+                grid-template-columns:
+                    minmax(300px, 340px)
+                    minmax(0, 1fr);
+                align-items: stretch;
+                gap: 18px;
+            }
+
+            .db-sidebar {
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .db-side-head {
+                flex: 0 0 auto;
+            }
+
+            .db-search {
+                width: 100%;
+            }
+
+            .db-search input {
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+            }
+
+            .db-list {
+                min-height: 0;
+                margin: 0;
+                padding: 0;
+                flex: 1 1 auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+                overscroll-behavior: contain;
+                scrollbar-gutter: stable;
+                scrollbar-width: thin;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .db-list > li {
+                min-width: 0;
+            }
+
+            .db-card {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .db-card-copy {
+                min-width: 0;
+            }
+
+            .db-viewer {
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .db-view-head {
+                flex: 0 0 auto;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 18px;
+            }
+
+            .db-view-heading {
+                min-width: 0;
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .db-view-copy {
+                min-width: 0;
+            }
+
+            .db-tags,
+            .db-actions {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .db-actions {
+                justify-content: flex-end;
+                gap: 8px;
+            }
+
+            .db-action,
+            .db-external {
+                max-width: 100%;
+                white-space: nowrap;
+            }
+
+            .db-frame-wrap {
+                position: relative;
+                width: 100%;
+                min-height: 520px;
+                flex: 1 1 auto;
+                overflow: hidden;
+            }
+
+            .db-frame {
+                width: 100%;
+                height: 100%;
+                min-height: 520px;
+                display: block;
+                border: 0;
+            }
+
+            .db-loading {
+                max-width: 100%;
+            }
+
+            /* =========================================================
+               FULL HD — REFERÊNCIA PRINCIPAL
+            ========================================================= */
+
+            @media only screen and (min-width: 1600px) and (min-height: 900px) {
+                .db-page {
+                    padding:
+                        24px
+                        clamp(42px, 3.125vw, 60px)
+                        34px;
+                }
+
+                .db-shell {
+                    width: 100%;
+                    max-width: 1800px;
+                }
+
+                .db-hero {
+                    min-height: 118px;
+                    padding: 24px 30px;
+                    gap: 30px;
+                }
+
+                .db-hero h1 {
+                    font-size: clamp(32px, 2.15vw, 40px);
+                }
+
+                .db-hero p {
+                    max-width: 960px;
+                    font-size: 13px;
+                }
+
+                .db-hero-icon {
+                    flex: 0 0 auto;
+                }
+
+                .db-nav {
+                    margin-top: 14px;
+                    margin-bottom: 14px;
+                }
+
+                .db-workspace {
+                    grid-template-columns:
+                        minmax(320px, 360px)
+                        minmax(0, 1fr);
+                    gap: 20px;
+                    min-height:
+                        min(
+                            760px,
+                            calc(100dvh - 280px)
+                        );
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    min-height:
+                        min(
+                            760px,
+                            calc(100dvh - 280px)
+                        );
+                }
+
+                .db-side-head {
+                    padding: 18px;
+                }
+
+                .db-card {
+                    min-height: 86px;
+                    padding: 14px 15px;
+                }
+
+                .db-card-copy strong {
+                    font-size: 11px;
+                }
+
+                .db-card-copy small,
+                .db-meta {
+                    font-size: 9px;
+                }
+
+                .db-view-head {
+                    padding: 17px 19px;
+                }
+
+                .db-view-copy h2 {
+                    font-size: 17px;
+                }
+
+                .db-view-copy p {
+                    font-size: 10px;
+                }
+
+                .db-action,
+                .db-external {
+                    min-height: 38px;
+                    padding: 0 12px;
+                    font-size: 9px;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height:
+                        min(
+                            690px,
+                            calc(100dvh - 365px)
+                        );
+                }
+            }
+
+            /* =========================================================
+               ULTRAWIDE
+            ========================================================= */
+
+            @media only screen and (min-width: 2200px) {
+                .db-page {
+                    padding-left: 72px;
+                    padding-right: 72px;
+                }
+
+                .db-shell {
+                    max-width: 1920px;
+                }
+            }
+
+            /* =========================================================
+               DESKTOP / NOTEBOOK GRANDE
+            ========================================================= */
+
+            @media only screen and (min-width: 1280px) and (max-width: 1599px) {
+                .db-page {
+                    padding:
+                        16px
+                        clamp(24px, 2.8vw, 42px)
+                        26px;
+                }
+
+                .db-shell {
+                    width: 100%;
+                    max-width: 1500px;
+                }
+
+                .db-workspace {
+                    grid-template-columns:
+                        minmax(285px, 320px)
+                        minmax(0, 1fr);
+                    gap: 16px;
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    min-height:
+                        min(
+                            680px,
+                            calc(100dvh - 245px)
+                        );
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height:
+                        min(
+                            610px,
+                            calc(100dvh - 325px)
+                        );
+                }
+            }
+
+            /* =========================================================
+               NOTEBOOK / 1024–1279
+            ========================================================= */
+
+            @media only screen and (min-width: 1024px) and (max-width: 1279px) {
+                .db-page {
+                    padding:
+                        14px
+                        clamp(18px, 2.4vw, 28px)
+                        24px;
+                }
+
+                .db-workspace {
+                    grid-template-columns:
+                        minmax(260px, 290px)
+                        minmax(0, 1fr);
+                    gap: 14px;
+                }
+
+                .db-hero {
+                    gap: 18px;
+                }
+
+                .db-view-head {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .db-actions {
+                    justify-content: flex-start;
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    min-height:
+                        min(
+                            620px,
+                            calc(100dvh - 225px)
+                        );
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height:
+                        min(
+                            550px,
+                            calc(100dvh - 340px)
+                        );
+                }
+            }
+
+            /* =========================================================
+               TELAS DE ALTURA REDUZIDA / ZOOM
+            ========================================================= */
+
+            @media only screen and (min-width: 1024px) and (max-height: 820px) {
+                .db-page {
+                    padding-top: 10px;
+                    padding-bottom: 14px;
+                }
+
+                .db-hero {
+                    min-height: 84px;
+                    padding-top: 14px;
+                    padding-bottom: 14px;
+                }
+
+                .db-nav {
+                    margin-top: 8px;
+                    margin-bottom: 8px;
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    min-height: 500px;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height: 430px;
+                }
+            }
+
+            /* =========================================================
+               TABLET
+            ========================================================= */
+
+            @media only screen and (min-width: 701px) and (max-width: 1023px) {
+                .db-page {
+                    padding: 14px 18px 24px;
+                }
+
+                .db-hero {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 14px;
+                }
+
+                .db-hero-icon {
+                    align-self: flex-start;
+                }
+
+                .db-workspace {
+                    grid-template-columns: 1fr;
+                    gap: 14px;
+                }
+
+                .db-sidebar {
+                    max-height: 410px;
+                }
+
+                .db-list {
+                    max-height: 300px;
+                }
+
+                .db-viewer {
+                    min-height: 620px;
+                }
+
+                .db-view-head {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .db-actions {
+                    justify-content: flex-start;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height: 540px;
+                }
+            }
+
+            /* =========================================================
+               MOBILE
+            ========================================================= */
+
+            @media only screen and (max-width: 700px) {
+                .db-page {
+                    width: 100%;
+                    padding: 10px 12px 22px;
+                }
+
+                .db-hero {
+                    align-items: stretch;
+                    flex-direction: column;
+                    gap: 12px;
+                    padding: 18px 16px;
+                }
+
+                .db-hero h1 {
+                    font-size: clamp(26px, 8vw, 32px);
+                }
+
+                .db-hero p {
+                    font-size: 10px;
+                    line-height: 1.5;
+                }
+
+                .db-hero-icon {
+                    align-self: flex-start;
+                }
+
+                .db-nav {
+                    margin-top: 8px;
+                    margin-bottom: 8px;
+                }
+
+                .db-workspace {
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                }
+
+                .db-sidebar {
+                    max-height: 390px;
+                }
+
+                .db-side-head {
+                    padding: 12px;
+                }
+
+                .db-list {
+                    max-height: 280px;
+                }
+
+                .db-card {
+                    min-height: 74px;
+                    padding: 11px 12px;
+                }
+
+                .db-viewer {
+                    min-height: 560px;
+                }
+
+                .db-view-head {
+                    align-items: stretch;
+                    flex-direction: column;
+                    gap: 12px;
+                    padding: 13px;
+                }
+
+                .db-view-heading {
+                    width: 100%;
+                }
+
+                .db-tags {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .db-tag {
+                    max-width: 100%;
+                }
+
+                .db-actions {
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap: 8px;
+                }
+
+                .db-action,
+                .db-external {
+                    width: 100%;
+                    min-width: 0;
+                    min-height: 42px;
+                    padding: 0 10px;
+                    justify-content: center;
+                    white-space: normal;
+                    text-align: center;
+                }
+
+                #dbExpand {
+                    grid-column: 1 / -1;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height: 470px;
+                }
+            }
+
+            /* =========================================================
+               CELULAR PEQUENO
+            ========================================================= */
+
+            @media only screen and (max-width: 420px) {
+                .db-page {
+                    padding-left: 9px;
+                    padding-right: 9px;
+                }
+
+                .db-actions {
+                    grid-template-columns: 1fr;
+                }
+
+                #dbExpand {
+                    grid-column: auto;
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    border-radius: 14px;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height: 430px;
+                }
+            }
+
+            /* =========================================================
+               PAISAGEM COM POUCA ALTURA
+            ========================================================= */
+
+            @media only screen and (max-height: 560px) and (orientation: landscape) {
+                .db-page {
+                    padding-top: 8px;
+                    padding-bottom: 12px;
+                }
+
+                .db-workspace {
+                    min-height: 430px;
+                }
+
+                .db-sidebar,
+                .db-viewer {
+                    min-height: 430px;
+                }
+
+                .db-frame-wrap,
+                .db-frame {
+                    min-height: 360px;
+                }
+            }
+
+            /* =========================================================
+               TOUCH
+            ========================================================= */
+
+            @media (hover: none) and (pointer: coarse) {
+                .db-card,
+                .db-action,
+                .db-external {
+                    min-height: 44px;
+                }
+            }
+
+            /* =========================================================
+               REDUÇÃO DE MOVIMENTO
+            ========================================================= */
+
+            @media (prefers-reduced-motion: reduce) {
+                .db-card,
+                .db-action,
+                .db-external,
+                .db-frame,
+                .db-loading {
+                    transition-duration: 0.01ms !important;
+                    animation-duration: 0.01ms !important;
+                }
+            }
+        </style>
+
+    <link rel="stylesheet" href="{% static 'workspace/core/css/workspace_dashboards_core.css' %}?v=1.0.0">
+</head>
+    <body class="ws-app db-workspace-page">
+        {% include "components/navbar/_navbar.html" %}
+        <main class="db-page ws-main">
+            <div class="db-shell ws-page">
+                <section class="db-hero">
+                    <div>
+                        <span class="db-eyebrow">
+                            Meus dashboards
+                        </span>
+                        <h1>
+                            Dashboards de acompanhamento
+                        </h1>
+                        <p>
+                            Painéis para acompanhamento de telecom e tickets.
+                        </p>
+                    </div>
+                    <span class="db-hero-icon">
+                        <i class="fa fa-eye" aria-hidden="true">
+                        </i>
+                    </span>
+                </section>
+                <nav class="db-nav" aria-label="Categorias de dashboards">
+                    {% include "workspace/_dashboard_nav_tabs.html" %}
+                </nav>
+                <section class="db-workspace">
+                    <aside class="db-sidebar ws-panel">
+                        <header class="db-side-head">
+                            <div class="db-side-top">
+                                <div>
+                                    <span>
+                                        Painéis disponíveis
+                                    </span>
+                                    <h2>
+                                        Dashboards de acompanhamento
+                                    </h2>
+                                </div>
+                                <strong class="db-count" id="dbCount">
+                                    2
+                                </strong>
+                            </div>
+                            <label class="db-search">
+                                <i class="fa fa-search" aria-hidden="true">
+                                </i>
+                                <input type="search" id="dbSearch" placeholder="Pesquisar dashboard..." autocomplete="off">
+                            </label>
+                        </header>
+                        <ul class="db-list">
+                            <li>
+                                <button
+                                    type="button"
+                                    class="db-card"
+                                    data-title="Tickets"
+                                    data-description="Acompanhamento de tickets e tratativas."
+                                    data-icon="fa fa-ticket"
+                                    data-company="DNR Teleserviços"
+                                    data-area="Acompanhamento"
+                                    data-owner=""
+                                    data-src="https://app.powerbi.com/view?r=eyJrIjoiZmVhYTU3Y2YtOGYyMy00M2UzLTgzYmMtYzkzZjE5ZTFiMzZlIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9"
+                                    aria-pressed="false">
+
+                                    <span class="db-card-icon">
+                                        <i
+                                            class="fa fa-ticket"
+                                            aria-hidden="true">
+                                        </i>
+                                    </span>
+
+                                    <span class="db-card-copy">
+                                        <strong>
+                                            Tickets
+                                        </strong>
+
+                                        <small>
+                                            Acompanhamento de tickets e tratativas.
+                                        </small>
+
+                                        <span class="db-meta">
+                                            Acompanhamento
+                                        </span>
+                                    </span>
+
+                                    <i
+                                        class="fa fa-angle-right db-arrow"
+                                        aria-hidden="true">
+                                    </i>
+                                </button>
+                            </li>
+
+                            <li>
+                                <button
+                                    type="button"
+                                    class="db-card"
+                                    data-title="Telecom"
+                                    data-description="Indicadores de acompanhamento de telecomunicações."
+                                    data-icon="fa fa-phone"
+                                    data-company="DNR Teleserviços"
+                                    data-area="Acompanhamento"
+                                    data-owner=""
+                                    data-src="https://app.powerbi.com/view?r=eyJrIjoiOTdjNWJlMmItMTc3ZS00NzIwLWFkOTktNDQ3YmNhZDllOGI1IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9"
+                                    aria-pressed="false">
+
+                                    <span class="db-card-icon">
+                                        <i
+                                            class="fa fa-phone"
+                                            aria-hidden="true">
+                                        </i>
+                                    </span>
+
+                                    <span class="db-card-copy">
+                                        <strong>
+                                            Telecom
+                                        </strong>
+
+                                        <small>
+                                            Indicadores de acompanhamento de telecomunicações.
+                                        </small>
+
+                                        <span class="db-meta">
+                                            Acompanhamento
+                                        </span>
+                                    </span>
+
+                                    <i
+                                        class="fa fa-angle-right db-arrow"
+                                        aria-hidden="true">
+                                    </i>
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="db-empty" id="dbEmpty">
+                            <i class="fa fa-search" aria-hidden="true">
+                            </i>
+                            <strong>
+                                Nenhum dashboard encontrado
+                            </strong>
+                        </div>
+                    </aside>
+                    <section class="db-viewer ws-panel" id="dbViewer">
+                        <header class="db-view-head">
+                            <div class="db-view-heading">
+                                <span class="db-view-icon" id="dbViewIcon">
+                                    <i class="fa fa-eye" aria-hidden="true">
+                                    </i>
+                                </span>
+                                <div class="db-view-copy">
+                                    <h2 id="dbViewTitle">
+                                        Selecione um dashboard
+                                    </h2>
+                                    <p id="dbViewDescription">
+                                        Escolha um painel para visualizar os indicadores.
+                                    </p>
+                                    <div class="db-tags">
+                                        <span class="db-tag" id="dbCompany" hidden>
+                                            <i class="fa fa-building-o">
+                                            </i>
+                                            <span>
+                                            </span>
+                                        </span>
+                                        <span class="db-tag" id="dbArea" hidden>
+                                            <i class="fa fa-sitemap">
+                                            </i>
+                                            <span>
+                                            </span>
+                                        </span>
+                                        <span class="db-tag" id="dbOwner" hidden>
+                                            <i class="fa fa-user-o">
+                                            </i>
+                                            <span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="db-actions">
+                                <button class="db-action" id="dbReload">
+                                    <i class="fa fa-refresh">
+                                    </i>
+                                    Atualizar
+                                </button>
+                                <a class="db-external" id="dbExternal" href="#" target="_blank" rel="noopener noreferrer">
+                                    <i class="fa fa-external-link">
+                                    </i>
+                                    Abrir
+                                </a>
+                                <button class="db-action" id="dbExpand" aria-pressed="false">
+                                    <i class="fa fa-expand" id="dbExpandIcon">
+                                    </i>
+                                    <span id="dbExpandLabel">
+                                        Expandir
+                                    </span>
+                                </button>
+                            </div>
+                        </header>
+                        <div class="db-frame-wrap">
+                            <div class="db-loading" id="dbLoading">
+                                <span class="db-bars">
+                                    <span>
+                                    </span>
+                                    <span>
+                                    </span>
+                                    <span>
+                                    </span>
+                                </span>
+                                <strong>
+                                    Carregando dashboard
+                                </strong>
+                                <small>
+                                    Aguarde enquanto os indicadores são preparados.
+                                </small>
+                            </div>
+                            <iframe class="db-frame" id="dbFrame" src="about:blank" title="Dashboards de acompanhamento" allowfullscreen="true" allow="fullscreen">
+                            </iframe>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </main>
+        {% include "components/_footer.html" %}
+        {{ links_liberados|json_script:"linksLiberados" }}
+        <script>
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+                    "use strict";
+
+                    const cards = Array.from(
+                        document.querySelectorAll(
+                            ".db-card"
+                        )
+                    );
+
+                    const search =
+                        document.getElementById(
+                            "dbSearch"
+                        );
+
+                    const count =
+                        document.getElementById(
+                            "dbCount"
+                        );
+
+                    const empty =
+                        document.getElementById(
+                            "dbEmpty"
+                        );
+
+                    const viewer =
+                        document.getElementById(
+                            "dbViewer"
+                        );
+
+                    const frame =
+                        document.getElementById(
+                            "dbFrame"
+                        );
+
+                    const loading =
+                        document.getElementById(
+                            "dbLoading"
+                        );
+
+                    const title =
+                        document.getElementById(
+                            "dbViewTitle"
+                        );
+
+                    const description =
+                        document.getElementById(
+                            "dbViewDescription"
+                        );
+
+                    const icon =
+                        document.getElementById(
+                            "dbViewIcon"
+                        );
+
+                    const company =
+                        document.getElementById(
+                            "dbCompany"
+                        );
+
+                    const area =
+                        document.getElementById(
+                            "dbArea"
+                        );
+
+                    const owner =
+                        document.getElementById(
+                            "dbOwner"
+                        );
+
+                    const reload =
+                        document.getElementById(
+                            "dbReload"
+                        );
+
+                    const external =
+                        document.getElementById(
+                            "dbExternal"
+                        );
+
+                    const expand =
+                        document.getElementById(
+                            "dbExpand"
+                        );
+
+                    const expandIcon =
+                        document.getElementById(
+                            "dbExpandIcon"
+                        );
+
+                    const expandLabel =
+                        document.getElementById(
+                            "dbExpandLabel"
+                        );
+
+                    let active = null;
+
+                    /*
+                     * Liberação por carteira: os links de dashboards
+                     * (Empresa.link_bi) vinculados ao usuário logado são
+                     * embutidos pelo template via json_script. Cards cujo
+                     * data-src não estiver nessa lista ficam bloqueados.
+                     * Painéis internos (sem carteira associada, como
+                     * Importações) não entram nessa verificação.
+                     */
+                    const linksLiberadosEl =
+                        document.getElementById(
+                            "linksLiberados"
+                        );
+
+                    let linksLiberados = [];
+
+                    try {
+                        linksLiberados = linksLiberadosEl
+                            ? JSON.parse(
+                                linksLiberadosEl.textContent
+                            )
+                            : [];
+                    } catch (erro) {
+                        linksLiberados = [];
+                    }
+
+                    cards.forEach(function (card) {
+                        const source =
+                            card.dataset.src || "";
+
+                        if (
+                            !source.startsWith(
+                                "https://app.powerbi.com"
+                            )
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            linksLiberados.includes(
+                                source
+                            )
+                        ) {
+                            return;
+                        }
+
+                        card.classList.add(
+                            "db-locked"
+                        );
+
+                        card.setAttribute(
+                            "aria-disabled",
+                            "true"
+                        );
+
+                        card.setAttribute(
+                            "title",
+                            "Você não tem acesso a este dashboard. Solicite a liberação da carteira correspondente."
+                        );
+
+                        const badge =
+                            document.createElement(
+                                "span"
+                            );
+
+                        badge.className =
+                            "dashboard-lock-badge";
+
+                        badge.setAttribute(
+                            "aria-hidden",
+                            "true"
+                        );
+
+                        badge.innerHTML =
+                            '<i class="fa fa-lock"></i>';
+
+                        card.appendChild(badge);
+                    });
+
+                    function normalizeText(value) {
+                        return String(value || "")
+                            .normalize("NFD")
+                            .replace(
+                                /[\u0300-\u036f]/g,
+                                ""
+                            )
+                            .toLowerCase()
+                            .trim();
+                    }
+
+                    function updateTag(element, value) {
+                        if (!element) {
+                            return;
+                        }
+
+                        const text =
+                            element.querySelector(
+                                "span"
+                            );
+
+                        const cleanValue =
+                            String(value || "").trim();
+
+                        element.hidden =
+                            !cleanValue;
+
+                        if (text) {
+                            text.textContent =
+                                cleanValue;
+                        }
+                    }
+
+                    function showLoading() {
+                        loading?.classList.remove(
+                            "hidden"
+                        );
+                    }
+
+                    function hideLoading() {
+                        loading?.classList.add(
+                            "hidden"
+                        );
+                    }
+
+                    function openDashboard(card) {
+                        if (
+                            !card ||
+                            !frame ||
+                            card.classList.contains(
+                                "db-locked"
+                            )
+                        ) {
+                            return;
+                        }
+
+                        cards.forEach(
+                            function (item) {
+                                const isActive =
+                                    item === card;
+
+                                item.classList.toggle(
+                                    "active",
+                                    isActive
+                                );
+
+                                item.setAttribute(
+                                    "aria-pressed",
+                                    String(isActive)
+                                );
+                            }
+                        );
+
+                        active = card;
+
+                        const source =
+                            card.dataset.src;
+
+                        const dashboardTitle =
+                            card.dataset.title ||
+                            "Dashboard";
+
+                        const dashboardDescription =
+                            card.dataset.description ||
+                            "Indicadores do Workspace Qore.";
+
+                        const dashboardIcon =
+                            card.dataset.icon ||
+                            "fa fa-eye";
+
+                        title.textContent =
+                            dashboardTitle;
+
+                        description.textContent =
+                            dashboardDescription;
+
+                        icon.innerHTML = "";
+
+                        const iconElement =
+                            document.createElement(
+                                "i"
+                            );
+
+                        iconElement.className =
+                            dashboardIcon;
+
+                        iconElement.setAttribute(
+                            "aria-hidden",
+                            "true"
+                        );
+
+                        icon.appendChild(
+                            iconElement
+                        );
+
+                        updateTag(
+                            company,
+                            card.dataset.company
+                        );
+
+                        updateTag(
+                            area,
+                            card.dataset.area
+                        );
+
+                        updateTag(
+                            owner,
+                            card.dataset.owner
+                        );
+
+                        external.href =
+                            card.dataset.external ||
+                            source;
+
+                        frame.title =
+                            "Dashboard " +
+                            dashboardTitle +
+                            " | Workspace Qore";
+
+                        showLoading();
+
+                        frame.src =
+                            source;
+                    }
+
+                    cards.forEach(
+                        function (card) {
+                            card.addEventListener(
+                                "click",
+                                function () {
+                                    openDashboard(
+                                        card
+                                    );
+                                }
+                            );
+                        }
+                    );
+
+                    search?.addEventListener(
+                        "input",
+                        function () {
+                            const query =
+                                normalizeText(
+                                    search.value
+                                );
+
+                            let visible = 0;
+                            let firstVisible = null;
+
+                            cards.forEach(
+                                function (card) {
+                                    const searchableText =
+                                        normalizeText(
+                                            [
+                                                card.dataset.title,
+                                                card.dataset.description,
+                                                card.dataset.company,
+                                                card.dataset.area,
+                                                card.dataset.owner
+                                            ].join(" ")
+                                        );
+
+                                    const matches =
+                                        !query ||
+                                        searchableText.includes(
+                                            query
+                                        );
+
+                                    const item =
+                                        card.closest(
+                                            "li"
+                                        );
+
+                                    item.hidden =
+                                        !matches;
+
+                                    if (matches) {
+                                        visible += 1;
+
+                                        if (
+                                            !firstVisible &&
+                                            !card.classList.contains(
+                                                "db-locked"
+                                            )
+                                        ) {
+                                            firstVisible =
+                                                card;
+                                        }
+                                    }
+                                }
+                            );
+
+                            count.textContent =
+                                visible;
+
+                            empty.classList.toggle(
+                                "show",
+                                visible === 0
+                            );
+
+                            if (
+                                firstVisible &&
+                                (
+                                    !active ||
+                                    active.closest("li").hidden
+                                )
+                            ) {
+                                openDashboard(
+                                    firstVisible
+                                );
+                            }
+                        }
+                    );
+
+                    frame?.addEventListener(
+                        "load",
+                        function () {
+                            if (
+                                frame.src &&
+                                frame.src !==
+                                "about:blank"
+                            ) {
+                                window.setTimeout(
+                                    hideLoading,
+                                    250
+                                );
+                            }
+                        }
+                    );
+
+                    reload?.addEventListener(
+                        "click",
+                        function () {
+                            if (
+                                !active ||
+                                !frame
+                            ) {
+                                return;
+                            }
+
+                            const source =
+                                active.dataset.src;
+
+                            showLoading();
+
+                            frame.src =
+                                "about:blank";
+
+                            window.setTimeout(
+                                function () {
+                                    frame.src =
+                                        source;
+                                },
+                                80
+                            );
+                        }
+                    );
+
+                    expand?.addEventListener(
+                        "click",
+                        function () {
+                            const expanded =
+                                !viewer.classList.contains(
+                                    "expanded"
+                                );
+
+                            viewer.classList.toggle(
+                                "expanded",
+                                expanded
+                            );
+
+                            document.body.classList.toggle(
+                                "db-expanded",
+                                expanded
+                            );
+
+                            expand.setAttribute(
+                                "aria-pressed",
+                                String(expanded)
+                            );
+
+                            expandIcon.className =
+                                expanded
+                                    ? "fa fa-compress"
+                                    : "fa fa-expand";
+
+                            expandLabel.textContent =
+                                expanded
+                                    ? "Reduzir"
+                                    : "Expandir";
+                        }
+                    );
+
+                    document.addEventListener(
+                        "keydown",
+                        function (event) {
+                            if (
+                                event.key === "Escape" &&
+                                viewer.classList.contains(
+                                    "expanded"
+                                )
+                            ) {
+                                expand.click();
+                            }
+                        }
+                    );
+
+                    /*
+                     * Abre automaticamente o primeiro dashboard
+                     * liberado para o usuário.
+                     */
+                    const primeiroLiberado =
+                        cards.find(
+                            function (card) {
+                                return !card.classList.contains(
+                                    "db-locked"
+                                );
+                            }
+                        );
+
+                    if (primeiroLiberado) {
+                        openDashboard(
+                            primeiroLiberado
+                        );
+                    } else {
+                        hideLoading();
+
+                        title.textContent =
+                            "Nenhum dashboard liberado";
+
+                        description.textContent =
+                            "Solicite a liberação de uma carteira para visualizar os indicadores.";
+                    }
+                }
+            );
+        </script>
+</body>
+</html>

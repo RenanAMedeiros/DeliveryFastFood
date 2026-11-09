@@ -1,0 +1,1446 @@
+/* ==========================================================================
+   WORKSPACE UI CORE — MEUS DASHBOARDS v1.0.0
+
+   Compartilhado por:
+   - Dashboards de acompanhamento
+   - Dashboards gerenciais
+   - Dashboards operacionais
+
+   Escopo exclusivamente visual:
+   identidade, tipografia, espaçamentos, cards, busca, navegação,
+   viewer Power BI, responsividade e zoom.
+
+   Não altera:
+   IDs, data-*, links Power BI, permissões, json_script, eventos ou scripts.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+body.db-workspace-page {
+    --db-ws-navy-950: var(--ws-navy-950, #071124);
+    --db-ws-navy-900: var(--ws-navy-900, #0B1832);
+    --db-ws-navy-800: var(--ws-navy-800, #101C44);
+
+    --db-ws-primary: var(--ws-primary, #2563EB);
+    --db-ws-primary-hover: var(--ws-primary-hover, #1D4ED8);
+    --db-ws-primary-light: var(--ws-primary-light, #60A5FA);
+    --db-ws-primary-soft: var(--ws-primary-soft, #EFF6FF);
+
+    --db-ws-bg: var(--ws-app-bg, #F4F7FB);
+    --db-ws-surface: var(--ws-surface-card, #FFFFFF);
+    --db-ws-surface-soft: var(--ws-surface-soft, #F8FAFC);
+
+    --db-ws-text: var(--ws-text-primary, #172033);
+    --db-ws-text-secondary: var(--ws-text-secondary, #35405A);
+    --db-ws-muted: var(--ws-text-muted, #667085);
+
+    --db-ws-border: var(--ws-border, #DDE3EC);
+    --db-ws-border-soft: var(--ws-border-soft, #E7EBF1);
+
+    --db-ws-success: var(--ws-success, #16A34A);
+}
+
+
+/* ==========================================================================
+   PÁGINA
+   ========================================================================== */
+
+body.db-workspace-page {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    color: var(--db-ws-text);
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    background:
+        radial-gradient(
+            circle at 4% 8%,
+            rgba(37, 99, 235, 0.07),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 96% 90%,
+            rgba(56, 189, 248, 0.05),
+            transparent 22%
+        ),
+        var(--db-ws-bg);
+
+    overflow-x: hidden;
+}
+
+body.db-workspace-page
+.db-page {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    /*
+     * Mesmo respiro adotado nas demais páginas migradas:
+     * separa navbar do primeiro bloco visual sem depender de zoom.
+     */
+    padding:
+        clamp(26px, 1.7vw, 34px)
+        clamp(16px, 2.4vw, 46px)
+        clamp(28px, 2vw, 38px) !important;
+
+    overflow: visible;
+
+    flex: 1 0 auto;
+}
+
+body.db-workspace-page
+.db-shell {
+    width: min(1800px, 100%) !important;
+    min-width: 0;
+    max-width: 100% !important;
+
+    margin-inline: auto !important;
+}
+
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+
+body.db-workspace-page
+.db-hero {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    min-height: 112px !important;
+
+    padding:
+        clamp(20px, 1.45vw, 25px)
+        clamp(22px, 1.8vw, 32px) !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap:
+        clamp(16px, 1.3vw, 24px) !important;
+
+    overflow: hidden;
+
+    color: #FFFFFF;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+    border-radius:
+        var(
+            --ws-radius-2xl,
+            18px
+        ) !important;
+
+    background:
+        radial-gradient(
+            circle at 88% 5%,
+            rgba(96, 165, 250, 0.20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--db-ws-navy-950),
+            var(--db-ws-navy-800)
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-lg,
+            0 18px 42px rgba(16, 28, 68, 0.14)
+        );
+}
+
+body.db-workspace-page
+.db-hero > div:first-child {
+    min-width: 0;
+    max-width: 1100px;
+}
+
+body.db-workspace-page
+.db-eyebrow {
+    margin-bottom: 7px;
+
+    color:
+        var(
+            --ws-primary-light,
+            #60A5FA
+        ) !important;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        ) !important;
+
+    letter-spacing:
+        var(
+            --ws-tracking-kicker,
+            0.12em
+        ) !important;
+
+    text-transform: uppercase;
+}
+
+body.db-workspace-page
+.db-hero h1 {
+    margin: 0;
+
+    color: #FFFFFF;
+
+    font-size:
+        clamp(
+            28px,
+            1.8vw,
+            36px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        ) !important;
+
+    line-height: 1.12 !important;
+
+    letter-spacing: -0.035em !important;
+}
+
+body.db-workspace-page
+.db-hero p {
+    max-width: 980px !important;
+
+    margin:
+        7px
+        0
+        0 !important;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.74
+        ) !important;
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.58
+        ) !important;
+}
+
+body.db-workspace-page
+.db-hero-icon {
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 48px !important;
+
+    color:
+        var(
+            --ws-primary-light,
+            #60A5FA
+        );
+
+    font-size: 19px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+}
+
+
+/* ==========================================================================
+   NAVEGAÇÃO DE CATEGORIAS
+   ========================================================================== */
+
+body.db-workspace-page
+.db-nav {
+    width: 100%;
+
+    margin-top:
+        clamp(11px, 0.75vw, 14px) !important;
+
+    margin-bottom:
+        clamp(11px, 0.75vw, 14px) !important;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    overscroll-behavior-x: contain;
+
+    scrollbar-width: thin;
+}
+
+
+/* ==========================================================================
+   WORKSPACE — SIDEBAR + VIEWER
+   ========================================================================== */
+
+body.db-workspace-page
+.db-workspace {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(
+            min(290px, 100%),
+            330px
+        )
+        minmax(0, 1fr) !important;
+
+    align-items: start !important;
+
+    gap:
+        clamp(14px, 1vw, 18px) !important;
+
+    /*
+     * Remove a dependência da altura restante da viewport.
+     * A página cresce naturalmente, como nas demais migrações.
+     */
+    min-height: 0 !important;
+    max-height: none !important;
+}
+
+body.db-workspace-page
+.db-sidebar,
+body.db-workspace-page
+.db-viewer {
+    width: 100%;
+    min-width: 0;
+
+    min-height: 0 !important;
+    max-height: none !important;
+
+    border:
+        1px solid
+        var(
+            --db-ws-border-soft
+        );
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        ) !important;
+
+    background:
+        var(
+            --db-ws-surface
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        );
+}
+
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+
+body.db-workspace-page
+.db-sidebar {
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+body.db-workspace-page
+.db-side-head {
+    padding:
+        15px !important;
+
+    flex: 0 0 auto;
+
+    border-bottom:
+        1px solid
+        var(
+            --db-ws-border-soft
+        );
+
+    background:
+        var(
+            --db-ws-surface
+        );
+}
+
+body.db-workspace-page
+.db-side-top {
+    gap: 10px;
+}
+
+body.db-workspace-page
+.db-side-top > div > span {
+    color:
+        var(
+            --db-ws-primary
+        );
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+body.db-workspace-page
+.db-side-top h2 {
+    margin-top: 4px;
+
+    color:
+        var(
+            --db-ws-text
+        );
+
+    font-size:
+        var(
+            --ws-font-base,
+            14px
+        ) !important;
+
+    line-height: 1.3;
+}
+
+body.db-workspace-page
+.db-count {
+    min-width: 30px;
+    min-height: 30px;
+
+    display: grid;
+    place-items: center;
+
+    color:
+        var(
+            --db-ws-primary-hover
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+
+    background:
+        var(
+            --db-ws-primary-soft
+        );
+}
+
+
+/* ==========================================================================
+   BUSCA
+   ========================================================================== */
+
+body.db-workspace-page
+.db-search {
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 12px;
+}
+
+body.db-workspace-page
+.db-search input {
+    width: 100%;
+    min-width: 0;
+
+    height:
+        var(
+            --ws-control-height-lg,
+            44px
+        ) !important;
+
+    padding:
+        0
+        12px
+        0
+        38px !important;
+
+    color:
+        var(
+            --db-ws-text
+        );
+
+    font-size:
+        var(
+            --ws-font-md,
+            13px
+        ) !important;
+
+    border:
+        1px solid
+        var(
+            --ws-control-border,
+            #D8DFE9
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-sm,
+            8px
+        ) !important;
+
+    background:
+        var(
+            --ws-control-bg,
+            #FFFFFF
+        );
+}
+
+body.db-workspace-page
+.db-search input:focus {
+    outline: 0;
+
+    border-color:
+        var(
+            --db-ws-primary
+        ) !important;
+
+    box-shadow:
+        0 0 0 3px
+        var(
+            --ws-focus-ring,
+            rgba(37, 99, 235, 0.16)
+        );
+}
+
+body.db-workspace-page
+.db-search > i {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    z-index: 2;
+
+    color:
+        var(
+            --ws-text-placeholder,
+            #98A2B3
+        );
+
+    transform:
+        translateY(-50%);
+}
+
+
+/* ==========================================================================
+   LISTA DE DASHBOARDS
+   ========================================================================== */
+
+body.db-workspace-page
+.db-list {
+    width: 100%;
+    min-width: 0;
+
+    max-height:
+        clamp(
+            420px,
+            58vh,
+            690px
+        ) !important;
+
+    margin: 0;
+    padding: 8px !important;
+
+    flex: 0 1 auto !important;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+
+    scrollbar-gutter: stable;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        )
+        transparent;
+}
+
+body.db-workspace-page
+.db-list > li {
+    min-width: 0;
+}
+
+body.db-workspace-page
+.db-card {
+    width: 100%;
+    min-width: 0;
+
+    min-height: 78px !important;
+
+    padding:
+        11px
+        12px !important;
+
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        14px;
+
+    align-items: center;
+
+    gap: 11px;
+
+    color:
+        var(
+            --db-ws-text
+        );
+
+    text-align: left;
+
+    border:
+        1px solid
+        transparent;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        ) !important;
+
+    background:
+        transparent;
+
+    transition:
+        border-color 140ms ease,
+        background 140ms ease,
+        box-shadow 140ms ease;
+}
+
+body.db-workspace-page
+.db-card:hover {
+    border-color:
+        rgba(
+            37,
+            99,
+            235,
+            0.14
+        );
+
+    background:
+        var(
+            --db-ws-primary-soft
+        );
+}
+
+body.db-workspace-page
+.db-card.is-active,
+body.db-workspace-page
+.db-card[aria-pressed="true"] {
+    border-color:
+        rgba(
+            37,
+            99,
+            235,
+            0.24
+        );
+
+    background:
+        var(
+            --db-ws-primary-soft
+        );
+
+    box-shadow:
+        inset 3px 0 0
+        var(
+            --db-ws-primary
+        );
+}
+
+body.db-workspace-page
+.db-card-icon {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    color:
+        var(
+            --db-ws-primary
+        );
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+
+    background:
+        var(
+            --db-ws-primary-soft
+        );
+}
+
+body.db-workspace-page
+.db-card-copy strong {
+    color:
+        var(
+            --db-ws-text
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.3;
+}
+
+body.db-workspace-page
+.db-card-copy small {
+    margin-top: 3px;
+
+    color:
+        var(
+            --db-ws-muted
+        );
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height: 1.4;
+}
+
+body.db-workspace-page
+.db-meta {
+    margin-top: 5px;
+
+    color:
+        var(
+            --db-ws-primary-hover
+        );
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================================================
+   VIEWER
+   ========================================================================== */
+
+body.db-workspace-page
+.db-viewer {
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+body.db-workspace-page
+.db-view-head {
+    min-height: 74px;
+
+    padding:
+        14px
+        16px !important;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    flex: 0 0 auto;
+
+    border-bottom:
+        1px solid
+        var(
+            --db-ws-border-soft
+        );
+}
+
+body.db-workspace-page
+.db-view-heading {
+    min-width: 0;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+}
+
+body.db-workspace-page
+.db-view-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 40px;
+
+    color:
+        var(
+            --db-ws-primary
+        );
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+
+    background:
+        var(
+            --db-ws-primary-soft
+        );
+}
+
+body.db-workspace-page
+.db-view-copy {
+    min-width: 0;
+}
+
+body.db-workspace-page
+.db-view-copy h2 {
+    color:
+        var(
+            --db-ws-text
+        );
+
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+
+    line-height: 1.28;
+}
+
+body.db-workspace-page
+.db-view-copy p {
+    margin-top: 4px;
+
+    color:
+        var(
+            --db-ws-muted
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.45;
+}
+
+body.db-workspace-page
+.db-tags {
+    margin-top: 8px;
+
+    gap: 6px;
+}
+
+body.db-workspace-page
+.db-tag {
+    min-height: 26px;
+
+    padding:
+        4px
+        8px;
+
+    border-radius:
+        var(
+            --ws-radius-pill,
+            999px
+        );
+
+    background:
+        var(
+            --db-ws-surface-soft
+        );
+}
+
+body.db-workspace-page
+.db-tag span {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   AÇÕES
+   ========================================================================== */
+
+body.db-workspace-page
+.db-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+body.db-workspace-page
+.db-action,
+body.db-workspace-page
+.db-external {
+    min-height:
+        var(
+            --ws-button-height-md,
+            38px
+        ) !important;
+
+    padding:
+        0
+        11px !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    font-weight: 700;
+
+    border-radius:
+        var(
+            --ws-radius-sm,
+            8px
+        ) !important;
+}
+
+body.db-workspace-page
+.db-external {
+    color: #FFFFFF;
+
+    border-color:
+        var(
+            --db-ws-primary
+        ) !important;
+
+    background:
+        var(
+            --db-ws-primary
+        ) !important;
+}
+
+body.db-workspace-page
+.db-external:hover {
+    background:
+        var(
+            --db-ws-primary-hover
+        ) !important;
+}
+
+
+/* ==========================================================================
+   POWER BI / IFRAME
+   ========================================================================== */
+
+body.db-workspace-page
+.db-frame-wrap {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    min-height: 620px !important;
+    height: auto !important;
+
+    flex: 0 0 auto !important;
+
+    overflow: hidden;
+
+    background:
+        var(
+            --db-ws-surface-soft
+        );
+}
+
+body.db-workspace-page
+.db-frame {
+    width: 100%;
+
+    height:
+        clamp(
+            620px,
+            68vh,
+            760px
+        ) !important;
+
+    min-height: 620px !important;
+    max-height: 760px;
+
+    display: block;
+
+    border: 0;
+}
+
+body.db-workspace-page
+.db-loading {
+    max-width:
+        calc(
+            100% - 32px
+        );
+}
+
+body.db-workspace-page
+.db-loading strong {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.db-workspace-page
+.db-loading small {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+body.db-workspace-page
+footer {
+    margin-top: auto;
+
+    flex: 0 0 auto;
+}
+
+
+/* ==========================================================================
+   DESKTOP / NOTEBOOK — ZOOM SAFETY
+   ========================================================================== */
+
+@media (max-width: 1023px) and (hover: hover) and (pointer: fine) {
+
+    body.db-workspace-page {
+        overflow-x: auto;
+    }
+
+    body.db-workspace-page
+    .db-page {
+        min-width:
+            var(
+                --ws-desktop-min-width,
+                1024px
+            );
+    }
+}
+
+
+/* ==========================================================================
+   DESKTOP INTERMEDIÁRIO
+   Ajustes dimensionais apenas; não empilha sidebar/viewer.
+   ========================================================================== */
+
+@media only screen and (max-width: 1320px) {
+
+    body.db-workspace-page
+    .db-page {
+        padding-inline:
+            clamp(
+                16px,
+                2vw,
+                28px
+            ) !important;
+    }
+
+    body.db-workspace-page
+    .db-workspace {
+        grid-template-columns:
+            minmax(
+                min(255px, 100%),
+                290px
+            )
+            minmax(0, 1fr) !important;
+
+        gap: 14px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame,
+    body.db-workspace-page
+    .db-frame-wrap {
+        min-height: 560px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame {
+        height:
+            clamp(
+                560px,
+                67vh,
+                700px
+            ) !important;
+    }
+}
+
+
+/* ==========================================================================
+   TABLET TOUCH
+   Mudança estrutural apenas em dispositivo touch.
+   Desktop/notebook com zoom mantém sidebar + viewer lado a lado.
+   ========================================================================== */
+
+@media only screen and (max-width: 1100px) and (pointer: coarse) {
+
+    body.db-workspace-page
+    .db-page {
+        padding-top: 22px !important;
+    }
+
+    body.db-workspace-page
+    .db-hero {
+        min-height: 0 !important;
+
+        align-items: stretch;
+        flex-direction: column;
+
+        padding:
+            20px
+            22px !important;
+    }
+
+    body.db-workspace-page
+    .db-hero-icon {
+        align-self: flex-start;
+    }
+
+    body.db-workspace-page
+    .db-workspace {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    body.db-workspace-page
+    .db-list {
+        max-height: 340px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame,
+    body.db-workspace-page
+    .db-frame-wrap {
+        min-height: 540px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame {
+        height:
+            clamp(
+                540px,
+                70vh,
+                660px
+            ) !important;
+    }
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media only screen and (max-width: 700px) and (pointer: coarse) {
+
+    body.db-workspace-page
+    .db-page {
+        padding:
+            16px
+            12px
+            24px !important;
+    }
+
+    body.db-workspace-page
+    .db-hero {
+        padding:
+            18px
+            18px !important;
+
+        border-radius:
+            var(
+                --ws-radius-xl,
+                14px
+            ) !important;
+    }
+
+    body.db-workspace-page
+    .db-hero h1 {
+        font-size:
+            clamp(
+                25px,
+                7vw,
+                30px
+            ) !important;
+    }
+
+    body.db-workspace-page
+    .db-hero p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.db-workspace-page
+    .db-sidebar,
+    body.db-workspace-page
+    .db-viewer {
+        border-radius:
+            var(
+                --ws-radius-xl,
+                14px
+            ) !important;
+    }
+
+    body.db-workspace-page
+    .db-search input {
+        font-size: 16px !important;
+    }
+
+    body.db-workspace-page
+    .db-list {
+        max-height: 300px !important;
+    }
+
+    body.db-workspace-page
+    .db-actions {
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 8px;
+    }
+
+    body.db-workspace-page
+    .db-action,
+    body.db-workspace-page
+    .db-external {
+        width: 100%;
+        min-width: 0;
+
+        white-space: normal;
+
+        text-align: center;
+    }
+
+    body.db-workspace-page
+    #dbExpand {
+        grid-column: 1 / -1;
+    }
+
+    body.db-workspace-page
+    .db-frame-wrap {
+        min-height: 470px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame {
+        min-height: 470px !important;
+        height: 520px !important;
+        max-height: none;
+    }
+}
+
+
+/* ==========================================================================
+   CELULAR PEQUENO
+   ========================================================================== */
+
+@media only screen and (max-width: 420px) and (pointer: coarse) {
+
+    body.db-workspace-page
+    .db-actions {
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+    body.db-workspace-page
+    #dbExpand {
+        grid-column: auto;
+    }
+}
+
+
+/* ==========================================================================
+   ALTURA REDUZIDA / ZOOM
+   Não comprimimos Hero, sidebar ou iframe para caber artificialmente.
+   A página passa a crescer verticalmente.
+   ========================================================================== */
+
+@media only screen and (max-height: 760px) and (min-width: 701px) {
+
+    body.db-workspace-page
+    .db-page {
+        padding-top: 18px !important;
+        padding-bottom: 24px !important;
+    }
+
+    body.db-workspace-page
+    .db-frame {
+        min-height: 540px !important;
+        height: 620px !important;
+        max-height: none;
+    }
+
+    body.db-workspace-page
+    .db-frame-wrap {
+        min-height: 540px !important;
+    }
+}
+
+
+/* ==========================================================================
+   TOUCH
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    body.db-workspace-page
+    .db-card,
+    body.db-workspace-page
+    .db-action,
+    body.db-workspace-page
+    .db-external {
+        min-height: 44px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.db-workspace-page
+    .db-card,
+    body.db-workspace-page
+    .db-action,
+    body.db-workspace-page
+    .db-external,
+    body.db-workspace-page
+    .db-frame,
+    body.db-workspace-page
+    .db-loading {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

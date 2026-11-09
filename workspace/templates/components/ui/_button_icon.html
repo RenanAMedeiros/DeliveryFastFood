@@ -1,0 +1,69 @@
+{% comment %}
+WORKSPACE UI CORE
+Componente interno: ícones dos botões
+Arquivo: components/ui/_button_icon.html
+Não utilizar diretamente nas páginas.
+{% endcomment %}
+
+{% if button_icon == "plus" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
+{% elif button_icon == "save" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M5 4H17L20 7V20H4V4H5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M8 4V9H16V4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M8 20V14H16V20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+</svg>
+
+{% elif button_icon == "filter" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M4 5H20L14 12V18L10 20V12L4 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+{% elif button_icon == "clear" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M5 5L19 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
+{% elif button_icon == "export" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M8 7L12 3L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M5 13V20H19V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+{% elif button_icon == "back" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+{% elif button_icon == "edit" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M4 20H8L19 9L15 5L4 16V20Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M13.5 6.5L17.5 10.5" stroke="currentColor" stroke-width="2"/>
+</svg>
+
+{% elif button_icon == "trash" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <path d="M5 7H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M9 7V4H15V7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M7 7L8 20H16L17 7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M10 11V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M14 11V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
+{% elif button_icon == "search" %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/>
+    <path d="M16 16L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
+{% else %}
+<svg viewBox="0 0 24 24" fill="none" focusable="false">
+    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+</svg>
+{% endif %}

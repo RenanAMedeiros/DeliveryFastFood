@@ -1,0 +1,1834 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+
+{# Workspace UI Core já é carregado por components/_head.html. #}
+{# Projetos contém somente a camada específica do módulo. #}
+<link rel="stylesheet" href="{% static 'css/projetos.css' %}?v=5.63.0">
+
+<style>
+    /* =========================================================
+       PROJETOS — AJUSTES DE LAYOUT
+       1) Footer sempre no rodapé quando a página tem pouco conteúdo
+       2) Modal maior, com corpo rolável e ações sempre visíveis
+       ========================================================= */
+
+    html {
+        min-height: 100%;
+    }
+
+    body.workspace-projetos-page {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    body.workspace-projetos-page > .workspace-projetos-main {
+        flex: 1 0 auto;
+        width: 100%;
+        min-height: 0;
+    }
+
+    body.workspace-projetos-page > footer,
+    body.workspace-projetos-page > .footer,
+    body.workspace-projetos-page > .workspace-footer,
+    body.workspace-projetos-page > .ws-footer {
+        flex: 0 0 auto;
+        margin-top: auto;
+    }
+
+    /* Modal de criação de projeto */
+    body.workspace-projetos-page .projetos-overlay.is-open {
+        align-items: center;
+        justify-content: center;
+        padding: clamp(22px, 3vh, 34px) 20px;
+    }
+
+    body.workspace-projetos-page
+    .projetos-overlay
+    .ws-modal {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body.workspace-projetos-page
+    .projetos-overlay
+    .ws-modal__dialog {
+        width: min(1280px, calc(100vw - 32px));
+        max-width: 1280px;
+        min-height: 0;
+        height: min(780px, calc(100dvh - 32px));
+        max-height: calc(100dvh - 32px);
+        margin: 0 auto;
+    }
+
+    body.workspace-projetos-page
+    .projetos-overlay
+    .ws-modal__content {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    body.workspace-projetos-page
+    #projetosNovoForm {
+        min-height: 0;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    body.workspace-projetos-page
+    .projetos-modal-body {
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: 22px;
+    }
+
+    body.workspace-projetos-page
+    .projetos-modal-footer {
+        min-height: 66px;
+        flex: 0 0 auto;
+        margin-top: 0;
+        padding: 14px 24px 16px;
+        background: var(--ws-modal-footer-bg, #fafbfc);
+        position: relative;
+        z-index: 2;
+    }
+
+    body.workspace-projetos-page
+    .projetos-modal-footer
+    .ws-button {
+        flex: 0 0 auto;
+    }
+
+    /* Usa o próprio padrão de botão do Workspace e mantém uma dimensão
+       compacta mesmo se o CSS específico de Projetos estiver em cache. */
+    body.workspace-projetos-page .projetos-external-person-button {
+        min-height: 30px;
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 8px;
+        font-size: .72rem;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    /* Layout crítico das seções do cadastro. Mantido também inline para que
+       o modal não perca espaçamento caso o static ainda esteja em cache. */
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section {
+        margin: 0 0 18px;
+        padding: 18px 18px 20px;
+        border: 1px solid var(--ws-border-soft, #e5e9f0);
+        border-radius: 12px;
+        background: var(--ws-surface-card, #fff);
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header {
+        margin: 0 0 18px;
+        padding: 0 0 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        border-bottom: 1px solid var(--ws-border-soft, #edf0f4);
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header > div {
+        min-width: 0;
+        display: block;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header strong,
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header small {
+        display: block !important;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header strong {
+        margin: 0;
+        line-height: 1.25;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-section__header small {
+        margin-top: 5px;
+        line-height: 1.45;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-form-grid {
+        row-gap: 18px !important;
+        column-gap: 16px !important;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .ws-form-field {
+        min-width: 0;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .ws-form-label {
+        display: block;
+        margin: 0 0 7px;
+        line-height: 1.25;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .ws-form-help {
+        margin-top: 7px;
+        line-height: 1.45;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-field-label-row {
+        min-height: 30px;
+        margin-bottom: 7px;
+        align-items: center;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-field-label-row .ws-form-label {
+        margin-bottom: 0;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline[hidden] {
+        display: none !important;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline {
+        margin-top: -2px;
+        padding: 14px;
+        border: 1px solid var(--ws-primary-border, rgba(37, 99, 235, .18));
+        border-radius: 10px;
+        background: var(--ws-primary-soft, #f4f8ff);
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__head {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__head strong,
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__head small {
+        display: block;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__head small {
+        margin-top: 3px;
+        color: var(--ws-text-muted, #667085);
+        line-height: 1.4;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, .9fr);
+        gap: 12px;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__actions {
+        margin-top: 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    @media (max-width: 820px) and (pointer: coarse) {
+        body.workspace-projetos-page
+        .projetos-overlay
+        .ws-modal__dialog {
+            width: min(100%, calc(100vw - 20px));
+            height: calc(100dvh - 20px);
+            max-height: calc(100dvh - 20px);
+        }
+
+        body.workspace-projetos-page
+        .projetos-overlay.is-open {
+            padding: 12px;
+        }
+    }
+
+    @media (max-width: 640px) and (pointer: coarse) {
+        body.workspace-projetos-page
+        .projetos-modal-footer {
+            min-height: 0;
+            padding: 12px 15px 14px;
+        }
+
+
+        body.workspace-projetos-page #projetosModalBackdrop .projetos-external-inline__grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 1023px) and (hover: hover) and (pointer: fine) {
+        body.workspace-projetos-page #projetosModalBackdrop {
+            overflow: auto !important;
+        }
+
+        body.workspace-projetos-page
+        .projetos-overlay
+        .ws-modal__dialog {
+            width: calc(var(--ws-desktop-min-width, 1024px) - 32px);
+            min-width: calc(var(--ws-desktop-min-width, 1024px) - 32px);
+        }
+    }
+
+    /* Fallback de abertura do modal independente do CSS/JS externo. */
+    body.workspace-projetos-page #projetosModalBackdrop.is-open {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    body.workspace-projetos-page #projetosModalBackdrop.is-open > .ws-modal {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Portfólio: mais área útil, linhas compactas e total sempre no rodapé. */
+    body.workspace-projetos-page #projetosListaView.is-active {
+        display: grid;
+        grid-template-rows: auto minmax(240px, auto) auto;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    body.workspace-projetos-page #projetosTableWrap {
+        min-height: 240px;
+        height: auto;
+        max-height: clamp(420px, 62dvh, 780px);
+        overflow: auto;
+    }
+
+    body.workspace-projetos-page .projetos-table th,
+    body.workspace-projetos-page .projetos-table td {
+        height: 38px;
+        padding: 5px 10px;
+        font-size: 11.5px;
+        line-height: 1.2;
+    }
+
+    body.workspace-projetos-page .projetos-table th,
+    body.workspace-projetos-page .projetos-table th button {
+        font-size: 11.5px;
+    }
+
+    body.workspace-projetos-page .projetos-project-cell strong,
+    body.workspace-projetos-page .projetos-table-people,
+    body.workspace-projetos-page .projetos-person-chip {
+        font-size: 11.5px;
+    }
+
+    body.workspace-projetos-page .projetos-table-total {
+        position: relative;
+        z-index: 8;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        flex: 0 0 auto;
+        padding: 8px 14px;
+        border-top: 2px solid var(--ws-primary, #246bfd);
+        background: #fff;
+        box-shadow: 0 -4px 12px rgba(15, 23, 42, .05);
+        font-size: 12px;
+    }
+
+    body.workspace-projetos-page .projetos-table-total span {
+        color: var(--ws-primary, #246bfd);
+        font-weight: 700;
+    }
+</style>
+
+
+<body class="workspace-projetos-page ws-app">
+    {% include "components/navbar/_navbar.html" %}
+
+    <main
+        class="workspace-projetos-main ws-main"
+        id="projetosApp"
+        data-user-id="{{ request.user.id }}"
+        data-user-name="{{ request.user.get_full_name|default:request.user.username|escape }}"
+        data-api-projetos="{% url 'projetos_api' %}"
+        data-api-exportar-excel="{% url 'projetos_exportar_excel_api' %}"
+        data-api-gantt-datas="{% url 'projetos_gantt_datas_api' 'item' 0 %}"
+        data-api-tarefas="{% url 'projeto_tarefa_api' 0 %}"
+        data-api-tarefa-subtarefas="{% url 'projeto_tarefa_subtarefas_api' 0 %}"
+        data-api-subtarefas="{% url 'projeto_subtarefa_api' 0 %}"
+        data-api-cronogramas="{% url 'projetos_cronogramas_api' %}"
+        data-api-cronograma-previa="{% url 'projetos_cronograma_previa_api' %}"
+        data-api-contexto="{% url 'projetos_contexto_api' %}"
+        data-api-pessoas="{% url 'projetos_pessoas_api' %}"
+        data-api-grupos="{% url 'projetos_grupos_api' %}"
+        data-api-meu-dia="{% url 'projetos_meu_dia_api' %}"
+        data-api-usuarios="{% url 'projetos_usuarios_api' %}"
+    >
+        <div class="workspace-projetos-shell ws-page ws-page-container ws-page-stack">
+
+            <div class="ws-kpi-grid projetos-kpi-grid" aria-label="Indicadores de projetos">
+                {% include "components/ui/_kpi_card.html" with kpi_label="PROJETOS ATIVOS" kpi_value="0" kpi_subtitle="Portfólio atual" kpi_icon="users" kpi_tooltip="Projetos ativos, excluindo Rascunho e Cancelado." kpi_dom_id="projetosKpiAtivos" %}
+
+                {% include "components/ui/_kpi_card.html" with kpi_label="EM EXECUÇÃO" kpi_value="0" kpi_subtitle="Andamento, espera e homologação" kpi_icon="chart" kpi_tooltip="Projetos em andamento, aguardando ou em homologação." kpi_dom_id="projetosKpiAndamento" %}
+
+                {% include "components/ui/_kpi_card.html" with kpi_label="SAÚDE CRÍTICA" kpi_value="0" kpi_subtitle="Requerem ação" kpi_icon="target" kpi_tooltip="Projetos ativos com bloqueios, marcos atrasados ou risco relevante de entrega." kpi_dom_id="projetosKpiCriticos" %}
+
+                {% include "components/ui/_kpi_card.html" with kpi_label="PROGRESSO MÉDIO" kpi_value="0%" kpi_subtitle="Média do portfólio" kpi_icon="calendar" kpi_tooltip="Média de tarefas concluídas entre as tarefas não canceladas dos projetos ativos." kpi_dom_id="projetosKpiProgresso" %}
+            </div>
+
+            <div class="projetos-workspace-layout">
+                <aside class="ws-panel projetos-rail" aria-label="Navegação de projetos">
+                    <div class="projetos-rail__header">
+                        <span>PROJETOS</span>
+                        <button
+                            type="button"
+                            class="projetos-rail__toggle"
+                            id="projetosRailToggle"
+                            aria-label="Recolher navegação de projetos"
+                            aria-expanded="true"
+                            title="Recolher navegação"
+                        >
+                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <nav class="projetos-rail__nav">
+                        <button type="button" class="projetos-rail__item is-active" data-scope="todos">
+                            <span><i class="fa fa-th-large" aria-hidden="true"></i> Visão geral</span>
+                            <small id="projetosRailTodos">0</small>
+                        </button>
+
+                        <button type="button" class="projetos-rail__item" data-scope="meu_dia">
+                            <span><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Meu Dia</span>
+                            <small id="projetosRailMeuDia">0</small>
+                        </button>
+
+                        <button type="button" class="projetos-rail__item" data-scope="meus">
+                            <span><i class="fa fa-user" aria-hidden="true"></i> Meus projetos</span>
+                            <small id="projetosRailMeus">0</small>
+                        </button>
+
+                        <button type="button" class="projetos-rail__item" data-scope="criticos">
+                            <span><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Críticos</span>
+                            <small id="projetosRailCriticos">0</small>
+                        </button>
+
+                        <button type="button" class="projetos-rail__item" data-scope="atencao">
+                            <span><i class="fa fa-clock-o" aria-hidden="true"></i> Atenção</span>
+                            <small id="projetosRailAtencao">0</small>
+                        </button>
+                    </nav>
+
+                    <div class="projetos-rail__divider"></div>
+
+                    <section class="projetos-rail__favorites" aria-label="Projetos fixados">
+                        <div class="projetos-rail__favorites-header">
+                            <span><i class="fa fa-star" aria-hidden="true"></i> FIXADOS</span>
+                            <small id="projetosRailFavoritesCount">0</small>
+                        </div>
+                        <div class="projetos-rail__favorites-list" id="projetosRailFavorites">
+                            <span class="projetos-rail__favorites-empty">Nenhum projeto fixado.</span>
+                        </div>
+                    </section>
+                </aside>
+
+                <section class="ws-panel projetos-content-panel">
+                    <header class="ws-panel__header projetos-panel-header">
+                        <div class="ws-panel__heading">
+                            <span class="ws-panel__icon" aria-hidden="true">
+                                <i class="fa fa-folder-open"></i>
+                            </span>
+                            <div class="ws-panel__heading-copy">
+                                <div class="ws-panel__title-row">
+                                    <h2 class="ws-panel__title" id="projetosPanelTitle">Portfólio de Projetos</h2>
+                                    <span class="ws-panel__badge" id="projetosCountBadge">0 projetos</span>
+                                </div>
+                                <p class="ws-panel__description" id="projetosPanelDescription">
+                                    Visão macro do portfólio. O detalhamento de sprints, tarefas e participantes fica no dashboard do projeto.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="ws-panel__actions">
+                            <button
+                                type="button"
+                                class="ws-button ws-button--primary ws-button--md"
+                                id="projetosNovoButton"
+                                onclick="window.projetosOpenNewModal && window.projetosOpenNewModal(event)"
+                            >
+                                <span class="ws-button__icon" aria-hidden="true"><i class="fa fa-plus"></i></span>
+                                <span class="ws-button__text">Novo projeto</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div id="projetosPortfolioArea">
+                    <div class="projetos-toolbar">
+                        <div class="projetos-compact-filter-launchers" aria-label="Filtros rápidos">
+                            <button
+                                type="button"
+                                class="ws-button ws-button--secondary ws-button--sm ws-button--icon projetos-compact-filter-button"
+                                id="projetosBuscaCompactToggle"
+                                data-compact-filter="search"
+                                aria-label="Buscar projetos"
+                                aria-expanded="false"
+                                title="Buscar"
+                            >
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="ws-button ws-button--secondary ws-button--sm ws-button--icon projetos-compact-filter-button"
+                                id="projetosStatusCompactToggle"
+                                data-compact-filter="status"
+                                aria-label="Filtrar por status"
+                                aria-expanded="false"
+                                title="Status"
+                            >
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="ws-button ws-button--secondary ws-button--sm ws-button--icon projetos-compact-filter-button"
+                                id="projetosDatasCompactToggle"
+                                data-compact-filter="dates"
+                                aria-label="Filtrar por datas"
+                                aria-expanded="false"
+                                title="Datas"
+                            >
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="projetos-search-wrap projetos-compact-filter-target" data-compact-filter-target="search">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            <input
+                                type="search"
+                                class="ws-form-control projetos-search"
+                                id="projetosBusca"
+                                placeholder="Buscar projeto, código, referência, cliente, Owner, Stakeholder ou Responsável..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <select class="ws-form-control projetos-filter-select projetos-compact-filter-target" data-compact-filter-target="status" id="projetosStatusFiltro" aria-label="Filtrar por status">
+                            <option value="">Todos os status</option>
+                            <option value="__atrasado">Em atraso</option>
+                            <option value="rascunho">Rascunho</option>
+                            <option value="em_andamento">Em andamento</option>
+                            <option value="aguardando">Aguardando</option>
+                            <option value="pausado">Pausado</option>
+                            <option value="homologacao">Homologação</option>
+                            <option value="encerramento">Encerramento</option>
+                            <option value="concluido">Concluído</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="ws-button ws-button--secondary ws-button--sm ws-button--icon projetos-smart-filter-toggle"
+                            id="projetosSmartFilterToggle"
+                            aria-label="Mais filtros"
+                            title="Mais filtros"
+                            aria-expanded="false"
+                            aria-controls="projetosSmartFilters"
+                        >
+                            <i class="fa fa-sliders" aria-hidden="true"></i>
+                            <small id="projetosSmartFilterCount" hidden>0</small>
+                        </button>
+
+                        <div class="projetos-date-filters projetos-compact-filter-target" data-compact-filter-target="dates">
+                            <select class="ws-form-control projetos-filter-select" id="projetosDataCampo" aria-label="Campo de data">
+                                <option value="">Datas</option>
+                                <option value="abertura">Data de abertura</option>
+                                <option value="inicio">Início do cronograma</option>
+                                <option value="homologacao">Homologação prevista</option>
+                                <option value="golive">Entrega / Go Live prevista</option>
+                                <option value="prazo">Conclusão prevista</option>
+                                <option value="conclusao">Data de conclusão real</option>
+                            </select>
+                            <input class="ws-form-control" type="date" id="projetosDataDe" aria-label="Data de">
+                            <span>até</span>
+                            <input class="ws-form-control" type="date" id="projetosDataAte" aria-label="Data até">
+                        </div>
+
+                        <div class="projetos-view-switch" role="tablist" aria-label="Visualização">
+                            <button type="button" class="projetos-view-switch__button is-active" data-view="lista" role="tab">
+                                <i class="fa fa-list"></i><span>Lista</span>
+                            </button>
+                            <button type="button" class="projetos-view-switch__button" data-view="timeline" role="tab">
+                                <i class="fa fa-tasks"></i><span>Gantt</span>
+                            </button>
+                            <button type="button" class="projetos-view-switch__button" data-view="kanban" role="tab">
+                                <i class="fa fa-columns"></i><span>Kanban</span>
+                            </button>
+                            <button type="button" class="projetos-view-switch__button" data-view="graficos" role="tab">
+                                <i class="fa fa-bar-chart"></i><span>Gráficos</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <section class="ws-panel ws-panel--compact ws-filter-panel" id="projetosSmartFilters" hidden>
+                        <header class="ws-panel__header ws-filter-panel__header">
+                            <div class="ws-panel__heading">
+                                <span class="ws-panel__icon ws-filter-panel__icon" aria-hidden="true">
+                                    <i class="fa fa-filter"></i>
+                                </span>
+                                <div class="ws-panel__heading-copy">
+                                    <div class="ws-panel__title-row">
+                                        <h3 class="ws-panel__title">Filtros de gestão</h3>
+                                    </div>
+                                    <p class="ws-panel__description">Aplicados à Lista, ao Gantt e aos cards do Kanban.</p>
+                                </div>
+                            </div>
+                            <div class="ws-panel__actions">
+                                <button type="button" class="ws-button ws-button--ghost ws-button--sm" id="projetosSmartFilterReset">
+                                    <span class="ws-button__icon" aria-hidden="true"><i class="fa fa-undo"></i></span>
+                                    <span class="ws-button__text">Limpar filtros</span>
+                                </button>
+                            </div>
+                        </header>
+
+                        <div class="ws-panel__body ws-filter-panel__body">
+                            <div class="ws-filter-grid">
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Responsável / Líder" filter_key="responsible" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Owner" filter_key="owner" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Stakeholder" filter_key="stakeholder" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Departamento" filter_key="department" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Grupo" filter_key="group" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Origem" filter_key="origin" filter_placeholder="Todas" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Empresa" filter_key="company" filter_placeholder="Todas" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Cliente" filter_key="client" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Tipo de projeto" filter_key="type" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Momento atual" filter_key="moment" filter_placeholder="Todos" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Saúde" filter_key="health" filter_placeholder="Todas" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Prioridade" filter_key="priority" filter_placeholder="Todas" %}
+                                {% include "components/ui/_filter_multiselect.html" with filter_label="Prazo" filter_key="deadline" filter_placeholder="Todos" %}
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="projetos-view is-active" id="projetosListaView" data-view-panel="lista">
+                        <div class="projetos-list-tools">
+                            <div><strong>Tabela do portfólio</strong><span>Ordene, reorganize ou oculte colunas conforme a análise.</span></div>
+                            <div class="projetos-list-tools__actions ws-actions ws-actions--end ws-actions--stack-mobile">
+                                <button type="button" id="projetosDeleteSelected" class="ws-button ws-button--danger ws-button--sm projetos-delete-selected" hidden><i class="fa fa-trash"></i> Apagar selecionados</button>
+                                <button type="button" id="projetosColumnsToggle" class="ws-button ws-button--secondary ws-button--sm"><i class="fa fa-columns"></i> Colunas</button>
+                                <button type="button" id="projetosExportExcel" class="ws-button ws-button--secondary ws-button--sm"><i class="fa fa-file-excel-o"></i> Exportar Excel</button>
+                                <button type="button" id="projetosListFullscreen" class="ws-button ws-button--secondary ws-button--sm"><i class="fa fa-expand"></i> Expandir</button>
+                            </div>
+                            <div class="projetos-columns-menu" id="projetosColumnsMenu" hidden></div>
+                        </div>
+                        <div class="projetos-table-wrap" id="projetosTableWrap">
+                            <table class="projetos-table">
+                                <thead>
+                                    <tr id="projetosTableHead">
+                                        <th>Projeto</th>
+                                        <th>Tipo</th>
+                                        <th>Metodologia</th>
+                                        <th>Referência</th>
+                                        <th>Cliente</th>
+                                        <th>Empresa</th>
+                                        <th>Owner</th>
+                                        <th>Stakeholder</th>
+                                        <th>Responsável</th>
+                                        <th>Grupo</th>
+                                        <th>Período</th>
+                                        <th>Homologação</th>
+                                        <th>Go Live</th>
+                                        <th>Status</th>
+                                        <th>Momento atual</th>
+                                        <th>Marcos</th>
+                                        <th>Saúde</th>
+                                        <th>Progresso</th>
+                                        <th>Prioridade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projetosTableBody"></tbody>
+                            </table>
+                            <div class="projetos-empty projetos-table-empty-overlay" id="projetosEmpty" hidden>
+                                <span class="projetos-empty__icon"><i class="fa fa-folder-open"></i></span>
+                                <strong>Nenhum projeto encontrado</strong>
+                                <p>Altere os filtros ou selecione outra visão para continuar.</p>
+                            </div>
+                        </div>
+                        <div class="projetos-table-total" id="projetosTableTotal" role="status" aria-live="polite">
+                            <strong>Total de projetos:</strong> <span>0</span>
+                        </div>
+                    </div>
+
+                    <div class="projetos-view" id="projetosTimelineView" data-view-panel="timeline">
+                        <div class="projetos-gantt-shell" id="projetosGanttShell">
+                            <div class="projetos-gantt-toolbar">
+                                <div class="projetos-gantt-toolbar__copy">
+                                <strong>Gantt do projeto</strong>
+                                    <span>Escolha um projeto para abrir sua linha do tempo.</span>
+                                </div>
+                                <div class="projetos-gantt-toolbar__controls">
+                                    <select class="ws-form-control projetos-gantt-project" id="projetosGanttProject" aria-label="Projeto do Gantt"></select>
+                                    <select class="ws-form-control projetos-gantt-scale" id="projetosGanttScale" aria-label="Escala do Gantt">
+                                        <option value="week">Semana</option>
+                                        <option value="month" selected>Mês</option>
+                                        <option value="year">Ano</option>
+                                    </select>
+                                    <label class="projetos-gantt-action projetos-gantt-filter-toggle" title="Mostrar somente tarefas em que você é executor">
+                                        <input type="checkbox" id="projetosGanttMine">
+                                        <span>Minhas tarefas</span>
+                                    </label>
+                                    <label class="projetos-gantt-action projetos-gantt-filter-toggle" title="Mostrar somente tarefas atrasadas">
+                                        <input type="checkbox" id="projetosGanttOverdue">
+                                        <span>Atrasadas</span>
+                                    </label>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttToggleStages" aria-label="Expandir todas as Sprints e fases" data-gantt-tooltip="Expandir todas as Sprints e fases" disabled>
+                                        <i class="fa fa-angle-double-down"></i><span>Expandir etapas</span>
+                                    </button>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttToggleSubtasks" aria-label="Exibir subtarefas das etapas abertas" data-gantt-tooltip="Exibir subtarefas das etapas abertas" disabled>
+                                        <i class="fa fa-list-ul"></i><span>Exibir subtarefas</span>
+                                    </button>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttFullscreen" aria-label="Expandir Gantt" data-gantt-tooltip="Expandir para apresentação">
+                                        <i class="fa fa-expand"></i><span>Tela cheia</span>
+                                    </button>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttExport" aria-label="Exportar Gantt em imagem" data-gantt-tooltip="Baixar o Gantt completo em PNG" disabled>
+                                        <i class="fa fa-download"></i><span>Exportar PNG</span>
+                                    </button>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttExportExcel" aria-label="Exportar Gantt em Excel" data-gantt-tooltip="Baixar as linhas visíveis do Gantt em Excel" disabled>
+                                        <i class="fa fa-file-excel-o"></i><span>Exportar Excel</span>
+                                    </button>
+                                    <button type="button" class="projetos-gantt-action" id="projetosGanttSendStatus" aria-label="Enviar Status Report por e-mail" data-gantt-tooltip="Revisar destinatários e enviar o Status Report com Gantt e Excel" disabled>
+                                        <i class="fa fa-paper-plane"></i><span>Enviar Status</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="projetos-gantt-legend" aria-label="Legenda de situação do cronograma">
+                                <span><i class="is-not-started"></i>Não iniciado</span>
+                                <span><i class="is-on-track"></i>Em dia</span>
+                                <span><i class="is-due-soon"></i>Próximo do vencimento</span>
+                                <span><i class="is-overdue"></i>Em atraso</span>
+                                <span><i class="is-completed"></i>Concluído</span>
+                                <small><i class="fa fa-hand-grab-o"></i> Arraste o calendário em qualquer direção para navegar e as barras para reagendar.</small>
+                            </div>
+                            <div class="projetos-timeline projetos-gantt" id="projetosTimeline"></div>
+                        </div>
+                    </div>
+
+                    <div class="projetos-view" id="projetosKanbanView" data-view-panel="kanban">
+                        <div class="projetos-kanban" id="projetosKanban"></div>
+                    </div>
+
+                    <div class="projetos-view" id="projetosGraficosView" data-view-panel="graficos">
+                        <div class="projetos-charts" id="projetosCharts" aria-live="polite"></div>
+                    </div>
+
+                    </div>
+
+                    <div class="projetos-meu-dia" id="projetosMeuDiaArea" hidden>
+                        <div class="projetos-meu-dia__summary">
+                            <article class="projetos-day-card">
+                                <span>VENCE HOJE</span>
+                                <strong id="projetosDiaVenceHoje">0</strong>
+                                <small>tarefas com prazo hoje</small>
+                            </article>
+                            <article class="projetos-day-card">
+                                <span>ATRASADAS</span>
+                                <strong id="projetosDiaAtrasadas">0</strong>
+                                <small>pendências anteriores</small>
+                            </article>
+                            <article class="projetos-day-card">
+                                <span>INICIAM HOJE</span>
+                                <strong id="projetosDiaIniciamHoje">0</strong>
+                                <small>novas ações do dia</small>
+                            </article>
+                            <article class="projetos-day-card">
+                                <span>MARCOS HOJE</span>
+                                <strong id="projetosDiaMarcosHoje">0</strong>
+                                <small>entregas e marcos</small>
+                            </article>
+                        </div>
+
+                        <div class="projetos-day-sections" id="projetosMeuDiaListas"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <div class="projetos-overlay" id="projetosModalBackdrop" aria-hidden="true">
+        <div class="ws-modal ws-modal--lg ws-modal--centered" role="dialog" aria-modal="true" aria-labelledby="projetosNovoTitle">
+            <div class="ws-modal__dialog">
+                <div class="ws-modal__content">
+                    <header class="ws-modal__header">
+                        <div class="ws-modal__heading">
+                            <span class="projetos-modal-eyebrow">PRÉ-CADASTRO</span>
+                            <h2 class="ws-modal__title" id="projetosNovoTitle">Novo projeto</h2>
+                            <p class="ws-modal__description">
+                                Registre o projeto antes da integração. Ele permanecerá como Rascunho até ser enriquecido pelo TiFlux e revisado para início.
+                            </p>
+                        </div>
+                        <button type="button" class="ws-modal__close" id="projetosModalClose" aria-label="Fechar" onclick="window.projetosCloseNewModal && window.projetosCloseNewModal(event)">×</button>
+                    </header>
+
+                    <form id="projetosNovoForm" onsubmit="return window.projetosSubmitNewFallback ? window.projetosSubmitNewFallback(event) : false;">
+                        <div class="ws-modal__body projetos-modal-body">
+                            <div class="projetos-preregister-note" role="note">
+                                <span class="projetos-preregister-note__icon"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                                <div>
+                                    <strong>Pré-cadastro — o projeto nasce como Rascunho</strong>
+                                    <span>Preencha o que já souber. Os dados oficiais do ticket serão enriquecidos pela integração TiFlux. O cronograma só é efetivado quando o projeto for revisado e colocado em andamento.</span>
+                                </div>
+                                <span class="projetos-preregister-note__status">Rascunho</span>
+                            </div>
+
+                            <section class="projetos-form-section">
+                                <header class="projetos-form-section__header">
+                                    <span class="projetos-form-section__icon"><i class="fa fa-folder-open"></i></span>
+                                    <div>
+                                        <strong>Dados do projeto</strong>
+                                        <small>Os mesmos campos disponíveis no drawer. Campos do TiFlux podem ser confirmados ou substituídos quando a integração ocorrer.</small>
+                                    </div>
+                                </header>
+                                <div class="ws-form-grid projetos-form-grid">
+                                    <div class="ws-form-field ws-form-field--span-6">
+                                        <label class="ws-form-label" for="projetoNome">Projeto <span class="ws-form-required">*</span></label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="text" id="projetoNome" maxlength="255" required placeholder="Ex.: Integração | Cliente | API"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoReferencia">Referência TiFlux</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="text" id="projetoReferencia" placeholder="Ex.: 143894"></div>
+                                        <div class="ws-form-help">Se o ticket já existir, informe o número. Isso ajuda a integração a localizar este Rascunho.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoReferenciaUrl">URL TiFlux</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="url" id="projetoReferenciaUrl" maxlength="1000" placeholder="https://..."></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoCslog">Referência CSLOG</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="text" id="projetoCslog" maxlength="120" placeholder="Ex.: 157315"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoCslogUrl">URL CSLOG</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="url" id="projetoCslogUrl" maxlength="1000" placeholder="https://..."></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoMesa">Mesa</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control projetos-integration-readonly" type="text" id="projetoMesa" readonly placeholder="Preenchido pela integração TiFlux"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoCategoria">Categoria</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="text" id="projetoCategoria" maxlength="150" placeholder="Categoria do projeto"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-6">
+                                        <label class="ws-form-label" for="projetoServicoCompleto">Serviço completo</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control projetos-integration-readonly" type="text" id="projetoServicoCompleto" readonly placeholder="Preenchido pela integração TiFlux"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoGrupos">Grupo</label>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoGrupos"><option value="">Selecione o grupo</option>{% for item in projetos_modal_catalogos.grupos %}<option value="{{ item.id }}">{{ item.nome }}</option>{% endfor %}</select>
+                                        </div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoCliente">Cliente</label>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoCliente"><option value="">Selecione o cliente</option>{% for item in projetos_modal_catalogos.clientes %}<option value="{{ item.id }}">{{ item.nome }}</option>{% endfor %}</select>
+                                        </div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoEmpresa">Empresa</label>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoEmpresa"><option value="">Selecione a empresa</option>{% for item in projetos_modal_catalogos.empresas %}<option value="{{ item.id }}">{{ item.nome }}</option>{% endfor %}</select>
+                                        </div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoOwner">Owner <span class="ws-form-required">*</span></label>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoOwner" required><option value="">Selecione o Owner</option>{% for item in projetos_modal_catalogos.owners %}<option value="{{ item.id }}" data-grupo-nome="{{ item.grupo_nome }}">{{ item.nome }}{% if item.grupo_nome %} · {{ item.grupo_nome }}{% endif %}</option>{% endfor %}</select>
+                                        </div>
+                                        <div class="ws-form-help">Governança interna. A integração não substitui o Owner.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <div class="projetos-field-label-row">
+                                            <label class="ws-form-label" for="projetoStakeholder">Stakeholder</label>
+                                            <button type="button" class="ws-button ws-button--secondary ws-button--sm projetos-external-person-button" data-external-person-inline="stakeholder-create" aria-expanded="false" aria-controls="projetosExternalPersonInline"><span class="ws-button__icon" aria-hidden="true"><i class="fa fa-user-plus"></i></span><span class="ws-button__text">Pessoa externa</span></button>
+                                        </div>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoStakeholder"><option value="">Sem Stakeholder definido</option>{% for item in projetos_modal_catalogos.pessoas %}<option value="{{ item.id }}">{{ item.nome }}{% if item.contexto %} · {{ item.contexto }}{% elif item.externo %} · Externo{% endif %}</option>{% endfor %}</select>
+                                        </div>
+                                        <div class="ws-form-help">Pode ser confirmado pelo solicitante recebido do TiFlux.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoResponsavel">Líder do projeto</label>
+                                        <div class="ws-form-control-wrap">
+                                            <select class="ws-form-control" id="projetoResponsavel"><option value="">Sem responsável definido</option>{% for item in projetos_modal_catalogos.responsaveis %}<option value="{{ item.id }}" data-grupo-nome="{{ item.grupo_nome }}">{{ item.nome }}{% if item.grupo_nome %} · {{ item.grupo_nome }}{% endif %}</option>{% endfor %}</select>
+                                        </div>
+                                        <div class="ws-form-help">Pode ser confirmado pelo responsável recebido do TiFlux.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoPrioridade">Prioridade</label>
+                                        <div class="ws-form-control-wrap"><select class="ws-form-control" id="projetoPrioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="critica">Crítica</option></select></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <div class="projetos-field-label-row"><label class="ws-form-label" for="projetoMetodologia">Metodologia</label><button type="button" class="projetos-methodology-help" id="projetoMetodologiaAjuda"><i class="fa fa-circle-question" aria-hidden="true"></i> Entenda</button></div>
+                                        <div class="ws-form-control-wrap"><select class="ws-form-control" id="projetoMetodologia"><option value="agil" selected>Ágil</option><option value="waterfall">Waterfall</option></select></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-6">
+                                        <label class="ws-form-label" for="projetoCronograma">Tipo do projeto / Cronograma</label>
+                                        <div class="ws-form-control-wrap"><select class="ws-form-control" id="projetoCronograma"><option value="">Selecione o tipo</option>{% for item in projetos_modal_catalogos.modelos %}<option value="{{ item.id }}">{{ item.nome }}{% if item.esperada %} · Recomendada{% endif %}</option>{% endfor %}</select></div>
+                                        <div class="ws-form-help">Pode ser pré-selecionado agora. Nenhuma Sprint/Fase será criada enquanto o projeto estiver em Rascunho.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataAbertura">Data de abertura do projeto</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataAbertura"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataInicio">Data de início do cronograma</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataInicio"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDuracaoDiasUteis">Duração (dias úteis)</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="number" id="projetoDuracaoDiasUteis" min="1" max="2600" step="1" value="15"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataHomologacao">Homologação prevista</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataHomologacao"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataGoLive">Entrega / Go Live prevista</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataGoLive"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataFim">Conclusão prevista</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataFim"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoDataConclusao">Data de conclusão real</label>
+                                        <div class="ws-form-control-wrap"><input class="ws-form-control" type="date" id="projetoDataConclusao"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-3">
+                                        <label class="ws-form-label" for="projetoStatusInicial">Status do projeto</label>
+                                        <div class="ws-form-control-wrap"><select class="ws-form-control" id="projetoStatusInicial" disabled><option value="rascunho" selected>Rascunho</option></select></div>
+                                        <div class="ws-form-help">O pré-cadastro não pode iniciar o projeto. Após a integração, revise os dados no drawer e altere para Em andamento.</div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-12">
+                                        <div class="projetos-methodology-guide" id="projetoMetodologiaGuia" aria-live="polite"></div>
+                                    </div>
+
+                                    <div class="ws-form-field ws-form-field--span-12">
+                                        <label class="ws-form-label" for="projetoDescricao">Descrição</label>
+                                        <div class="ws-form-control-wrap"><textarea class="ws-form-control projetos-textarea" id="projetoDescricao" rows="4" placeholder="Objetivo, escopo ou contexto do projeto..."></textarea></div>
+                                        <div class="ws-form-help">Se o TiFlux trouxer uma descrição oficial, ela passa a ser a referência cadastral do projeto.</div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="projetos-template-preview" id="projetosTemplatePreview" hidden></div>
+                        </div>
+
+                        <footer class="ws-modal__footer projetos-modal-footer">
+                            <button type="button" class="ws-button ws-button--secondary ws-button--md" id="projetosCancelarButton" onclick="window.projetosCloseNewModal && window.projetosCloseNewModal(event)">Cancelar</button>
+                            <button type="submit" class="ws-button ws-button--primary ws-button--md" id="projetosCriarSubmit">
+                                <span class="ws-button__icon"><i class="fa fa-plus"></i></span>
+                                <span class="ws-button__text">Salvar rascunho</span>
+                            </button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="projetos-methodology-backdrop" id="projetosMethodologyBackdrop" aria-hidden="true" hidden>
+        <section class="projetos-methodology-modal" id="projetosMethodologyGuide" role="dialog" aria-modal="true" aria-labelledby="projetosMethodologyTitle">
+            <header class="projetos-methodology-modal__header">
+                <div>
+                    <span class="projetos-modal-eyebrow">GUIA DE METODOLOGIA</span>
+                    <h2 id="projetosMethodologyTitle">Qual metodologia faz mais sentido para este projeto?</h2>
+                    <p>Leia as diferenças e responda às perguntas. O sistema recomenda uma opção, mas a escolha final continua com o analista.</p>
+                </div>
+                <button type="button" class="ws-modal__close" id="projetosMethodologyClose" aria-label="Fechar">×</button>
+            </header>
+
+            <div class="projetos-methodology-modal__body">
+                <div class="projetos-methodology-cards">
+                    <article class="projetos-methodology-card" data-methodology="agil">
+                        <span class="projetos-methodology-card__icon"><i class="fa fa-bolt"></i></span>
+                        <div><h3>Ágil</h3><strong>Sprint → Tarefa → Subtarefa</strong><p>Use quando o escopo pode evoluir, há entregas incrementais e o time precisa adaptar prioridades ao longo do projeto.</p><small>Acompanhe: backlog, velocidade, Sprints e entregas.</small></div>
+                        <button type="button" class="ws-button ws-button--secondary ws-button--sm" data-methodology-use="agil">Usar Ágil</button>
+                    </article>
+                    <article class="projetos-methodology-card" data-methodology="waterfall">
+                        <span class="projetos-methodology-card__icon"><i class="fa fa-water"></i></span>
+                        <div><h3>Waterfall</h3><strong>Fase → Tarefa → Subtarefa</strong><p>Use quando o escopo é estável, as etapas são sequenciais e existem aprovações ou dependências rígidas entre fases.</p><small>Acompanhe: fases, dependências, marcos e caminho crítico.</small></div>
+                        <button type="button" class="ws-button ws-button--secondary ws-button--sm" data-methodology-use="waterfall">Usar Waterfall</button>
+                    </article>
+                </div>
+
+                <div class="projetos-methodology-questionnaire">
+                    <div class="projetos-methodology-questionnaire__head"><div><h3>Ajude o sistema a recomendar</h3><p>Responda pensando no projeto que está sendo cadastrado.</p></div></div>
+                    <div class="projetos-methodology-questions">
+                        <label><span>O escopo ainda pode mudar durante a execução?</span><select class="ws-form-control" data-methodology-question="scope"><option value="">Selecione</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+                        <label><span>São necessárias entregas parciais ao longo do projeto?</span><select class="ws-form-control" data-methodology-question="partial"><option value="">Selecione</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+                        <label><span>Existem aprovações formais entre etapas?</span><select class="ws-form-control" data-methodology-question="approvals"><option value="">Selecione</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+                        <label><span>As atividades precisam seguir uma sequência rígida?</span><select class="ws-form-control" data-methodology-question="sequence"><option value="">Selecione</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+                    </div>
+                    <div class="projetos-methodology-recommendation" id="projetosMethodologyRecommendation" data-recommendation="">
+                        <strong>Responda às perguntas</strong><span>O sistema sugere uma metodologia, mas a decisão continua sendo do analista.</span>
+                    </div>
+                </div>
+            </div>
+            <footer class="projetos-methodology-modal__footer">
+                <button type="button" class="ws-button ws-button--secondary ws-button--md" id="projetosMethodologyCancel">Continuar sem alterar</button>
+                <button type="button" class="ws-button ws-button--primary ws-button--md" id="projetosMethodologyApply"><i class="fa fa-check"></i> Usar recomendação</button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="projetos-overlay projetos-person-overlay" id="projetosPessoaModalBackdrop" aria-hidden="true">
+        <div class="ws-modal ws-modal--centered projetos-person-modal" role="dialog" aria-modal="true" aria-labelledby="projetosPessoaModalTitle">
+            <div class="ws-modal__dialog">
+                <div class="ws-modal__content">
+                    <header class="ws-modal__header">
+                        <div class="ws-modal__heading">
+                            <span class="projetos-modal-eyebrow">PARTICIPANTE EXTERNO</span>
+                            <h2 class="ws-modal__title" id="projetosPessoaModalTitle">Cadastrar pessoa</h2>
+                            <p class="ws-modal__description">Cadastre cliente, fornecedor ou outro departamento sem acesso ao Workspace.</p>
+                        </div>
+                        <button type="button" class="ws-modal__close" id="projetosPessoaModalClose" aria-label="Fechar">×</button>
+                    </header>
+                    <form id="projetosPessoaForm">
+                        <div class="ws-modal__body projetos-person-modal__body">
+                            <div class="ws-form-grid projetos-form-grid">
+                                <div class="ws-form-field ws-form-field--span-12">
+                                    <label class="ws-form-label" for="projetosPessoaNome">Nome <span class="ws-form-required">*</span></label>
+                                    <input class="ws-form-control" id="projetosPessoaNome" type="text" maxlength="255" required placeholder="Ex.: Ana Silva">
+                                </div>
+                                <div class="ws-form-field ws-form-field--span-6">
+                                    <label class="ws-form-label" for="projetosPessoaEmail">E-mail</label>
+                                    <input class="ws-form-control" id="projetosPessoaEmail" type="email" maxlength="254" placeholder="ana@cliente.com.br">
+                                </div>
+                                <div class="ws-form-field ws-form-field--span-6">
+                                    <label class="ws-form-label" for="projetosPessoaCargo">Organização / papel</label>
+                                    <input class="ws-form-control" id="projetosPessoaCargo" type="text" maxlength="180" placeholder="Ex.: Cliente X, Fornecedor, Sponsor">
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="ws-modal__footer projetos-modal-footer">
+                            <button type="button" class="ws-button ws-button--secondary ws-button--md" id="projetosPessoaCancelar">Cancelar</button>
+                            <button type="submit" class="ws-button ws-button--primary ws-button--md" id="projetosPessoaSalvar">
+                                <span class="ws-button__icon"><i class="fa fa-user-plus"></i></span>
+                                <span class="ws-button__text">Cadastrar pessoa</span>
+                            </button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="projetos-drawer-backdrop" id="projetosDrawerBackdrop" aria-hidden="true"></div>
+    <aside class="projetos-drawer" id="projetosDrawer" aria-hidden="true" aria-label="Detalhes do projeto">
+        <header class="projetos-drawer__header">
+            <div class="projetos-drawer__identity">
+                <span class="projetos-drawer__eyebrow" id="projetosDrawerCodigo">PROJETO</span>
+                <div class="projetos-drawer__title-row">
+                    <h2 id="projetosDrawerTitulo">Carregando...</h2>
+                    <button
+                        type="button"
+                        class="projetos-drawer__favorite"
+                        id="projetosDrawerFavorite"
+                        aria-label="Favoritar projeto"
+                        aria-pressed="false"
+                        title="Favoritar projeto"
+                    >
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="projetos-drawer__badges" id="projetosDrawerBadges"></div>
+            <div class="projetos-drawer__progress" id="projetosDrawerProgress"></div>
+            <button type="button" class="projetos-drawer__close" id="projetosDrawerClose" aria-label="Fechar detalhes">×</button>
+        </header>
+        <div class="projetos-drawer__body" id="projetosDrawerBody"></div>
+    </aside>
+
+    <div class="projetos-confirm-backdrop" id="projetosConfirmBackdrop" hidden>
+        <section class="projetos-confirm" role="dialog" aria-modal="true" aria-labelledby="projetosConfirmTitle" aria-describedby="projetosConfirmMessage">
+            <span class="projetos-confirm__icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
+            <div class="projetos-confirm__content">
+                <h3 id="projetosConfirmTitle">Confirmar ação</h3>
+                <p id="projetosConfirmMessage">Deseja continuar?</p>
+            </div>
+            <footer class="projetos-confirm__actions">
+                <button type="button" class="ws-button ws-button--secondary ws-button--md" id="projetosConfirmCancel">Cancelar</button>
+                <button type="button" class="ws-button ws-button--danger ws-button--md projetos-confirm__accept" id="projetosConfirmAccept">Confirmar</button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="projetos-status-email-backdrop" id="projetosStatusEmailBackdrop" hidden aria-hidden="true">
+        <section class="projetos-status-email" role="dialog" aria-modal="true" aria-labelledby="projetosStatusEmailTitle">
+            <header class="projetos-status-email__header">
+                <div>
+                    <span>Status Report</span>
+                    <h3 id="projetosStatusEmailTitle">Enviar atualização do projeto</h3>
+                    <p>Revise os destinatários, a mensagem e os anexos antes do envio.</p>
+                </div>
+                <button type="button" class="projetos-status-email__close" id="projetosStatusEmailClose" aria-label="Fechar">×</button>
+            </header>
+            <form id="projetosStatusEmailForm">
+                <div class="projetos-status-email__body">
+                    <div class="projetos-status-email__recipients">
+                        <label class="ws-form-field">
+                            <span class="ws-form-label">Para <b>*</b></span>
+                            <input type="text" class="ws-form-control" id="projetosStatusEmailPara" placeholder="cliente@empresa.com.br; outro@empresa.com.br" autocomplete="off">
+                            <small class="ws-form-help">Preenchido automaticamente com o e-mail do Stakeholder vindo do TiFlux (requestor_email). Pode editar antes do envio.</small>
+                        </label>
+                        <label class="ws-form-field">
+                            <span class="ws-form-label">Cc</span>
+                            <input type="text" class="ws-form-control" id="projetosStatusEmailCc" placeholder="sistemas@treo.com.br; seguidor@empresa.com.br" autocomplete="off">
+                            <small class="ws-form-help">Preenchido automaticamente com sistemas@treo.com.br e todos os e-mails do campo followers do TiFlux. Pode adicionar ou remover endereços antes do envio.</small>
+                        </label>
+                    </div>
+                    <label class="ws-form-field">
+                        <span class="ws-form-label">Assunto <b>*</b></span>
+                        <input type="text" class="ws-form-control" id="projetosStatusEmailAssunto" maxlength="255">
+                    </label>
+                    <div class="projetos-status-email__analysis-editor">
+                        <label for="projetosStatusEmailObservacao">Onde estamos agora</label>
+                        <textarea
+                            class="ws-form-control projetos-status-email__analysis-textarea"
+                            id="projetosStatusEmailObservacao"
+                            rows="6"
+                            spellcheck="true"
+                            aria-describedby="projetosStatusEmailAnaliseHelp"
+                        ></textarea>
+                        <small id="projetosStatusEmailAnaliseHelp">Gerado automaticamente a partir do snapshot do projeto. Revise e edite livremente antes do envio.</small>
+                    </div>
+                    <div class="projetos-status-email__options">
+                        <label><input type="checkbox" id="projetosStatusEmailAnexarGantt" checked> <span>Anexar imagem do Gantt</span></label>
+                        <label><input type="checkbox" id="projetosStatusEmailAnexarExcel" checked> <span>Anexar cronograma Excel</span></label>
+                        <label><input type="checkbox" id="projetosStatusEmailAtrasos" checked> <span>Incluir tarefas atrasadas no e-mail</span></label>
+                    </div>
+                    <div class="projetos-status-email__preview" id="projetosStatusEmailPreview"></div>
+                </div>
+                <footer class="projetos-status-email__footer">
+                    <span><i class="fa fa-info-circle"></i> O envio ficará registrado no histórico do projeto com o snapshot deste momento.</span>
+                    <div>
+                        <button type="button" class="ws-button ws-button--secondary ws-button--md" id="projetosStatusEmailCancel">Cancelar</button>
+                        <button type="submit" class="ws-button ws-button--primary ws-button--md" id="projetosStatusEmailSend">
+                            <span class="ws-button__icon"><i class="fa fa-paper-plane"></i></span>
+                            <span class="ws-button__text">Enviar Status Report</span>
+                        </button>
+                    </div>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <div class="projetos-toast" id="projetosToast" role="status" aria-live="polite"></div>
+
+    {{ projetos_modal_catalogos|json_script:"projetosModalCatalogosBootstrap" }}
+    {{ projetos_iniciais|json_script:"projetosInitialBootstrap" }}
+
+    <script>
+        /*
+         * Fallback visual do portfólio inicial. Os projetos vêm do banco pelo
+         * Django e aparecem mesmo se o JavaScript principal falhar antes do
+         * primeiro render. O projetos.js continua sendo a implementação normal.
+         */
+        (function () {
+            const source = document.getElementById("projetosInitialBootstrap");
+            const tbody = document.getElementById("projetosTableBody");
+            if (!source || !tbody) return;
+
+            let projetos = [];
+            try {
+                projetos = JSON.parse(source.textContent || "[]");
+            } catch (error) {
+                projetos = [];
+            }
+            if (!Array.isArray(projetos) || !projetos.length) return;
+
+            const esc = (value) => String(value == null ? "" : value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+            const dataBr = (value) => {
+                if (!value) return "—";
+                const partes = String(value).split("-");
+                return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : value;
+            };
+
+            if (!tbody.children.length) {
+                const metodologiaNome = (projeto) => {
+                    const explicita = String(projeto.metodologia_nome || "").trim();
+                    if (explicita) return explicita;
+                    const chave = String(projeto.metodologia || projeto.cronograma_modelo?.metodologia || "").trim().toLowerCase();
+                    return ({ agil: "Ágil", waterfall: "Waterfall" })[chave] || "—";
+                };
+                const dataHomologacao = (projeto) => projeto.data_homologacao_prevista || projeto.data_homologacao_cronograma || "";
+                const dataGoLive = (projeto) => projeto.data_go_live_prevista || projeto.data_go_live_cronograma || "";
+
+                tbody.innerHTML = projetos.map((projeto) => {
+                    const empresa = projeto.empresa ? projeto.empresa.nome : (projeto.empresa_nome || "—");
+                    const owner = projeto.owner ? projeto.owner.nome : "—";
+                    const stakeholder = projeto.stakeholder ? projeto.stakeholder.nome : "—";
+                    const responsaveis = Array.isArray(projeto.responsaveis) && projeto.responsaveis.length
+                        ? projeto.responsaveis.map((item) => item.nome).filter(Boolean).join(", ")
+                        : (projeto.responsavel_nomes || "—");
+                    const marcosConcluidos = Number(projeto.marcos_concluidos || 0);
+                    const marcosTotal = Number(projeto.marcos_total || 0);
+                    return `
+                        <tr data-project-id="${esc(projeto.id)}" data-bootstrap-row="1">
+                            <td class="projetos-project-cell"><strong>${esc(projeto.nome)}</strong><small>${esc(projeto.codigo || "")}</small></td>
+                            <td><span class="projetos-type-cell">${esc(projeto.tipo_projeto || projeto.cronograma_modelo?.nome || "Sem modelo")}</span></td>
+                            <td><span class="projetos-methodology-cell">${esc(metodologiaNome(projeto))}</span></td>
+                            <td><span class="projetos-reference-cell" title="${esc(projeto.referencia || "")}">${esc(projeto.referencia || "—")}</span></td>
+                            <td>${esc(projeto.cliente_nome || projeto.cliente?.nome || "—")}</td>
+                            <td>${esc(empresa)}</td>
+                            <td>${esc(owner)}</td>
+                            <td>${esc(stakeholder)}</td>
+                            <td><span class="projetos-responsible-cell">${esc(responsaveis)}</span></td>
+                            <td>${esc(projeto.grupo_nomes || "—")}</td>
+                            <td>${esc(dataBr(projeto.data_inicio))} → ${esc(dataBr(projeto.data_fim_prevista))}</td>
+                            <td>${esc(dataBr(dataHomologacao(projeto)))}</td>
+                            <td>${esc(dataBr(dataGoLive(projeto)))}</td>
+                            <td>${esc(projeto.status_nome || "—")}</td>
+                            <td>${esc(projeto.momento_atual_nome || "—")}</td>
+                            <td>${esc(`${marcosConcluidos}/${marcosTotal}`)}</td>
+                            <td>${esc(projeto.situacao_nome || projeto.saude_nome || "—")}</td>
+                            <td>${esc(Math.round(Number(projeto.progresso || 0)))}%</td>
+                            <td>${esc(projeto.prioridade_nome || "—")}</td>
+                        </tr>`;
+                }).join("");
+            }
+
+            const badge = document.getElementById("projetosCountBadge");
+            if (badge) badge.textContent = `${projetos.length} ${projetos.length === 1 ? "projeto" : "projetos"}`;
+
+            const total = document.getElementById("projetosTableTotal");
+            if (total) total.innerHTML = `<strong>Total de projetos:</strong> <span>${projetos.length}</span>`;
+
+            /* Fallback de clique somente quando o JS principal não estiver
+               disponível. Quando projetos.js carregar normalmente, ele assume
+               o drawer completo e este bloco não interfere. */
+            const closeFallbackDrawer = () => {
+                const drawer = document.getElementById("projetosDrawer");
+                const backdrop = document.getElementById("projetosDrawerBackdrop");
+                if (!drawer || !backdrop) return;
+                drawer.classList.remove("is-open");
+                backdrop.classList.remove("is-open");
+                drawer.setAttribute("aria-hidden", "true");
+                backdrop.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            };
+
+            const openFallbackDrawer = (projeto) => {
+                const drawer = document.getElementById("projetosDrawer");
+                const backdrop = document.getElementById("projetosDrawerBackdrop");
+                const codigo = document.getElementById("projetosDrawerCodigo");
+                const titulo = document.getElementById("projetosDrawerTitulo");
+                const body = document.getElementById("projetosDrawerBody");
+                if (!drawer || !backdrop || !body || !projeto) return;
+
+                const empresa = projeto.empresa ? projeto.empresa.nome : "—";
+                const owner = projeto.owner ? projeto.owner.nome : "Não definido";
+                const stakeholder = projeto.stakeholder ? projeto.stakeholder.nome : "Não definido";
+                const responsaveis = Array.isArray(projeto.responsaveis) && projeto.responsaveis.length
+                    ? projeto.responsaveis.map((item) => item.nome).join(", ")
+                    : "Não definido";
+
+                if (codigo) codigo.textContent = projeto.codigo || "PROJETO";
+                if (titulo) titulo.textContent = projeto.nome || "Projeto";
+                body.innerHTML = `
+                    <div class="projetos-detail-warning">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <span>Resumo carregado pelo fallback da página. O detalhamento completo será usado automaticamente quando o módulo de Projetos estiver disponível.</span>
+                    </div>
+                    <div class="projetos-detail-stats">
+                        <div class="projetos-detail-stat"><small>Owner</small><strong>${esc(owner)}</strong></div>
+                        <div class="projetos-detail-stat"><small>Stakeholder</small><strong>${esc(stakeholder)}</strong></div>
+                        <div class="projetos-detail-stat"><small>Responsável / Analista</small><strong>${esc(responsaveis)}</strong></div>
+                        <div class="projetos-detail-stat"><small>Cliente / Empresa</small><strong>${esc(projeto.cliente_nome || "—")} · ${esc(empresa)}</strong></div>
+                        <div class="projetos-detail-stat"><small>Referência</small><strong>${esc(projeto.referencia || "—")}</strong></div>
+                        <div class="projetos-detail-stat"><small>Período</small><strong>${esc(dataBr(projeto.data_inicio))} → ${esc(dataBr(projeto.data_fim_prevista))}</strong></div>
+                    </div>`;
+
+                drawer.classList.add("is-open");
+                backdrop.classList.add("is-open");
+                drawer.setAttribute("aria-hidden", "false");
+                backdrop.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            };
+
+            tbody.addEventListener("click", (event) => {
+                if (typeof window.projetosOpenProject === "function") return;
+                const row = event.target.closest ? event.target.closest("tr[data-project-id]") : null;
+                if (!row || event.target.closest?.("a, button, input, select, textarea, label")) return;
+                const id = Number(row.dataset.projectId || 0);
+                const projeto = projetos.find((item) => Number(item.id) === id);
+                if (projeto) openFallbackDrawer(projeto);
+            });
+
+            document.getElementById("projetosDrawerClose")?.addEventListener("click", () => {
+                if (typeof window.projetosOpenProject !== "function") closeFallbackDrawer();
+            });
+            // No fallback, assim como no módulo principal, clicar fora não fecha o drawer.
+        })();
+    </script>
+    <script>
+        /*
+         * Bootstrap crítico dos catálogos do modal.
+         * Os selects já chegam preenchidos pelo Django. Este bloco apenas
+         * restaura os dados se algum carregamento assíncrono falhar e limpar
+         * as opções depois que a página foi renderizada.
+         */
+        (function () {
+            const source = document.getElementById("projetosModalCatalogosBootstrap");
+            if (!source) return;
+
+            let catalogos = {};
+            try {
+                catalogos = JSON.parse(source.textContent || "{}");
+            } catch (error) {
+                return;
+            }
+
+            function escapeHtml(value) {
+                return String(value == null ? "" : value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function restaurarSelect(id, placeholder, itens, formatter) {
+                const select = document.getElementById(id);
+                if (!select || !Array.isArray(itens) || !itens.length) return;
+                if (select.options.length > 1) return;
+
+                select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` +
+                    itens.map(formatter).join("");
+            }
+
+            function restaurarCatalogos() {
+                restaurarSelect(
+                    "projetoCliente",
+                    "Selecione o cliente",
+                    catalogos.clientes || [],
+                    item => `<option value="${item.id}">${escapeHtml(item.nome)}</option>`
+                );
+                restaurarSelect(
+                    "projetoEmpresa",
+                    "Selecione a empresa",
+                    catalogos.empresas || [],
+                    item => `<option value="${item.id}">${escapeHtml(item.nome)}</option>`
+                );
+                restaurarSelect(
+                    "projetoOwner",
+                    "Selecione o Owner",
+                    catalogos.owners || [],
+                    item => `<option value="${item.id}" data-grupo-nome="${escapeHtml(item.grupo_nome || "")}">${escapeHtml(item.nome)}${item.grupo_nome ? " · " + escapeHtml(item.grupo_nome) : ""}</option>`
+                );
+                const owner = document.getElementById("projetoOwner");
+                if (owner && !owner.value) {
+                    const opcaoFelipe = Array.from(owner.options).find(item => (
+                        String(item.textContent || "")
+                            .split("·")[0]
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "")
+                            .trim()
+                            .toLowerCase() === "felipe alexandrino"
+                    ));
+                    if (opcaoFelipe) owner.value = opcaoFelipe.value;
+                }
+                restaurarSelect(
+                    "projetoStakeholder",
+                    "Sem Stakeholder definido",
+                    catalogos.pessoas || [],
+                    item => `<option value="${item.id}">${escapeHtml(item.nome)}${item.contexto ? " · " + escapeHtml(item.contexto) : (item.externo ? " · Externo" : "")}</option>`
+                );
+                restaurarSelect(
+                    "projetoResponsavel",
+                    "Sem responsável definido",
+                    catalogos.responsaveis || [],
+                    item => `<option value="${item.id}" data-grupo-nome="${escapeHtml(item.grupo_nome || "")}">${escapeHtml(item.nome)}${item.grupo_nome ? " · " + escapeHtml(item.grupo_nome) : ""}</option>`
+                );
+                restaurarSelect(
+                    "projetoGrupos",
+                    "Selecione o grupo",
+                    catalogos.grupos || [],
+                    item => `<option value="${item.id}">${escapeHtml(item.nome)}</option>`
+                );
+                restaurarSelect(
+                    "projetoCronograma",
+                    "Selecione o tipo",
+                    catalogos.modelos || [],
+                    item => `<option value="${item.id}">${escapeHtml(item.nome)}${item.esperada ? " · Recomendada" : ""}</option>`
+                );
+            }
+
+            restaurarCatalogos();
+            window.setTimeout(restaurarCatalogos, 300);
+            window.setTimeout(restaurarCatalogos, 1200);
+            window.projetosRestaurarCatalogos = restaurarCatalogos;
+        })();
+    </script>
+
+    <script>
+        /*
+         * Fallback do modal de Novo Projeto.
+         * Fica no template de propósito: mesmo que o navegador/WhiteNoise esteja
+         * servindo uma versão antiga de projetos.js, o botão continua abrindo.
+         */
+        (function () {
+            function modalElements() {
+                const backdrop = document.getElementById("projetosModalBackdrop");
+                const modal = backdrop ? backdrop.querySelector(".ws-modal") : null;
+                return { backdrop, modal };
+            }
+
+            function openNewProjectModal(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const { backdrop, modal } = modalElements();
+                if (!backdrop) return false;
+
+                backdrop.classList.add("is-open");
+                backdrop.setAttribute("aria-hidden", "false");
+                backdrop.style.setProperty("display", "flex", "important");
+                backdrop.style.setProperty("visibility", "visible", "important");
+                backdrop.style.setProperty("opacity", "1", "important");
+                backdrop.style.setProperty("pointer-events", "auto", "important");
+
+                if (modal) {
+                    modal.style.setProperty("display", "block", "important");
+                    modal.style.setProperty("visibility", "visible", "important");
+                    modal.style.setProperty("opacity", "1", "important");
+                }
+
+                document.body.style.overflow = "hidden";
+
+                const dataAbertura = document.getElementById("projetoDataAbertura");
+                if (dataAbertura && !dataAbertura.value) {
+                    const hoje = new Date();
+                    const yyyy = hoje.getFullYear();
+                    const mm = String(hoje.getMonth() + 1).padStart(2, "0");
+                    const dd = String(hoje.getDate()).padStart(2, "0");
+                    dataAbertura.value = `${yyyy}-${mm}-${dd}`;
+                }
+
+                const owner = document.getElementById("projetoOwner");
+                if (owner && !owner.value) {
+                    const opcaoFelipe = Array.from(owner.options).find(item => (
+                        String(item.textContent || "")
+                            .split("·")[0]
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "")
+                            .trim()
+                            .toLowerCase() === "felipe alexandrino"
+                    ));
+                    if (opcaoFelipe) owner.value = opcaoFelipe.value;
+                }
+
+                window.setTimeout(function () {
+                    document.getElementById("projetoNome")?.focus();
+                }, 20);
+
+                return false;
+            }
+
+            function closeNewProjectModal(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const { backdrop, modal } = modalElements();
+                if (!backdrop) return false;
+
+                backdrop.classList.remove("is-open");
+                backdrop.setAttribute("aria-hidden", "true");
+                backdrop.style.removeProperty("display");
+                backdrop.style.removeProperty("visibility");
+                backdrop.style.removeProperty("opacity");
+                backdrop.style.removeProperty("pointer-events");
+
+                if (modal) {
+                    modal.style.removeProperty("display");
+                    modal.style.removeProperty("visibility");
+                    modal.style.removeProperty("opacity");
+                }
+
+                document.body.style.overflow = "";
+                return false;
+            }
+
+            function getCookie(name) {
+                const parts = document.cookie ? document.cookie.split(";") : [];
+                for (const part of parts) {
+                    const item = part.trim();
+                    if (item.startsWith(name + "=")) {
+                        return decodeURIComponent(item.substring(name.length + 1));
+                    }
+                }
+                return "";
+            }
+
+            async function submitNewProjectFallback(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+
+                const root = document.getElementById("projetosApp");
+                const endpoint = root ? root.dataset.apiProjetos : "";
+                if (!endpoint) {
+                    window.alert("Não foi possível localizar a API de Projetos.");
+                    return false;
+                }
+
+                const byId = (id) => document.getElementById(id);
+                const nome = byId("projetoNome");
+                const owner = byId("projetoOwner");
+                if (!nome || !String(nome.value || "").trim()) {
+                    nome?.focus();
+                    return false;
+                }
+                if (!owner || !owner.value) {
+                    owner?.focus();
+                    return false;
+                }
+
+                const cliente = byId("projetoCliente");
+                const empresa = byId("projetoEmpresa");
+                const grupo = byId("projetoGrupos");
+                const stakeholder = byId("projetoStakeholder");
+                const responsavelProjeto = byId("projetoResponsavel");
+                const payload = {
+                    nome: String(nome.value || "").trim(),
+                    referencia: String(byId("projetoReferencia")?.value || "").trim(),
+                    referencia_url: String(byId("projetoReferenciaUrl")?.value || "").trim(),
+                    cslog: String(byId("projetoCslog")?.value || "").trim(),
+                    cslog_url: String(byId("projetoCslogUrl")?.value || "").trim(),
+                    categoria: String(byId("projetoCategoria")?.value || "").trim(),
+                    mesa: String(byId("projetoMesa")?.value || "").trim(),
+                    servico_completo: String(byId("projetoServicoCompleto")?.value || "").trim(),
+                    cliente_id: cliente?.value || null,
+                    cliente_nome: cliente && cliente.selectedIndex >= 0 ? String(cliente.options[cliente.selectedIndex].textContent || "").trim() : "",
+                    empresa_id: empresa?.value || null,
+                    owner_id: owner?.value || null,
+                    grupo_ids: grupo?.value ? [Number(grupo.value)] : [],
+                    stakeholder_id: stakeholder?.value || null,
+                    responsavel_ids: responsavelProjeto?.value ? [Number(responsavelProjeto.value)] : [],
+                    data_abertura: byId("projetoDataAbertura")?.value || null,
+                    data_inicio: byId("projetoDataInicio")?.value || null,
+                    duracao_dias_uteis: Number(byId("projetoDuracaoDiasUteis")?.value || 0) || null,
+                    data_fim_prevista: byId("projetoDataFim")?.value || null,
+                    data_homologacao_prevista: byId("projetoDataHomologacao")?.value || null,
+                    data_go_live_prevista: byId("projetoDataGoLive")?.value || null,
+                    data_conclusao: byId("projetoDataConclusao")?.value || null,
+                    prioridade: byId("projetoPrioridade")?.value || "media",
+                    metodologia: byId("projetoMetodologia")?.value || "agil",
+                    cronograma_modelo_id: byId("projetoCronograma")?.value || null,
+                    status: "rascunho",
+                    pre_cadastro: true,
+                    descricao: String(byId("projetoDescricao")?.value || "").trim(),
+                };
+
+                const submit = byId("projetosCriarSubmit");
+                if (submit) submit.disabled = true;
+                try {
+                    const response = await fetch(endpoint, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRFToken": getCookie("csrftoken"),
+                        },
+                        body: JSON.stringify(payload),
+                    });
+                    let data = {};
+                    try { data = await response.json(); } catch (error) { data = {}; }
+                    if (!response.ok) throw new Error(data.mensagem || "Não foi possível salvar o Rascunho.");
+                    closeNewProjectModal();
+                    window.location.reload();
+                } catch (error) {
+                    const toast = document.getElementById("projetosToast");
+                    if (toast) {
+                        toast.textContent = error.message || "Não foi possível salvar o Rascunho.";
+                        toast.classList.add("is-open", "is-error");
+                        window.setTimeout(function () { toast.classList.remove("is-open"); }, 4200);
+                    } else {
+                        window.alert(error.message || "Não foi possível salvar o Rascunho.");
+                    }
+                } finally {
+                    if (submit) submit.disabled = false;
+                }
+                return false;
+            }
+
+            window.projetosOpenNewModal = openNewProjectModal;
+            window.projetosCloseNewModal = closeNewProjectModal;
+            window.projetosSubmitNewFallback = submitNewProjectFallback;
+
+            const button = document.getElementById("projetosNovoButton");
+            if (button && button.dataset.modalFallbackBound !== "1") {
+                button.dataset.modalFallbackBound = "1";
+                button.addEventListener("click", openNewProjectModal, true);
+            }
+
+            const close = document.getElementById("projetosModalClose");
+            if (close && close.dataset.modalFallbackBound !== "1") {
+                close.dataset.modalFallbackBound = "1";
+                close.addEventListener("click", closeNewProjectModal, true);
+            }
+
+            const cancel = document.getElementById("projetosCancelarButton");
+            if (cancel && cancel.dataset.modalFallbackBound !== "1") {
+                cancel.dataset.modalFallbackBound = "1";
+                cancel.addEventListener("click", closeNewProjectModal, true);
+            }
+        })();
+    </script>
+
+    <script src="{% static 'js/projetos.js' %}?v=5.63.0"></script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const layout = document.querySelector(".projetos-workspace-layout");
+            const rail = document.querySelector(".projetos-rail");
+            const railToggle = document.getElementById("projetosRailToggle");
+            const filterButtons = Array.from(
+                document.querySelectorAll("[data-compact-filter]")
+            );
+            const filterTargets = Array.from(
+                document.querySelectorAll("[data-compact-filter-target]")
+            );
+
+            const RAIL_KEY = "workspace.projetos.rail.collapsed.v2";
+            let openFilter = "";
+
+            function setRail(collapsed) {
+                if (!layout || !rail || !railToggle) return;
+
+                layout.classList.toggle("is-rail-collapsed", collapsed);
+                rail.classList.toggle("is-collapsed", collapsed);
+
+                railToggle.setAttribute(
+                    "aria-expanded",
+                    collapsed ? "false" : "true"
+                );
+
+                railToggle.title = collapsed
+                    ? "Expandir navegação"
+                    : "Recolher navegação";
+
+                const icon = railToggle.querySelector("i");
+
+                if (icon) {
+                    icon.classList.toggle("fa-angle-left", !collapsed);
+                    icon.classList.toggle("fa-angle-right", collapsed);
+                }
+
+                try {
+                    localStorage.setItem(
+                        RAIL_KEY,
+                        collapsed ? "1" : "0"
+                    );
+                } catch (error) {
+                    // Preferência visual é opcional.
+                }
+            }
+
+            function initialRail() {
+                try {
+                    const stored = localStorage.getItem(RAIL_KEY);
+
+                    if (stored === "1") return true;
+                    if (stored === "0") return false;
+                } catch (error) {
+                    // Sem preferência.
+                }
+
+                /*
+                 * O estado inicial não depende mais da largura da viewport.
+                 * Browser zoom reduz CSS pixels e poderia alternar o rail entre
+                 * aberto/fechado ao recarregar a página. Em desktop/notebook
+                 * (mouse/trackpad) mantemos o modo foco recolhido; em touch o
+                 * rail começa expandido. A preferência salva sempre prevalece.
+                 */
+                return window.matchMedia(
+                    "(hover: hover) and (pointer: fine)"
+                ).matches;
+            }
+
+            railToggle?.addEventListener("click", function () {
+                setRail(
+                    !layout?.classList.contains("is-rail-collapsed")
+                );
+            });
+
+            document
+                .querySelectorAll(".projetos-rail__item[data-scope]")
+                .forEach(function (button) {
+                    const label = button
+                        .querySelector("span")
+                        ?.textContent
+                        ?.replace(/\s+/g, " ")
+                        .trim();
+
+                    if (label) button.title = label;
+                });
+
+            function targetFor(name) {
+                return filterTargets.find(
+                    (target) => target.dataset.compactFilterTarget === name
+                ) || null;
+            }
+
+            function buttonFor(name) {
+                return filterButtons.find(
+                    (button) => button.dataset.compactFilter === name
+                ) || null;
+            }
+
+            function hideTarget(target) {
+                if (!target) return;
+                target.classList.remove("is-compact-open");
+            }
+
+            function closeFilters() {
+                filterTargets.forEach(hideTarget);
+
+                filterButtons.forEach(function (button) {
+                    button.classList.remove("is-open");
+                    button.setAttribute("aria-expanded", "false");
+                });
+
+                openFilter = "";
+            }
+
+            function openTarget(name) {
+                const target = targetFor(name);
+                const button = buttonFor(name);
+
+                if (!target || !button) return;
+
+                if (openFilter === name) {
+                    closeFilters();
+                    return;
+                }
+
+                closeFilters();
+
+                openFilter = name;
+                target.classList.add("is-compact-open");
+                button.classList.add("is-open");
+                button.setAttribute("aria-expanded", "true");
+
+                window.requestAnimationFrame(function () {
+                    if (name === "search") {
+                        document.getElementById("projetosBusca")?.focus();
+                    }
+
+                    if (name === "status") {
+                        document.getElementById("projetosStatusFiltro")?.focus();
+                    }
+
+                    if (name === "dates") {
+                        document.getElementById("projetosDataCampo")?.focus();
+                    }
+                });
+            }
+
+            filterButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    openTarget(button.dataset.compactFilter);
+                });
+            });
+
+            function syncActiveIndicators() {
+                const busca = Boolean(
+                    document.getElementById("projetosBusca")?.value.trim()
+                );
+
+                const status = Boolean(
+                    document.getElementById("projetosStatusFiltro")?.value
+                );
+
+                const dates = Boolean(
+                    document.getElementById("projetosDataCampo")?.value
+                    || document.getElementById("projetosDataDe")?.value
+                    || document.getElementById("projetosDataAte")?.value
+                );
+
+                buttonFor("search")?.classList.toggle("has-value", busca);
+                buttonFor("status")?.classList.toggle("has-value", status);
+                buttonFor("dates")?.classList.toggle("has-value", dates);
+            }
+
+            [
+                document.getElementById("projetosBusca"),
+                document.getElementById("projetosStatusFiltro"),
+                document.getElementById("projetosDataCampo"),
+                document.getElementById("projetosDataDe"),
+                document.getElementById("projetosDataAte")
+            ].forEach(function (field) {
+                field?.addEventListener("input", syncActiveIndicators);
+                field?.addEventListener("change", syncActiveIndicators);
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    closeFilters();
+                }
+            });
+
+            setRail(initialRail());
+            syncActiveIndicators();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,982 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recuperar Senha | Workspace Qore</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style_esqueci_senha.css' %}?v=1.3.0">
+</head>
+
+<body>
+    <main class="recovery-page">
+
+        <!-- ÁREA VISUAL -->
+        <section class="recovery-visual">
+            <img
+                src="{% static 'imagens/fundo_workspace_qore.png' %}"
+                class="recovery-visual-image"
+                alt="Workspace Qore">
+
+            <div class="recovery-visual-background"></div>
+            <div class="recovery-visual-grid"></div>
+            <div class="recovery-visual-gradient"></div>
+
+            <!-- MARCA -->
+            <header class="brand">
+                <div class="brand-icon" aria-hidden="true">
+                    <span class="brand-bar brand-bar-small"></span>
+                    <span class="brand-bar brand-bar-large"></span>
+                    <span class="brand-bar brand-bar-medium"></span>
+                </div>
+
+                <div class="brand-text">
+                    <strong>WORKSPACE</strong>
+                    <span>QORE</span>
+                </div>
+            </header>
+
+            <!-- CONTEÚDO VISUAL -->
+            <div class="visual-content">
+                <div class="visual-badge">
+                    <span class="badge-dot"></span>
+                    Recuperação de acesso
+                </div>
+
+                <h1>
+                    Recupere seu acesso.
+                    <span>Continue conectado.</span>
+                </h1>
+
+                <p>
+                    Informe o e-mail associado ao seu cadastro para receber
+                    as instruções de redefinição da sua senha.
+                </p>
+
+                <div class="recovery-steps">
+                    <div class="recovery-step">
+                        <div class="step-number">01</div>
+
+                        <div class="step-content">
+                            <strong>Informe seu e-mail</strong>
+
+                            <span>
+                                Utilize o mesmo endereço cadastrado no sistema.
+                            </span>
+                        </div>
+
+                        <i class="fas fa-envelope step-icon"></i>
+                    </div>
+
+                    <div class="recovery-step">
+                        <div class="step-number">02</div>
+
+                        <div class="step-content">
+                            <strong>Receba o link</strong>
+
+                            <span>
+                                Enviaremos as instruções para sua caixa de entrada.
+                            </span>
+                        </div>
+
+                        <i class="fas fa-paper-plane step-icon"></i>
+                    </div>
+
+                    <div class="recovery-step">
+                        <div class="step-number">03</div>
+
+                        <div class="step-content">
+                            <strong>Defina uma nova senha</strong>
+
+                            <span>
+                                Acesse o link recebido e cadastre uma nova senha.
+                            </span>
+                        </div>
+
+                        <i class="fas fa-key step-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RODAPÉ VISUAL -->
+            <footer class="visual-footer">
+                <div class="environment-status">
+                    <span class="status-indicator"></span>
+                    Ambiente protegido
+                </div>
+
+                <span>Workspace Qore</span>
+            </footer>
+        </section>
+
+        <!-- ÁREA DO FORMULÁRIO -->
+        <section class="recovery-form-area">
+
+            <!-- MARCA MOBILE -->
+            <div class="mobile-brand">
+                <div class="brand-icon" aria-hidden="true">
+                    <span class="brand-bar brand-bar-small"></span>
+                    <span class="brand-bar brand-bar-large"></span>
+                    <span class="brand-bar brand-bar-medium"></span>
+                </div>
+
+                <div class="brand-text">
+                    <strong>WORKSPACE</strong>
+                    <span>QORE</span>
+                </div>
+            </div>
+
+            <div class="recovery-form-wrapper">
+
+                <!-- VOLTAR -->
+                <a
+                    href="{% if client %}{% url 'login_client' client=client %}{% else %}{% url 'login' %}{% endif %}"
+                    class="back-to-login"
+                    aria-label="Voltar para a tela de login">
+
+                    <span class="back-icon">
+                        <i class="fas fa-arrow-left"></i>
+                    </span>
+
+                    Voltar para o login
+                </a>
+
+                <form
+                    id="password-reset-form"
+                    class="recovery-form"
+                    action="{% url 'password_reset' %}"
+                    method="post"
+                    autocomplete="on">
+
+                    {% csrf_token %}
+
+                    <!-- MENSAGENS DO DJANGO -->
+                    {% if messages %}
+                        <div class="messages-container">
+                            {% for message in messages %}
+                                <div
+                                    class="system-message
+                                    {% if message.tags %}system-message-{{ message.tags }}{% endif %}"
+                                    role="alert">
+
+                                    <div class="system-message-icon">
+                                        {% if message.tags == 'success' %}
+                                            <i class="fas fa-check-circle"></i>
+                                        {% elif message.tags == 'warning' %}
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        {% elif message.tags == 'error' %}
+                                            <i class="fas fa-times-circle"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle"></i>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="system-message-content">
+                                        <strong>
+                                            {% if message.tags == 'success' %}
+                                                Solicitação enviada
+                                            {% elif message.tags == 'warning' %}
+                                                Atenção
+                                            {% elif message.tags == 'error' %}
+                                                Não foi possível continuar
+                                            {% else %}
+                                                Informação
+                                            {% endif %}
+                                        </strong>
+
+                                        <span>{{ message }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- ETAPA DE PREENCHIMENTO -->
+                    <div id="request-stage">
+
+                        <header class="form-header">
+                            <div class="form-icon" aria-hidden="true">
+                                <i class="fas fa-lock-open"></i>
+                            </div>
+
+                            <span class="form-eyebrow">
+                                REDEFINIÇÃO DE SENHA
+                            </span>
+
+                            <h2>Esqueceu sua senha?</h2>
+
+                            <p>
+                                Não se preocupe. Informe abaixo o e-mail utilizado
+                                no seu cadastro e enviaremos um link para você
+                                redefinir sua senha.
+                            </p>
+                        </header>
+
+                        <!-- ERROS DO FORMULÁRIO -->
+                        {% if form.email.errors %}
+                            <div class="alert-error" role="alert">
+                                <div class="alert-error-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Verifique o e-mail informado</strong>
+
+                                    {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- ERRO DO ENVIO ASSÍNCRONO -->
+                        <div
+                            id="ajax-error"
+                            class="alert-error"
+                            role="alert"
+                            hidden>
+
+                            <div class="alert-error-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+
+                            <div>
+                                <strong>Não foi possível enviar</strong>
+
+                                <span id="ajax-error-text">
+                                    Ocorreu um problema ao enviar a solicitação.
+                                    Tente novamente.
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- CAMPO E-MAIL -->
+                        <div class="form-group">
+                            <label for="email">
+                                E-mail de cadastro
+                            </label>
+
+                            <div class="field-container">
+                                <i
+                                    class="far fa-envelope field-icon"
+                                    aria-hidden="true">
+                                </i>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    class="form-control"
+                                    placeholder="Informe seu e-mail"
+                                    autocomplete="email"
+                                    inputmode="email"
+                                    spellcheck="false"
+                                    aria-describedby="email-help"
+                                    required>
+                            </div>
+
+                            <div class="field-helper" id="email-help">
+                                <i class="fas fa-info-circle"></i>
+
+                                <span>
+                                    Enviaremos o link somente para o e-mail
+                                    associado ao seu cadastro.
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- BOTÃO PRINCIPAL -->
+                        <button
+                            type="submit"
+                            id="submit-button"
+                            class="recovery-button">
+
+                            <span class="button-content">
+                                <span>Enviar link de recuperação</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+
+                            <span class="button-loading" aria-hidden="true">
+                                <span class="button-spinner"></span>
+                                Enviando solicitação...
+                            </span>
+                        </button>
+
+                        <!-- SEGURANÇA -->
+                        <div class="security-info">
+                            <div class="security-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+
+                            <div>
+                                <strong>Recuperação segura</strong>
+
+                                <span>
+                                    Por segurança, não informamos se determinado
+                                    e-mail possui ou não cadastro no sistema.
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- AJUDA -->
+                        <div class="support-info">
+                            <span>Não recebeu o e-mail?</span>
+
+                            <p>
+                                Verifique sua caixa de spam, lixo eletrônico ou
+                                aguarde alguns minutos antes de tentar novamente.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA APÓS O ENVIO -->
+                    <section
+                        id="recovery-success"
+                        class="recovery-success"
+                        aria-live="polite"
+                        hidden>
+
+                        <div class="success-state-icon" aria-hidden="true">
+                            <i class="fas fa-paper-plane"></i>
+
+                            <span class="success-check">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+
+                        <span class="success-eyebrow">
+                            LINK DE RECUPERAÇÃO ENVIADO
+                        </span>
+
+                        <h2>Verifique seu e-mail</h2>
+
+                        <p class="success-description">
+                            Enviamos as instruções para redefinir sua senha
+                            para o endereço:
+                        </p>
+
+                        <div class="sent-email-box">
+                            <i class="far fa-envelope"></i>
+
+                            <strong id="sent-email">
+                                seuemail@empresa.com
+                            </strong>
+                        </div>
+
+                        <div class="delivery-advice">
+                            <i class="fas fa-info-circle"></i>
+
+                            <p>
+                                O recebimento pode levar alguns minutos.
+                                Verifique também sua caixa de spam ou lixo eletrônico.
+                            </p>
+                        </div>
+
+                        <!-- RETORNO AUTOMÁTICO -->
+                        <div class="resend-card">
+                            <div class="resend-card-header">
+                                <div>
+                                    <span>Solicitação concluída</span>
+
+                                    <strong id="return-status-text">
+                                        Retornaremos ao formulário automaticamente
+                                    </strong>
+                                </div>
+
+                                <div
+                                    id="countdown-box"
+                                    class="countdown-box"
+                                    aria-label="Tempo restante para retornar ao formulário">
+
+                                    <i class="far fa-clock"></i>
+
+                                    <span id="return-countdown">
+                                        00:05
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="resend-feedback"
+                                role="status"
+                                aria-live="polite">
+
+                                <i class="fas fa-check-circle"></i>
+
+                                <span>
+                                    Aguarde alguns segundos. Depois, você poderá
+                                    solicitar o envio novamente usando seu
+                                    e-mail corporativo cadastrado.
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="security-info success-security-info">
+                            <div class="security-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+
+                            <div>
+                                <strong>Proteja sua conta</strong>
+
+                                <span>
+                                    Não compartilhe o link recebido. Ele deve ser
+                                    utilizado somente pelo titular da conta.
+                                </span>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+
+            <p class="copyright">
+                &copy; {% now "Y" %} Workspace Qore.
+                Todos os direitos reservados.
+            </p>
+        </section>
+    </main>
+
+    <!-- CARREGAMENTO -->
+    <div
+        id="loading-overlay"
+        class="loading-overlay"
+        aria-hidden="true">
+
+        <div
+            class="loading-card"
+            role="status"
+            aria-live="polite">
+
+            <div class="loading-logo">
+                <div class="loading-bars">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <strong id="loading-title">
+                Enviando sua solicitação
+            </strong>
+
+            <p id="loading-description">
+                Aguarde enquanto preparamos o link de recuperação.
+            </p>
+
+            <div class="loading-line">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const RETURN_SECONDS = 5;
+
+            const recoveryForm =
+                document.getElementById("password-reset-form");
+
+            const requestStage =
+                document.getElementById("request-stage");
+
+            const successStage =
+                document.getElementById("recovery-success");
+
+            const emailInput =
+                document.getElementById("email");
+
+            const sentEmail =
+                document.getElementById("sent-email");
+
+            const submitButton =
+                document.getElementById("submit-button");
+
+            const returnCountdown =
+                document.getElementById("return-countdown");
+
+            const countdownBox =
+                document.getElementById("countdown-box");
+
+            const returnStatusText =
+                document.getElementById("return-status-text");
+
+            const ajaxError =
+                document.getElementById("ajax-error");
+
+            const ajaxErrorText =
+                document.getElementById("ajax-error-text");
+
+            const loadingOverlay =
+                document.getElementById("loading-overlay");
+
+            const loadingTitle =
+                document.getElementById("loading-title");
+
+            const loadingDescription =
+                document.getElementById("loading-description");
+
+            let currentEmail = "";
+            let returnInterval = null;
+            let returnDeadline = 0;
+
+            if (
+                !recoveryForm ||
+                !requestStage ||
+                !successStage ||
+                !emailInput ||
+                !sentEmail ||
+                !submitButton ||
+                !returnCountdown ||
+                !loadingOverlay
+            ) {
+                return;
+            }
+
+            /**
+             * Normaliza o endereço informado.
+             */
+            function normalizeEmail(email) {
+                return String(email || "")
+                    .trim()
+                    .toLowerCase();
+            }
+
+            /**
+             * Mascara parte do e-mail mostrado na confirmação.
+             *
+             * Exemplo:
+             * felipe@empresa.com
+             * f****e@empresa.com
+             */
+            function maskEmail(email) {
+                const normalizedEmail =
+                    normalizeEmail(email);
+
+                const parts =
+                    normalizedEmail.split("@");
+
+                if (parts.length !== 2) {
+                    return normalizedEmail;
+                }
+
+                const localPart = parts[0];
+                const domain = parts[1];
+
+                if (!localPart) {
+                    return normalizedEmail;
+                }
+
+                const firstCharacter =
+                    localPart.charAt(0);
+
+                const lastCharacter =
+                    localPart.length > 2
+                        ? localPart.charAt(localPart.length - 1)
+                        : "";
+
+                const hiddenCharacters =
+                    "*".repeat(
+                        Math.max(
+                            4,
+                            localPart.length -
+                            firstCharacter.length -
+                            lastCharacter.length
+                        )
+                    );
+
+                return (
+                    firstCharacter +
+                    hiddenCharacters +
+                    lastCharacter +
+                    "@" +
+                    domain
+                );
+            }
+
+            /**
+             * Formata os segundos no padrão 00:00.
+             */
+            function formatCountdown(totalSeconds) {
+                const safeSeconds =
+                    Math.max(0, totalSeconds);
+
+                const minutes =
+                    Math.floor(safeSeconds / 60);
+
+                const seconds =
+                    safeSeconds % 60;
+
+                return (
+                    String(minutes).padStart(2, "0") +
+                    ":" +
+                    String(seconds).padStart(2, "0")
+                );
+            }
+
+            /**
+             * Exibe o carregamento apenas no envio inicial.
+             */
+            function showLoading(title, description) {
+                if (loadingTitle) {
+                    loadingTitle.textContent = title;
+                }
+
+                if (loadingDescription) {
+                    loadingDescription.textContent =
+                        description;
+                }
+
+                loadingOverlay.classList.add(
+                    "is-visible"
+                );
+
+                loadingOverlay.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+            }
+
+            /**
+             * Oculta o carregamento.
+             */
+            function hideLoading() {
+                loadingOverlay.classList.remove(
+                    "is-visible"
+                );
+
+                loadingOverlay.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+            }
+
+            /**
+             * Exibe erro na área inicial.
+             */
+            function showRequestError(message) {
+                if (ajaxErrorText) {
+                    ajaxErrorText.textContent = message;
+                }
+
+                if (ajaxError) {
+                    ajaxError.hidden = false;
+                }
+            }
+
+            /**
+             * Oculta erro anterior.
+             */
+            function hideRequestError() {
+                if (ajaxError) {
+                    ajaxError.hidden = true;
+                }
+            }
+
+            /**
+             * Interrompe a contagem de retorno.
+             */
+            function clearReturnCountdown() {
+                if (returnInterval) {
+                    window.clearInterval(
+                        returnInterval
+                    );
+
+                    returnInterval = null;
+                }
+
+                returnDeadline = 0;
+            }
+
+            /**
+             * Retorna à tela de preenchimento.
+             *
+             * O mesmo endereço permanece preenchido para facilitar
+             * uma nova solicitação, mas nenhum estado é salvo no
+             * navegador. Ao sair e voltar à página, a tela sempre
+             * iniciará no formulário.
+             */
+            function showRequestStage(preserveEmail) {
+                clearReturnCountdown();
+
+                successStage.hidden = true;
+                requestStage.hidden = false;
+
+                hideRequestError();
+
+                if (preserveEmail && currentEmail) {
+                    emailInput.value = currentEmail;
+                } else {
+                    currentEmail = "";
+                    emailInput.value = "";
+                }
+
+                submitButton.disabled = false;
+                submitButton.classList.remove(
+                    "is-loading"
+                );
+
+                window.requestAnimationFrame(
+                    function () {
+                        emailInput.focus();
+
+                        if (preserveEmail) {
+                            emailInput.select();
+                        }
+                    }
+                );
+            }
+
+            /**
+             * Atualiza a contagem regressiva de retorno.
+             */
+            function updateReturnCountdown() {
+                const millisecondsRemaining =
+                    returnDeadline - Date.now();
+
+                const secondsRemaining =
+                    Math.max(
+                        0,
+                        Math.ceil(
+                            millisecondsRemaining / 1000
+                        )
+                    );
+
+                returnCountdown.textContent =
+                    formatCountdown(
+                        secondsRemaining
+                    );
+
+                if (secondsRemaining <= 0) {
+                    clearReturnCountdown();
+
+                    countdownBox.classList.add(
+                        "is-finished"
+                    );
+
+                    if (returnStatusText) {
+                        returnStatusText.textContent =
+                            "Retornando ao formulário";
+                    }
+
+                    window.setTimeout(
+                        function () {
+                            countdownBox.classList.remove(
+                                "is-finished"
+                            );
+
+                            showRequestStage(true);
+                        },
+                        250
+                    );
+                }
+            }
+
+            /**
+             * Inicia a contagem de cinco segundos.
+             */
+            function startReturnCountdown() {
+                clearReturnCountdown();
+
+                returnDeadline =
+                    Date.now() +
+                    RETURN_SECONDS * 1000;
+
+                countdownBox.classList.remove(
+                    "is-finished"
+                );
+
+                if (returnStatusText) {
+                    returnStatusText.textContent =
+                        "Retornaremos ao formulário automaticamente";
+                }
+
+                updateReturnCountdown();
+
+                returnInterval =
+                    window.setInterval(
+                        updateReturnCountdown,
+                        250
+                    );
+            }
+
+            /**
+             * Exibe a confirmação do envio.
+             */
+            function showSuccessStage(email) {
+                currentEmail =
+                    normalizeEmail(email);
+
+                sentEmail.textContent =
+                    maskEmail(currentEmail);
+
+                requestStage.hidden = true;
+                successStage.hidden = false;
+
+                hideRequestError();
+                startReturnCountdown();
+
+                successStage.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+            /**
+             * Envio real para a rota password_reset.
+             *
+             * O Django continua processando e enviando o e-mail.
+             * O redirecionamento ocorre apenas internamente no fetch,
+             * sem alterar a página aberta no navegador.
+             */
+            async function enviarRecuperacao() {
+                const dadosFormulario =
+                    new FormData(recoveryForm);
+
+                const resposta =
+                    await fetch(
+                        recoveryForm.action,
+                        {
+                            method: "POST",
+                            body: dadosFormulario,
+                            credentials: "same-origin",
+                            redirect: "follow",
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+                /*
+                 * No fluxo padrão do Django, o envio concluído
+                 * redireciona internamente para password_reset_done.
+                 *
+                 * O fetch acompanha esse redirecionamento,
+                 * mas o navegador permanece nesta página.
+                 */
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Falha no envio da recuperação de senha."
+                    );
+                }
+
+                return resposta;
+            }
+
+            /**
+             * Remove espaços antes e depois do e-mail.
+             */
+            emailInput.addEventListener(
+                "blur",
+                function () {
+                    emailInput.value =
+                        normalizeEmail(
+                            emailInput.value
+                        );
+                }
+            );
+
+            emailInput.addEventListener(
+                "input",
+                function () {
+                    hideRequestError();
+                }
+            );
+
+            /**
+             * Envio do link de recuperação.
+             */
+            recoveryForm.addEventListener(
+                "submit",
+                async function (event) {
+                    event.preventDefault();
+
+                    emailInput.value =
+                        normalizeEmail(
+                            emailInput.value
+                        );
+
+                    if (
+                        !recoveryForm.checkValidity()
+                    ) {
+                        recoveryForm.reportValidity();
+                        return;
+                    }
+
+                    const email =
+                        emailInput.value;
+
+                    submitButton.disabled = true;
+
+                    submitButton.classList.add(
+                        "is-loading"
+                    );
+
+                    hideRequestError();
+
+                    showLoading(
+                        "Enviando sua solicitação",
+                        "Aguarde enquanto preparamos o link de recuperação."
+                    );
+
+                    try {
+                        await enviarRecuperacao();
+
+                        showSuccessStage(email);
+                    } catch (error) {
+                        console.error(error);
+
+                        showRequestError(
+                            "Não foi possível enviar o link neste momento. " +
+                            "Verifique sua conexão e tente novamente."
+                        );
+                    } finally {
+                        submitButton.disabled = false;
+
+                        submitButton.classList.remove(
+                            "is-loading"
+                        );
+
+                        hideLoading();
+                    }
+                }
+            );
+
+            /**
+             * Sempre inicia no formulário ao abrir, atualizar
+             * ou voltar para esta página pelo navegador.
+             *
+             * Nenhuma etapa da confirmação é persistida em
+             * sessionStorage ou localStorage.
+             */
+            window.addEventListener(
+                "pageshow",
+                function () {
+                    hideLoading();
+                    showRequestStage(false);
+                }
+            );
+        })();
+    </script>
+</body>
+
+</html>

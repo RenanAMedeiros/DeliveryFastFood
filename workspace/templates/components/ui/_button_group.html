@@ -1,0 +1,31 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Button Group / Actions
+Arquivo: components/ui/_button_group.html
+
+Objetivo:
+Padronizar agrupamentos de ações sem modificar os botões existentes.
+
+Parâmetros:
+- button_group_content       HTML já renderizado dos botões
+- button_group_align         opcional: start | center | end | between
+- button_group_stack_mobile  opcional (True/False)
+- button_group_dom_id        opcional
+- button_group_extra_class   opcional
+
+Uso:
+{% include "components/ui/_button_group.html" with
+    button_group_content=acoes_html
+    button_group_align="end"
+    button_group_stack_mobile=True
+%}
+===============================================================================
+{% endcomment %}
+
+<div
+    {% if button_group_dom_id %}id="{{ button_group_dom_id }}"{% endif %}
+    class="ws-actions ws-actions--{{ button_group_align|default:'end' }}{% if button_group_stack_mobile %} ws-actions--stack-mobile{% endif %}{% if button_group_extra_class %} {{ button_group_extra_class }}{% endif %}"
+>
+    {{ button_group_content|default:""|safe }}
+</div>

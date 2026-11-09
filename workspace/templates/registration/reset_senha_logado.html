@@ -1,0 +1,45 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Senha</title>
+    <link rel="stylesheet" href="{% static 'css/style_area_logada.css' %}"> <!-- Assegure-se de que o arquivo CSS está correto e no local correto -->
+</head>
+
+
+
+<body>
+    <div class="container">
+        <h1>Alterar Senha</h1>
+        <p>Preencha as informações de senha abaixo</p>
+
+        <form action="processar_senha.php" method="POST">
+            <div class="userinfo">
+                <label>Nome:</label>
+                <input type="text" value="Felipe Alexandrino" readonly>
+
+                <label>Login:</label>
+                <input type="text" value="felipe.alexandrino" readonly>
+
+                <label>E-mail:</label>
+                <input type="email" value="felipe.alexandrino@treo.com.br" readonly>
+            </div>
+
+            <div class="password-fields">
+                <label for="new-password">Nova Senha:</label>
+                <input type="password" id="new-password" name="new-password" required>
+
+                <label for="confirm-password">Confirmar Nova Senha:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+
+            <button type="submit">Confirmar</button>
+        </form>
+    </div>
+</body>
+
+</html>

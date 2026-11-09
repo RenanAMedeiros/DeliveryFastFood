@@ -1,0 +1,126 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Form Field
+Arquivo: components/ui/_form_field.html
+
+Objetivo:
+Padronizar visualmente campos de formulários do Workspace sem alterar:
+- name;
+- id;
+- data-*;
+- validações;
+- máscaras;
+- Select2;
+- calendários;
+- upload;
+- eventos;
+- backend;
+- regras de negócio.
+
+Formas de uso:
+
+1) Django Form Field:
+{% include "components/ui/_form_field.html" with
+    form_field=form.nome
+%}
+
+2) Campo já renderizado:
+{% include "components/ui/_form_field.html" with
+    field_label="Nome"
+    field_control_html=campo_html
+    field_help="Informe o nome."
+%}
+
+Parâmetros:
+- form_field            opcional: BoundField do Django
+- field_label           opcional
+- field_control_html    opcional: HTML já renderizado do campo
+- field_help            opcional
+- field_error           opcional
+- field_required        opcional (True/False)
+- field_dom_id          opcional
+- field_extra_class     opcional
+- field_span            opcional: 1 | 2 | 3 | 4 | 6 | 8 | 12
+- field_disabled        opcional (True/False)
+- field_readonly        opcional (True/False)
+
+IMPORTANTE:
+Em páginas existentes, o objetivo principal é ADICIONAR as classes ws-form-*
+à estrutura atual, preservando integralmente os atributos funcionais.
+===============================================================================
+{% endcomment %}
+
+<div
+    {% if field_dom_id %}id="{{ field_dom_id }}"{% endif %}
+    class="ws-form-field{% if field_span %} ws-form-field--span-{{ field_span }}{% endif %}{% if field_extra_class %} {{ field_extra_class }}{% endif %}{% if field_disabled %} is-disabled{% endif %}{% if field_readonly %} is-readonly{% endif %}"
+>
+
+    {% if form_field %}
+
+        <label
+            class="ws-form-label"
+            for="{{ form_field.id_for_label }}"
+        >
+            {{ form_field.label }}
+
+            {% if form_field.field.required %}
+                <span class="ws-form-required" aria-hidden="true">*</span>
+            {% endif %}
+        </label>
+
+        <div class="ws-form-control-wrap">
+            {{ form_field }}
+        </div>
+
+        {% if form_field.help_text %}
+            <div class="ws-form-help">
+                {{ form_field.help_text|safe }}
+            </div>
+        {% endif %}
+
+        {% if form_field.errors %}
+            <div class="ws-form-errors" role="alert">
+                {% for error in form_field.errors %}
+                    <div class="ws-form-error">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        {% if field_label %}
+            <label class="ws-form-label">
+                {{ field_label }}
+
+                {% if field_required %}
+                    <span class="ws-form-required" aria-hidden="true">*</span>
+                {% endif %}
+            </label>
+        {% endif %}
+
+        {% if field_control_html %}
+            <div class="ws-form-control-wrap">
+                {{ field_control_html|safe }}
+            </div>
+        {% endif %}
+
+        {% if field_help %}
+            <div class="ws-form-help">
+                {{ field_help }}
+            </div>
+        {% endif %}
+
+        {% if field_error %}
+            <div class="ws-form-errors" role="alert">
+                <div class="ws-form-error">
+                    {{ field_error }}
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+</div>

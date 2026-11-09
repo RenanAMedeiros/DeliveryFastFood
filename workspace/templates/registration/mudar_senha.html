@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style_mudar_senha.css' %}?v=1.0">
+    <title>Mudar Senha</title>
+</head>
+<body>
+    <form action="config.php" method="post" class="card-login">
+        <div class="textfield">
+            <h1>Resete sua Senha</h1>
+            <p>Por favor insira sua nova senha</p>
+            <label for="senha">Nova Senha:</label>
+            <input type="password" name="senha" id="senha" required>
+            <p>Pelo menos 1 caractere minusculo</p>
+            <p>Pelo menos 1 caractere maiusculo</p>
+            <p>Pelo menos 1 número</p>
+            <p>Pelo menos 8 caracteres</p>
+        </div>
+        <div class="textfield">
+            <label for="conf_senha">Confirme a Senha:</label>
+            <input type="password" name="conf_senha" id="conf_senha" required>
+        </div>
+        <div>
+            <button type="submit">Mudar minha senha</button>
+        </div>
+    </form>
+</body>
+
+
+</html>

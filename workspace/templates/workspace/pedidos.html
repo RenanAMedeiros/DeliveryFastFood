@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+{% include "components/_head.html" %}
+<head>
+    <title>Pedidos</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+</head>
+<body class="pedidos-page">
+    {% include "components/navbar/_navbar.html" %}
+    <main class="pedidos-main">
+        <section class="pedidos-header">
+            <div>
+                <span class="pedidos-eyebrow">Sistema de vendas</span>
+                <h1>Pedidos</h1>
+                <p>Acompanhe os pedidos da loja por canal, status, prioridade, prazo e responsavel.</p>
+            </div>
+            <a class="pedidos-primary" href="{% url 'pedido_novo' %}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Nova venda
+            </a>
+        </section>
+
+        <section class="pedidos-kpis">
+            <article><span>Total</span><strong>{{ resumo.total }}</strong></article>
+            <article><span>Novos</span><strong>{{ resumo.abertos }}</strong></article>
+            <article><span>Preparo</span><strong>{{ resumo.separacao }}</strong></article>
+            <article><span>Prontos</span><strong>{{ resumo.prontos }}</strong></article>
+            <article><span>Entrega</span><strong>{{ resumo.entrega }}</strong></article>
+            <article><span>Atrasados</span><strong>{{ resumo.atrasados }}</strong></article>
+        </section>
+
+        <form class="pedidos-toolbar" method="get">
+            <label>Busca
+                <input name="q" value="{{ busca }}" placeholder="Codigo, cliente ou produto">
+            </label>
+            <label>Status
+                <select name="status">
+                    <option value="">Todos</option>
+                    {% for valor, rotulo in status_choices %}
+                        <option value="{{ valor }}" {% if status_atual == valor %}selected{% endif %}>{{ rotulo }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button class="pedidos-secondary" type="submit">Filtrar</button>
+        </form>
+
+        <section class="pedidos-table-wrap">
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Canal</th>
+                        <th>Cliente</th>
+                        <th>Itens</th>
+                        <th>Total</th>
+                        <th>Entrega</th>
+                        <th>Status</th>
+                        <th>Prioridade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                        <tr>
+                            <td><a href="{% url 'pedido_detalhe' pedido.id %}"><strong>{{ pedido.codigo }}</strong></a></td>
+                            <td>
+                                {{ pedido.get_canal_display }}
+                                {% if pedido.codigo_externo %}
+                                    <span class="pedido-item-meta">#{{ pedido.codigo_externo }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ pedido.cliente.nome }}</td>
+                            <td>{{ pedido.itens.count }}</td>
+                            <td>R$ {{ pedido.total|floatformat:2 }}</td>
+                            <td class="{% if pedido.atrasado %}pedido-atrasado{% endif %}">{{ pedido.previsao_entrega|date:"d/m/Y"|default:"-" }}</td>
+                            <td><span class="pedido-badge">{{ pedido.get_status_display }}</span></td>
+                            <td>{{ pedido.get_prioridade_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="pedidos-empty">Nenhum pedido encontrado.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

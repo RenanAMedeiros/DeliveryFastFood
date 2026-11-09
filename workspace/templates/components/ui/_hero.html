@@ -1,0 +1,135 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Hero / Page Header
+Arquivo: components/ui/_hero.html
+
+Parâmetros esperados:
+- hero_eyebrow              opcional
+- hero_title                recomendado
+- hero_description          opcional
+- hero_back_url             opcional
+- hero_back_label           opcional (default: "Voltar")
+- hero_context_title        opcional
+- hero_context_description  opcional
+
+Exemplo:
+
+{% include "components/ui/_hero.html" with
+    hero_eyebrow="PRODUÇÃO E CONTROLES"
+    hero_title="Meus envios de produção"
+    hero_description="Consulte os envios vinculados às carteiras disponíveis para o seu usuário."
+    hero_back_url="/"
+    hero_context_title="Workspace Qore"
+    hero_context_description="Histórico e consulta dos envios de produção."
+%}
+===============================================================================
+{% endcomment %}
+
+<section class="ws-hero ws-hero--page-offset" aria-labelledby="ws-hero-title">
+    <div class="ws-hero__main">
+
+        {% if hero_back_url %}
+            <div class="ws-hero__navigation">
+                <a
+                    href="{{ hero_back_url }}"
+                    class="ws-hero__back"
+                    aria-label="{{ hero_back_label|default:'Voltar' }}"
+                    title="{{ hero_back_label|default:'Voltar' }}"
+                >
+                    <svg
+                        class="ws-hero__back-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        focusable="false"
+                    >
+                        <path
+                            d="M15 18L9 12L15 6"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="ws-hero__content">
+
+            {% if hero_eyebrow %}
+                <div class="ws-hero__eyebrow">
+                    <span class="ws-hero__eyebrow-line" aria-hidden="true"></span>
+                    <span class="ws-hero__eyebrow-text">
+                        {{ hero_eyebrow }}
+                    </span>
+                </div>
+            {% endif %}
+
+            <h1 id="ws-hero-title" class="ws-hero__title">
+                {{ hero_title }}
+            </h1>
+
+            {% if hero_description %}
+                <p class="ws-hero__description">
+                    {{ hero_description }}
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {% if hero_context_title or hero_context_description %}
+        <aside class="ws-hero__context" aria-label="Contexto da página">
+
+            <div class="ws-hero__context-icon" aria-hidden="true">
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    focusable="false"
+                >
+                    <path
+                        d="M3 12A9 9 0 1 0 6.1 5.2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
+                    <path
+                        d="M3 4V9H8"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M12 7V12L15 14"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </div>
+
+            <div class="ws-hero__context-copy">
+
+                {% if hero_context_title %}
+                    <strong class="ws-hero__context-title">
+                        {{ hero_context_title }}
+                    </strong>
+                {% endif %}
+
+                {% if hero_context_description %}
+                    <span class="ws-hero__context-description">
+                        {{ hero_context_description }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+        </aside>
+    {% endif %}
+</section>

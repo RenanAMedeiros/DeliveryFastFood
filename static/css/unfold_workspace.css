@@ -1,0 +1,256 @@
+/* =========================================================
+   TASKFLOW — IDENTIDADE VISUAL NO DJANGO ADMIN (django-unfold)
+
+   Carregado via UNFOLD["STYLES"] em setup/unfold_config.py.
+
+   Atenção: o unfold injeta os arquivos de STYLES ANTES do
+   unfold/css/styles.css. Por isso os seletores abaixo se apoiam nos
+   ids estáveis do layout (#nav-sidebar, #nav-sidebar-inner, #main,
+   #content) ou usam !important — do contrário o Tailwind do unfold
+   venceria por ordem de cascata.
+
+   Paleta (a mesma de static/css/style_navbar.css):
+     azul institucional  #101C44   azul claro  #17285C
+     amarelo             #FFD021   amarelo suave #FFF5C8
+   ========================================================= */
+
+:root {
+    --tfa-blue: #101C44;
+    --tfa-blue-light: #17285C;
+    --tfa-blue-deep: #0C1534;
+    --tfa-yellow: #FFD021;
+    --tfa-yellow-soft: #FFF5C8;
+    --tfa-sidebar-text: #C7D1E6;
+    --tfa-sidebar-line: rgba(255, 255, 255, .10);
+}
+
+/* ---------------------------------------------------------
+   BARRA LATERAL — AZUL INSTITUCIONAL NOS DOIS TEMAS
+   Espelha o cabeçalho do sistema (.taskflow-header).
+   --------------------------------------------------------- */
+
+#nav-sidebar {
+    background: var(--tfa-blue);
+    border-right-color: rgba(255, 255, 255, .08);
+}
+
+.dark #nav-sidebar {
+    background: var(--tfa-blue-deep);
+    border-right-color: rgba(255, 255, 255, .06);
+}
+
+#nav-sidebar-inner {
+    background: transparent;
+    color: var(--tfa-sidebar-text);
+}
+
+/* Faixa do logotipo */
+#nav-sidebar-inner > div:first-child {
+    border-bottom-color: var(--tfa-sidebar-line);
+}
+
+#nav-sidebar-inner > div:first-child img {
+    max-height: 34px;
+    width: auto;
+}
+
+/* Títulos dos grupos */
+#nav-sidebar-inner h2 {
+    color: #FFFFFF;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+#nav-sidebar-inner h2 .material-symbols-outlined {
+    color: var(--tfa-sidebar-text);
+}
+
+#nav-sidebar-inner h2:hover,
+#nav-sidebar-inner h2:hover .material-symbols-outlined {
+    color: var(--tfa-yellow);
+}
+
+/* Separadores */
+#nav-sidebar-inner hr {
+    border-color: var(--tfa-sidebar-line);
+}
+
+/* Itens do menu */
+#nav-sidebar-inner ol a {
+    color: var(--tfa-sidebar-text);
+    transition: background-color .15s ease, color .15s ease;
+}
+
+#nav-sidebar-inner ol a:hover {
+    background: rgba(255, 255, 255, .07);
+    color: #FFFFFF;
+}
+
+#nav-sidebar-inner ol a:hover .material-symbols-outlined {
+    color: var(--tfa-yellow);
+}
+
+/* Item ativo: fundo suave + barra amarela, como o menu do sistema */
+#nav-sidebar-inner ol a.bg-base-100,
+.dark #nav-sidebar-inner ol a.bg-base-100 {
+    position: relative;
+    background: rgba(255, 255, 255, .10);
+    color: #FFFFFF;
+}
+
+#nav-sidebar-inner ol a.bg-base-100::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--tfa-yellow);
+}
+
+#nav-sidebar-inner ol a.bg-base-100 .material-symbols-outlined {
+    color: var(--tfa-yellow);
+}
+
+/* Campo de busca da lateral (o fundo fica no div que envolve #nav-filter) */
+#nav-sidebar-inner div:has(> #nav-filter) {
+    background: rgba(255, 255, 255, .07);
+    border-color: var(--tfa-sidebar-line);
+    box-shadow: none;
+}
+
+#nav-sidebar-inner div:has(> #nav-filter):focus-within {
+    outline-color: var(--tfa-yellow);
+}
+
+#nav-sidebar-inner div:has(> #nav-filter) .material-symbols-outlined {
+    color: #8E9CBB;
+}
+
+#nav-sidebar-inner #nav-filter {
+    color: #FFFFFF;
+    background: transparent;
+}
+
+#nav-sidebar-inner #nav-filter::placeholder {
+    color: #8E9CBB;
+}
+
+/* Rodapé "Todas as aplicações" */
+#nav-sidebar-inner > div:last-child > a {
+    color: var(--tfa-sidebar-text);
+    border-top: 1px solid var(--tfa-sidebar-line);
+}
+
+#nav-sidebar-inner > div:last-child > a:hover {
+    color: var(--tfa-yellow);
+}
+
+/* ---------------------------------------------------------
+   CABEÇALHO E CONTEÚDO
+   --------------------------------------------------------- */
+
+#main {
+    background: #F3F5F9;
+}
+
+.dark #main {
+    background: #0C1222;
+}
+
+#header-inner h1 {
+    color: var(--tfa-blue);
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+.dark #header-inner h1 {
+    color: #F4F7FC;
+}
+
+/* Barra do cabeçalho com um fio amarelo, assinatura da marca */
+#main > div:first-child {
+    background: #FFFFFF;
+    border-bottom: 2px solid var(--tfa-yellow);
+}
+
+.dark #main > div:first-child {
+    background: #151E33;
+    border-bottom-color: var(--tfa-yellow);
+}
+
+/* Cards, tabelas e blocos do conteúdo */
+#content .border-base-200 {
+    border-color: #DBE2EC;
+}
+
+#content table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: .70rem;
+    letter-spacing: .05em;
+    color: #47546E;
+}
+
+.dark #content table thead th {
+    color: #AFC0D9;
+}
+
+#content table tbody tr:hover > td,
+#content table tbody tr:hover > th {
+    background: #F5F7FB;
+}
+
+.dark #content table tbody tr:hover > td,
+.dark #content table tbody tr:hover > th {
+    background: #202E48;
+}
+
+/* ---------------------------------------------------------
+   BOTÕES
+   Os botões comuns já saem azuis pela paleta (primary-600).
+   Só a ação principal "Salvar" recebe o amarelo da marca.
+   --------------------------------------------------------- */
+
+#submit-row button[name="_save"],
+#submit-row input[name="_save"] {
+    color: var(--tfa-blue) !important;
+    background: var(--tfa-yellow) !important;
+    font-weight: 600;
+}
+
+#submit-row button[name="_save"]:hover,
+#submit-row input[name="_save"]:hover {
+    background: #F2C10F !important;
+}
+
+/* Foco nos campos: anel amarelo discreto */
+#content input:focus,
+#content select:focus,
+#content textarea:focus {
+    border-color: var(--tfa-blue-light);
+    box-shadow: 0 0 0 3px rgba(255, 208, 33, .22);
+}
+
+/* ---------------------------------------------------------
+   TELA DE LOGIN DO ADMIN
+   --------------------------------------------------------- */
+
+body.login #content,
+body.login .container {
+    max-width: none;
+}
+
+body.login button[type="submit"],
+body.login input[type="submit"] {
+    color: var(--tfa-blue) !important;
+    background: var(--tfa-yellow) !important;
+    font-weight: 600;
+}
+
+body.login button[type="submit"]:hover,
+body.login input[type="submit"]:hover {
+    background: #F2C10F !important;
+}

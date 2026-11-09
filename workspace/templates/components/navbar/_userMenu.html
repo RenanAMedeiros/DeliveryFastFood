@@ -1,0 +1,945 @@
+{% load static %}
+
+<style>
+
+    /*
+
+     * Estado ativo do menu do usuário.
+
+     * Mantém o mesmo padrão visual adotado nos submenus da navbar.
+
+     */
+
+    .user-trigger.user-trigger-active {
+
+        background: rgba(37, 99, 235, 0.12);
+
+        box-shadow: inset 0 -2px 0 #2563eb;
+
+    }
+
+    .sub-menu-link.sub-menu-link-active {
+
+        background: rgba(37, 99, 235, 0.09);
+
+        border-radius: 12px;
+
+        box-shadow: inset 3px 0 0 #2563eb;
+
+        color: #174ea6;
+
+    }
+
+    .sub-menu-link.sub-menu-link-active .sub-menu-icon {
+
+        background: rgba(37, 99, 235, 0.14);
+
+        color: #2563eb;
+
+    }
+
+</style>
+
+<div class="user-section">
+
+    <!-- NOTIFICAÇÕES -->
+
+    <div class="notification">
+
+        <button
+
+            type="button"
+
+            class="notification-trigger"
+
+            id="notification-icon"
+
+            aria-label="Notificações"
+
+            title="Notificações">
+
+            <img
+
+                src="{% static 'imagens/notificacao.png' %}"
+
+                alt=""
+
+                aria-hidden="true">
+
+            <span
+
+                class="notification-badge"
+
+                id="notification-badge"
+
+                aria-label="Nenhuma notificação não lida"
+
+                hidden>
+
+                0
+
+            </span>
+
+        </button>
+
+    </div>
+
+
+
+    <!-- BOTÃO DO USUÁRIO -->
+
+    <button
+
+        type="button"
+
+        class="user-trigger{% if request.resolver_match.url_name == 'configuracao' or request.resolver_match.url_name == 'financeiro_2' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %} user-trigger-active{% endif %}"
+
+        id="user-image"
+
+        onclick="toggleMenu()"
+
+        aria-haspopup="true"
+
+        aria-expanded="false"
+
+        aria-controls="subMenu">
+
+        <span
+
+            class="user-avatar"
+
+            aria-hidden="true">
+
+            {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+
+        </span>
+
+        <span class="user-trigger-copy">
+
+            <strong>
+
+                {% if user.first_name or user.last_name %}
+
+                    {{ user.first_name }} {{ user.last_name }}
+
+                {% else %}
+
+                    {{ user.username }}
+
+                {% endif %}
+
+            </strong>
+
+            <small>
+
+                {% if user.role == 'admin' %}
+
+                    Administrador
+
+                {% elif user.role == 'gestor' %}
+
+                    Gestor
+
+                {% elif user.role == 'head' %}
+
+                    Head
+
+                {% elif user.role == 'rh' %}
+
+                    Recursos Humanos
+
+                {% elif user.role == 'socio' %}
+
+                    Sócio
+
+                {% else %}
+
+                    Usuário
+
+                {% endif %}
+
+            </small>
+
+        </span>
+
+        <i
+
+            class="fa fa-angle-down user-trigger-chevron"
+
+            aria-hidden="true">
+
+        </i>
+
+    </button>
+
+</div>
+
+
+
+<!-- =========================================================
+
+     MENU DO USUÁRIO
+
+========================================================= -->
+
+<div
+
+    class="sub-menu-wrap"
+
+    id="subMenu"
+
+    aria-hidden="true">
+
+    <div class="sub-menu">
+
+
+
+        <!-- =================================================
+
+             INFORMAÇÕES DO USUÁRIO
+
+        ================================================== -->
+
+        <div class="user-info">
+
+            <span
+
+                class="user-avatar user-avatar-large"
+
+                aria-hidden="true">
+
+                {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+
+            </span>
+
+            <div class="user-info-copy">
+
+                <h2>
+
+                    {% if user.first_name or user.last_name %}
+
+                        {{ user.first_name }} {{ user.last_name }}
+
+                    {% else %}
+
+                        {{ user.username }}
+
+                    {% endif %}
+
+                </h2>
+
+                <small>
+
+                    {{ user.email|default:"Usuário do Workspace" }}
+
+                </small>
+
+                {% if user.cliente_id %}
+
+                <small style="display: block;">
+
+                    {{ user.cliente.nome }}
+
+                </small>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <div
+
+            class="sub-menu-divider"
+
+            aria-hidden="true">
+
+        </div>
+
+
+
+        <!-- =================================================
+
+             CONFIGURAÇÕES
+
+        ================================================== -->
+
+        <a
+
+            href="{% url 'configuracao' %}"
+
+            class="sub-menu-link{% if request.resolver_match.url_name == 'configuracao' %} sub-menu-link-active{% endif %}"
+
+            {% if request.resolver_match.url_name == 'configuracao' %}aria-current="page"{% endif %}>
+
+            <span class="sub-menu-icon">
+
+                <i
+
+                    class="fa fa-sliders"
+
+                    aria-hidden="true">
+
+                </i>
+
+            </span>
+
+            <span>
+
+                Configurações
+
+            </span>
+
+        </a>
+
+        {% if user.role == 'admin' or user.is_staff or user.is_superuser %}
+
+        <!-- SIMULADOR DE LIBERAÇÕES -->
+
+        <a
+
+            href="{% url 'simulador_liberacoes' %}"
+
+            class="sub-menu-link{% if request.resolver_match.url_name == 'simulador_liberacoes' %} sub-menu-link-active{% endif %}"
+
+            {% if request.resolver_match.url_name == 'simulador_liberacoes' %}aria-current="page"{% endif %}>
+
+            <span class="sub-menu-icon">
+
+                <i
+
+                    class="fa fa-flask"
+
+                    aria-hidden="true">
+
+                </i>
+
+            </span>
+
+            <span>Simulador de liberações</span>
+
+        </a>
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+
+             FINANCEIRO
+
+        ================================================== -->
+
+        {% if user.role == 'admin' or user.is_staff or user.is_superuser %}
+
+        <a
+
+            href="{% url 'financeiro_2' %}"
+
+            class="sub-menu-link{% if request.resolver_match.url_name == 'financeiro_2' %} sub-menu-link-active{% endif %}"
+
+            {% if request.resolver_match.url_name == 'financeiro_2' %}aria-current="page"{% endif %}>
+
+            <span class="sub-menu-icon">
+
+                <i
+
+                    class="fa fa-money"
+
+                    aria-hidden="true">
+
+                </i>
+
+            </span>
+
+            <span>
+
+                Financeiro
+
+            </span>
+
+            {% if not user.role == 'admin' and not user.is_staff and not user.is_superuser %}
+            <span class="sub-menu-lock-badge" aria-hidden="true">
+                <i class="fa fa-lock"></i>
+            </span>
+            {% endif %}
+
+        </a>
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+
+             ALTERAR SENHA
+
+        ================================================== -->
+
+        <a
+
+            href="{% url 'password_change' %}"
+
+            class="sub-menu-link{% if request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %} sub-menu-link-active{% endif %}"
+
+            {% if request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %}aria-current="page"{% endif %}>
+
+            <span class="sub-menu-icon">
+
+                <i
+
+                    class="fa fa-key"
+
+                    aria-hidden="true">
+
+                </i>
+
+            </span>
+
+            <span>
+
+                Alterar senha
+
+            </span>
+
+        </a>
+
+
+
+        <div
+
+            class="sub-menu-divider"
+
+            aria-hidden="true">
+
+        </div>
+
+
+
+        <!-- =================================================
+
+             LOGOUT ORIGINAL PRESERVADO
+
+        ================================================== -->
+
+        <form
+
+            id="logout-form"
+
+            action="{% url 'logout' %}"
+
+            method="post"
+
+            hidden>
+
+            {% csrf_token %}
+
+        </form>
+
+
+
+        <a
+
+            href="#"
+
+            class="sub-menu-link sub-menu-logout"
+
+            onclick="
+
+                event.preventDefault();
+
+                if (typeof window.showWorkspaceLoading === 'function') {
+
+                    window.showWorkspaceLoading(
+
+                        'Saindo do Workspace',
+
+                        'Encerrando sua sessão com segurança...'
+
+                    );
+
+                }
+
+                document.getElementById('logout-form').submit();
+
+            ">
+
+            <span class="sub-menu-icon">
+
+                <svg
+
+                    class="sub-menu-logout-icon"
+
+                    width="16"
+
+                    height="16"
+
+                    viewBox="0 0 24 24"
+
+                    fill="none"
+
+                    aria-hidden="true"
+
+                    focusable="false">
+
+                    <path
+
+                        d="M10 5H6.5A2.5 2.5 0 0 0 4 7.5v9A2.5 2.5 0 0 0 6.5 19H10"
+
+                        stroke="currentColor"
+
+                        stroke-width="1.9"
+
+                        stroke-linecap="round">
+
+                    </path>
+
+                    <path
+
+                        d="M14 8l4 4-4 4M18 12H9"
+
+                        stroke="currentColor"
+
+                        stroke-width="1.9"
+
+                        stroke-linecap="round"
+
+                        stroke-linejoin="round">
+
+                    </path>
+
+                </svg>
+
+            </span>
+
+            <span>
+
+                Sair do Workspace
+
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    (function () {
+
+        "use strict";
+
+        var subMenu =
+
+            document.getElementById("subMenu");
+
+        var userTrigger =
+
+            document.getElementById("user-image");
+
+        var notificationBadge =
+
+            document.getElementById(
+
+                "notification-badge"
+
+            );
+
+        var navigationLinks =
+
+            Array.from(
+
+                document.querySelectorAll(
+
+                    ".sub-menu-link:not(.sub-menu-logout)"
+
+                )
+
+            );
+
+        navigationLinks.forEach(
+
+            function (link) {
+
+                link.addEventListener(
+
+                    "click",
+
+                    function () {
+
+                        var destino =
+
+                            link.getAttribute("href");
+
+                        if (
+
+                            destino &&
+
+                            destino !== "#" &&
+
+                            !destino.startsWith(
+
+                                "javascript:"
+
+                            ) &&
+
+                            typeof window.showWorkspaceLoading ===
+
+                                "function"
+
+                        ) {
+
+                            window.showWorkspaceLoading(
+
+                                "Carregando Workspace",
+
+                                "Abrindo a página selecionada..."
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            }
+
+        );
+
+
+
+        /**
+
+         * Abre ou fecha o menu do usuário.
+
+         */
+
+        window.toggleMenu = function () {
+
+            if (!subMenu || !userTrigger) {
+
+                return;
+
+            }
+
+            var aberto =
+
+                subMenu.classList.toggle(
+
+                    "open-menu"
+
+                );
+
+            subMenu.setAttribute(
+
+                "aria-hidden",
+
+                String(!aberto)
+
+            );
+
+            userTrigger.setAttribute(
+
+                "aria-expanded",
+
+                String(aberto)
+
+            );
+
+        };
+
+
+
+        /**
+
+         * Fecha o menu.
+
+         */
+
+        function fecharMenu() {
+
+            if (!subMenu || !userTrigger) {
+
+                return;
+
+            }
+
+            subMenu.classList.remove(
+
+                "open-menu"
+
+            );
+
+            subMenu.setAttribute(
+
+                "aria-hidden",
+
+                "true"
+
+            );
+
+            userTrigger.setAttribute(
+
+                "aria-expanded",
+
+                "false"
+
+            );
+
+        }
+
+
+
+        /**
+
+         * Fecha ao clicar fora.
+
+         */
+
+        document.addEventListener(
+
+            "click",
+
+            function (event) {
+
+                if (!subMenu || !userTrigger) {
+
+                    return;
+
+                }
+
+                var clicouNoMenu =
+
+                    subMenu.contains(
+
+                        event.target
+
+                    );
+
+                var clicouNoBotao =
+
+                    userTrigger.contains(
+
+                        event.target
+
+                    );
+
+                if (
+
+                    !clicouNoMenu &&
+
+                    !clicouNoBotao
+
+                ) {
+
+                    fecharMenu();
+
+                }
+
+            }
+
+        );
+
+
+
+        /**
+
+         * Fecha com ESC.
+
+         */
+
+        document.addEventListener(
+
+            "keydown",
+
+            function (event) {
+
+                if (event.key !== "Escape") {
+
+                    return;
+
+                }
+
+                fecharMenu();
+
+                userTrigger?.focus();
+
+            }
+
+        );
+
+
+
+        /**
+
+         * Atualiza o contador de notificações.
+
+         */
+
+        /**function carregarContadorDeNotificacoes() {
+
+            if (!notificationBadge) {
+
+                return;
+
+            }
+
+            fetch(
+
+                "/notificacoes/obter/",
+
+                {
+
+                    method: "GET",
+
+                    credentials: "same-origin",
+
+                    headers: {
+
+                        "X-Requested-With":
+
+                            "XMLHttpRequest"
+
+                    }
+
+                }
+
+            )
+
+                .then(function (response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+
+                            "Não foi possível carregar " +
+
+                            "as notificações."
+
+                        );
+
+                    }
+
+                    return response.json();
+
+                })
+
+                .then(function (data) {
+
+                    var lista =
+
+                        Array.isArray(data.notificacoes)
+
+                            ? data.notificacoes
+
+                            : [];
+
+                    var quantidade =
+
+                        lista.length;
+
+                    notificationBadge.textContent =
+
+                        quantidade > 99
+
+                            ? "99+"
+
+                            : String(quantidade);
+
+                    notificationBadge.hidden =
+
+                        quantidade === 0;
+
+                    notificationBadge.setAttribute(
+
+                        "aria-label",
+
+                        quantidade === 1
+
+                            ? "1 notificação não lida"
+
+                            : quantidade +
+
+                              " notificações não lidas"
+
+                    );
+
+                })
+
+                .catch(function (error) {
+
+                    console.error(
+
+                        "Erro ao carregar notificações:",
+
+                        error
+
+                    );
+
+                    notificationBadge.textContent =
+
+                        "0";
+
+                    notificationBadge.hidden =
+
+                        true;
+
+                    notificationBadge.setAttribute(
+
+                        "aria-label",
+
+                        "Nenhuma notificação não lida"
+
+                    );
+
+                });
+
+        }*/
+
+
+
+       /** document.addEventListener(
+
+            "DOMContentLoaded",
+
+            function () {
+
+                carregarContadorDeNotificacoes();
+
+                window.setInterval(
+
+                    carregarContadorDeNotificacoes,
+
+                    10000
+
+                );
+
+            }
+
+        );*/
+
+
+
+        /**
+
+         * Corrige o estado ao retornar pelo navegador.
+
+         */
+
+        window.addEventListener(
+
+            "pageshow",
+
+            fecharMenu
+
+        );
+
+    })();
+
+</script>

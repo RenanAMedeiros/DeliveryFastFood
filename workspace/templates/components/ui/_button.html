@@ -1,0 +1,84 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Button
+Arquivo: components/ui/_button.html
+
+Objetivo:
+Padronizar botões visuais do Workspace sem alterar eventos ou fluxos.
+
+Parâmetros:
+- button_text            obrigatório/recomendado
+- button_type            opcional: button | submit | reset (default: button)
+- button_variant         opcional: primary | secondary | ghost | danger | success
+- button_size            opcional: sm | md | lg (default: md)
+- button_icon            opcional: plus | save | filter | clear | export | back | edit | trash | search
+- button_icon_position   opcional: left | right (default: left)
+- button_url             opcional; quando informado renderiza <a>
+- button_dom_id          opcional
+- button_name            opcional
+- button_value           opcional
+- button_title           opcional
+- button_extra_class     opcional
+- button_disabled        opcional (True/False)
+- button_loading         opcional (True/False)
+- button_data_attrs      opcional; HTML de atributos data-* já renderizados
+
+IMPORTANTE:
+- Não substitui IDs, names, data-* ou listeners existentes.
+- Em páginas existentes, as classes ws-button* podem ser adicionadas aos
+  botões atuais sem alterar seu comportamento.
+===============================================================================
+{% endcomment %}
+
+{% with variant=button_variant|default:"primary" size=button_size|default:"md" icon_position=button_icon_position|default:"left" %}
+
+{% if button_url %}
+<a
+    href="{{ button_url }}"
+    {% if button_dom_id %}id="{{ button_dom_id }}"{% endif %}
+    class="ws-button ws-button--{{ variant }} ws-button--{{ size }}{% if button_loading %} is-loading{% endif %}{% if button_extra_class %} {{ button_extra_class }}{% endif %}"
+    {% if button_title %}title="{{ button_title }}"{% endif %}
+    {% if button_disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+    {{ button_data_attrs|default:""|safe }}
+>
+{% else %}
+<button
+    type="{{ button_type|default:'button' }}"
+    {% if button_dom_id %}id="{{ button_dom_id }}"{% endif %}
+    {% if button_name %}name="{{ button_name }}"{% endif %}
+    {% if button_value %}value="{{ button_value }}"{% endif %}
+    class="ws-button ws-button--{{ variant }} ws-button--{{ size }}{% if button_loading %} is-loading{% endif %}{% if button_extra_class %} {{ button_extra_class }}{% endif %}"
+    {% if button_title %}title="{{ button_title }}"{% endif %}
+    {% if button_disabled or button_loading %}disabled{% endif %}
+    {{ button_data_attrs|default:""|safe }}
+>
+{% endif %}
+
+    {% if button_loading %}
+        <span class="ws-button__spinner" aria-hidden="true"></span>
+    {% elif button_icon and icon_position == "left" %}
+        <span class="ws-button__icon" aria-hidden="true">
+            {% include "components/ui/_button_icon.html" with button_icon=button_icon only %}
+        </span>
+    {% endif %}
+
+    {% if button_text %}
+        <span class="ws-button__text">
+            {{ button_text }}
+        </span>
+    {% endif %}
+
+    {% if button_icon and icon_position == "right" and not button_loading %}
+        <span class="ws-button__icon" aria-hidden="true">
+            {% include "components/ui/_button_icon.html" with button_icon=button_icon only %}
+        </span>
+    {% endif %}
+
+{% if button_url %}
+</a>
+{% else %}
+</button>
+{% endif %}
+
+{% endwith %}

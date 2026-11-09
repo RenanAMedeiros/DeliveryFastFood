@@ -1,0 +1,37 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Filter Multi Select
+Arquivo: components/ui/_filter_multiselect.html
+
+Objetivo:
+Padronizar filtros com múltipla seleção no Workspace. O componente usa um
+<select multiple> nativo como fonte de verdade e o Workspace UI Core faz o
+progressive enhancement para dropdown com busca e checkboxes.
+
+Parâmetros:
+- filter_label        obrigatório
+- filter_key          obrigatório; também usado em data-smart-filter
+- filter_placeholder  opcional (default: "Todos")
+- filter_extra_class  opcional
+
+Comportamento:
+- seleção múltipla com aplicação imediata;
+- busca local nas opções;
+- selecionar todos / limpar;
+- dispara evento change no select nativo a cada alteração;
+- sem JavaScript, o select multiple continua funcional.
+===============================================================================
+{% endcomment %}
+
+<div class="ws-filter-field{% if filter_extra_class %} {{ filter_extra_class }}{% endif %}">
+    <span class="ws-filter-label">{{ filter_label }}</span>
+    <select
+        class="ws-filter-control ws-filter-multiselect-native"
+        multiple
+        data-ws-multiselect
+        data-smart-filter="{{ filter_key }}"
+        data-placeholder="{{ filter_placeholder|default:'Todos' }}"
+        aria-label="{{ filter_label }}"
+    ></select>
+</div>

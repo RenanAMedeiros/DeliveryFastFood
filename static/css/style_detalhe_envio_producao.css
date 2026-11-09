@@ -1,0 +1,5158 @@
+:root{
+        --qore-navy-950: #031129;
+        --qore-navy-900: #071a3f;
+        --qore-navy-800: #102757;
+        --qore-blue-700: #155eef;
+        --qore-blue-600: #2563eb;
+        --qore-blue-500: #2e90fa;
+        --qore-cyan-400: #38bdf8;
+        --qore-white: #ffffff;
+        --qore-bg: #f4f7fb;
+        --qore-surface: #ffffff;
+        --qore-surface-soft: #f8fafc;
+        --qore-text: #172033;
+        --qore-muted: #667085;
+        --qore-muted-light: #98a2b3;
+        --qore-border: #dfe6f0;
+        --qore-border-strong: #c9d3e1;
+        --qore-success: #12b76a;
+        --qore-success-soft: #ecfdf3;
+        --qore-warning: #f79009;
+        --qore-warning-soft: #fffaeb;
+        --qore-danger: #d92d20;
+        --qore-danger-soft: #fef3f2;
+        --qore-info-soft: #eff6ff;
+        --qore-shadow: 0 18px 48px rgba(3, 17, 41, 0.11);
+    }
+
+    *{
+        box-sizing: border-box;
+    }
+
+    html{
+        min-width: 320px;
+        min-height: 100%;
+    }
+
+    body.qore-production-page{
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        color: var(--qore-text);
+        font-family: "Inter", Arial, sans-serif;
+        background:
+            radial-gradient(
+                circle at 4% 10%,
+                rgba(37, 99, 235, 0.10),
+                transparent 27%
+            ),
+            radial-gradient(
+                circle at 96% 92%,
+                rgba(56, 189, 248, 0.08),
+                transparent 24%
+            ),
+            var(--qore-bg);
+    }
+
+    body.qore-modal-open{
+        overflow: hidden;
+    }
+
+    button,
+input,
+select{
+        font: inherit;
+    }
+
+    button{
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden]{
+        display: none !important;
+    }
+
+    .qore-production-main{
+        width: 100%;
+        padding:
+            24px
+            clamp(16px, 2.5vw, 42px)
+            40px;
+        flex: 1 0 auto;
+    }
+
+    .qore-production-shell{
+        width: min(1420px, 100%);
+        margin: 0 auto;
+    }
+
+    /* =========================================================
+       CABEÇALHO
+    ========================================================= */
+
+    .qore-page-header{
+        margin-bottom: 18px;
+        padding:
+            25px
+            clamp(22px, 3vw, 36px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        overflow: hidden;
+        color: var(--qore-white);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 88% 10%,
+                rgba(56, 189, 248, 0.22),
+                transparent 27%
+            ),
+            linear-gradient(
+                135deg,
+                var(--qore-navy-950),
+                var(--qore-navy-800)
+            );
+        box-shadow: var(--qore-shadow);
+    }
+
+    .qore-page-header-main{
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .qore-page-back{
+        width: 44px;
+        height: 44px;
+        margin-top: 2px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        flex: 0 0 44px;
+        color: var(--qore-white);
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.20);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 24px rgba(3, 17, 41, 0.18);
+        cursor: pointer;
+        transition:
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .qore-page-back:hover,
+.qore-page-back:focus-visible{
+        color: var(--qore-white);
+        border-color: rgba(255, 255, 255, 0.36);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 13px 28px rgba(3, 17, 41, 0.24);
+        outline: 0;
+        transform: translateX(-2px);
+    }
+
+    .qore-page-header-copy{
+        min-width: 0;
+    }
+
+    .qore-page-eyebrow{
+        margin-bottom: 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #79ccff;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .qore-page-eyebrow::before{
+        content: "";
+        width: 22px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--qore-cyan-400);
+    }
+
+    .qore-page-header h1{
+        margin: 0;
+        color: var(--qore-white);
+        font-size: clamp(27px, 2.5vw, 38px);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.045em;
+    }
+
+    .qore-page-header p{
+        max-width: 920px;
+        margin: 9px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .qore-page-header-badge{
+        min-width: 220px;
+        padding: 13px 15px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(8px);
+    }
+
+    .qore-page-header-badge-icon{
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 40px;
+        color: #8ed8ff;
+        font-size: 15px;
+        border-radius: 11px;
+        background: rgba(37, 99, 235, 0.22);
+    }
+
+    .qore-page-header-badge strong,
+.qore-page-header-badge small{
+        display: block;
+    }
+
+    .qore-page-header-badge strong{
+        margin-bottom: 3px;
+        color: var(--qore-white);
+        font-size: 10px;
+    }
+
+    .qore-page-header-badge small{
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    /* =========================================================
+       LAYOUT + CARD PRINCIPAL
+    ========================================================= */
+
+    .qore-form-layout{
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(285px, 325px);
+        align-items: start;
+        gap: 18px;
+    }
+
+    .qore-form-card{
+        min-width: 0;
+        border: 1px solid rgba(16, 39, 87, 0.08);
+        border-radius: 18px;
+        background: var(--qore-surface);
+        box-shadow: 0 13px 34px rgba(3, 17, 41, 0.07);
+    }
+
+    .qore-form-card{
+        overflow: hidden;
+    }
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    .qore-form-card-header{
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 1px solid var(--qore-border);
+        background: linear-gradient(180deg, #ffffff, #fbfcfe);
+    }
+
+    .qore-form-card-header h2{
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .qore-form-card-header p{
+        margin: 5px 0 0;
+        color: var(--qore-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .qore-form-progress{
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+        gap: 7px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .qore-progress-dots{
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .qore-progress-dot{
+        width: 10px;
+        height: 10px;
+        display: grid;
+        place-items: center;
+        color: transparent;
+        font-size: 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 50%;
+        background: #d9e0ea;
+        transition: 0.18s ease;
+    }
+
+    .qore-progress-dot.is-active{
+        border-color: var(--qore-blue-500);
+        background: var(--qore-white);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+        transform: scale(1.05);
+    }
+
+    .qore-progress-dot.is-complete{
+        color: var(--qore-white);
+        border-color: var(--qore-blue-600);
+        background: var(--qore-blue-600);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+    }
+
+    .qore-progress-dot i{
+        display: none;
+    }
+
+    .qore-progress-dot.is-complete i{
+        display: block;
+    }
+
+    .qore-progress-text{
+        min-width: 160px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        font-weight: 800;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .qore-progress-text.is-complete{
+        color: var(--qore-blue-700);
+    }
+
+    .qore-form-body{
+        padding: 24px;
+    }
+
+    .qore-section-heading{
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .qore-section-number{
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 34px;
+        color: var(--qore-blue-700);
+        font-size: 11px;
+        font-weight: 800;
+        border-radius: 10px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-section-heading h3{
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    .qore-section-heading p{
+        margin: 4px 0 0;
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       SELEÇÃO INICIAL
+    ========================================================= */
+
+    .qore-context-stack{
+        margin-bottom: 24px;
+        display: grid;
+        gap: 14px;
+    }
+
+    .qore-company-panel{
+        margin-bottom: 0;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: minmax(280px, 440px) minmax(0, 1fr);
+        align-items: center;
+        gap: 18px;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        background:
+            radial-gradient(
+                circle at 0 0,
+                rgba(46, 144, 250, 0.12),
+                transparent 42%
+            ),
+            #f8fbff;
+    }
+
+    .qore-company-field label{
+        margin-bottom: 7px;
+        display: block;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-company-control-wrap{
+        position: relative;
+    }
+
+    .qore-company-control-wrap > .qore-company-icon{
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        z-index: 2;
+        color: var(--qore-muted-light);
+        font-size: 12px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-company-control{
+        width: 100%;
+        height: 46px;
+        padding: 0 42px;
+        color: var(--qore-text);
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        outline: 0;
+        appearance: none;
+        background: var(--qore-white);
+        cursor: pointer;
+        transition:
+            border-color 0.18s ease,
+            box-shadow 0.18s ease,
+            background-color 0.18s ease;
+    }
+
+    .qore-company-control:focus{
+        border-color: var(--qore-blue-600);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+
+    .qore-company-control:disabled{
+        color: #667085;
+        opacity: 1;
+        cursor: not-allowed;
+        background: #eef4fb;
+    }
+
+    .qore-company-select-arrow{
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        z-index: 2;
+        color: var(--qore-muted-light);
+        font-size: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-company-status{
+        margin-top: 7px;
+        min-height: 14px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .qore-company-status.is-success{
+        color: #027a48;
+        font-weight: 700;
+    }
+
+    .qore-company-status.is-warning{
+        color: #b54708;
+        font-weight: 700;
+    }
+
+    .qore-company-copy strong,
+.qore-company-copy span{
+        display: block;
+    }
+
+    .qore-company-copy strong{
+        margin-bottom: 5px;
+        color: var(--qore-navy-800);
+        font-size: 10px;
+    }
+
+    .qore-company-copy span{
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       SELEÇÃO POR SUPERINTENDENTE E CARTEIRAS
+    ========================================================= */
+
+    .qore-superintendent-panel{
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+        align-items: start;
+    }
+
+    .qore-context-guidance{
+        grid-column: 1 / -1;
+        padding-top: 13px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        border-top: 1px solid rgba(37, 99, 235, 0.12);
+    }
+
+    .qore-context-guidance-item{
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .qore-context-guidance-icon{
+        width: 29px;
+        height: 29px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 29px;
+        color: var(--qore-blue-700);
+        font-size: 11px;
+        border-radius: 8px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-context-guidance-item strong,
+.qore-context-guidance-item span{
+        display: block;
+    }
+
+    .qore-context-guidance-item strong{
+        margin-bottom: 4px;
+        color: var(--qore-navy-800);
+        font-size: 9px;
+    }
+
+    .qore-context-guidance-item span{
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .qore-inline-field-heading{
+        min-height: 28px;
+        margin-bottom: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .qore-inline-field-heading label{
+        margin: 0;
+    }
+
+    .qore-inline-date-button{
+        min-height: 27px;
+        padding: 0 9px;
+        flex: 0 0 auto;
+        font-size: 7px;
+        border-radius: 8px;
+    }
+
+    .qore-wallet-selection-panel{
+        overflow: hidden;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 9px 24px rgba(16, 39, 87, 0.06);
+    }
+
+    .qore-wallet-selection-head{
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 1px solid var(--qore-border);
+        background: #f8fbff;
+    }
+
+    .qore-wallet-selection-head strong,
+.qore-wallet-selection-head span{
+        display: block;
+    }
+
+    .qore-wallet-selection-head strong{
+        color: var(--qore-navy-800);
+        font-size: 11px;
+    }
+
+    .qore-wallet-selection-head span{
+        margin-top: 4px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .qore-wallet-selection-actions{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+
+    .qore-wallet-selection-actions .qore-button{
+        min-height: 36px;
+        padding: 0 12px;
+        font-size: 8px;
+    }
+
+    .qore-wallet-selection-list{
+        max-height: 360px;
+        padding: 12px;
+        overflow: auto;
+        display: grid;
+        gap: 10px;
+        background: #fbfcfe;
+    }
+
+    .qore-wallet-selection-empty{
+        min-height: 110px;
+        padding: 18px;
+        display: grid;
+        place-items: center;
+        gap: 8px;
+        color: var(--qore-muted);
+        font-size: 9px;
+        text-align: center;
+        border: 1px dashed var(--qore-border-strong);
+        border-radius: 11px;
+        background: #ffffff;
+    }
+
+    .qore-wallet-selection-empty i{
+        color: var(--qore-blue-600);
+        font-size: 20px;
+    }
+
+    .qore-company-wallet-group{
+        overflow: hidden;
+        border: 1px solid var(--qore-border);
+        border-radius: 11px;
+        background: #ffffff;
+    }
+
+    .qore-company-wallet-head{
+        padding: 11px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #bfd7fb;
+        border-left: 4px solid var(--qore-blue-600);
+        background: linear-gradient(90deg, #eaf3ff, #f7fbff);
+    }
+
+    .qore-company-wallet-title{
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .qore-company-wallet-title i{
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 30px;
+        color: var(--qore-white);
+        font-size: 12px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--qore-blue-600), var(--qore-blue-700));
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.20);
+    }
+
+    .qore-company-wallet-title strong,
+.qore-company-wallet-title span{
+        display: block;
+    }
+
+    .qore-company-wallet-title strong{
+        overflow: hidden;
+        color: var(--qore-text);
+        font-size: 10px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .qore-company-wallet-title span{
+        margin-top: 3px;
+        color: var(--qore-muted);
+        font-size: 8px;
+    }
+
+    .qore-checkbox-label{
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #344054;
+        font-size: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .qore-checkbox-label input{
+        width: 15px;
+        height: 15px;
+        margin: 0;
+        accent-color: var(--qore-blue-600);
+        cursor: pointer;
+    }
+
+    .qore-checkbox-label input:disabled{
+        cursor: not-allowed;
+    }
+
+    .qore-company-wallet-rows{
+        padding: 9px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        background: #f7fbff;
+    }
+
+    .qore-wallet-option{
+        min-width: 0;
+        padding: 9px 10px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid #dce8f7;
+        border-left: 3px solid #38bdf8;
+        border-radius: 9px;
+        background: #ffffff;
+        transition:
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease;
+    }
+
+    .qore-wallet-option-icon{
+        width: 27px;
+        height: 27px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 27px;
+        color: #0f6e91;
+        font-size: 10px;
+        border-radius: 8px;
+        background: #e4f7ff;
+    }
+
+    .qore-wallet-option:hover{
+        border-color: #bfdbfe;
+        background: #f8fbff;
+    }
+
+    .qore-wallet-option.is-selected{
+        border-color: #84adff;
+        background: #eff6ff;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.07);
+    }
+
+    .qore-wallet-option.is-added{
+        opacity: 0.62;
+        background: #f2f4f7;
+    }
+
+    .qore-wallet-option-copy{
+        min-width: 0;
+    }
+
+    .qore-wallet-option-copy strong,
+.qore-wallet-option-copy span{
+        display: block;
+    }
+
+    .qore-wallet-option-copy strong{
+        overflow: hidden;
+        color: var(--qore-text);
+        font-size: 9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .qore-wallet-option-copy span{
+        margin-top: 3px;
+        color: var(--qore-muted);
+        font-size: 7px;
+    }
+
+    .qore-wallet-selection-footer{
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid var(--qore-border);
+        background: #ffffff;
+    }
+
+    .qore-wallet-selection-counter{
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .qore-wallet-selection-counter strong{
+        color: var(--qore-blue-700);
+    }
+
+    .qore-wallet-selection-footer .qore-button{
+        min-width: 190px;
+    }
+
+    /* =========================================================
+       DATA ÚNICA
+    ========================================================= */
+
+    .qore-date-panel{
+        margin-bottom: 0;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: minmax(260px, 390px) minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        background:
+            radial-gradient(
+                circle at 0 0,
+                rgba(46, 144, 250, 0.12),
+                transparent 42%
+            ),
+            #f8fbff;
+    }
+
+    .qore-date-field label{
+        margin-bottom: 7px;
+        display: block;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-required::after{
+        content: " *";
+        color: var(--qore-danger);
+    }
+
+    .qore-date-control-wrap{
+        position: relative;
+    }
+
+    .qore-date-control-wrap > i{
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        color: var(--qore-muted-light);
+        font-size: 12px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-date-control{
+        width: 100%;
+        height: 46px;
+        padding: 0 14px 0 42px;
+        color: var(--qore-text);
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        outline: 0;
+        background: var(--qore-white);
+        transition: 0.18s ease;
+    }
+
+    .qore-date-control:focus{
+        border-color: var(--qore-blue-600);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+
+    .qore-date-control:disabled{
+        color: #344054;
+        opacity: 1;
+        cursor: not-allowed;
+        background: #eef4fb;
+    }
+
+    .qore-date-copy{
+        min-width: 0;
+    }
+
+    .qore-date-copy strong,
+.qore-date-copy span{
+        display: block;
+    }
+
+    .qore-date-copy strong{
+        margin-bottom: 5px;
+        color: var(--qore-navy-800);
+        font-size: 10px;
+    }
+
+    .qore-date-copy span{
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .qore-date-status{
+        margin-top: 7px;
+        min-height: 14px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .qore-date-status.is-locked{
+        color: #027a48;
+        font-weight: 700;
+    }
+
+    /* =========================================================
+       INFORMAÇÕES AUTOMÁTICAS
+    ========================================================= */
+
+    .qore-automatic-section{
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid var(--qore-border);
+    }
+
+    .qore-auto-overview-selector{
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        display: grid;
+        grid-template-columns: minmax(280px, 460px) minmax(0, 1fr);
+        align-items: center;
+        gap: 16px;
+        border: 1px solid #bfdbfe;
+        border-radius: 13px;
+        background: #f8fbff;
+    }
+
+    .qore-auto-overview-selector label{
+        margin-bottom: 7px;
+        display: block;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-auto-overview-status{
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .qore-auto-overview-status strong{
+        display: block;
+        margin-bottom: 4px;
+        color: var(--qore-navy-800);
+        font-size: 10px;
+    }
+
+    .qore-grid-3{
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .qore-grid-3 + .qore-grid-3{
+        margin-top: 16px;
+    }
+
+    .qore-field{
+        min-width: 0;
+    }
+
+    .qore-field-label{
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-readonly-badge{
+        padding: 3px 6px;
+        color: #475467;
+        font-size: 7px;
+        font-weight: 700;
+        border-radius: 999px;
+        background: #eef2f6;
+    }
+
+    .qore-control-wrap{
+        position: relative;
+    }
+
+    .qore-control-icon{
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        z-index: 2;
+        width: 16px;
+        color: var(--qore-muted-light);
+        font-size: 12px;
+        text-align: center;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-control{
+        width: 100%;
+        height: 48px;
+        padding: 0 14px 0 43px;
+        color: #475467;
+        font-size: 10px;
+        border: 1px solid #e4e9f0;
+        border-radius: 11px;
+        outline: 0;
+        background: linear-gradient(180deg, #f8fafc, #f2f5f8);
+    }
+
+    .qore-control.is-automatic-missing{
+        color: #7a5d00;
+        border-color: #fedf89;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-field-message{
+        min-height: 15px;
+        margin: 6px 0 0;
+        color: var(--qore-muted-light);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .qore-automatic-optional-message{
+        color: #7a5d00;
+        font-weight: 600;
+    }
+
+    /* =========================================================
+       TOTALIZADORES
+    ========================================================= */
+
+    .qore-totals-grid{
+        margin-bottom: 22px;
+        display: grid;
+        grid-template-columns: repeat(8, minmax(145px, 1fr));
+        gap: 10px;
+    }
+
+    .qore-total-card{
+        min-width: 0;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: linear-gradient(180deg, #ffffff, #f9fbfd);
+        box-shadow: 0 8px 20px rgba(3, 17, 41, 0.05);
+    }
+
+    .qore-total-icon{
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        color: var(--qore-blue-700);
+        font-size: 12px;
+        border-radius: 10px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-total-card:nth-child(2) .qore-total-icon{
+        color: #027a48;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-total-card strong,
+.qore-total-card span{
+        display: block;
+    }
+
+    .qore-total-card span{
+        margin-bottom: 4px;
+        overflow: hidden;
+        color: var(--qore-muted);
+        font-size: 8px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .qore-total-card strong{
+        overflow: hidden;
+        color: var(--qore-text);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.25;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+       TABELA
+    ========================================================= */
+
+    .qore-table-section{
+        padding-top: 22px;
+        border-top: 1px solid var(--qore-border);
+    }
+
+    .qore-table-heading{
+        margin-bottom: 13px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .qore-table-heading-copy{
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .qore-table-heading-copy > div{
+        min-width: 0;
+    }
+
+    .qore-table-heading-copy h3{
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.35;
+    }
+
+    .qore-table-heading-copy p{
+        max-width: 880px;
+        margin: 4px 0 0;
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .qore-table-meta{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .qore-table-badge{
+        padding: 6px 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #344054;
+        font-size: 8px;
+        font-weight: 800;
+        border: 1px solid var(--qore-border);
+        border-radius: 999px;
+        background: var(--qore-surface-soft);
+    }
+
+    .qore-table-badge i{
+        color: var(--qore-blue-600);
+    }
+
+    .qore-table-shell{
+        overflow: hidden;
+        border: 1px solid var(--qore-border);
+        border-radius: 14px;
+        background: var(--qore-white);
+    }
+
+    .qore-table-scroll{
+        max-height: 620px;
+        overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #c7d2e1 #f3f6fa;
+    }
+
+    .qore-table-scroll::-webkit-scrollbar{
+        width: 10px;
+        height: 10px;
+    }
+
+    .qore-table-scroll::-webkit-scrollbar-track{
+        background: #f3f6fa;
+    }
+
+    .qore-table-scroll::-webkit-scrollbar-thumb{
+        border: 2px solid #f3f6fa;
+        border-radius: 999px;
+        background: #c7d2e1;
+    }
+
+    .qore-production-table{
+        width: 100%;
+        min-width: 1740px;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+    }
+
+    .qore-production-table th,
+.qore-production-table td{
+        padding: 11px 9px;
+        vertical-align: top;
+        border-right: 1px solid #edf1f6;
+        border-bottom: 1px solid #edf1f6;
+    }
+
+    .qore-production-table th:last-child,
+.qore-production-table td:last-child{
+        border-right: 0;
+    }
+
+    .qore-production-table thead th{
+        position: sticky;
+        top: 0;
+        z-index: 6;
+        height: 46px;
+        vertical-align: middle;
+        color: #344054;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.035em;
+        text-align: left;
+        text-transform: uppercase;
+        background: #f7f9fc;
+        box-shadow: 0 1px 0 var(--qore-border);
+    }
+
+
+    .qore-table-required{
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .qore-table-required b{
+        color: var(--qore-danger);
+        font-size: 10px;
+        line-height: 1;
+    }
+
+    .qore-table-exception{
+        margin-top: 3px;
+        display: block;
+        color: var(--qore-muted);
+        font-size: 7px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.25;
+        text-transform: none;
+    }
+
+    .qore-production-table tbody tr{
+        transition: background-color 0.16s ease;
+    }
+
+    .qore-production-table tbody tr:hover{
+        background: #fbfdff;
+    }
+
+    .qore-production-table tbody tr.is-invalid{
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-production-table tbody tr.is-existing-duplicate{
+        background: var(--qore-warning-soft);
+        box-shadow: inset 4px 0 0 var(--qore-warning);
+    }
+
+    .qore-production-table tbody tr.is-existing-duplicate:hover{
+        background: #fff6dc;
+    }
+
+    .qore-production-table tbody tr.is-sent{
+        background: var(--qore-success-soft);
+    }
+
+    .qore-production-table tbody tr.is-sent td{
+        opacity: 0.78;
+    }
+
+    .qore-col-number{
+        width: 52px;
+        text-align: center !important;
+    }
+
+    .qore-col-company{
+        width: 190px;
+    }
+
+    .qore-col-wallet{
+        width: 260px;
+    }
+
+    .qore-col-date{
+        width: 155px;
+    }
+
+    .qore-col-money{
+        width: 180px;
+    }
+
+    .qore-col-quantity{
+        width: 155px;
+    }
+
+    .qore-row-number{
+        width: 28px;
+        height: 28px;
+        margin: 3px auto 0;
+        display: grid;
+        place-items: center;
+        color: var(--qore-blue-700);
+        font-size: 9px;
+        font-weight: 800;
+        border-radius: 9px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-context-title{
+        margin: 3px 0 0;
+        display: block;
+        color: var(--qore-text);
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .qore-context-subtitle{
+        margin-top: 4px;
+        display: block;
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .qore-table-context-block{
+        min-width: 0;
+        padding: 8px;
+        border-radius: 9px;
+    }
+
+    .qore-table-context-block.is-company{
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+    }
+
+    .qore-table-context-block.is-wallet{
+        border: 1px solid #c9edf8;
+        background: #f2fbfe;
+    }
+
+    .qore-table-context-heading{
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+    }
+
+    .qore-table-context-icon{
+        width: 25px;
+        height: 25px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 25px;
+        font-size: 9px;
+        border-radius: 7px;
+    }
+
+    .qore-table-context-block.is-company .qore-table-context-icon{
+        color: var(--qore-white);
+        background: var(--qore-blue-600);
+    }
+
+    .qore-table-context-block.is-wallet .qore-table-context-icon{
+        color: #0f6e91;
+        background: #dff6fd;
+    }
+
+    .qore-auto-details{
+        margin-top: 7px;
+        color: var(--qore-muted);
+        font-size: 8px;
+    }
+
+    .qore-auto-details summary{
+        width: fit-content;
+        color: var(--qore-blue-700);
+        font-size: 8px;
+        font-weight: 800;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .qore-auto-grid{
+        margin-top: 7px;
+        padding: 8px;
+        display: grid;
+        gap: 5px;
+        border: 1px solid var(--qore-border);
+        border-radius: 8px;
+        background: var(--qore-surface-soft);
+    }
+
+    .qore-auto-line{
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 6px;
+        line-height: 1.35;
+    }
+
+    .qore-auto-line span{
+        color: var(--qore-muted);
+    }
+
+    .qore-auto-line strong{
+        color: #344054;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .qore-auto-line strong.is-warning{
+        color: #7a5d00;
+    }
+
+    .qore-table-input{
+        width: 100%;
+        height: 42px;
+        padding: 0 11px;
+        color: var(--qore-text);
+        font-size: 10px;
+        font-weight: 600;
+        border: 1px solid var(--qore-border);
+        border-radius: 9px;
+        outline: 0;
+        background: var(--qore-surface-soft);
+        transition:
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease;
+    }
+
+    .qore-table-input:hover:not(:disabled){
+        border-color: var(--qore-border-strong);
+    }
+
+    .qore-table-input:focus{
+        border-color: var(--qore-blue-600);
+        background: var(--qore-white);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+    .qore-table-input:disabled{
+        color: #475467;
+        opacity: 1;
+        cursor: not-allowed;
+        background: #eef2f6;
+    }
+
+    .qore-table-input.is-invalid{
+        border-color: #fda29b;
+        background: var(--qore-danger-soft);
+        box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.07);
+    }
+
+    .qore-row-status{
+        margin-top: 6px;
+        min-height: 14px;
+        color: var(--qore-muted-light);
+        font-size: 7px;
+        line-height: 1.35;
+    }
+
+    .qore-row-status.is-success{
+        color: #027a48;
+        font-weight: 700;
+    }
+
+    .qore-row-status.is-error{
+        color: var(--qore-danger);
+        font-weight: 700;
+    }
+
+    .qore-table-empty{
+        padding: 44px 20px !important;
+        text-align: center;
+    }
+
+    .qore-table-state{
+        display: grid;
+        place-items: center;
+        gap: 9px;
+        color: var(--qore-muted);
+        font-size: 9px;
+    }
+
+    .qore-table-state i{
+        color: var(--qore-blue-600);
+        font-size: 20px;
+    }
+
+    .qore-table-footer{
+        padding: 11px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        border-top: 1px solid var(--qore-border);
+        background: #fbfcfe;
+    }
+
+    .qore-table-footer strong{
+        color: #344054;
+    }
+
+
+    .qore-table-actions{
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+        border-top: 1px solid var(--qore-border);
+        background: #f7f9fc;
+    }
+
+    .qore-table-actions .qore-button{
+        min-height: 39px;
+    }
+
+    /* =========================================================
+       BOTÕES E AÇÕES
+    ========================================================= */
+
+    .qore-form-actions{
+        min-height: 82px;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border-top: 1px solid var(--qore-border);
+        background: #fbfcfe;
+    }
+
+    .qore-actions-left,
+.qore-actions-right{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .qore-button{
+        min-height: 43px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--qore-text);
+        font-size: 10px;
+        font-weight: 800;
+        text-decoration: none;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        background: var(--qore-white);
+        cursor: pointer;
+        transition:
+            border-color 0.18s ease,
+            color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .qore-button:hover,
+.qore-button:focus-visible{
+        color: var(--qore-text);
+        text-decoration: none;
+        border-color: var(--qore-border-strong);
+        background: #f8fafc;
+        outline: 0;
+        transform: translateY(-1px);
+    }
+
+    .qore-button-primary{
+        min-width: 190px;
+        color: var(--qore-white);
+        border-color: var(--qore-blue-600);
+        background: linear-gradient(135deg, var(--qore-blue-600), var(--qore-blue-700));
+        box-shadow: 0 11px 24px rgba(37, 99, 235, 0.24);
+    }
+
+    .qore-button-primary:hover,
+.qore-button-primary:focus-visible{
+        color: var(--qore-white);
+        border-color: var(--qore-blue-700);
+        background: linear-gradient(135deg, #3478f6, var(--qore-blue-700));
+        box-shadow: 0 14px 28px rgba(37, 99, 235, 0.31);
+    }
+
+    .qore-button-danger-soft{
+        color: #b42318;
+        border-color: #fecdca;
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-button-danger-soft:hover,
+.qore-button-danger-soft:focus-visible{
+        color: #912018;
+        border-color: #fda29b;
+        background: #fee4e2;
+    }
+
+    .qore-button-soft{
+        color: var(--qore-blue-700);
+        border-color: #bfdbfe;
+        background: #eff6ff;
+    }
+
+    .qore-button-soft:hover,
+.qore-button-soft:focus-visible{
+        color: var(--qore-blue-700);
+        border-color: #93c5fd;
+        background: #dbeafe;
+    }
+
+    .qore-button:disabled{
+        cursor: wait;
+        opacity: 0.80;
+        transform: none;
+    }
+
+    /* =========================================================
+       TOASTS
+    ========================================================= */
+
+    #toast-container{
+        position: fixed;
+        top: 88px;
+        right: 22px;
+        left: auto;
+        z-index: 22000;
+        width: min(430px, calc(100vw - 36px));
+        display: grid;
+        gap: 10px;
+        pointer-events: none;
+        transform: none;
+    }
+
+    .qore-toast{
+        overflow: hidden;
+        color: var(--qore-text);
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: var(--qore-white);
+        box-shadow: 0 18px 44px rgba(3, 17, 41, 0.18);
+        opacity: 0;
+        pointer-events: auto;
+        transform: translateY(18px);
+        transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .qore-toast.show{
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .qore-toast.hide{
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    .qore-toast-content{
+        padding: 13px;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 28px;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .qore-toast-icon{
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 800;
+        border-radius: 10px;
+    }
+
+    .qore-toast-icon.success{
+        color: #027a48;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-toast-icon.error{
+        color: var(--qore-danger);
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-toast-icon.warning{
+        color: #b54708;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-toast-icon.info{
+        color: var(--qore-blue-700);
+        background: var(--qore-info-soft);
+    }
+
+    .qore-toast-copy strong,
+.qore-toast-copy span{
+        display: block;
+        white-space: pre-line;
+    }
+
+    .qore-toast-copy strong{
+        margin-bottom: 3px;
+        color: var(--qore-text);
+        font-size: 10px;
+    }
+
+    .qore-toast-copy span{
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .qore-toast-close{
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        color: var(--qore-muted-light);
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .qore-toast-close:hover,
+.qore-toast-close:focus-visible{
+        color: var(--qore-text);
+        background: #f2f4f7;
+        outline: 0;
+    }
+
+    .qore-toast-progress{
+        height: 3px;
+        transform-origin: left center;
+        animation-name: qoreToastProgress;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+    }
+
+    .qore-toast-progress.success{
+        background: var(--qore-success);
+    }
+
+    .qore-toast-progress.error{
+        background: var(--qore-danger);
+    }
+
+    .qore-toast-progress.warning{
+        background: var(--qore-warning);
+    }
+
+    .qore-toast-progress.info{
+        background: var(--qore-blue-600);
+    }
+
+    /* =========================================================
+       MODAIS
+    ========================================================= */
+
+    .qore-confirm-overlay,
+.qore-result-overlay{
+        position: fixed;
+        inset: 0;
+        padding: 18px;
+        display: none;
+        place-items: center;
+        background: rgba(3, 17, 41, 0.72);
+        backdrop-filter: blur(6px);
+    }
+
+    .qore-confirm-overlay{
+        z-index: 21000;
+    }
+
+    .qore-result-overlay{
+        z-index: 24000;
+    }
+
+    .qore-confirm-overlay.show,
+.qore-result-overlay.show{
+        display: grid;
+    }
+
+    .qore-confirm-dialog,
+.qore-result-dialog{
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        border-radius: 18px;
+        background: var(--qore-white);
+        box-shadow: 0 28px 80px rgba(3, 17, 41, 0.38);
+        animation: qoreDialogIn 0.20s ease-out both;
+    }
+
+    .qore-confirm-dialog{
+        width: min(500px, 100%);
+    }
+
+    .qore-result-dialog{
+        width: min(540px, 100%);
+    }
+
+    .qore-confirm-body,
+.qore-result-body{
+        padding: 26px;
+        text-align: center;
+    }
+
+    .qore-confirm-icon,
+.qore-result-icon{
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 16px;
+        display: grid;
+        place-items: center;
+        font-size: 21px;
+        border-radius: 18px;
+    }
+
+    .qore-confirm-icon{
+        color: #b54708;
+        border: 1px solid #fedf89;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-result-dialog.is-success .qore-result-icon{
+        color: #027a48;
+        border: 1px solid #abefc6;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-result-dialog.is-error .qore-result-icon{
+        color: var(--qore-danger);
+        border: 1px solid #fecdca;
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-result-dialog.is-warning .qore-result-icon{
+        color: #b54708;
+        border: 1px solid #fedf89;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-confirm-dialog h3,
+.qore-result-dialog h3{
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .qore-confirm-dialog p,
+.qore-result-dialog p{
+        margin: 10px 0 0;
+        color: var(--qore-muted);
+        font-size: 10px;
+        line-height: 1.65;
+        white-space: pre-line;
+    }
+
+    .qore-confirm-actions{
+        padding: 14px 18px 18px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .qore-result-reason{
+        max-height: 220px;
+        margin-top: 16px;
+        padding: 13px 14px;
+        overflow: auto;
+        color: #7a271a;
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 1.55;
+        text-align: left;
+        border: 1px solid #fecdca;
+        border-radius: 11px;
+        background: var(--qore-danger-soft);
+        white-space: pre-line;
+    }
+
+    .qore-result-actions{
+        padding: 0 20px 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    @keyframes qoreToastProgress {
+        from {
+            transform: scaleX(1);
+        }
+
+        to {
+            transform: scaleX(0);
+        }
+    }
+
+    @keyframes qoreDialogIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px) scale(0.985);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* =========================================================
+       RESPONSIVIDADE FINAL — PADRÃO WORKSPACE QORE
+       Referência principal: 1920 x 1080
+
+       Este bloco altera somente dimensões, espaçamentos,
+       disposição dos componentes e comportamento responsivo.
+    ========================================================= */
+
+    body.qore-production-page{
+        overflow-x: hidden;
+    }
+
+    .qore-production-main,
+.qore-production-shell,
+.qore-page-header,
+.qore-page-header-main,
+.qore-page-header-copy,
+.qore-form-card,
+.qore-form-card-header,
+.qore-form-body,
+.qore-context-stack,
+.qore-company-panel,
+.qore-wallet-selection-panel,
+.qore-wallet-selection-head,
+.qore-wallet-selection-list,
+.qore-wallet-selection-footer,
+.qore-automatic-section,
+.qore-auto-overview-selector,
+.qore-grid-3,
+.qore-totals-grid,
+.qore-table-section,
+.qore-table-heading,
+.qore-table-heading-copy,
+.qore-table-shell,
+.qore-table-scroll,
+.qore-form-actions,
+.qore-actions-left,
+.qore-actions-right{
+        min-width: 0;
+    }
+
+    .qore-page-header-copy,
+.qore-page-header p,
+.qore-company-copy,
+.qore-date-copy,
+.qore-context-guidance-item,
+.qore-wallet-selection-head > div,
+.qore-auto-overview-status,
+.qore-table-heading-copy > div{
+        overflow-wrap: anywhere;
+    }
+
+    .qore-table-shell,
+.qore-table-scroll{
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .qore-table-scroll{
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* =========================================================
+       FULL HD — MODELO PRINCIPAL DO WORKSPACE
+    ========================================================= */
+
+    @media only screen and (min-width: 1600px) and (min-height: 900px) {
+        .qore-production-main{
+            padding:
+                24px
+                clamp(42px, 3.125vw, 60px)
+                42px;
+        }
+
+        .qore-production-shell{
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .qore-page-header{
+            margin-bottom: 20px;
+            padding:
+                28px
+                36px;
+            gap: 28px;
+        }
+
+        .qore-page-header-main{
+            gap: 18px;
+        }
+
+        .qore-page-header h1{
+            font-size: 38px;
+        }
+
+        .qore-page-header p{
+            max-width: 1040px;
+            font-size: 13px;
+        }
+
+        .qore-page-header-badge{
+            min-width: 250px;
+            padding: 15px 17px;
+        }
+
+        .qore-form-card-header{
+            padding: 22px 28px;
+        }
+
+        .qore-form-body{
+            padding: 28px;
+        }
+
+        .qore-company-panel.qore-superintendent-panel{
+            grid-template-columns:
+                repeat(2, minmax(340px, 1fr));
+            gap: 22px;
+            padding: 18px;
+        }
+
+        .qore-context-guidance{
+            gap: 22px;
+        }
+
+        .qore-wallet-selection-head{
+            padding: 16px 18px;
+        }
+
+        .qore-wallet-selection-list{
+            max-height: 400px;
+            padding: 14px;
+        }
+
+        .qore-company-wallet-rows{
+            gap: 10px;
+            padding: 11px;
+        }
+
+        .qore-wallet-option{
+            padding: 10px 11px;
+        }
+
+        .qore-auto-overview-selector{
+            grid-template-columns:
+                minmax(320px, 500px)
+                minmax(0, 1fr);
+            gap: 20px;
+            padding: 16px 18px;
+        }
+
+        .qore-grid-3{
+            gap: 18px;
+        }
+
+        .qore-grid-3 + .qore-grid-3{
+            margin-top: 18px;
+        }
+
+        .qore-totals-grid{
+            grid-template-columns:
+                repeat(8, minmax(145px, 1fr));
+            gap: 12px;
+        }
+
+        .qore-total-card{
+            min-height: 76px;
+            padding: 15px;
+        }
+
+        .qore-table-heading{
+            padding: 18px 20px;
+        }
+
+        .qore-table-scroll{
+            max-height: 650px;
+        }
+
+        .qore-form-actions{
+            padding: 18px 28px;
+        }
+    }
+
+    /* =========================================================
+       TELAS MUITO LARGAS / ULTRAWIDE / 2K / 4K
+       Mantém o padrão Full HD centralizado, sem esticar demais.
+    ========================================================= */
+
+    @media only screen and (min-width: 2200px) {
+        .qore-production-main{
+            padding-left: 72px;
+            padding-right: 72px;
+        }
+
+        .qore-production-shell{
+            max-width: 1920px;
+        }
+    }
+
+    /* =========================================================
+       DESKTOP E NOTEBOOK GRANDE — 1280 ATÉ 1599
+    ========================================================= */
+
+    @media only screen and (min-width: 1280px) and (max-width: 1599px) {
+        .qore-production-main{
+            padding:
+                18px
+                clamp(28px, 3.2vw, 50px)
+                34px;
+        }
+
+        .qore-production-shell{
+            width: 100%;
+            max-width: 1500px;
+        }
+
+        .qore-page-header{
+            padding:
+                24px
+                clamp(24px, 2.6vw, 34px);
+        }
+
+        .qore-page-header h1{
+            font-size: clamp(30px, 2.5vw, 36px);
+        }
+
+        .qore-form-body{
+            padding: 24px;
+        }
+
+        .qore-company-panel.qore-superintendent-panel{
+            grid-template-columns:
+                repeat(2, minmax(280px, 1fr));
+        }
+    }
+
+    @media only screen and (min-width: 1280px) and (max-width: 1450px) {
+        .qore-totals-grid{
+            grid-template-columns:
+                repeat(4, minmax(150px, 1fr));
+        }
+    }
+
+    /* =========================================================
+       NOTEBOOK E DESKTOP COM ALTURA REDUZIDA
+       Inclui o cenário 1366 x 768.
+    ========================================================= */
+
+    @media only screen and (min-width: 1024px) and (max-height: 820px) {
+        .qore-production-main{
+            padding-top: 14px;
+            padding-bottom: 28px;
+        }
+
+        .qore-page-header{
+            margin-bottom: 14px;
+            padding:
+                18px
+                24px;
+            border-radius: 17px;
+        }
+
+        .qore-page-header h1{
+            font-size: clamp(27px, 2.5vw, 32px);
+        }
+
+        .qore-page-header p{
+            margin-top: 6px;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .qore-page-header-badge{
+            padding: 10px 12px;
+        }
+
+        .qore-form-card-header{
+            padding: 17px 22px;
+        }
+
+        .qore-form-body{
+            padding: 20px 22px;
+        }
+
+        .qore-section-heading{
+            margin-bottom: 13px;
+        }
+
+        .qore-context-stack{
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .qore-company-panel,
+.qore-auto-overview-selector{
+            padding: 14px;
+        }
+
+        .qore-automatic-section{
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .qore-totals-grid{
+            margin-bottom: 18px;
+        }
+
+        .qore-table-scroll{
+            max-height: 510px;
+        }
+
+        .qore-form-actions{
+            padding: 14px 22px;
+        }
+    }
+
+    /* =========================================================
+       NOTEBOOK MÉDIO — 1024 ATÉ 1279
+    ========================================================= */
+
+    @media only screen and (min-width: 1024px) and (max-width: 1279px) {
+        .qore-production-main{
+            padding:
+                16px
+                clamp(20px, 2.8vw, 34px)
+                30px;
+        }
+
+        .qore-production-shell{
+            width: 100%;
+            max-width: 1240px;
+        }
+
+        .qore-page-header{
+            gap: 18px;
+            padding: 22px 24px;
+        }
+
+        .qore-page-header h1{
+            font-size: 30px;
+        }
+
+        .qore-page-header p{
+            font-size: 11px;
+        }
+
+        .qore-page-header-badge{
+            min-width: 205px;
+        }
+
+        .qore-form-card-header{
+            padding: 19px 22px;
+        }
+
+        .qore-form-body{
+            padding: 22px;
+        }
+
+        .qore-company-panel.qore-superintendent-panel{
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .qore-auto-overview-selector{
+            grid-template-columns:
+                minmax(280px, 390px)
+                minmax(0, 1fr);
+        }
+
+        .qore-totals-grid{
+            grid-template-columns:
+                repeat(4, minmax(145px, 1fr));
+        }
+
+        .qore-table-heading{
+            padding: 15px 16px;
+        }
+
+        .qore-form-actions{
+            padding: 15px 22px;
+        }
+    }
+
+    @media only screen and (min-width: 1024px) and (max-width: 1050px) {
+        .qore-company-wallet-rows{
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* =========================================================
+       TABLET — 681 ATÉ 1023
+    ========================================================= */
+
+    @media only screen and (min-width: 681px) and (max-width: 1023px) {
+        .qore-production-main{
+            padding:
+                16px
+                20px
+                28px;
+        }
+
+        .qore-production-shell{
+            width: 100%;
+            max-width: none;
+        }
+
+        .qore-page-header{
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 18px;
+            padding: 23px 24px;
+        }
+
+        .qore-page-header-main{
+            width: 100%;
+        }
+
+        .qore-page-header h1{
+            font-size: clamp(29px, 4.2vw, 34px);
+        }
+
+        .qore-page-header-badge{
+            width: 100%;
+            min-width: 0;
+        }
+
+        .qore-form-card-header{
+            padding: 19px 20px;
+        }
+
+        .qore-form-body{
+            padding: 20px;
+        }
+
+        .qore-company-panel,
+.qore-company-panel.qore-superintendent-panel,
+.qore-date-panel,
+.qore-auto-overview-selector{
+            grid-template-columns: 1fr;
+        }
+
+        .qore-context-guidance{
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .qore-wallet-selection-head,
+.qore-wallet-selection-footer{
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-wallet-selection-actions,
+.qore-wallet-selection-footer .qore-button{
+            width: 100%;
+        }
+
+        .qore-wallet-selection-actions{
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-wallet-selection-actions .qore-button{
+            width: 100%;
+        }
+
+        .qore-company-wallet-rows{
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-grid-3{
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-grid-3 > .qore-field:last-child:nth-child(odd){
+            grid-column: 1 / -1;
+        }
+
+        .qore-date-panel .qore-button{
+            width: 100%;
+        }
+
+        .qore-totals-grid{
+            grid-template-columns:
+                repeat(2, minmax(140px, 1fr));
+        }
+
+        .qore-table-heading{
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-table-meta{
+            width: 100%;
+        }
+
+        .qore-form-actions{
+            flex-wrap: wrap;
+            padding: 16px 20px;
+        }
+
+        .qore-actions-left,
+.qore-actions-right{
+            flex-wrap: wrap;
+        }
+    }
+
+    @media only screen and (min-width: 681px) and (max-width: 760px) {
+        .qore-context-guidance,
+.qore-company-wallet-rows{
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* =========================================================
+       CELULAR GRANDE — ATÉ 680
+    ========================================================= */
+
+    @media only screen and (max-width: 680px) {
+        .qore-production-main{
+            padding:
+                14px
+                12px
+                28px;
+        }
+
+        .qore-production-shell{
+            width: 100%;
+            max-width: none;
+        }
+
+        .qore-page-header,
+.qore-form-card,
+.qore-wallet-selection-panel,
+.qore-table-shell{
+            border-radius: 15px;
+        }
+
+        .qore-page-header{
+            align-items: stretch;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 14px;
+            padding: 20px 18px;
+        }
+
+        .qore-page-header-main{
+            width: 100%;
+            gap: 12px;
+        }
+
+        .qore-page-back{
+            width: 40px;
+            height: 40px;
+            flex-basis: 40px;
+            border-radius: 11px;
+        }
+
+        .qore-page-header h1{
+            font-size: clamp(26px, 8vw, 31px);
+        }
+
+        .qore-page-header p{
+            font-size: 10px;
+            line-height: 1.55;
+        }
+
+        .qore-page-header-badge{
+            width: 100%;
+            min-width: 0;
+        }
+
+        .qore-form-card-header,
+.qore-form-body,
+.qore-form-actions{
+            padding-right: 16px;
+            padding-left: 16px;
+        }
+
+        .qore-form-card-header,
+.qore-table-heading,
+.qore-form-actions{
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-form-progress{
+            align-items: flex-start;
+        }
+
+        .qore-progress-text{
+            min-width: 0;
+            text-align: left;
+            white-space: normal;
+        }
+
+        .qore-company-panel,
+.qore-company-panel.qore-superintendent-panel,
+.qore-date-panel,
+.qore-auto-overview-selector,
+.qore-context-guidance,
+.qore-company-wallet-rows,
+.qore-grid-3{
+            grid-template-columns: 1fr;
+        }
+
+        .qore-company-panel,
+.qore-date-panel,
+.qore-auto-overview-selector{
+            padding: 14px;
+        }
+
+        .qore-inline-field-heading{
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .qore-inline-date-button,
+.qore-date-panel .qore-button{
+            width: 100%;
+        }
+
+        .qore-wallet-selection-head,
+.qore-wallet-selection-footer{
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-wallet-selection-actions{
+            width: 100%;
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-wallet-selection-actions .qore-button,
+.qore-wallet-selection-footer .qore-button{
+            width: 100%;
+            min-width: 0;
+        }
+
+        .qore-wallet-selection-list{
+            max-height: 330px;
+        }
+
+        .qore-totals-grid{
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-total-card{
+            grid-template-columns:
+                34px
+                minmax(0, 1fr);
+            padding: 12px;
+        }
+
+        .qore-total-icon{
+            width: 34px;
+            height: 34px;
+        }
+
+        .qore-table-heading-copy{
+            width: 100%;
+        }
+
+        .qore-table-meta{
+            width: 100%;
+        }
+
+        .qore-table-badge{
+            max-width: 100%;
+            white-space: normal;
+        }
+
+        .qore-table-scroll{
+            max-height: 520px;
+        }
+
+        .qore-table-footer{
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .qore-actions-left,
+.qore-actions-right,
+.qore-actions-left .qore-button,
+.qore-actions-right .qore-button,
+.qore-table-actions,
+.qore-table-actions .qore-button{
+            width: 100%;
+        }
+
+        .qore-actions-left,
+.qore-actions-right,
+.qore-table-actions{
+            display: grid;
+        }
+
+        .qore-button-primary{
+            min-width: 0;
+        }
+
+        #toast-container{
+            top: 76px;
+            right: 10px;
+            width: calc(100vw - 20px);
+        }
+
+        .qore-confirm-overlay,
+.qore-result-overlay{
+            padding: 12px;
+        }
+
+        .qore-confirm-body,
+.qore-result-body{
+            padding: 22px 18px;
+        }
+    }
+
+    /* =========================================================
+       CELULAR PEQUENO — ATÉ 440
+    ========================================================= */
+
+    @media only screen and (max-width: 440px) {
+        .qore-production-main{
+            padding:
+                12px
+                10px
+                24px;
+        }
+
+        .qore-page-header{
+            padding: 18px 15px;
+        }
+
+        .qore-page-header-main{
+            gap: 10px;
+        }
+
+        .qore-page-back{
+            width: 38px;
+            height: 38px;
+            flex-basis: 38px;
+        }
+
+        .qore-page-eyebrow{
+            font-size: 8px;
+            letter-spacing: 0.10em;
+        }
+
+        .qore-page-header h1{
+            font-size: 25px;
+        }
+
+        .qore-form-card-header,
+.qore-form-body,
+.qore-form-actions{
+            padding-right: 14px;
+            padding-left: 14px;
+        }
+
+        .qore-section-heading{
+            gap: 10px;
+        }
+
+        .qore-section-number{
+            width: 32px;
+            height: 32px;
+            flex-basis: 32px;
+        }
+
+        .qore-wallet-selection-actions,
+.qore-totals-grid,
+.qore-confirm-actions{
+            grid-template-columns: 1fr;
+        }
+
+        .qore-total-card{
+            min-height: 68px;
+        }
+
+        .qore-toast-content{
+            grid-template-columns:
+                32px
+                minmax(0, 1fr)
+                26px;
+            gap: 8px;
+        }
+    }
+
+    /* =========================================================
+       QORE HELP CARD — RESPONSIVIDADE
+    ========================================================= */
+
+    @media only screen and (min-width: 1600px) {
+        .qore-form-layout{
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(305px, 340px);
+            gap: 20px;
+        }
+    }
+
+    @media only screen and (max-width: 1179px) {
+        .qore-form-layout{
+            grid-template-columns: 1fr;
+        }
+
+        
+
+        
+
+        
+
+        
+    }
+
+    @media only screen and (max-width: 680px) {
+        
+
+        
+    }
+
+    /* =========================================================
+       AJUSTE DOS BOTÕES FINAIS
+       Mantém os botões compactos no desktop e acessíveis no mobile.
+    ========================================================= */
+
+    .qore-form-actions{
+        min-height: 82px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .qore-form-actions .qore-actions-left,
+.qore-form-actions .qore-actions-right{
+        width: auto;
+        flex: 0 0 auto;
+    }
+
+    .qore-form-actions .qore-button{
+        width: auto;
+        min-height: 40px;
+        padding: 0 13px;
+        font-size: 9px;
+        white-space: nowrap;
+    }
+
+    .qore-form-actions .qore-button-primary{
+        min-width: 170px;
+    }
+
+    @media only screen and (max-width: 680px) {
+        .qore-form-actions{
+            gap: 9px;
+        }
+
+        .qore-form-actions .qore-actions-left,
+.qore-form-actions .qore-actions-right,
+.qore-form-actions .qore-button{
+            width: 100%;
+        }
+
+        .qore-form-actions .qore-button-primary{
+            min-width: 0;
+        }
+    }
+
+    /* =========================================================
+       DISPOSITIVOS TOUCH
+    ========================================================= */
+
+    @media (hover: none) and (pointer: coarse) {
+        .qore-page-back:hover,
+.qore-button:hover,
+.qore-wallet-option:hover{
+            transform: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+*::before,
+*::after{
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+/* =========================================================
+   DETALHE DO ENVIO — SOMENTE CONSULTA
+   Mantém o padrão visual do form_requisicao_metas.
+========================================================= */
+
+body.qore-production-detail-page .qore-production-main{
+    padding-top: 18px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-main{
+    padding:
+        16px
+        clamp(12px, 1.8vw, 24px)
+        26px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-shell{
+    width: 100%;
+}
+
+body.qore-production-detail-page
+.qore-page-header{
+    margin-bottom: 14px;
+}
+
+body.qore-production-detail-page
+.qore-form-layout{
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(250px, 290px);
+}
+
+body.qore-production-detail-page
+.qore-company-control:disabled,
+body.qore-production-detail-page
+.qore-date-control:disabled,
+body.qore-production-detail-page
+.qore-table-input:disabled{
+    opacity: 1;
+}
+
+body.qore-production-detail-page
+.qore-company-control:disabled,
+body.qore-production-detail-page
+.qore-date-control:disabled{
+    color: #344054;
+    background: #eef4fb;
+}
+
+body.qore-production-detail-page
+.qore-table-input:disabled{
+    color: #344054;
+    background: #f4f7fb;
+}
+
+body.qore-production-detail-page
+.qore-production-table tbody tr:hover{
+    background: transparent;
+}
+
+body.qore-production-detail-page
+.qore-production-table tbody tr:hover td{
+    background: #fbfdff;
+}
+
+.qore-consultation-note{
+    margin-bottom: 16px;
+    padding: 12px 14px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    color: #175cd3;
+
+    border: 1px solid #b2ddff;
+    border-radius: 11px;
+
+    background: #eff8ff;
+}
+
+.qore-consultation-note i{
+    margin-top: 1px;
+    font-size: 11px;
+}
+
+.qore-consultation-note strong,
+.qore-consultation-note span{
+    display: block;
+}
+
+.qore-consultation-note strong{
+    margin-bottom: 3px;
+    font-size: 9px;
+}
+
+.qore-consultation-note span{
+    color: #475467;
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.qore-consultation-badge{
+    padding: 6px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #027a48;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    border: 1px solid #abefc6;
+    border-radius: 999px;
+
+    background: #ecfdf3;
+}
+
+.qore-consultation-close-button{
+    min-width: 150px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card{
+    box-shadow:
+        0 10px 28px
+        rgba(3, 17, 41, 0.06);
+}
+
+html[data-theme="dark"]
+.qore-consultation-note{
+    color: #84caff;
+    border-color: #1849a9;
+    background: #102a56;
+}
+
+html[data-theme="dark"]
+.qore-consultation-note span{
+    color: #c6d4e6;
+}
+
+@media only screen and (max-width: 1180px) {
+    body.qore-production-detail-page
+    .qore-form-layout{
+        grid-template-columns: 1fr;
+    }
+
+    
+}
+
+@media only screen and (max-width: 760px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-production-main{
+        padding: 10px;
+    }
+}
+
+
+/* =========================================================
+   V2.1 — DETALHE EMBUTIDO SEM CABEÇALHO GRANDE
+========================================================= */
+
+body.qore-production-detail-page
+.qore-production-main{
+    padding-top: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-main{
+    padding:
+        12px
+        14px
+        24px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-shell{
+    width: 100%;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header{
+    padding: 15px 18px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-body{
+    padding: 18px;
+}
+
+/*
+   Em largura de painel desktop, mantemos formulário + resumo lado a lado.
+*/
+@media only screen and (min-width: 780px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-layout{
+        grid-template-columns:
+            minmax(0, 1fr)
+            225px;
+
+        gap: 12px;
+    }
+
+    
+}
+
+@media only screen and (max-width: 779px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-layout{
+        grid-template-columns: 1fr;
+    }
+
+    
+}
+
+/* =========================================================
+   V2.2 — RESPONSIVIDADE FINAL CONSOLIDADA
+   DETALHE DO ENVIO DE PRODUÇÃO
+   Referência principal: 1920 × 1080
+========================================================= */
+
+html{
+    width: 100%;
+    max-width: 100%;
+}
+
+body.qore-production-detail-page{
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body.qore-production-detail-page
+.qore-production-main,
+body.qore-production-detail-page
+.qore-production-shell,
+body.qore-production-detail-page
+.qore-form-layout,
+body.qore-production-detail-page
+.qore-form-layout > *,
+body.qore-production-detail-page
+.qore-form-card,
+body.qore-production-detail-page
+.qore-form-card-header,
+body.qore-production-detail-page
+.qore-form-body,
+body.qore-production-detail-page
+.qore-context-stack,
+body.qore-production-detail-page
+.qore-company-panel,
+body.qore-production-detail-page
+.qore-context-guidance,
+body.qore-production-detail-page
+.qore-auto-overview-selector,
+body.qore-production-detail-page
+.qore-grid-3,
+body.qore-production-detail-page
+.qore-grid-4,
+body.qore-production-detail-page
+.qore-field,
+body.qore-production-detail-page
+.qore-control-wrap,
+body.qore-production-detail-page
+.qore-totals-grid,
+body.qore-production-detail-page
+.qore-table-section,
+body.qore-production-detail-page
+.qore-table-heading,
+body.qore-production-detail-page
+.qore-table-heading-copy,
+body.qore-production-detail-page
+.qore-table-shell,
+body.qore-production-detail-page
+.qore-table-scroll,
+body.qore-production-detail-page
+.qore-form-actions,
+body.qore-production-detail-page
+.qore-actions-left,
+body.qore-production-detail-page
+.qore-actions-right{
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.qore-production-detail-page img,
+body.qore-production-detail-page svg,
+body.qore-production-detail-page canvas,
+body.qore-production-detail-page iframe{
+    max-width: 100%;
+}
+
+body.qore-production-detail-page
+.qore-company-control,
+body.qore-production-detail-page
+.qore-date-control,
+body.qore-production-detail-page
+.qore-control,
+body.qore-production-detail-page
+.qore-table-input,
+body.qore-production-detail-page
+.qore-button{
+    max-width: 100%;
+}
+
+body.qore-production-detail-page
+.qore-form-card-header > div,
+body.qore-production-detail-page
+.qore-section-heading > div,
+body.qore-production-detail-page
+.qore-company-copy,
+body.qore-production-detail-page
+.qore-date-copy,
+body.qore-production-detail-page
+.qore-context-guidance-item,
+body.qore-production-detail-page
+.qore-auto-overview-status,
+body.qore-production-detail-page
+.qore-table-heading-copy > div,
+body.qore-production-detail-page
+.qore-consultation-note > div{
+    overflow-wrap: anywhere;
+}
+
+body.qore-production-detail-page
+.qore-table-shell,
+body.qore-production-detail-page
+.qore-table-scroll{
+    width: 100%;
+    max-width: 100%;
+}
+
+body.qore-production-detail-page
+.qore-table-scroll{
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.qore-production-detail-page
+.qore-production-table{
+    max-width: none;
+}
+
+/* =========================================================
+   MODO NORMAL
+========================================================= */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding:
+            22px
+            clamp(42px, 3.125vw, 60px)
+            38px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-shell{
+        width: 100%;
+        max-width: 1800px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-layout{
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(320px, 350px);
+        gap: 22px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-card-header{
+        padding: 23px 30px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-card-header h2{
+        font-size: 19px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-card-header p{
+        font-size: 11px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-body{
+        padding: 30px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-section-heading h3{
+        font-size: 14px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-section-heading p,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-auto-overview-status,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-consultation-note span{
+        font-size: 10px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-company-field label,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-date-field label,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-field-label{
+        font-size: 11px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-company-control,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-date-control,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-control,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-input{
+        font-size: 11px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-3,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        gap: 18px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-totals-grid{
+        grid-template-columns:
+            repeat(8, minmax(145px, 1fr));
+        gap: 12px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-total-card{
+        min-height: 76px;
+        padding: 15px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height:
+            min(
+                650px,
+                calc(100dvh - 240px)
+            );
+    }
+}
+
+@media only screen and (min-width: 2200px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding-left: 72px;
+        padding-right: 72px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-shell{
+        max-width: 1920px;
+    }
+}
+
+@media only screen and (min-width: 1280px) and (max-width: 1599px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding:
+            16px
+            clamp(28px, 3.2vw, 50px)
+            30px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-shell{
+        width: 100%;
+        max-width: 1500px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-layout{
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(285px, 325px);
+        gap: 18px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height:
+            min(
+                590px,
+                calc(100dvh - 190px)
+            );
+    }
+}
+
+@media only screen and (min-width: 1280px) and (max-width: 1450px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1279px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding:
+            14px
+            clamp(20px, 2.8vw, 34px)
+            26px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-shell{
+        width: 100%;
+        max-width: 1240px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height:
+            min(
+                550px,
+                calc(100dvh - 170px)
+            );
+    }
+}
+
+@media only screen and (min-width: 1024px) and (max-height: 820px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding-top: 10px;
+        padding-bottom: 22px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-card-header{
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-body{
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+    
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height:
+            min(
+                500px,
+                calc(100dvh - 145px)
+            );
+    }
+}
+
+@media only screen and (min-width: 681px) and (max-width: 1023px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding: 14px 20px 26px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-layout{
+        grid-template-columns: 1fr;
+    }
+
+    
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-3,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-3 > .qore-field:last-child:nth-child(odd),
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4 > .qore-field:last-child:nth-child(odd){
+        grid-column: 1 / -1;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-totals-grid{
+        grid-template-columns:
+            repeat(2, minmax(140px, 1fr));
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height: min(540px, 68dvh);
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding: 12px 12px 24px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-layout,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-3,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4{
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-3 > *,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-grid-4 > *{
+        grid-column: auto;
+    }
+
+    
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-totals-grid{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-table-scroll{
+        max-height: min(520px, 66dvh);
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-actions{
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-actions-left,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-actions-right,
+body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-actions .qore-button{
+        width: 100%;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-form-actions .qore-button{
+        min-width: 0;
+        white-space: normal;
+    }
+}
+
+@media only screen and (max-width: 440px) {
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-production-main{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    body.qore-production-detail-page:not(.qore-detail-embed)
+    .qore-totals-grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   MODO EMBED — PAINEL LATERAL / IFRAME
+========================================================= */
+
+body.qore-production-detail-page.qore-detail-embed{
+    min-height: 100dvh;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-main{
+    width: 100%;
+    min-height: 100dvh;
+    padding:
+        12px
+        clamp(12px, 1.5vw, 18px)
+        18px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-shell{
+    width: 100%;
+    max-width: none;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-layout{
+    width: 100%;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(210px, 230px);
+    gap: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header{
+    padding: 14px 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header h2{
+    font-size: 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header p{
+    font-size: 9px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-body{
+    padding: 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-consultation-note{
+    margin-bottom: 14px;
+    padding: 10px 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-section-heading{
+    margin-bottom: 13px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-context-stack{
+    margin-bottom: 18px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-company-panel,
+body.qore-production-detail-page.qore-detail-embed
+.qore-auto-overview-selector{
+    padding: 13px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-company-panel.qore-superintendent-panel{
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-context-guidance{
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-auto-overview-selector{
+    grid-template-columns:
+        minmax(240px, 360px)
+        minmax(0, 1fr);
+    gap: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-3,
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-4{
+    gap: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-4{
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-3{
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-control,
+body.qore-production-detail-page.qore-detail-embed
+.qore-company-control,
+body.qore-production-detail-page.qore-detail-embed
+.qore-date-control{
+    min-height: 44px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-totals-grid{
+    grid-template-columns:
+        repeat(4, minmax(125px, 1fr));
+    gap: 9px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-total-card{
+    min-height: 68px;
+    padding: 11px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-table-heading{
+    padding: 13px 14px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-table-scroll{
+    max-height: min(560px, 68dvh);
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-table{
+    min-width: 1500px;
+}
+
+
+
+
+
+
+
+
+
+@media only screen and (min-width: 980px) and (max-width: 1279px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-layout{
+        grid-template-columns:
+            minmax(0, 1fr)
+            215px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > .qore-field:last-child:nth-child(odd){
+        grid-column: 1 / -1;
+    }
+}
+
+@media only screen and (max-width: 979px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-layout{
+        grid-template-columns: 1fr;
+    }
+
+    
+
+    
+
+    
+
+    
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-company-panel.qore-superintendent-panel,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-auto-overview-selector{
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > .qore-field:last-child:nth-child(odd),
+body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4 > .qore-field:last-child:nth-child(odd){
+        grid-column: 1 / -1;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-totals-grid{
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-production-main{
+        padding: 10px 10px 16px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-card-header{
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        padding: 13px 14px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-progress{
+        align-items: flex-start;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-progress-text{
+        min-width: 0;
+        text-align: left;
+        white-space: normal;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-body{
+        padding: 14px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-context-guidance,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-totals-grid{
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > *,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4 > *{
+        grid-column: auto;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-table-scroll{
+        max-height: min(500px, 64dvh);
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-actions{
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-actions-left,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-actions-right,
+body.qore-production-detail-page.qore-detail-embed
+    .qore-form-actions .qore-button{
+        width: 100%;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-actions .qore-button{
+        min-width: 0;
+        white-space: normal;
+    }
+}
+
+@media only screen and (max-height: 560px) and (orientation: landscape) {
+    
+
+    body.qore-production-detail-page
+    .qore-table-scroll{
+        max-height: min(420px, 62dvh);
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    body.qore-production-detail-page
+    .qore-page-back:hover,
+body.qore-production-detail-page
+    .qore-button:hover,
+body.qore-production-detail-page
+    .qore-wallet-option:hover{
+        transform: none;
+    }
+
+    body.qore-production-detail-page
+    .qore-page-back,
+body.qore-production-detail-page
+    .qore-button{
+        min-height: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.qore-production-detail-page
+    .qore-page-back,
+body.qore-production-detail-page
+    .qore-button,
+body.qore-production-detail-page
+    .qore-wallet-option{
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================================
+   DETALHE DO ENVIO — LAYOUT SEM CARD LATERAL
+   O formulário ocupa toda a largura disponível em qualquer modo.
+========================================================= */
+body.qore-production-detail-page .qore-form-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* =========================================================
+   V2.2 — PROPORÇÕES ALINHADAS AO DETALHE DE ENVIO DE METAS
+   Mantém a estrutura própria da produção, porém com a mesma
+   densidade visual, largura útil e comportamento do modo embed.
+========================================================= */
+
+/* Mesmo limite visual usado no detalhe de metas em modo normal. */
+body.qore-production-detail-page:not(.qore-detail-embed)
+.qore-production-shell {
+    width: min(1420px, 100%);
+    max-width: 1420px;
+}
+
+/* Sem card lateral: o formulário usa uma única coluna, igual a metas. */
+body.qore-production-detail-page .qore-form-layout,
+body.qore-production-detail-page.qore-detail-embed .qore-form-layout {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+}
+
+body.qore-production-detail-page .qore-form-card {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Modo embed: mesmas proporções do detalhe de metas. */
+body.qore-production-detail-page.qore-detail-embed {
+    min-height: 100dvh;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-main {
+    width: 100%;
+    min-height: 100dvh;
+    padding:
+        12px
+        clamp(12px, 1.5vw, 18px)
+        18px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-shell {
+    width: 100%;
+    max-width: none;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header {
+    padding: 14px 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header h2 {
+    font-size: 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header p {
+    font-size: 9px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-body {
+    padding: 16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-consultation-note {
+    margin-bottom: 16px;
+    padding: 11px 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-section-heading {
+    margin-bottom: 13px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-3,
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-4 {
+    gap: 12px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-actions {
+    padding: 14px 16px;
+}
+
+/* Mesma quebra intermediária do detalhe de metas. */
+@media only screen and (max-width: 899px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > .qore-field:last-child:nth-child(odd),
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4 > .qore-field:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-production-main {
+        padding: 10px 10px 16px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        padding: 13px 14px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-progress {
+        align-items: flex-start;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-progress-text {
+        min-width: 0;
+        text-align: left;
+        white-space: normal;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-body {
+        padding: 14px;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-context-guidance,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-totals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > *,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-4 > * {
+        grid-column: auto;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-actions-left,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-actions-right,
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-form-actions .qore-button {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+/* =========================================================
+   V2.3 — DETALHE EMBED: CAMPOS AUTOMÁTICOS EM 3 COLUNAS
+   Tipo / Produção / Digital e Superintendente / Gerente /
+   Coordenador permanecem na mesma linha no modal.
+========================================================= */
+
+@media only screen and (min-width: 681px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 > .qore-field {
+        grid-column: auto !important;
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   V2.4 — DADOS DO ENVIO + RESPIRO ENTRE SEÇÕES
+========================================================= */
+
+body.qore-production-detail-page
+.qore-totals-section {
+    margin-top: 28px;
+}
+
+body.qore-production-detail-page
+.qore-send-audit-section {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--qore-border);
+}
+
+body.qore-production-detail-page
+.qore-detail-data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.qore-production-detail-page
+.qore-consultation-value {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 14px 10px 38px;
+    display: flex;
+    align-items: center;
+    color: var(--qore-text);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.4;
+    border: 1px solid var(--qore-border);
+    border-radius: 11px;
+    background: #f8fafc;
+    cursor: default;
+    word-break: break-word;
+}
+
+body.qore-production-detail-page
+.qore-consultation-value.is-empty {
+    color: var(--qore-muted-light);
+    font-weight: 600;
+}
+
+html[data-theme="dark"]
+body.qore-production-detail-page
+.qore-consultation-value {
+    color: #dce6f4;
+    border-color: #26364f;
+    background: #111c2d;
+}
+
+html[data-theme="dark"]
+body.qore-production-detail-page
+.qore-consultation-value.is-empty {
+    color: #8290a6;
+}
+
+@media only screen and (max-width: 680px) {
+    body.qore-production-detail-page
+    .qore-totals-section {
+        margin-top: 22px;
+    }
+
+    body.qore-production-detail-page
+    .qore-send-audit-section {
+        margin-top: 22px;
+        padding-top: 20px;
+    }
+
+    body.qore-production-detail-page
+    .qore-detail-data-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+
+
+/* ==========================================================================
+   V2.5 — WORKSPACE UI CORE
+   DETALHE DO ENVIO DE PRODUÇÃO
+   ========================================================================== */
+
+:root {
+    --qore-navy-950: var(--ws-navy-950, #071124);
+    --qore-navy-900: var(--ws-navy-900, #0B1832);
+    --qore-navy-800: var(--ws-navy-800, #101C44);
+
+    --qore-blue-700: var(--ws-primary-hover, #1D4ED8);
+    --qore-blue-600: var(--ws-primary, #2563EB);
+    --qore-blue-500: var(--ws-primary-500, #4689F5);
+    --qore-cyan-400: #38BDF8;
+
+    --qore-white: var(--ws-white, #FFFFFF);
+    --qore-bg: var(--ws-app-bg, #F4F7FB);
+    --qore-surface: var(--ws-surface-card, #FFFFFF);
+    --qore-surface-soft: var(--ws-surface-soft, #F8FAFC);
+
+    --qore-text: var(--ws-text-primary, #172033);
+    --qore-muted: var(--ws-text-muted, #667085);
+    --qore-muted-light: var(--ws-text-placeholder, #98A2B3);
+
+    --qore-border: var(--ws-border, #DDE3EC);
+    --qore-border-strong: var(--ws-border-strong, #C7CFDC);
+
+    --qore-success: var(--ws-success, #16A34A);
+    --qore-success-soft: var(--ws-success-soft, #F0FDF4);
+
+    --qore-warning: var(--ws-warning, #D97706);
+    --qore-warning-soft: var(--ws-warning-soft, #FFFBEB);
+
+    --qore-danger: var(--ws-danger, #D92D20);
+    --qore-danger-soft: var(--ws-danger-soft, #FEF3F2);
+
+    --qore-info-soft: var(--ws-primary-soft, #EFF6FF);
+
+    --qore-shadow:
+        var(
+            --ws-shadow-md,
+            0 10px 28px rgba(16, 28, 68, 0.10)
+        );
+}
+
+
+/* ==========================================================================
+   PÁGINA — STANDALONE
+   ========================================================================== */
+
+body.qore-production-detail-page {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    margin: 0;
+    padding: 0;
+
+    color: var(--ws-text-primary, #172033);
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    background:
+        radial-gradient(
+            circle at 4% 10%,
+            rgba(37, 99, 235, 0.08),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 96% 92%,
+            rgba(56, 189, 248, 0.06),
+            transparent 24%
+        ),
+        var(--ws-app-bg, #F4F7FB);
+}
+
+body.qore-production-detail-page
+.qore-production-main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 0;
+
+    padding:
+        clamp(12px, 1.2vw, 20px)
+        var(--ws-page-padding-x, clamp(16px, 1.45vw, 30px))
+        clamp(24px, 1.8vw, 34px);
+
+    flex: 1 0 auto;
+}
+
+body.qore-production-detail-page
+.qore-production-shell {
+    width: min(1420px, 100%);
+    min-width: 0;
+    max-width: 1420px;
+
+    margin-inline: auto;
+}
+
+body.qore-production-detail-page
+.qore-form-layout {
+    width: 100%;
+    min-width: 0;
+
+    grid-template-columns:
+        minmax(0, 1fr) !important;
+
+    gap: 0 !important;
+}
+
+body.qore-production-detail-page
+.qore-form-card {
+    width: 100%;
+    min-width: 0;
+
+    border-color: var(--ws-border-soft, #E7EBF1);
+    border-radius: var(--ws-radius-2xl, 18px);
+
+    background: var(--ws-surface-card, #FFFFFF);
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        );
+}
+
+
+/* ==========================================================================
+   HEADER / MODO CONSULTA
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-form-card-header {
+    min-height: 72px;
+
+    padding:
+        15px
+        clamp(18px, 1.2vw, 24px);
+}
+
+body.qore-production-detail-page
+.qore-form-card-header h2 {
+    font-size: var(--ws-font-xl, 18px) !important;
+    line-height: var(--ws-line-heading, 1.25);
+}
+
+body.qore-production-detail-page
+.qore-form-card-header p {
+    font-size: var(--ws-font-xs, 11px) !important;
+    line-height: var(--ws-line-base, 1.45);
+}
+
+body.qore-production-detail-page
+.qore-form-progress,
+body.qore-production-detail-page
+.qore-progress-text {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+body.qore-production-detail-page
+.qore-form-body {
+    padding: clamp(18px, 1.4vw, 24px);
+}
+
+body.qore-production-detail-page
+.qore-consultation-note {
+    margin-bottom: clamp(16px, 1.2vw, 20px);
+
+    padding: 12px 14px;
+    gap: 10px;
+
+    border-color:
+        var(
+            --ws-primary-border,
+            rgba(37, 99, 235, 0.20)
+        );
+
+    border-radius: var(--ws-radius-md, 10px);
+
+    background: var(--ws-primary-soft, #EFF6FF);
+}
+
+body.qore-production-detail-page
+.qore-consultation-note strong {
+    font-size: var(--ws-font-xs, 11px) !important;
+}
+
+body.qore-production-detail-page
+.qore-consultation-note span {
+    font-size: var(--ws-font-2xs, 10px) !important;
+    line-height: var(--ws-line-base, 1.45);
+}
+
+body.qore-production-detail-page
+.qore-consultation-badge {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+
+/* ==========================================================================
+   SEÇÕES / CAMPOS
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-section-heading {
+    margin-bottom: 14px;
+}
+
+body.qore-production-detail-page
+.qore-section-number {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    font-size: var(--ws-font-xs, 11px) !important;
+}
+
+body.qore-production-detail-page
+.qore-section-heading h3,
+body.qore-production-detail-page
+.qore-table-heading-copy h3 {
+    font-size: var(--ws-font-base, 14px) !important;
+    line-height: var(--ws-line-heading, 1.25);
+}
+
+body.qore-production-detail-page
+.qore-section-heading p,
+body.qore-production-detail-page
+.qore-table-heading-copy p {
+    font-size: var(--ws-font-xs, 11px) !important;
+    line-height: var(--ws-line-base, 1.45);
+}
+
+body.qore-production-detail-page
+.qore-automatic-section,
+body.qore-production-detail-page
+.qore-totals-section,
+body.qore-production-detail-page
+.qore-send-audit-section {
+    margin-top: clamp(22px, 1.6vw, 28px);
+
+    padding-top: clamp(18px, 1.4vw, 24px);
+
+    border-top:
+        1px solid
+        var(--ws-border-soft, #E7EBF1);
+}
+
+body.qore-production-detail-page
+.qore-company-panel.qore-superintendent-panel {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: clamp(14px, 1vw, 18px);
+}
+
+body.qore-production-detail-page
+.qore-company-field label,
+body.qore-production-detail-page
+.qore-date-field label,
+body.qore-production-detail-page
+.qore-auto-overview-selector label,
+body.qore-production-detail-page
+.qore-field-label {
+    color: var(--ws-text-muted-strong, #526078);
+
+    font-size: var(--ws-font-xs, 11px) !important;
+    font-weight: var(--ws-weight-bold, 700);
+}
+
+body.qore-production-detail-page
+.qore-company-control,
+body.qore-production-detail-page
+.qore-date-control,
+body.qore-production-detail-page
+.qore-control {
+    min-width: 0;
+
+    height: var(--ws-control-height-lg, 44px) !important;
+    min-height: var(--ws-control-height-lg, 44px);
+
+    border-color: var(--ws-control-border, #D8DFE9);
+    border-radius: var(--ws-radius-sm, 8px);
+
+    font-size: var(--ws-font-md, 13px) !important;
+}
+
+body.qore-production-detail-page
+.qore-company-control,
+body.qore-production-detail-page
+.qore-date-control,
+body.qore-production-detail-page
+.qore-control {
+    color: var(--ws-text-secondary, #35405A);
+    background: var(--ws-control-readonly-bg, #F7F9FC);
+}
+
+body.qore-production-detail-page
+.qore-company-status,
+body.qore-production-detail-page
+.qore-date-status,
+body.qore-production-detail-page
+.qore-auto-overview-status,
+body.qore-production-detail-page
+.qore-context-guidance-item span {
+    font-size: var(--ws-font-2xs, 10px) !important;
+    line-height: 1.45;
+}
+
+body.qore-production-detail-page
+.qore-context-guidance-item strong,
+body.qore-production-detail-page
+.qore-auto-overview-status strong {
+    font-size: var(--ws-font-xs, 11px) !important;
+}
+
+body.qore-production-detail-page
+.qore-context-guidance {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(240px, 100%),
+                1fr
+            )
+        );
+}
+
+
+/* ==========================================================================
+   INFORMAÇÕES AUTOMÁTICAS
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-auto-overview-selector {
+    grid-template-columns:
+        minmax(260px, 420px)
+        minmax(0, 1fr);
+
+    gap: clamp(12px, 0.9vw, 16px);
+}
+
+body.qore-production-detail-page
+.qore-grid-3 {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(220px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap: clamp(12px, 0.85vw, 16px);
+}
+
+body.qore-production-detail-page
+.qore-grid-4 {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(210px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap: clamp(12px, 0.85vw, 16px);
+}
+
+body.qore-production-detail-page
+.qore-readonly-badge {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+
+/* ==========================================================================
+   TOTALIZADORES
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-totals-grid {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(150px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap: clamp(8px, 0.65vw, 10px);
+}
+
+body.qore-production-detail-page
+.qore-total-card {
+    min-height: 76px;
+
+    padding: 12px;
+
+    border-radius: var(--ws-radius-lg, 12px);
+}
+
+body.qore-production-detail-page
+.qore-total-card span {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+body.qore-production-detail-page
+.qore-total-card strong {
+    font-size: var(--ws-font-base, 14px) !important;
+}
+
+
+/* ==========================================================================
+   TABELA
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-table-heading {
+    padding:
+        13px
+        clamp(14px, 1vw, 18px);
+
+    border-radius: var(--ws-radius-lg, 12px);
+}
+
+body.qore-production-detail-page
+.qore-table-badge {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+body.qore-production-detail-page
+.qore-table-shell {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    border-radius: var(--ws-radius-xl, 14px);
+}
+
+body.qore-production-detail-page
+.qore-table-scroll {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    max-height:
+        clamp(
+            420px,
+            54vh,
+            620px
+        ) !important;
+
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        var(--ws-scroll-thumb, #C7CED9)
+        transparent;
+}
+
+body.qore-production-detail-page
+.qore-production-table {
+    width: 100%;
+    min-width: 1740px;
+    max-width: none;
+}
+
+body.qore-production-detail-page
+.qore-production-table thead th {
+    position: sticky;
+
+    top: 0;
+    z-index: 7;
+
+    height: auto;
+
+    padding: 10px 9px;
+
+    color: var(--ws-table-head-text, #526078);
+
+    font-size: var(--ws-font-2xs, 10px) !important;
+
+    background: var(--ws-table-head-bg, #F7F9FC);
+}
+
+body.qore-production-detail-page
+.qore-context-title,
+body.qore-production-detail-page
+.qore-auto-details,
+body.qore-production-detail-page
+.qore-auto-details summary,
+body.qore-production-detail-page
+.qore-row-number {
+    font-size: var(--ws-font-xs, 11px) !important;
+}
+
+body.qore-production-detail-page
+.qore-context-subtitle,
+body.qore-production-detail-page
+.qore-table-footer {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+body.qore-production-detail-page
+.qore-table-input {
+    height: 40px;
+
+    font-size: var(--ws-font-sm, 12px) !important;
+}
+
+
+/* ==========================================================================
+   DADOS DO ENVIO / AUDITORIA
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-detail-data-grid {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(240px, 100%),
+                1fr
+            )
+        );
+
+    gap: clamp(10px, 0.75vw, 14px);
+}
+
+body.qore-production-detail-page
+.qore-consultation-value {
+    min-height: var(--ws-control-height-lg, 44px);
+
+    padding:
+        10px
+        14px
+        10px
+        40px;
+
+    color: var(--ws-text-secondary, #35405A);
+
+    font-size: var(--ws-font-xs, 11px) !important;
+
+    border-color: var(--ws-control-border, #D8DFE9);
+    border-radius: var(--ws-radius-sm, 8px);
+
+    background: var(--ws-control-readonly-bg, #F7F9FC);
+}
+
+
+/* ==========================================================================
+   AÇÕES
+   ========================================================================== */
+
+body.qore-production-detail-page
+.qore-form-actions {
+    min-height: 72px;
+
+    padding:
+        14px
+        clamp(18px, 1.2vw, 24px);
+}
+
+body.qore-production-detail-page
+.qore-button {
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    font-size: var(--ws-font-xs, 11px) !important;
+
+    border-radius: var(--ws-radius-sm, 8px);
+}
+
+body.qore-production-detail-page
+.qore-form-actions
+.qore-button {
+    min-height: var(--ws-button-height-lg, 44px);
+
+    font-size: var(--ws-font-sm, 12px) !important;
+}
+
+
+/* ==========================================================================
+   MODO EMBED / IFRAME
+   ========================================================================== */
+
+body.qore-production-detail-page.qore-detail-embed {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 0 !important;
+    height: auto !important;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    background: var(--ws-app-bg, #F4F7FB);
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-main {
+    width: 100%;
+    min-width: 0;
+
+    min-height: 0 !important;
+
+    padding:
+        12px
+        clamp(10px, 1.2vw, 16px)
+        16px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-shell {
+    width: 100%;
+    max-width: none;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card {
+    border-radius: var(--ws-radius-xl, 14px);
+
+    box-shadow:
+        var(
+            --ws-shadow-xs,
+            0 1px 4px rgba(16, 28, 68, 0.08)
+        );
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header {
+    min-height: 62px;
+    padding: 13px 15px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header h2 {
+    font-size: var(--ws-font-lg, 16px) !important;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-card-header p {
+    font-size: var(--ws-font-2xs, 10px) !important;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-form-body {
+    padding: clamp(13px, 1.1vw, 16px);
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-consultation-note {
+    margin-bottom: 14px;
+    padding: 10px 11px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-company-panel.qore-superintendent-panel,
+body.qore-production-detail-page.qore-detail-embed
+.qore-auto-overview-selector {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(240px, 100%),
+                1fr
+            )
+        ) !important;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-3,
+body.qore-production-detail-page.qore-detail-embed
+.qore-grid-4 {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(190px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap: 10px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-totals-grid {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(135px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap: 8px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-total-card {
+    min-height: 68px;
+    padding: 10px;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-table-scroll {
+    max-height:
+        clamp(
+            360px,
+            52vh,
+            540px
+        ) !important;
+}
+
+body.qore-production-detail-page.qore-detail-embed
+.qore-production-table {
+    min-width: 1500px;
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media only screen and (max-width: 1100px) {
+
+    body.qore-production-detail-page
+    .qore-company-panel.qore-superintendent-panel,
+    body.qore-production-detail-page
+    .qore-auto-overview-selector {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media only screen and (max-width: 820px) {
+
+    body.qore-production-detail-page
+    .qore-form-card-header,
+    body.qore-production-detail-page
+    .qore-table-heading,
+    body.qore-production-detail-page
+    .qore-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.qore-production-detail-page
+    .qore-form-progress {
+        align-items: flex-start;
+    }
+
+    body.qore-production-detail-page
+    .qore-progress-text {
+        min-width: 0;
+        text-align: left;
+        white-space: normal;
+    }
+
+    body.qore-production-detail-page
+    .qore-table-meta,
+    body.qore-production-detail-page
+    .qore-actions-left,
+    body.qore-production-detail-page
+    .qore-actions-right {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+
+    body.qore-production-detail-page
+    .qore-production-main {
+        padding:
+            10px
+            12px
+            20px;
+    }
+
+    body.qore-production-detail-page
+    .qore-grid-3,
+    body.qore-production-detail-page
+    .qore-grid-4,
+    body.qore-production-detail-page
+    .qore-totals-grid,
+    body.qore-production-detail-page
+    .qore-detail-data-grid,
+    body.qore-production-detail-page
+    .qore-context-guidance {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    body.qore-production-detail-page
+    .qore-actions-left,
+    body.qore-production-detail-page
+    .qore-actions-right {
+        flex-direction: column;
+    }
+
+    body.qore-production-detail-page
+    .qore-form-actions .qore-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.qore-production-detail-page
+    .qore-table-scroll {
+        max-height: 500px !important;
+    }
+
+    body.qore-production-detail-page
+    .qore-company-control,
+    body.qore-production-detail-page
+    .qore-date-control {
+        font-size: 16px !important;
+    }
+}
+
+
+/* ==========================================================================
+   ZOOM / VIEWPORT BAIXA
+   ========================================================================== */
+
+@media only screen and (max-height: 760px) and (min-width: 641px) {
+
+    body.qore-production-detail-page
+    .qore-production-main {
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+
+    body.qore-production-detail-page
+    .qore-table-scroll {
+        max-height: 420px !important;
+    }
+
+    body.qore-production-detail-page.qore-detail-embed
+    .qore-table-scroll {
+        max-height: 400px !important;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.qore-production-detail-page
+    .qore-button,
+    body.qore-production-detail-page
+    .qore-progress-dot {
+        transition: none !important;
+    }
+}

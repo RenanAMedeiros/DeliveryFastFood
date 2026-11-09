@@ -1,0 +1,3963 @@
+/* ==========================================================================
+   WORKSPACE UI CORE
+   COMPONENTS
+   Arquivo: workspace_components.css
+
+   Padrão visual reutilizável dos componentes do Workspace.
+   Referência principal de composição: 1920 x 1080.
+
+   IMPORTANTE:
+   - Não contém lógica de negócio.
+   - Não depende de tamanho fixo de viewport.
+   - Não utiliza width: 100vw.
+   - Não utiliza transform: scale() para responsividade.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   HERO / PAGE HEADER
+   ========================================================================== */
+
+.ws-hero {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: clamp(16px, 1.5vw, 28px);
+
+    padding:
+        clamp(22px, 1.75vw, 34px)
+        clamp(22px, 2vw, 38px);
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            110deg,
+            #001b33 0%,
+            #06284b 48%,
+            #174f7f 100%
+        );
+
+    isolation: isolate;
+}
+
+/*
+ * Respiro entre a navegação global e o cabeçalho visual da página.
+ * O espaçamento fica no componente para manter o mesmo padrão em todas
+ * as telas que utilizam o hero, sem alterar a altura da navbar.
+ */
+.ws-hero--page-offset {
+    margin-top: clamp(12px, 1vw, 18px);
+}
+
+
+/* --------------------------------------------------------------------------
+   DECORAÇÃO DE FUNDO
+   -------------------------------------------------------------------------- */
+
+.ws-hero::before,
+.ws-hero::after {
+    content: "";
+
+    position: absolute;
+
+    z-index: -1;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.ws-hero::before {
+    width: 420px;
+    height: 420px;
+
+    top: -285px;
+    right: 130px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(41, 145, 232, 0.18) 0%,
+            rgba(41, 145, 232, 0) 70%
+        );
+}
+
+.ws-hero::after {
+    width: 360px;
+    height: 360px;
+
+    right: -200px;
+    bottom: -245px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(65, 163, 235, 0.16) 0%,
+            rgba(65, 163, 235, 0) 70%
+        );
+}
+
+
+/* --------------------------------------------------------------------------
+   BLOCO PRINCIPAL
+   -------------------------------------------------------------------------- */
+
+.ws-hero__main {
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: clamp(13px, 1.15vw, 20px);
+}
+
+
+/* --------------------------------------------------------------------------
+   NAVEGAÇÃO / VOLTAR
+   -------------------------------------------------------------------------- */
+
+.ws-hero__navigation {
+    flex: 0 0 auto;
+}
+
+.ws-hero__back {
+    width: clamp(42px, 2.8vw, 50px);
+    height: clamp(42px, 2.8vw, 50px);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: 12px;
+
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.ws-hero__back:hover {
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border-color: rgba(255, 255, 255, 0.32);
+
+    transform: translateY(-1px);
+}
+
+.ws-hero__back:focus-visible {
+    outline: 3px solid rgba(71, 181, 255, 0.42);
+    outline-offset: 2px;
+}
+
+.ws-hero__back-icon {
+    width: 21px;
+    height: 21px;
+
+    display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTEÚDO
+   -------------------------------------------------------------------------- */
+
+.ws-hero__content {
+    min-width: 0;
+
+    flex: 1 1 auto;
+}
+
+
+/* --------------------------------------------------------------------------
+   EYEBROW / KICKER
+   -------------------------------------------------------------------------- */
+
+.ws-hero__eyebrow {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin: 0 0 7px;
+}
+
+.ws-hero__eyebrow-line {
+    width: 24px;
+    height: 2px;
+
+    flex: 0 0 auto;
+
+    border-radius: 999px;
+
+    background: #39b8ff;
+}
+
+.ws-hero__eyebrow-text {
+    min-width: 0;
+
+    color: #62c6ff;
+
+    font-size: clamp(0.69rem, 0.64vw, 0.77rem);
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    letter-spacing: 0.12em;
+
+    text-transform: uppercase;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   TÍTULO
+   -------------------------------------------------------------------------- */
+
+.ws-hero__title {
+    min-width: 0;
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(1.65rem, 1.82vw, 2.2rem);
+    font-weight: 700;
+
+    line-height: 1.12;
+
+    letter-spacing: -0.025em;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   DESCRIÇÃO
+   -------------------------------------------------------------------------- */
+
+.ws-hero__description {
+    width: 100%;
+    max-width: 980px;
+
+    margin: 7px 0 0;
+
+    color: rgba(255, 255, 255, 0.76);
+
+    font-size: clamp(0.80rem, 0.77vw, 0.92rem);
+    font-weight: 400;
+
+    line-height: 1.48;
+
+    overflow-wrap: break-word;
+}
+
+
+/* ==========================================================================
+   HERO — CARD DE CONTEXTO
+   ========================================================================== */
+
+.ws-hero__context {
+    width: min(100%, 300px);
+    min-width: 230px;
+    max-width: 300px;
+
+    flex: 0 1 300px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px 16px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.ws-hero__context-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #61c8ff;
+
+    background: rgba(28, 123, 224, 0.22);
+}
+
+.ws-hero__context-icon svg {
+    width: 20px;
+    height: 20px;
+
+    display: block;
+}
+
+.ws-hero__context-copy {
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.ws-hero__context-title {
+    min-width: 0;
+
+    color: #ffffff;
+
+    font-size: 0.80rem;
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    overflow-wrap: break-word;
+}
+
+.ws-hero__context-description {
+    min-width: 0;
+
+    color: rgba(255, 255, 255, 0.62);
+
+    font-size: 0.69rem;
+    font-weight: 400;
+
+    line-height: 1.4;
+
+    overflow-wrap: break-word;
+}
+
+
+/* ==========================================================================
+   HERO — RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+/*
+   Redução moderada:
+   preserva a composição horizontal original.
+*/
+@media (max-width: 1366px) {
+
+    .ws-hero {
+        gap: 18px;
+
+        padding:
+            clamp(20px, 1.6vw, 28px)
+            clamp(20px, 1.8vw, 30px);
+    }
+
+    .ws-hero__context {
+        min-width: 215px;
+        max-width: 270px;
+
+        flex-basis: 270px;
+    }
+}
+
+
+/*
+   Área intermediária:
+   ainda mantém back + conteúdo + contexto na horizontal.
+*/
+@media (max-width: 1100px) {
+
+    .ws-hero {
+        gap: 15px;
+    }
+
+    .ws-hero__main {
+        gap: 13px;
+    }
+
+    .ws-hero__context {
+        min-width: 195px;
+        max-width: 235px;
+
+        flex-basis: 235px;
+
+        gap: 11px;
+
+        padding: 12px 13px;
+    }
+
+    .ws-hero__context-icon {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+    }
+}
+
+
+/*
+   Área efetivamente compacta em dispositivo touch:
+   apenas aqui o contexto passa para baixo.
+   Desktop/notebook com zoom preserva a composição horizontal.
+*/
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-hero {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 16px;
+    }
+
+    .ws-hero__context {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+
+        flex-basis: auto;
+    }
+}
+
+
+/*
+   Mobile touch.
+*/
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-hero--page-offset {
+        margin-top: 10px;
+    }
+
+    .ws-hero {
+        gap: 15px;
+
+        padding: 19px;
+
+        border-radius: 15px;
+    }
+
+    .ws-hero__main {
+        gap: 11px;
+    }
+
+    .ws-hero__back {
+        width: 40px;
+        height: 40px;
+
+        border-radius: 10px;
+    }
+
+    .ws-hero__back-icon {
+        width: 19px;
+        height: 19px;
+    }
+
+    .ws-hero__title {
+        font-size: clamp(1.42rem, 6.6vw, 1.75rem);
+    }
+
+    .ws-hero__description {
+        margin-top: 6px;
+
+        font-size: 0.80rem;
+    }
+}
+
+
+/*
+   Mobile muito estreito.
+*/
+@media (max-width: 420px) and (pointer: coarse) {
+
+    .ws-hero {
+        padding: 16px;
+    }
+
+    .ws-hero__main {
+        gap: 9px;
+    }
+
+    .ws-hero__back {
+        width: 37px;
+        height: 37px;
+    }
+
+    .ws-hero__eyebrow {
+        gap: 7px;
+    }
+
+    .ws-hero__eyebrow-line {
+        width: 18px;
+    }
+
+    .ws-hero__context {
+        gap: 10px;
+
+        padding: 11px;
+    }
+}
+
+
+/* ==========================================================================
+   ACESSIBILIDADE — REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-hero__back {
+        transition: none;
+    }
+
+    .ws-hero__back:hover {
+        transform: none;
+    }
+}
+
+
+/* ==========================================================================
+   KPI GRID
+   ========================================================================== */
+
+.ws-kpi-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: grid;
+
+    /*
+       O grid se reorganiza pela necessidade real dos cards, não por uma
+       sequência agressiva de breakpoints. Em Full HD, 4 KPIs permanecem
+       naturalmente na mesma linha; em áreas menores, o grid reduz colunas.
+    */
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+
+    gap: clamp(10px, 0.9vw, 16px);
+
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   KPI CARD
+   ========================================================================== */
+
+.ws-kpi-card {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 88px;
+
+    display: flex;
+    align-items: center;
+
+    gap: clamp(12px, 0.9vw, 16px);
+
+    padding:
+        clamp(14px, 1vw, 18px)
+        clamp(14px, 1.1vw, 20px);
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+
+    border-radius: var(--ws-radius-lg, 14px);
+
+    color: var(--ws-text-primary, #08233d);
+
+    background: var(--ws-surface-card, #ffffff);
+
+    box-shadow:
+        0 6px 18px
+        rgba(15, 42, 68, 0.045);
+
+    text-decoration: none;
+
+    overflow: visible;
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   CARD CLICÁVEL
+   -------------------------------------------------------------------------- */
+
+.ws-kpi-card--clickable {
+    cursor: pointer;
+}
+
+.ws-kpi-card--clickable:hover {
+    color: var(--ws-text-primary, #08233d);
+
+    border-color:
+        var(--ws-primary-border, rgba(27, 111, 235, 0.22));
+
+    box-shadow:
+        0 9px 24px
+        rgba(15, 42, 68, 0.075);
+
+    transform: translateY(-1px);
+}
+
+.ws-kpi-card--clickable:focus-visible {
+    outline:
+        3px solid
+        var(--ws-focus-ring, rgba(37, 123, 245, 0.24));
+
+    outline-offset: 2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   ÍCONE
+   -------------------------------------------------------------------------- */
+
+.ws-kpi-card__icon {
+    width: clamp(42px, 3vw, 50px);
+    height: clamp(42px, 3vw, 50px);
+
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        var(--ws-primary-border, rgba(32, 120, 246, 0.15));
+
+    border-radius: 12px;
+
+    color: var(--ws-primary, #1672f3);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.07));
+
+    box-sizing: border-box;
+}
+
+.ws-kpi-card__icon svg {
+    width: 21px;
+    height: 21px;
+
+    display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTEÚDO
+   -------------------------------------------------------------------------- */
+
+.ws-kpi-card__content {
+    min-width: 0;
+
+    flex: 1 1 auto;
+}
+
+.ws-kpi-card__label {
+    min-width: 0;
+
+    margin: 0 0 3px;
+
+    color: var(--ws-text-muted-strong, #53677a);
+
+    font-size: clamp(0.64rem, 0.54vw, 0.72rem);
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.045em;
+
+    text-transform: uppercase;
+
+    overflow-wrap: break-word;
+}
+
+.ws-kpi-card__value {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-primary, #08233d);
+
+    font-size: clamp(1.08rem, 1.15vw, 1.45rem);
+    font-weight: 750;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.018em;
+
+    overflow-wrap: anywhere;
+}
+
+.ws-kpi-card__subtitle {
+    min-width: 0;
+
+    margin: 5px 0 0;
+
+    color: var(--ws-text-muted, #8a99a9);
+
+    font-size: clamp(0.67rem, 0.55vw, 0.75rem);
+    font-weight: 400;
+
+    line-height: 1.35;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   INFO / TOOLTIP
+   -------------------------------------------------------------------------- */
+
+.ws-kpi-card__info {
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    width: 17px;
+    height: 17px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: var(--ws-primary, #1672f3);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.08));
+
+    font-size: 0.61rem;
+    font-weight: 800;
+
+    line-height: 1;
+
+    cursor: help;
+
+    user-select: none;
+}
+
+.ws-kpi-card__info::before,
+.ws-kpi-card__info::after {
+    position: absolute;
+
+    z-index: 50;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 0.15s ease,
+        visibility 0.15s ease,
+        transform 0.15s ease;
+}
+
+.ws-kpi-card__info::before {
+    content: attr(data-tooltip);
+
+    width: max-content;
+    max-width: min(270px, calc(100vw - 32px));
+
+    right: -4px;
+    bottom: calc(100% + 10px);
+
+    padding: 9px 11px;
+
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    background: #092947;
+
+    box-shadow:
+        0 10px 28px
+        rgba(5, 29, 51, 0.18);
+
+    font-size: 0.70rem;
+    font-weight: 500;
+
+    line-height: 1.4;
+
+    text-align: left;
+
+    white-space: normal;
+
+    transform: translateY(4px);
+}
+
+.ws-kpi-card__info::after {
+    content: "";
+
+    right: 4px;
+    bottom: calc(100% + 5px);
+
+    width: 8px;
+    height: 8px;
+
+    background: #092947;
+
+    transform:
+        translateY(4px)
+        rotate(45deg);
+}
+
+.ws-kpi-card__info:hover::before,
+.ws-kpi-card__info:hover::after,
+.ws-kpi-card__info:focus-visible::before,
+.ws-kpi-card__info:focus-visible::after {
+    opacity: 1;
+
+    visibility: visible;
+}
+
+.ws-kpi-card__info:hover::before,
+.ws-kpi-card__info:focus-visible::before {
+    transform: translateY(0);
+}
+
+.ws-kpi-card__info:hover::after,
+.ws-kpi-card__info:focus-visible::after {
+    transform:
+        translateY(0)
+        rotate(45deg);
+}
+
+.ws-kpi-card__info:focus-visible {
+    outline:
+        2px solid
+        var(--ws-focus-ring, rgba(37, 123, 245, 0.32));
+
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   KPI — RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+/*
+   Em áreas intermediárias, reduzimos apenas o espaçamento.
+   O número de colunas continua sendo decidido pelo minmax() do grid.
+*/
+@media (max-width: 1100px) {
+
+    .ws-kpi-grid {
+        gap: 10px;
+    }
+
+    .ws-kpi-card {
+        min-height: 84px;
+
+        padding: 13px 14px;
+    }
+
+    .ws-kpi-card__icon {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+
+/*
+   Mobile touch.
+*/
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-kpi-grid {
+        grid-template-columns: 1fr;
+
+        gap: 9px;
+    }
+
+    .ws-kpi-card {
+        min-height: 82px;
+
+        border-radius: 12px;
+    }
+
+    .ws-kpi-card__value {
+        font-size: 1.12rem;
+    }
+}
+
+
+/* ==========================================================================
+   KPI — REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-kpi-card,
+    .ws-kpi-card__info::before,
+    .ws-kpi-card__info::after {
+        transition: none;
+    }
+
+    .ws-kpi-card--clickable:hover {
+        transform: none;
+    }
+}
+
+
+/* ==========================================================================
+   PANEL
+   ========================================================================== */
+
+.ws-panel {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+
+    border-radius: var(--ws-radius-lg, 14px);
+
+    background: var(--ws-surface-card, #ffffff);
+
+    box-shadow:
+        0 6px 18px
+        rgba(15, 42, 68, 0.035);
+
+    overflow: visible;
+}
+
+
+/* --------------------------------------------------------------------------
+   CABEÇALHO
+   -------------------------------------------------------------------------- */
+
+.ws-panel__header {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: clamp(12px, 1.2vw, 20px);
+
+    padding:
+        clamp(14px, 1vw, 18px)
+        clamp(16px, 1.2vw, 22px);
+
+    box-sizing: border-box;
+
+    border-bottom:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.07));
+}
+
+
+/* --------------------------------------------------------------------------
+   TÍTULO / DESCRIÇÃO
+   -------------------------------------------------------------------------- */
+
+.ws-panel__heading {
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+}
+
+.ws-panel__icon {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-primary-border, rgba(32, 120, 246, 0.13));
+
+    border-radius: 9px;
+
+    color: var(--ws-primary, #1672f3);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.065));
+}
+
+.ws-panel__icon svg {
+    width: 17px;
+    height: 17px;
+
+    display: block;
+}
+
+.ws-panel__heading-copy {
+    min-width: 0;
+
+    flex: 1 1 auto;
+}
+
+.ws-panel__title-row {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.ws-panel__title {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-primary, #08233d);
+
+    font-size: clamp(0.88rem, 0.77vw, 1rem);
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    letter-spacing: -0.01em;
+
+    overflow-wrap: break-word;
+}
+
+.ws-panel__description {
+    min-width: 0;
+
+    max-width: 900px;
+
+    margin: 4px 0 0;
+
+    color: var(--ws-text-muted, #7c8c9c);
+
+    font-size: clamp(0.70rem, 0.61vw, 0.80rem);
+    font-weight: 400;
+
+    line-height: 1.45;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   BADGE
+   -------------------------------------------------------------------------- */
+
+.ws-panel__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 21px;
+
+    padding: 3px 7px;
+
+    box-sizing: border-box;
+
+    border-radius: 999px;
+
+    color: var(--ws-primary, #1672f3);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.075));
+
+    font-size: 0.62rem;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   AÇÕES
+   -------------------------------------------------------------------------- */
+
+.ws-panel__actions {
+    min-width: 0;
+
+    flex: 0 1 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+/* --------------------------------------------------------------------------
+   BODY
+   -------------------------------------------------------------------------- */
+
+.ws-panel__body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    padding:
+        clamp(14px, 1vw, 18px)
+        clamp(16px, 1.2vw, 22px);
+
+    box-sizing: border-box;
+}
+
+.ws-panel__body--no-padding {
+    padding: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   VARIAÇÃO COMPACTA
+   -------------------------------------------------------------------------- */
+
+.ws-panel--compact .ws-panel__header {
+    padding: 12px 14px;
+}
+
+.ws-panel--compact .ws-panel__body {
+    padding: 12px 14px;
+}
+
+.ws-panel--compact .ws-panel__body--no-padding {
+    padding: 0;
+}
+
+
+/* ==========================================================================
+   PANEL — RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-panel__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ws-panel__actions {
+        width: 100%;
+
+        justify-content: flex-start;
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-panel {
+        border-radius: 12px;
+    }
+
+    .ws-panel__header {
+        gap: 10px;
+
+        padding: 13px 14px;
+    }
+
+    .ws-panel__body {
+        padding: 13px 14px;
+    }
+
+    .ws-panel__icon {
+        width: 32px;
+        height: 32px;
+
+        flex-basis: 32px;
+    }
+}
+
+
+/* ==========================================================================
+   DARK MODE / THEMING READY
+   ========================================================================== */
+
+/*
+   O componente usa tokens com fallback para não interferir no tema atual.
+   Quando os tokens globais forem definidos, o Panel passará a herdar
+   automaticamente as cores oficiais de light/dark mode.
+*/
+
+
+/* ==========================================================================
+   FILTER PANEL
+   ========================================================================== */
+
+.ws-filter-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ws-filter-panel__header {
+    align-items: center;
+}
+
+.ws-filter-panel__body {
+    overflow: visible;
+}
+
+
+/* ==========================================================================
+   FILTER GRID
+   ========================================================================== */
+
+.ws-filter-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: grid;
+
+    /*
+       Comportamento fluido:
+       - preserva uma única linha quando houver espaço real;
+       - quebra apenas quando necessário;
+       - evita breakpoints agressivos.
+    */
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+
+    gap:
+        clamp(10px, 0.8vw, 14px)
+        clamp(10px, 0.9vw, 16px);
+
+    align-items: end;
+
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   FILTER FIELD
+   ========================================================================== */
+
+.ws-filter-field {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.ws-filter-field--wide {
+    grid-column: span 2;
+}
+
+.ws-filter-field--full {
+    grid-column: 1 / -1;
+}
+
+
+/* --------------------------------------------------------------------------
+   LABEL
+   -------------------------------------------------------------------------- */
+
+.ws-filter-label {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-muted-strong, #53677a);
+
+    font-size: clamp(0.67rem, 0.56vw, 0.75rem);
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.025em;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   INPUTS / SELECTS / CONTROLES
+   -------------------------------------------------------------------------- */
+
+.ws-filter-control,
+.ws-filter-field input:not([type="checkbox"]):not([type="radio"]),
+.ws-filter-field select,
+.ws-filter-field textarea {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 38px;
+
+    padding: 8px 11px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 8px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    background: var(--ws-control-bg, #ffffff);
+
+    font: inherit;
+    font-size: 0.78rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.ws-filter-field textarea {
+    min-height: 84px;
+
+    resize: vertical;
+}
+
+.ws-filter-control:focus,
+.ws-filter-field input:not([type="checkbox"]):not([type="radio"]):focus,
+.ws-filter-field select:focus,
+.ws-filter-field textarea:focus {
+    border-color:
+        var(--ws-primary, #1672f3);
+
+    box-shadow:
+        0 0 0 3px
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.12));
+}
+
+.ws-filter-field input::placeholder,
+.ws-filter-field textarea::placeholder {
+    color: var(--ws-text-placeholder, #a2afbc);
+
+    opacity: 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   SELECT2
+   -------------------------------------------------------------------------- */
+
+.ws-filter-field .select2-container {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ws-filter-field .select2-container .select2-selection--single,
+.ws-filter-field .select2-container .select2-selection--multiple {
+    min-height: 38px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 8px;
+
+    background: var(--ws-control-bg, #ffffff);
+}
+
+.ws-filter-field .select2-container .select2-selection--single {
+    display: flex;
+    align-items: center;
+}
+
+.ws-filter-field .select2-container .select2-selection--single .select2-selection__rendered {
+    width: 100%;
+
+    padding-left: 11px;
+    padding-right: 30px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: 0.78rem;
+
+    line-height: 36px;
+}
+
+.ws-filter-field .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+
+.ws-filter-field .select2-container--focus .select2-selection,
+.ws-filter-field .select2-container--open .select2-selection {
+    border-color:
+        var(--ws-primary, #1672f3);
+
+    box-shadow:
+        0 0 0 3px
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.12));
+}
+
+
+/* ==========================================================================
+   FILTER PANEL — DENSIDADE COMPACTA
+
+   Ativada automaticamente quando o Filter Panel utiliza ws-panel--compact.
+   A variante é global e pode ser reutilizada por qualquer módulo.
+   ========================================================================== */
+
+.ws-filter-panel.ws-panel--compact .ws-panel__header {
+    gap: 10px;
+    padding: 9px 12px;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-panel__body {
+    padding: 9px 12px 10px;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-panel__icon {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-panel__title {
+    font-size: 0.80rem;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-panel__description {
+    margin-top: 2px;
+    font-size: 0.66rem;
+    line-height: 1.35;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-filter-grid {
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+    gap: 8px 10px;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-filter-field {
+    gap: 4px;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-filter-label {
+    font-size: 0.64rem;
+    line-height: 1.2;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-filter-control,
+.ws-filter-panel.ws-panel--compact .ws-filter-field input:not([type="checkbox"]):not([type="radio"]),
+.ws-filter-panel.ws-panel--compact .ws-filter-field select,
+.ws-filter-panel.ws-panel--compact .ws-filter-field textarea {
+    min-height: 32px;
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 0.70rem;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-filter-field textarea {
+    min-height: 72px;
+}
+
+.ws-filter-panel.ws-panel--compact .select2-container .select2-selection--single,
+.ws-filter-panel.ws-panel--compact .select2-container .select2-selection--multiple {
+    min-height: 32px;
+    border-radius: 7px;
+}
+
+.ws-filter-panel.ws-panel--compact .select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 9px;
+    padding-right: 27px;
+    font-size: 0.70rem;
+    line-height: 30px;
+}
+
+.ws-filter-panel.ws-panel--compact .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 30px;
+}
+
+
+/* ==========================================================================
+   FILTER ACTIONS
+   ========================================================================== */
+
+.ws-filter-actions {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    grid-column: 1 / -1;
+
+    margin-top: 2px;
+}
+
+.ws-filter-actions--inline {
+    width: auto;
+
+    grid-column: auto;
+
+    align-self: end;
+
+    margin-top: 0;
+}
+
+
+/* ==========================================================================
+   FILTER HELP / FEEDBACK
+   ========================================================================== */
+
+.ws-filter-help,
+.ws-filter-error {
+    margin: 0;
+
+    font-size: 0.67rem;
+
+    line-height: 1.35;
+
+    overflow-wrap: break-word;
+}
+
+.ws-filter-help {
+    color: var(--ws-text-muted, #8292a2);
+}
+
+.ws-filter-error {
+    color: var(--ws-danger, #c63d47);
+}
+
+
+/* ==========================================================================
+   FILTER — RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+@media (max-width: 1100px) and (pointer: coarse) {
+
+    .ws-filter-grid {
+        grid-template-columns:
+            repeat(auto-fit, minmax(min(165px, 100%), 1fr));
+
+        gap: 10px;
+    }
+
+    .ws-filter-field--wide {
+        grid-column: auto;
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ws-filter-field--wide,
+    .ws-filter-field--full {
+        grid-column: auto;
+    }
+
+    .ws-filter-actions,
+    .ws-filter-actions--inline {
+        width: 100%;
+
+        grid-column: auto;
+
+        justify-content: stretch;
+    }
+
+    .ws-filter-actions > *,
+    .ws-filter-actions--inline > * {
+        flex: 1 1 auto;
+    }
+}
+
+
+/* ==========================================================================
+   FILTER — ACESSIBILIDADE
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-filter-control,
+    .ws-filter-field input:not([type="checkbox"]):not([type="radio"]),
+    .ws-filter-field select,
+    .ws-filter-field textarea {
+        transition: none;
+    }
+}
+
+
+/* ==========================================================================
+   TABLE REGION
+   ========================================================================== */
+
+.ws-table-panel,
+.ws-table-region {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+}
+
+.ws-table-panel {
+    overflow: visible;
+}
+
+.ws-table-panel__header {
+    align-items: center;
+}
+
+
+/* ==========================================================================
+   TABLE SCROLL
+   ========================================================================== */
+
+.ws-table-scroll {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    /*
+       A tabela pode rolar horizontalmente dentro desta região.
+       O documento inteiro não deve ganhar scroll horizontal por causa dela.
+    */
+    overflow-x: auto;
+    overflow-y: visible;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        var(--ws-scroll-thumb, rgba(53, 79, 104, 0.30))
+        transparent;
+}
+
+.ws-table-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.ws-table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ws-table-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background:
+        var(--ws-scroll-thumb, rgba(53, 79, 104, 0.26));
+}
+
+.ws-table-scroll::-webkit-scrollbar-thumb:hover {
+    background:
+        var(--ws-scroll-thumb-hover, rgba(53, 79, 104, 0.40));
+}
+
+
+/* ==========================================================================
+   TABLE BASE
+   ========================================================================== */
+
+.ws-table-scroll table {
+    width: 100%;
+    min-width: 100%;
+
+    margin: 0;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    box-sizing: border-box;
+}
+
+
+/*
+   Não forçamos max-width na tabela real.
+   Caso as colunas precisem de mais espaço, o scroll fica restrito ao
+   .ws-table-scroll.
+*/
+.ws-table-scroll table.ws-table--wide,
+.ws-table-scroll .dataTable {
+    max-width: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   HEAD
+   -------------------------------------------------------------------------- */
+
+.ws-table-scroll thead th {
+    position: relative;
+
+    padding:
+        clamp(9px, 0.75vw, 12px)
+        clamp(10px, 0.85vw, 14px);
+
+    box-sizing: border-box;
+
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom:
+        1px solid
+        var(--ws-table-border, #e5ebf0);
+
+    color: var(--ws-table-head-text, #53677a);
+
+    background:
+        var(--ws-table-head-bg, #f7f9fb);
+
+    font-size: clamp(0.65rem, 0.56vw, 0.73rem);
+    font-weight: 750;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.035em;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   BODY
+   -------------------------------------------------------------------------- */
+
+.ws-table-scroll tbody td {
+    padding:
+        clamp(9px, 0.72vw, 12px)
+        clamp(10px, 0.85vw, 14px);
+
+    box-sizing: border-box;
+
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom:
+        1px solid
+        var(--ws-table-border, #edf1f4);
+
+    color: var(--ws-table-text, #31475b);
+
+    background:
+        var(--ws-table-bg, #ffffff);
+
+    font-size: clamp(0.69rem, 0.60vw, 0.78rem);
+    font-weight: 400;
+
+    line-height: 1.4;
+
+    vertical-align: middle;
+}
+
+
+/* --------------------------------------------------------------------------
+   LINHAS
+   -------------------------------------------------------------------------- */
+
+.ws-table-scroll tbody tr {
+    transition:
+        background-color 0.14s ease,
+        box-shadow 0.14s ease;
+}
+
+.ws-table-scroll tbody tr:hover td {
+    background:
+        var(--ws-table-row-hover, #f8fbff);
+}
+
+.ws-table-scroll tbody tr[role="button"],
+.ws-table-scroll tbody tr[data-clickable="true"],
+.ws-table-scroll tbody tr.ws-table-row--clickable {
+    cursor: pointer;
+}
+
+
+/* --------------------------------------------------------------------------
+   PRIMEIRA / ÚLTIMA CÉLULA
+   -------------------------------------------------------------------------- */
+
+.ws-table-scroll th:first-child,
+.ws-table-scroll td:first-child {
+    padding-left: clamp(14px, 1vw, 18px);
+}
+
+.ws-table-scroll th:last-child,
+.ws-table-scroll td:last-child {
+    padding-right: clamp(14px, 1vw, 18px);
+}
+
+
+/* ==========================================================================
+   TABLE WIDTH HELPERS
+   ========================================================================== */
+
+.ws-table-cell--nowrap {
+    white-space: nowrap;
+}
+
+.ws-table-cell--wrap {
+    white-space: normal;
+
+    overflow-wrap: break-word;
+}
+
+.ws-table-cell--actions {
+    width: 1%;
+
+    white-space: nowrap;
+}
+
+.ws-table-cell--number {
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+.ws-table-cell--center {
+    text-align: center;
+}
+
+
+/* ==========================================================================
+   EMPTY / LOADING STATE
+   ========================================================================== */
+
+.ws-table-empty,
+.ws-table-loading {
+    width: 100%;
+
+    padding: clamp(30px, 4vw, 54px) 20px;
+
+    box-sizing: border-box;
+
+    color: var(--ws-text-muted, #8292a2);
+
+    font-size: 0.78rem;
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+/* ==========================================================================
+   TABLE FOOTER / PAGINATION REGION
+   ========================================================================== */
+
+.ws-table-footer {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    padding:
+        11px
+        clamp(14px, 1vw, 18px);
+
+    box-sizing: border-box;
+
+    border-top:
+        1px solid
+        var(--ws-table-border, #e8edf1);
+
+    background:
+        var(--ws-table-footer-bg, #ffffff);
+}
+
+
+/* ==========================================================================
+   DATATABLES COMPATIBILITY
+   ========================================================================== */
+
+.ws-table-region .dataTables_wrapper,
+.ws-table-region .dt-container {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ws-table-region .dataTables_scroll,
+.ws-table-region .dataTables_scrollBody,
+.ws-table-region .dt-scroll,
+.ws-table-region .dt-scroll-body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/*
+   IMPORTANTE:
+   Não definimos height/max-height calculado com 100vh.
+   Isso evita que a tabela perca altura quando cards/filtros ocuparem
+   mais espaço em telas menores ou com zoom.
+*/
+.ws-table-region .dataTables_scrollBody,
+.ws-table-region .dt-scroll-body {
+    height: auto;
+    max-height: none;
+
+    overflow-y: visible;
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTROLES DO DATATABLES
+   -------------------------------------------------------------------------- */
+
+.ws-table-region .dataTables_length,
+.ws-table-region .dataTables_filter,
+.ws-table-region .dataTables_info,
+.ws-table-region .dataTables_paginate,
+.ws-table-region .dt-length,
+.ws-table-region .dt-search,
+.ws-table-region .dt-info,
+.ws-table-region .dt-paging {
+    min-width: 0;
+}
+
+.ws-table-region .dataTables_filter input,
+.ws-table-region .dt-search input,
+.ws-table-region .dataTables_length select,
+.ws-table-region .dt-length select {
+    min-height: 34px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 7px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    background: var(--ws-control-bg, #ffffff);
+
+    font-size: 0.74rem;
+}
+
+.ws-table-region .dataTables_filter input,
+.ws-table-region .dt-search input {
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   TABLE COMPACT
+   ========================================================================== */
+
+.ws-table-region--compact .ws-table-scroll thead th {
+    padding: 8px 10px;
+}
+
+.ws-table-region--compact .ws-table-scroll tbody td {
+    padding: 8px 10px;
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-table-panel__header {
+        align-items: flex-start;
+    }
+
+    .ws-table-panel__actions {
+        width: 100%;
+
+        justify-content: flex-start;
+    }
+
+    .ws-table-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ws-table-scroll table {
+        /*
+           Mantém a tabela funcional em telas estreitas.
+           Caso as colunas precisem, o próprio conteúdo pode ultrapassar
+           100% e será contido pelo scroll horizontal da região.
+        */
+        width: max-content;
+        min-width: 100%;
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-table-scroll thead th {
+        padding: 9px 10px;
+
+        font-size: 0.64rem;
+    }
+
+    .ws-table-scroll tbody td {
+        padding: 9px 10px;
+
+        font-size: 0.70rem;
+    }
+
+    .ws-table-scroll th:first-child,
+    .ws-table-scroll td:first-child {
+        padding-left: 12px;
+    }
+
+    .ws-table-scroll th:last-child,
+    .ws-table-scroll td:last-child {
+        padding-right: 12px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-table-scroll tbody tr {
+        transition: none;
+    }
+}
+
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+.ws-button {
+    position: relative;
+
+    min-width: 0;
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    box-sizing: border-box;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    text-align: center;
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition:
+        background-color 0.16s ease,
+        border-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease,
+        transform 0.16s ease;
+}
+
+.ws-button:hover {
+    text-decoration: none;
+
+    transform: translateY(-1px);
+}
+
+.ws-button:focus-visible {
+    outline:
+        3px solid
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.18));
+
+    outline-offset: 2px;
+}
+
+.ws-button:disabled,
+.ws-button[aria-disabled="true"] {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    pointer-events: none;
+
+    transform: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   VARIANTS
+   -------------------------------------------------------------------------- */
+
+.ws-button--primary {
+    color: #ffffff;
+
+    border-color: var(--ws-primary, #1672f3);
+
+    background: var(--ws-primary, #1672f3);
+
+    box-shadow:
+        0 4px 12px
+        rgba(22, 114, 243, 0.14);
+}
+
+.ws-button--primary:hover {
+    color: #ffffff;
+
+    border-color: var(--ws-primary-hover, #0f63dc);
+
+    background: var(--ws-primary-hover, #0f63dc);
+}
+
+
+.ws-button--secondary {
+    color: var(--ws-text-primary, #17324d);
+
+    border-color:
+        var(--ws-control-border, #d9e1e8);
+
+    background: var(--ws-surface-card, #ffffff);
+}
+
+.ws-button--secondary:hover {
+    color: var(--ws-text-primary, #17324d);
+
+    border-color:
+        var(--ws-primary-border, rgba(22, 114, 243, 0.28));
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.045));
+}
+
+
+.ws-button--ghost {
+    color: var(--ws-primary, #1672f3);
+
+    border-color: transparent;
+
+    background: transparent;
+}
+
+.ws-button--ghost:hover {
+    color: var(--ws-primary-hover, #0f63dc);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.07));
+}
+
+
+.ws-button--danger {
+    color: #ffffff;
+
+    border-color: var(--ws-danger, #c63d47);
+
+    background: var(--ws-danger, #c63d47);
+}
+
+.ws-button--danger:hover {
+    color: #ffffff;
+
+    border-color: var(--ws-danger-hover, #ad3039);
+
+    background: var(--ws-danger-hover, #ad3039);
+}
+
+
+.ws-button--success {
+    color: #ffffff;
+
+    border-color: var(--ws-success, #198754);
+
+    background: var(--ws-success, #198754);
+}
+
+.ws-button--success:hover {
+    color: #ffffff;
+
+    border-color: var(--ws-success-hover, #146c43);
+
+    background: var(--ws-success-hover, #146c43);
+}
+
+
+/* --------------------------------------------------------------------------
+   SIZES
+   -------------------------------------------------------------------------- */
+
+.ws-button--sm {
+    min-height: 32px;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    font-size: 0.70rem;
+}
+
+.ws-button--md {
+    min-height: 38px;
+
+    padding: 8px 14px;
+}
+
+.ws-button--lg {
+    min-height: 44px;
+
+    gap: 9px;
+
+    padding: 10px 17px;
+
+    border-radius: 9px;
+
+    font-size: 0.80rem;
+}
+
+/* Botão somente com ícone: reutilizável em toolbars e ações compactas. */
+.ws-button--icon {
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
+    padding-inline: 0;
+}
+
+.ws-button--sm.ws-button--icon {
+    width: 32px;
+    min-width: 32px;
+    padding: 0;
+}
+
+.ws-button--md.ws-button--icon {
+    width: 38px;
+    min-width: 38px;
+    padding: 0;
+}
+
+.ws-button--lg.ws-button--icon {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   ICON
+   -------------------------------------------------------------------------- */
+
+.ws-button__icon {
+    width: 17px;
+    height: 17px;
+
+    flex: 0 0 17px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ws-button__icon svg {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+}
+
+.ws-button__text {
+    min-width: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   LOADING
+   -------------------------------------------------------------------------- */
+
+.ws-button.is-loading {
+    cursor: wait;
+
+    pointer-events: none;
+}
+
+.ws-button__spinner {
+    width: 15px;
+    height: 15px;
+
+    flex: 0 0 15px;
+
+    box-sizing: border-box;
+
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+
+    animation: ws-button-spin 0.7s linear infinite;
+}
+
+@keyframes ws-button-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ==========================================================================
+   ACTION GROUP
+   ========================================================================== */
+
+.ws-actions {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+}
+
+.ws-actions--start {
+    justify-content: flex-start;
+}
+
+.ws-actions--center {
+    justify-content: center;
+}
+
+.ws-actions--end {
+    justify-content: flex-end;
+}
+
+.ws-actions--between {
+    width: 100%;
+
+    justify-content: space-between;
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-button {
+        white-space: normal;
+    }
+
+    .ws-actions--stack-mobile {
+        width: 100%;
+
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ws-actions--stack-mobile > .ws-button,
+    .ws-actions--stack-mobile > a,
+    .ws-actions--stack-mobile > button {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-button {
+        transition: none;
+    }
+
+    .ws-button:hover {
+        transform: none;
+    }
+
+    .ws-button__spinner {
+        animation-duration: 1.4s;
+    }
+}
+
+
+/* ==========================================================================
+   FORMS
+   ========================================================================== */
+
+/*
+   Grid padrão de formulários.
+
+   O padrão de 12 colunas permite:
+   - span 12 = linha inteira
+   - span 6  = metade
+   - span 4  = 1/3
+   - span 3  = 1/4
+
+   Em telas menores os spans são reduzidos progressivamente.
+*/
+.ws-form-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap:
+        clamp(12px, 0.9vw, 16px)
+        clamp(12px, 1vw, 18px);
+
+    align-items: start;
+
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   FORM FIELD
+   ========================================================================== */
+
+.ws-form-field {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    grid-column: span 12;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    box-sizing: border-box;
+}
+
+.ws-form-field--span-1 {
+    grid-column: span 1;
+}
+
+.ws-form-field--span-2 {
+    grid-column: span 2;
+}
+
+.ws-form-field--span-3 {
+    grid-column: span 3;
+}
+
+.ws-form-field--span-4 {
+    grid-column: span 4;
+}
+
+.ws-form-field--span-6 {
+    grid-column: span 6;
+}
+
+.ws-form-field--span-8 {
+    grid-column: span 8;
+}
+
+.ws-form-field--span-12 {
+    grid-column: span 12;
+}
+
+
+/* --------------------------------------------------------------------------
+   LABEL
+   -------------------------------------------------------------------------- */
+
+.ws-form-label {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-muted-strong, #53677a);
+
+    font-size: clamp(0.68rem, 0.57vw, 0.76rem);
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    letter-spacing: 0.018em;
+
+    overflow-wrap: break-word;
+}
+
+.ws-form-required {
+    margin-left: 2px;
+
+    color: var(--ws-danger, #c63d47);
+
+    font-weight: 800;
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTROL WRAPPER
+   -------------------------------------------------------------------------- */
+
+.ws-form-control-wrap {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   INPUTS / SELECTS / TEXTAREAS
+   ========================================================================== */
+
+.ws-form-control,
+.ws-form-control-wrap input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.ws-form-control-wrap select,
+.ws-form-control-wrap textarea {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 40px;
+
+    padding: 9px 11px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 8px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    background: var(--ws-control-bg, #ffffff);
+
+    font: inherit;
+    font-size: 0.79rem;
+
+    line-height: 1.35;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.ws-form-control-wrap textarea {
+    min-height: 96px;
+
+    resize: vertical;
+}
+
+.ws-form-control:focus,
+.ws-form-control-wrap input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+.ws-form-control-wrap select:focus,
+.ws-form-control-wrap textarea:focus {
+    border-color:
+        var(--ws-primary, #1672f3);
+
+    box-shadow:
+        0 0 0 3px
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.12));
+}
+
+.ws-form-control::placeholder,
+.ws-form-control-wrap input::placeholder,
+.ws-form-control-wrap textarea::placeholder {
+    color: var(--ws-text-placeholder, #a2afbc);
+
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   DISABLED / READONLY
+   ========================================================================== */
+
+.ws-form-field.is-disabled,
+.ws-form-field.is-readonly {
+    opacity: 0.78;
+}
+
+.ws-form-field.is-disabled .ws-form-control-wrap,
+.ws-form-field.is-readonly .ws-form-control-wrap {
+    cursor: default;
+}
+
+.ws-form-control:disabled,
+.ws-form-control-wrap input:disabled,
+.ws-form-control-wrap select:disabled,
+.ws-form-control-wrap textarea:disabled {
+    color: var(--ws-text-muted, #7c8c9c);
+
+    background:
+        var(--ws-control-disabled-bg, #f5f7f9);
+
+    cursor: not-allowed;
+}
+
+.ws-form-control[readonly],
+.ws-form-control-wrap input[readonly],
+.ws-form-control-wrap textarea[readonly] {
+    background:
+        var(--ws-control-readonly-bg, #f8fafb);
+}
+
+
+/* ==========================================================================
+   CHECKBOX / RADIO
+   ========================================================================== */
+
+.ws-form-control-wrap input[type="checkbox"],
+.ws-form-control-wrap input[type="radio"] {
+    width: 16px;
+    height: 16px;
+
+    margin: 0;
+
+    accent-color: var(--ws-primary, #1672f3);
+}
+
+.ws-form-check {
+    min-width: 0;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: 0.77rem;
+
+    line-height: 1.35;
+}
+
+
+/* ==========================================================================
+   FILE INPUT
+   ========================================================================== */
+
+.ws-form-control-wrap input[type="file"] {
+    width: 100%;
+    max-width: 100%;
+
+    min-height: 40px;
+
+    box-sizing: border-box;
+
+    color: var(--ws-text-muted-strong, #53677a);
+
+    font-size: 0.75rem;
+}
+
+.ws-form-control-wrap input[type="file"]::file-selector-button {
+    min-height: 36px;
+
+    margin-right: 10px;
+
+    padding: 7px 12px;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 7px;
+
+    color: var(--ws-primary, #1672f3);
+
+    background:
+        var(--ws-primary-soft, rgba(38, 125, 244, 0.06));
+
+    font: inherit;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* ==========================================================================
+   SELECT2
+   ========================================================================== */
+
+.ws-form-control-wrap .select2-container {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ws-form-control-wrap .select2-container .select2-selection--single,
+.ws-form-control-wrap .select2-container .select2-selection--multiple {
+    min-height: 40px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 8px;
+
+    background: var(--ws-control-bg, #ffffff);
+}
+
+.ws-form-control-wrap .select2-container .select2-selection--single {
+    display: flex;
+    align-items: center;
+}
+
+.ws-form-control-wrap .select2-container .select2-selection--single .select2-selection__rendered {
+    width: 100%;
+
+    padding-left: 11px;
+    padding-right: 30px;
+
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: 0.79rem;
+
+    line-height: 38px;
+}
+
+.ws-form-control-wrap .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+
+.ws-form-control-wrap .select2-container--focus .select2-selection,
+.ws-form-control-wrap .select2-container--open .select2-selection {
+    border-color:
+        var(--ws-primary, #1672f3);
+
+    box-shadow:
+        0 0 0 3px
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.12));
+}
+
+
+/* ==========================================================================
+   HELP / ERRORS
+   ========================================================================== */
+
+.ws-form-help {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-muted, #8292a2);
+
+    font-size: 0.67rem;
+
+    line-height: 1.4;
+
+    overflow-wrap: break-word;
+}
+
+.ws-form-errors {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.ws-form-error {
+    margin: 0;
+
+    color: var(--ws-danger, #c63d47);
+
+    font-size: 0.67rem;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    overflow-wrap: break-word;
+}
+
+
+/* ==========================================================================
+   FORM SECTION
+   ========================================================================== */
+
+.ws-form-section {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+}
+
+.ws-form-section + .ws-form-section {
+    margin-top: clamp(18px, 1.5vw, 26px);
+}
+
+.ws-form-section--divider {
+    padding-top: clamp(18px, 1.5vw, 24px);
+
+    border-top:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+}
+
+.ws-form-section__header {
+    width: 100%;
+    min-width: 0;
+
+    margin-bottom: 14px;
+}
+
+.ws-form-section__title {
+    margin: 0;
+
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: clamp(0.84rem, 0.72vw, 0.96rem);
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+.ws-form-section__description {
+    max-width: 850px;
+
+    margin: 4px 0 0;
+
+    color: var(--ws-text-muted, #8292a2);
+
+    font-size: 0.71rem;
+
+    line-height: 1.45;
+}
+
+.ws-form-section__body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   FORM ACTIONS
+   ========================================================================== */
+
+.ws-form-actions {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: clamp(16px, 1.3vw, 22px);
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+@media (max-width: 1100px) and (pointer: coarse) {
+
+    .ws-form-field--span-1,
+    .ws-form-field--span-2,
+    .ws-form-field--span-3 {
+        grid-column: span 4;
+    }
+
+    .ws-form-field--span-4 {
+        grid-column: span 6;
+    }
+
+    .ws-form-field--span-6,
+    .ws-form-field--span-8 {
+        grid-column: span 6;
+    }
+}
+
+
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-form-field--span-1,
+    .ws-form-field--span-2,
+    .ws-form-field--span-3,
+    .ws-form-field--span-4,
+    .ws-form-field--span-6,
+    .ws-form-field--span-8 {
+        grid-column: span 6;
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-form-grid {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .ws-form-field,
+    .ws-form-field--span-1,
+    .ws-form-field--span-2,
+    .ws-form-field--span-3,
+    .ws-form-field--span-4,
+    .ws-form-field--span-6,
+    .ws-form-field--span-8,
+    .ws-form-field--span-12 {
+        grid-column: auto;
+    }
+
+    .ws-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ws-form-actions > .ws-button,
+    .ws-form-actions > button,
+    .ws-form-actions > a {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-form-control,
+    .ws-form-control-wrap input,
+    .ws-form-control-wrap select,
+    .ws-form-control-wrap textarea {
+        transition: none;
+    }
+}
+
+
+/* ==========================================================================
+   MODALS
+   ========================================================================== */
+
+/*
+   O componente não força display, opacity ou visibility.
+   Essas propriedades devem continuar sendo controladas pela biblioteca
+   ou JavaScript já utilizado no projeto (ex.: Bootstrap).
+*/
+
+.ws-modal {
+    width: 100%;
+    max-width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+/* --------------------------------------------------------------------------
+   DIALOG
+   -------------------------------------------------------------------------- */
+
+.ws-modal__dialog {
+    width: calc(100% - 32px);
+    max-width: 720px;
+
+    margin: 24px auto;
+
+    box-sizing: border-box;
+}
+
+.ws-modal--sm .ws-modal__dialog {
+    max-width: 460px;
+}
+
+.ws-modal--md .ws-modal__dialog {
+    max-width: 720px;
+}
+
+.ws-modal--lg .ws-modal__dialog {
+    max-width: 980px;
+}
+
+.ws-modal--xl .ws-modal__dialog {
+    max-width: 1240px;
+}
+
+.ws-modal--centered .ws-modal__dialog {
+    min-height: calc(100dvh - 48px);
+
+    display: flex;
+    align-items: center;
+}
+
+
+/* --------------------------------------------------------------------------
+   CONTENT
+   -------------------------------------------------------------------------- */
+
+.ws-modal__content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.10));
+
+    border-radius: 16px;
+
+    background: var(--ws-surface-card, #ffffff);
+
+    box-shadow:
+        0 22px 60px
+        rgba(10, 34, 57, 0.18);
+
+    overflow: hidden;
+}
+
+
+/* --------------------------------------------------------------------------
+   HEADER
+   -------------------------------------------------------------------------- */
+
+.ws-modal__header {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding:
+        clamp(16px, 1.2vw, 20px)
+        clamp(18px, 1.4vw, 24px);
+
+    box-sizing: border-box;
+
+    border-bottom:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+}
+
+.ws-modal__heading {
+    min-width: 0;
+
+    flex: 1 1 auto;
+}
+
+.ws-modal__title {
+    min-width: 0;
+
+    margin: 0;
+
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: clamp(1rem, 0.95vw, 1.2rem);
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    overflow-wrap: break-word;
+}
+
+.ws-modal__description {
+    min-width: 0;
+
+    max-width: 850px;
+
+    margin: 5px 0 0;
+
+    color: var(--ws-text-muted, #7c8c9c);
+
+    font-size: 0.74rem;
+
+    line-height: 1.45;
+
+    overflow-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   CLOSE
+   -------------------------------------------------------------------------- */
+
+.ws-modal__close {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        var(--ws-control-border, #d9e1e8);
+
+    border-radius: 8px;
+
+    color: var(--ws-text-muted-strong, #53677a);
+
+    background: var(--ws-surface-card, #ffffff);
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.ws-modal__close:hover {
+    color: var(--ws-danger, #c63d47);
+
+    border-color:
+        var(--ws-danger-border, rgba(198, 61, 71, 0.22));
+
+    background:
+        var(--ws-danger-soft, rgba(198, 61, 71, 0.05));
+}
+
+.ws-modal__close:focus-visible {
+    outline:
+        3px solid
+        var(--ws-focus-ring, rgba(38, 125, 244, 0.18));
+
+    outline-offset: 2px;
+}
+
+.ws-modal__close svg {
+    width: 17px;
+    height: 17px;
+
+    display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   BODY
+   -------------------------------------------------------------------------- */
+
+.ws-modal__body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    padding:
+        clamp(16px, 1.2vw, 22px)
+        clamp(18px, 1.4vw, 24px);
+
+    box-sizing: border-box;
+
+    overflow-wrap: break-word;
+}
+
+
+/*
+   Modal scrollável:
+   somente o body rola, preservando header e footer.
+*/
+.ws-modal--scrollable .ws-modal__content {
+    max-height: calc(100dvh - 48px);
+}
+
+.ws-modal--scrollable .ws-modal__body {
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+}
+
+
+/* --------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+
+.ws-modal__footer {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    padding:
+        13px
+        clamp(18px, 1.4vw, 24px);
+
+    box-sizing: border-box;
+
+    border-top:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+
+    background:
+        var(--ws-modal-footer-bg, #fbfcfd);
+}
+
+
+/* ==========================================================================
+   BOOTSTRAP MODAL COMPATIBILITY
+   ========================================================================== */
+
+/*
+   Permite aplicar o padrão visual do UI Core sobre Bootstrap Modal
+   sem substituir o funcionamento da biblioteca.
+
+   Exemplo:
+   <div class="modal fade ws-modal-bootstrap">...</div>
+*/
+
+.ws-modal-bootstrap .modal-dialog {
+    width: calc(100% - 32px);
+
+    margin: 24px auto;
+}
+
+.ws-modal-bootstrap .modal-content {
+    min-width: 0;
+
+    border:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.10));
+
+    border-radius: 16px;
+
+    background: var(--ws-surface-card, #ffffff);
+
+    box-shadow:
+        0 22px 60px
+        rgba(10, 34, 57, 0.18);
+
+    overflow: hidden;
+}
+
+.ws-modal-bootstrap .modal-header {
+    align-items: flex-start;
+
+    gap: 16px;
+
+    padding:
+        clamp(16px, 1.2vw, 20px)
+        clamp(18px, 1.4vw, 24px);
+
+    border-bottom:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+}
+
+.ws-modal-bootstrap .modal-title {
+    color: var(--ws-text-primary, #17324d);
+
+    font-size: clamp(1rem, 0.95vw, 1.2rem);
+    font-weight: 700;
+}
+
+.ws-modal-bootstrap .modal-body {
+    min-width: 0;
+
+    padding:
+        clamp(16px, 1.2vw, 22px)
+        clamp(18px, 1.4vw, 24px);
+}
+
+.ws-modal-bootstrap .modal-footer {
+    gap: 8px;
+
+    padding:
+        13px
+        clamp(18px, 1.4vw, 24px);
+
+    border-top:
+        1px solid
+        var(--ws-border-soft, rgba(15, 53, 87, 0.08));
+
+    background:
+        var(--ws-modal-footer-bg, #fbfcfd);
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-modal__dialog,
+    .ws-modal-bootstrap .modal-dialog {
+        width: calc(100% - 24px);
+
+        margin: 12px auto;
+    }
+
+    .ws-modal--centered .ws-modal__dialog {
+        min-height: calc(100dvh - 24px);
+    }
+
+    .ws-modal--scrollable .ws-modal__content {
+        max-height: calc(100dvh - 24px);
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-modal__dialog,
+    .ws-modal-bootstrap .modal-dialog {
+        width: calc(100% - 16px);
+
+        margin: 8px auto;
+    }
+
+    .ws-modal__content,
+    .ws-modal-bootstrap .modal-content {
+        border-radius: 12px;
+    }
+
+    .ws-modal__header,
+    .ws-modal-bootstrap .modal-header {
+        gap: 12px;
+
+        padding: 14px 15px;
+    }
+
+    .ws-modal__body,
+    .ws-modal-bootstrap .modal-body {
+        padding: 14px 15px;
+    }
+
+    .ws-modal__footer,
+    .ws-modal-bootstrap .modal-footer {
+        align-items: stretch;
+        flex-direction: column;
+
+        padding: 12px 15px;
+    }
+
+    .ws-modal__footer > .ws-button,
+    .ws-modal__footer > button,
+    .ws-modal__footer > a,
+    .ws-modal-bootstrap .modal-footer > .ws-button,
+    .ws-modal-bootstrap .modal-footer > button,
+    .ws-modal-bootstrap .modal-footer > a {
+        width: 100%;
+    }
+
+    .ws-modal--centered .ws-modal__dialog {
+        min-height: calc(100dvh - 16px);
+    }
+
+    .ws-modal--scrollable .ws-modal__content {
+        max-height: calc(100dvh - 16px);
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ws-modal__close {
+        transition: none;
+    }
+}
+
+
+/* ==========================================================================
+   CHARTS
+   ========================================================================== */
+
+.ws-chart-panel,
+.ws-chart-region {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+}
+
+.ws-chart-panel {
+    overflow: visible;
+}
+
+.ws-chart-panel__header {
+    align-items: center;
+}
+
+
+/* ==========================================================================
+   CHART BOX
+   ========================================================================== */
+
+.ws-chart-box {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    padding:
+        clamp(12px, 0.9vw, 16px)
+        clamp(14px, 1vw, 18px);
+
+    overflow: hidden;
+}
+
+
+/*
+   Alturas mínimas padronizadas.
+   Não usamos height fixa absoluta para evitar cortes em zoom/telas menores.
+*/
+.ws-chart-box--sm {
+    min-height: 220px;
+}
+
+.ws-chart-box--md {
+    min-height: 300px;
+}
+
+.ws-chart-box--lg {
+    min-height: 380px;
+}
+
+.ws-chart-box--xl {
+    min-height: 460px;
+}
+
+
+/* --------------------------------------------------------------------------
+   CANVAS / SVG / ELEMENTOS DE BIBLIOTECA
+   -------------------------------------------------------------------------- */
+
+.ws-chart-box canvas,
+.ws-chart-box svg {
+    display: block;
+
+    max-width: 100%;
+}
+
+.ws-chart-box canvas {
+    width: 100% !important;
+}
+
+.ws-chart-box > *,
+.ws-chart-box .chart-container,
+.ws-chart-box .apexcharts-canvas,
+.ws-chart-box .highcharts-container,
+.ws-chart-box .echarts-for-react,
+.ws-chart-box .plotly,
+.ws-chart-box .js-plotly-plot {
+    min-width: 0;
+    max-width: 100%;
+}
+
+
+/*
+   Evita que wrappers internos ampliem o Workspace.
+*/
+.ws-chart-box .apexcharts-canvas,
+.ws-chart-box .highcharts-container,
+.ws-chart-box .plot-container,
+.ws-chart-box .svg-container {
+    max-width: 100% !important;
+}
+
+
+/* ==========================================================================
+   CHART GRID
+   ========================================================================== */
+
+.ws-chart-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+
+    gap: clamp(12px, 1vw, 18px);
+
+    box-sizing: border-box;
+}
+
+.ws-chart-grid--3 {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+.ws-chart-grid--2 {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+.ws-chart-grid--1 {
+    grid-template-columns: 1fr;
+}
+
+
+/* ==========================================================================
+   CHART FOOTER
+   ========================================================================== */
+
+.ws-chart-footer {
+    width: 100%;
+    min-width: 0;
+
+    padding:
+        10px
+        clamp(14px, 1vw, 18px)
+        clamp(12px, 1vw, 16px);
+
+    box-sizing: border-box;
+
+    color: var(--ws-text-muted, #8292a2);
+
+    font-size: 0.68rem;
+
+    line-height: 1.4;
+}
+
+
+/* ==========================================================================
+   CHART EMPTY / LOADING
+   ========================================================================== */
+
+.ws-chart-empty,
+.ws-chart-loading {
+    width: 100%;
+    min-height: 220px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    color: var(--ws-text-muted, #8292a2);
+
+    font-size: 0.76rem;
+
+    text-align: center;
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE PROGRESSIVA
+   ========================================================================== */
+
+@media (max-width: 1100px) and (pointer: coarse) {
+
+    .ws-chart-grid--3 {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .ws-chart-box--lg {
+        min-height: 340px;
+    }
+
+    .ws-chart-box--xl {
+        min-height: 400px;
+    }
+}
+
+
+@media (max-width: 820px) and (pointer: coarse) {
+
+    .ws-chart-panel__header {
+        align-items: flex-start;
+    }
+
+    .ws-chart-panel__actions {
+        width: 100%;
+
+        justify-content: flex-start;
+    }
+
+    .ws-chart-grid,
+    .ws-chart-grid--3,
+    .ws-chart-grid--2 {
+        grid-template-columns: 1fr;
+    }
+
+    .ws-chart-box--sm {
+        min-height: 210px;
+    }
+
+    .ws-chart-box--md {
+        min-height: 260px;
+    }
+
+    .ws-chart-box--lg {
+        min-height: 310px;
+    }
+
+    .ws-chart-box--xl {
+        min-height: 360px;
+    }
+}
+
+
+@media (max-width: 640px) and (pointer: coarse) {
+
+    .ws-chart-box {
+        padding: 11px 12px;
+    }
+
+    .ws-chart-box--sm {
+        min-height: 200px;
+    }
+
+    .ws-chart-box--md {
+        min-height: 240px;
+    }
+
+    .ws-chart-box--lg {
+        min-height: 280px;
+    }
+
+    .ws-chart-box--xl {
+        min-height: 320px;
+    }
+}
+
+/* ========================================================================== 
+   WORKSPACE UI CORE 1.3 — FILTER MULTISELECT
+   Progressive enhancement para <select multiple data-ws-multiselect>.
+   ========================================================================== */
+
+.ws-multiselect {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+.ws-multiselect__native[hidden] {
+    display: none !important;
+}
+
+.ws-multiselect__trigger {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    border: 1px solid var(--ws-control-border, #d9e1e8);
+    border-radius: 8px;
+    color: var(--ws-text-primary, #17324d);
+    background: var(--ws-control-bg, #fff);
+    font: inherit;
+    font-size: .78rem;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.ws-multiselect__trigger:hover {
+    border-color: var(--ws-border-strong, #c7d1dd);
+}
+
+.ws-multiselect.is-open .ws-multiselect__trigger,
+.ws-multiselect__trigger:focus-visible {
+    border-color: var(--ws-primary, #1672f3);
+    box-shadow: 0 0 0 3px var(--ws-focus-ring, rgba(38, 125, 244, .12));
+}
+
+.ws-multiselect__summary {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ws-multiselect__count {
+    min-width: 20px;
+    min-height: 20px;
+    padding: 2px 6px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    color: var(--ws-primary, #1672f3);
+    background: var(--ws-primary-soft, #eff6ff);
+    font-size: .62rem;
+    font-weight: 800;
+}
+
+.ws-multiselect__chevron {
+    color: var(--ws-text-muted, #667085);
+    font-size: .65rem;
+    transition: transform .15s ease;
+}
+
+.ws-multiselect.is-open .ws-multiselect__chevron {
+    transform: rotate(180deg);
+}
+
+.ws-multiselect__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 3200;
+    width: max(100%, 250px);
+    max-width: min(360px, calc(100vw - 32px));
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid var(--ws-border-soft, #e3e8ef);
+    border-radius: 10px;
+    background: var(--ws-surface-card, #fff);
+    box-shadow: var(--ws-shadow-lg, 0 18px 50px rgba(10, 34, 57, .14));
+}
+
+.ws-multiselect__menu[hidden] {
+    display: none !important;
+}
+
+.ws-multiselect__search-wrap {
+    position: relative;
+}
+
+.ws-multiselect__search {
+    width: 100%;
+    min-height: 32px;
+    padding: 6px 9px;
+    box-sizing: border-box;
+    border: 1px solid var(--ws-control-border, #d9e1e8);
+    border-radius: 8px;
+    color: var(--ws-text-primary, #17324d);
+    background: var(--ws-control-bg, #fff);
+    font: inherit;
+    font-size: .7rem;
+    outline: none;
+}
+
+.ws-multiselect__search:focus {
+    border-color: var(--ws-primary, #1672f3);
+    box-shadow: 0 0 0 3px var(--ws-focus-ring, rgba(38, 125, 244, .12));
+}
+
+.ws-multiselect__quick-actions {
+    padding: 7px 1px 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ws-multiselect__quick-actions button {
+    padding: 0;
+    border: 0;
+    color: var(--ws-primary, #1672f3);
+    background: transparent;
+    font: inherit;
+    font-size: .62rem;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.ws-multiselect__options {
+    max-height: 230px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.ws-multiselect__option {
+    min-height: 32px;
+    padding: 6px 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 7px;
+    color: var(--ws-text-secondary, #35405a);
+    font-size: .68rem;
+    cursor: pointer;
+}
+
+.ws-multiselect__option:hover {
+    background: var(--ws-surface-soft, #f8fafc);
+}
+
+.ws-multiselect__option input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    flex: 0 0 14px;
+    accent-color: var(--ws-primary, #1672f3);
+}
+
+.ws-multiselect__option-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ws-multiselect__empty {
+    padding: 18px 8px;
+    color: var(--ws-text-muted, #667085);
+    font-size: .66rem;
+    text-align: center;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-multiselect__trigger {
+    min-height: 32px;
+    height: 32px;
+    padding: 5px 8px;
+    font-size: .7rem;
+}
+
+.ws-filter-panel.ws-panel--compact .ws-multiselect__count {
+    min-width: 18px;
+    min-height: 18px;
+    padding: 1px 5px;
+    font-size: .58rem;
+}
+
+@media (max-width: 640px) and (pointer: coarse) {
+    .ws-multiselect__menu {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+.ws-multiselect.is-align-right .ws-multiselect__menu {
+    right: 0;
+    left: auto;
+}

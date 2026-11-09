@@ -1,0 +1,2980 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    {% include "components/_head.html" %}
+
+    <title>Conferência de Envios Diários | Workspace Qore</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style_producao_pendente.css' %}?v=4.3.0">
+</head>
+
+<body>
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main
+        class="production-page"
+        id="productionPage"
+        data-start-date="{{ data_inicio|date:'Y-m-d' }}"
+        data-end-date="{{ data_fim|date:'Y-m-d' }}">
+
+        <div class="production-shell">
+
+            <!-- CABEÇALHO -->
+            <section class="production-header">
+                <div class="production-header-copy">
+                    <span class="production-eyebrow">
+                        Monitoramento operacional
+                    </span>
+
+                    <h1>Conferência de Envios Diários</h1>
+
+                    <p>
+                        Acompanhamento dos envios de produção por carteira,
+                        considerando somente os dias úteis do período e
+                        desconsiderando sábados e domingos.
+                    </p>
+                </div>
+
+                <div class="production-header-actions">
+                    <form
+                        method="get"
+                        class="production-period-form"
+                        aria-label="Filtrar período consultado">
+
+                        <label>
+                            <span>De</span>
+                            <input
+                                type="date"
+                                name="data_inicio"
+                                value="{{ data_inicio|date:'Y-m-d' }}"
+                                max="{{ hoje|date:'Y-m-d' }}">
+                        </label>
+
+                        <label>
+                            <span>Até</span>
+                            <input
+                                type="date"
+                                name="data_fim"
+                                value="{{ data_fim|date:'Y-m-d' }}"
+                                max="{{ hoje|date:'Y-m-d' }}">
+                        </label>
+
+                        <button
+                            type="submit"
+                            class="production-header-button production-header-button-secondary"
+                            title="Aplicar o período informado">
+
+                            <i
+                                class="fa fa-filter"
+                                aria-hidden="true">
+                            </i>
+
+                            Aplicar período
+                        </button>
+
+                        {% if periodo_personalizado %}
+                        <a
+                            href="{% url 'producao_pendente' %}"
+                            class="production-header-button"
+                            title="Voltar para o período padrão (últimos {{ janela_retroativa_dias }} dias)">
+
+                            <i
+                                class="fa fa-times"
+                                aria-hidden="true">
+                            </i>
+
+                            Padrão
+                        </a>
+                        {% endif %}
+                    </form>
+
+                    <span
+                        class="production-updated has-tooltip"
+                        data-tooltip="Data e hora da última atualização desta visão.">
+
+                        <i
+                            class="fa fa-clock-o"
+                            aria-hidden="true">
+                        </i>
+
+                        Atualizado em
+
+                        <strong>
+                            {{ agora|date:"d/m/Y H:i" }}
+                        </strong>
+                    </span>
+
+                    <a
+                        href="#productionTableSection"
+                        class="production-header-button production-header-button-secondary">
+
+                        <i
+                            class="fa fa-table"
+                            aria-hidden="true">
+                        </i>
+
+                        Ver conferência
+                    </a>
+
+                    <button
+                        type="button"
+                        class="production-header-button production-refresh-button"
+                        id="productionRefreshButton">
+
+                        <i
+                            class="fa fa-refresh"
+                            aria-hidden="true">
+                        </i>
+
+                        Atualizar
+                    </button>
+                </div>
+            </section>
+
+            <!-- INSIGHTS PARA O GESTOR -->
+            <section
+                class="production-management-section"
+                aria-labelledby="productionManagementTitle">
+
+                <header class="production-section-heading">
+                    <div>
+                        <span>Leitura executiva</span>
+
+                        <h2 id="productionManagementTitle">
+                            Ações prioritárias para a gestão
+                        </h2>
+
+                        <p>
+                            Os destaques abaixo são calculados automaticamente
+                            com base nos envios e não envios do período.
+                        </p>
+                    </div>
+
+                    <span class="production-period-badge">
+                        <i
+                            class="fa fa-calendar"
+                            aria-hidden="true">
+                        </i>
+
+                        {{ data_inicio|date:"d/m/Y" }}
+                        até
+                        {{ data_fim|date:"d/m/Y" }}
+                    </span>
+                </header>
+
+                <div class="production-management-grid">
+                    <article
+                        class="production-management-card is-danger has-tooltip"
+                        data-tooltip="Carteira com menor aderência ou maior sequência de dias sem envio.">
+
+                        <span class="production-management-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M12 3.5 21 20H3L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                                <path d="M12 9v5M12 17.2v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+                            </svg>
+                        </span>
+
+                        <div>
+                            <span>Ação imediata</span>
+
+                            <strong id="productionImmediateAction">
+                                Calculando...
+                            </strong>
+
+                            <p id="productionImmediateActionText">
+                                Aguarde o processamento dos dados.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article
+                        class="production-management-card is-success has-tooltip"
+                        data-tooltip="Carteira com maior quantidade de envios e melhor aderência no período.">
+
+                        <span class="production-management-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M8 4h8v4.5a4 4 0 0 1-8 0V4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                                <path d="M8 6H4.5v1.5A3.5 3.5 0 0 0 8 11M16 6h3.5v1.5A3.5 3.5 0 0 1 16 11M12 12.5V17M8.5 20h7M10 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+
+                        <div>
+                            <span>Maior regularidade</span>
+
+                            <strong id="productionTopSender">
+                                Calculando...
+                            </strong>
+
+                            <p id="productionTopSenderText">
+                                Aguarde o processamento dos dados.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article
+                        class="production-management-card is-warning has-tooltip"
+                        data-tooltip="Maior sequência consecutiva de dias úteis sem informação enviada.">
+
+                        <span class="production-management-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="m9.5 14.5-1.8 1.8a3.25 3.25 0 0 1-4.6-4.6l3-3a3.25 3.25 0 0 1 4.6 0M14.5 9.5l1.8-1.8a3.25 3.25 0 0 1 4.6 4.6l-3 3a3.25 3.25 0 0 1-4.6 0M9 15l6-6M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+
+                        <div>
+                            <span>Risco de recorrência</span>
+
+                            <strong id="productionRecurrenceRisk">
+                                Calculando...
+                            </strong>
+
+                            <p id="productionRecurrenceRiskText">
+                                Aguarde o processamento dos dados.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article
+                        class="production-management-card is-primary has-tooltip"
+                        data-tooltip="Quantidade de carteiras que precisam de validação direta da liderança.">
+
+                        <span class="production-management-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <circle cx="9" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                <path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19M16 11a2.5 2.5 0 1 0 0-5M16.5 13.5a4 4 0 0 1 4 4V19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                            </svg>
+                        </span>
+
+                        <div>
+                            <span>Validação da liderança</span>
+
+                            <strong id="productionLeadershipReview">
+                                Calculando...
+                            </strong>
+
+                            <p id="productionLeadershipReviewText">
+                                Aguarde o processamento dos dados.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- INDICADORES -->
+            <section
+                class="production-summary"
+                aria-label="Indicadores do período">
+
+                <article
+                    class="production-summary-card has-tooltip"
+                    data-tooltip="Quantidade de dias úteis entre o início e o fim do período, excluindo sábados e domingos.">
+
+                    <span class="production-summary-icon">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+                            <path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17M8 14l2.2 2.2L16 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+
+                    <div>
+                        <span>Dias úteis analisados</span>
+                        <strong id="productionBusinessDays">0</strong>
+                    </div>
+                </article>
+
+                <article
+                    class="production-summary-card has-tooltip"
+                    data-tooltip="Soma de todos os envios identificados para as carteiras exibidas.">
+
+                    <span class="production-summary-icon is-success">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                            <path d="m8 12.3 2.5 2.5L16.5 9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+
+                    <div>
+                        <span>Total de envios</span>
+                        <strong id="productionTotalSent">0</strong>
+                    </div>
+                </article>
+
+                <article
+                    class="production-summary-card has-tooltip"
+                    data-tooltip="Soma dos dias úteis em que as carteiras não enviaram as informações.">
+
+                    <span class="production-summary-icon is-danger">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+                            <path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17M9.2 13.2l5.6 5.6M14.8 13.2l-5.6 5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                        </svg>
+                    </span>
+
+                    <div>
+                        <span>Total de não envios</span>
+                        <strong id="productionTotalMissed">0</strong>
+                    </div>
+                </article>
+
+                <article
+                    class="production-summary-card has-tooltip"
+                    data-tooltip="Percentual médio de envios realizados em relação aos dias úteis esperados.">
+
+                    <span class="production-summary-icon is-primary">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M4 19.5h16M6.5 17V11M11.8 17V6.5M17.2 17V9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+                            <path d="m6.5 8 4.2-3 3.2 2.2 4.1-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+
+                    <div>
+                        <span>Aderência média</span>
+                        <strong id="productionAverageCompliance">0%</strong>
+                    </div>
+                </article>
+
+                <article
+                    class="production-summary-card has-tooltip"
+                    data-tooltip="Carteiras que enviaram em todos os dias úteis do período.">
+
+                    <span class="production-summary-icon is-perfect">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m12 3.5 2.5 5.1 5.6.8-4 3.9.9 5.5-5-2.6-5 2.6.9-5.5-4-3.9 5.6-.8L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+
+                    <div>
+                        <span>100% de envio</span>
+                        <strong id="productionPerfectWallets">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <!-- GRÁFICOS -->
+            <section
+                class="production-analytics-grid"
+                aria-label="Análises gráficas">
+
+                <article class="production-chart-card production-chart-card-wide">
+                    <header class="production-chart-header">
+                        <div>
+                            <span>Comparativo por carteira</span>
+
+                            <h2>Envios realizados x não realizados</h2>
+
+                            <p>
+                                Passe o mouse sobre as barras para consultar os
+                                valores e o percentual de aderência.
+                            </p>
+                        </div>
+
+                        <div class="production-chart-controls">
+                            <span class="production-chart-legend">
+                                <i class="is-sent"></i>
+                                Enviado
+
+                                <i class="is-missed"></i>
+                                Não enviado
+                            </span>
+
+                            <button
+                                type="button"
+                                class="production-chart-sort-button"
+                                id="productionChartSortButton"
+                                data-mode="sent"
+                                title="Alternar entre maior quantidade de envios e maior quantidade de não envios">
+
+                                <span
+                                    class="production-sort-glyph"
+                                    aria-hidden="true">
+
+                                    <i></i>
+                                    <i></i>
+                                </span>
+
+                                <span id="productionChartSortLabel">
+                                    Mais envios
+                                </span>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div
+                        class="production-ranking-chart"
+                        id="productionRankingChart">
+                    </div>
+                </article>
+
+                <article class="production-chart-card">
+                    <header class="production-chart-header">
+                        <div>
+                            <span>Resultado consolidado</span>
+
+                            <h2>Aderência geral</h2>
+                        </div>
+                    </header>
+
+                    <div class="production-donut-layout">
+                        <div
+                            class="production-donut has-tooltip"
+                            id="productionComplianceDonut"
+                            data-tooltip="Percentual de envios realizados considerando todas as carteiras e dias úteis.">
+
+                            <div>
+                                <strong id="productionComplianceDonutValue">
+                                    0%
+                                </strong>
+
+                                <span>aderência</span>
+                            </div>
+                        </div>
+
+                        <div class="production-donut-details">
+                            <div>
+                                <span class="is-sent"></span>
+
+                                <p>
+                                    <strong id="productionDonutSent">0</strong>
+                                    envios
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="is-missed"></span>
+
+                                <p>
+                                    <strong id="productionDonutMissed">0</strong>
+                                    não envios
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="production-chart-card">
+                    <header class="production-chart-header">
+                        <div>
+                            <span>Classificação</span>
+
+                            <h2>Distribuição de risco</h2>
+
+                            <p>
+                                Clique em um nível para filtrar toda a página.
+                            </p>
+                        </div>
+                    </header>
+
+                    <div
+                        class="production-risk-list"
+                        id="productionRiskChart">
+                    </div>
+                </article>
+            </section>
+
+            <!-- FILTROS E TABELA -->
+            <section
+                class="production-content-card"
+                id="productionTableSection">
+
+                <header class="production-table-header">
+                    <div>
+                        <span>Conferência detalhada</span>
+
+                        <h2>Envios por carteira</h2>
+
+                        <p>
+                            A quantidade enviada é calculada pela diferença
+                            entre os dias úteis e as datas únicas sem envio.
+                        </p>
+                    </div>
+
+                    <div class="production-table-header-actions">
+                        <span class="production-table-period">
+                            Últimos {{ janela_retroativa_dias }} dias
+                        </span>
+
+                        <button
+                            type="button"
+                            class="production-table-action-button"
+                            id="productionCalendarToggleButton"
+                            aria-pressed="false"
+                            title="Abrir todos os calendários das carteiras visíveis">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                focusable="false">
+
+                                <rect
+                                    x="3.5"
+                                    y="5.5"
+                                    width="17"
+                                    height="15"
+                                    rx="2.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8">
+                                </rect>
+
+                                <path
+                                    d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17M8 14h8M8 17h5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round">
+                                </path>
+                            </svg>
+
+                            <span id="productionCalendarToggleLabel">
+                                Abrir calendários
+                            </span>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="production-table-action-button is-primary"
+                            id="productionTableExpandButton"
+                            aria-pressed="false"
+                            title="Expandir a tabela">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                focusable="false">
+
+                                <path
+                                    d="M9 4H4v5M15 4h5v5M20 15v5h-5M4 15v5h5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.9"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+
+                            <span id="productionTableExpandLabel">
+                                Expandir tabela
+                            </span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="production-filters">
+                    <label class="production-search">
+                        <i
+                            class="fa fa-search"
+                            aria-hidden="true">
+                        </i>
+
+                        <input
+                            type="search"
+                            id="productionSearch"
+                            placeholder="Pesquisar carteira..."
+                            autocomplete="off">
+                    </label>
+
+                    <select
+                        id="productionRangeFilter"
+                        class="production-select">
+
+                        <option value="all">
+                            Todos os níveis
+                        </option>
+
+                        <option value="critical">
+                            Risco crítico
+                        </option>
+
+                        <option value="attention">
+                            Requer atenção
+                        </option>
+
+                        <option value="regular">
+                            Regular
+                        </option>
+
+                        <option value="perfect">
+                            100% de envio
+                        </option>
+                    </select>
+
+                    <button
+                        type="button"
+                        class="production-clear-button"
+                        id="productionClearFilters">
+
+                        <i
+                            class="fa fa-eraser"
+                            aria-hidden="true">
+                        </i>
+
+                        Limpar filtros
+                    </button>
+                </div>
+
+                <div class="production-table-information">
+                    <span>
+                        Exibindo
+
+                        <strong id="productionVisibleCount">
+                            {{ carteiras|length }}
+                        </strong>
+
+                        de
+
+                        <strong id="productionTotalRows">
+                            {{ carteiras|length }}
+                        </strong>
+
+                        carteiras
+                    </span>
+
+                    <div class="production-table-information-right">
+                        <span
+                            class="production-active-filter"
+                            id="productionActiveFilter"
+                            hidden>
+                        </span>
+
+                        <span class="production-date-status-legend">
+                            <i class="is-sent"></i>
+                            Enviado
+
+                            <i class="is-missed"></i>
+                            Não enviado
+                        </span>
+
+                        <span>
+                            Regra:
+
+                            <strong>
+                                dias úteis, sem sábado e domingo
+                            </strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="production-table-wrapper">
+                    <table class="production-table">
+                        <thead>
+                            <tr>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="name"
+                                        title="Ordenar por carteira">
+
+                                        <span>Carteira</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="businessDays"
+                                        title="Ordenar por dias úteis">
+
+                                        <span>Dias úteis</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="sent"
+                                        title="Ordenar por envios">
+
+                                        <span>Envios</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="missed"
+                                        title="Ordenar por não envios">
+
+                                        <span>Não envios</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="compliance"
+                                        title="Ordenar por aderência">
+
+                                        <span>Aderência</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="risk"
+                                        title="Ordenar por risco">
+
+                                        <span>Risco</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="firstPending"
+                                        title="Ordenar por primeira pendência">
+
+                                        <span>Primeira pendência</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th aria-sort="none">
+                                    <button
+                                        type="button"
+                                        class="production-sort-button"
+                                        data-sort-key="lastPending"
+                                        title="Ordenar por última pendência">
+
+                                        <span>Última pendência</span>
+
+                                        <span
+                                            class="production-table-sort-icon"
+                                            aria-hidden="true">
+
+                                            <i class="is-up"></i>
+                                            <i class="is-down"></i>
+                                        </span>
+                                    </button>
+                                </th>
+                                <th>
+                                    Calendário do período
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="productionTableBody">
+                            {% for item in carteiras %}
+                                <tr
+                                    class="production-table-row"
+                                    data-name="{{ item.nome|lower }}"
+                                    data-wallet-name="{{ item.nome }}"
+                                    data-server-pending-count="{{ item.qtd_pendente|default:0 }}">
+
+                                    <td>
+                                        <div class="production-wallet">
+                                            <span class="production-wallet-icon">
+
+                                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                                    <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v8A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5v-10Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </span>
+
+                                            <strong>
+                                                {{ item.nome }}
+                                            </strong>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <strong
+                                            class="production-business-days-cell"
+                                            data-field="business-days">
+
+                                            0
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="production-count production-count-sent has-tooltip"
+                                            data-field="sent"
+                                            data-tooltip="Quantidade de dias úteis com envio identificado.">
+
+                                            0
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="production-count production-count-missed has-tooltip"
+                                            data-field="missed"
+                                            data-tooltip="Quantidade de datas únicas sem envio no período.">
+
+                                            0
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="production-compliance-cell">
+                                            <strong data-field="compliance">
+                                                0%
+                                            </strong>
+
+                                            <span>
+                                                <i data-field="compliance-bar"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="production-risk-badge"
+                                            data-field="risk">
+
+                                            Calculando
+                                        </span>
+                                    </td>
+
+                                    <td data-field="first-pending">
+                                        —
+                                    </td>
+
+                                    <td data-field="last-pending">
+                                        —
+                                    </td>
+
+                                    <td>
+                                        <!--
+                                            Fonte de dados por carteira.
+                                            O JavaScript remove datas duplicadas
+                                            antes de calcular e exibir.
+                                        -->
+                                        <div
+                                            class="production-pending-date-source"
+                                            hidden>
+
+                                            {% for data in item.datas_pendentes %}
+                                                <span
+                                                    data-pending-date="{{ data|date:'Y-m-d' }}">
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+
+                                        <span class="production-calendar-caption">
+                                            6 dias úteis mais recentes
+                                        </span>
+
+                                        <div
+                                            class="production-dates-preview"
+                                            data-field="dates-preview">
+                                        </div>
+
+                                        <details
+                                            class="production-details"
+                                            data-field="dates-details"
+                                            hidden>
+
+                                            <summary>
+                                                Ver dias anteriores
+                                            </summary>
+
+                                            <div
+                                                class="production-details-content"
+                                                data-field="dates-remaining">
+                                            </div>
+                                        </details>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td
+                                        colspan="9"
+                                        class="production-empty">
+
+                                        <div class="production-empty-icon">
+                                            <i
+                                                class="fa fa-check-circle-o"
+                                                aria-hidden="true">
+                                            </i>
+                                        </div>
+
+                                        <strong>
+                                            Nenhuma carteira disponível
+                                        </strong>
+
+                                        <span>
+                                            Não existem dados para o período
+                                            selecionado.
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div
+                    class="production-no-filter-result"
+                    id="productionNoFilterResult"
+                    hidden>
+
+                    Nenhuma carteira encontrada para os filtros selecionados.
+                </div>
+            </section>
+
+            <section class="production-rule-note">
+                <i
+                    class="fa fa-info-circle"
+                    aria-hidden="true">
+                </i>
+
+                <p>
+                    Para que a visão “100% de envio” também apresente carteiras
+                    sem qualquer pendência, a view deve retornar todas as
+                    carteiras do período, inclusive as que possuem
+                    <strong>qtd_pendente igual a zero</strong>.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                "use strict";
+
+                const page =
+                    document.getElementById(
+                        "productionPage"
+                    );
+
+                const searchInput =
+                    document.getElementById(
+                        "productionSearch"
+                    );
+
+                const rangeFilter =
+                    document.getElementById(
+                        "productionRangeFilter"
+                    );
+
+                const clearButton =
+                    document.getElementById(
+                        "productionClearFilters"
+                    );
+
+                const tableSection =
+                    document.getElementById(
+                        "productionTableSection"
+                    );
+
+                const tableExpandButton =
+                    document.getElementById(
+                        "productionTableExpandButton"
+                    );
+
+                const tableExpandLabel =
+                    document.getElementById(
+                        "productionTableExpandLabel"
+                    );
+
+                const calendarToggleButton =
+                    document.getElementById(
+                        "productionCalendarToggleButton"
+                    );
+
+                const calendarToggleLabel =
+                    document.getElementById(
+                        "productionCalendarToggleLabel"
+                    );
+
+                const refreshButton =
+                    document.getElementById(
+                        "productionRefreshButton"
+                    );
+
+                const visibleCount =
+                    document.getElementById(
+                        "productionVisibleCount"
+                    );
+
+                const totalRows =
+                    document.getElementById(
+                        "productionTotalRows"
+                    );
+
+                const activeFilter =
+                    document.getElementById(
+                        "productionActiveFilter"
+                    );
+
+                const noResult =
+                    document.getElementById(
+                        "productionNoFilterResult"
+                    );
+
+                const tableBody =
+                    document.getElementById(
+                        "productionTableBody"
+                    );
+
+                const rows =
+                    Array.from(
+                        document.querySelectorAll(
+                            ".production-table-row"
+                        )
+                    );
+
+                const sortButtons =
+                    Array.from(
+                        document.querySelectorAll(
+                            ".production-sort-button"
+                        )
+                    );
+
+                const chartSortButton =
+                    document.getElementById(
+                        "productionChartSortButton"
+                    );
+
+                const chartSortLabel =
+                    document.getElementById(
+                        "productionChartSortLabel"
+                    );
+
+                const businessDaysElement =
+                    document.getElementById(
+                        "productionBusinessDays"
+                    );
+
+                const totalSentElement =
+                    document.getElementById(
+                        "productionTotalSent"
+                    );
+
+                const totalMissedElement =
+                    document.getElementById(
+                        "productionTotalMissed"
+                    );
+
+                const averageComplianceElement =
+                    document.getElementById(
+                        "productionAverageCompliance"
+                    );
+
+                const perfectWalletsElement =
+                    document.getElementById(
+                        "productionPerfectWallets"
+                    );
+
+                const immediateAction =
+                    document.getElementById(
+                        "productionImmediateAction"
+                    );
+
+                const immediateActionText =
+                    document.getElementById(
+                        "productionImmediateActionText"
+                    );
+
+                const topSender =
+                    document.getElementById(
+                        "productionTopSender"
+                    );
+
+                const topSenderText =
+                    document.getElementById(
+                        "productionTopSenderText"
+                    );
+
+                const recurrenceRisk =
+                    document.getElementById(
+                        "productionRecurrenceRisk"
+                    );
+
+                const recurrenceRiskText =
+                    document.getElementById(
+                        "productionRecurrenceRiskText"
+                    );
+
+                const leadershipReview =
+                    document.getElementById(
+                        "productionLeadershipReview"
+                    );
+
+                const leadershipReviewText =
+                    document.getElementById(
+                        "productionLeadershipReviewText"
+                    );
+
+                const rankingChart =
+                    document.getElementById(
+                        "productionRankingChart"
+                    );
+
+                const complianceDonut =
+                    document.getElementById(
+                        "productionComplianceDonut"
+                    );
+
+                const complianceDonutValue =
+                    document.getElementById(
+                        "productionComplianceDonutValue"
+                    );
+
+                const donutSent =
+                    document.getElementById(
+                        "productionDonutSent"
+                    );
+
+                const donutMissed =
+                    document.getElementById(
+                        "productionDonutMissed"
+                    );
+
+                const riskChart =
+                    document.getElementById(
+                        "productionRiskChart"
+                    );
+
+                const RISK_ORDER = {
+                    critical: 4,
+                    attention: 3,
+                    regular: 2,
+                    perfect: 1
+                };
+
+                const RISK_LABELS = {
+                    all: "Todos os níveis",
+                    critical: "Risco crítico",
+                    attention: "Requer atenção",
+                    regular: "Regular",
+                    perfect: "100% de envio"
+                };
+
+                let walletMetrics = [];
+                let periodContext = null;
+                let chartSortMode = "sent";
+                let calendarsExpanded = false;
+                let tableExpanded = false;
+
+                let currentSort = {
+                    key: "missed",
+                    direction: "desc"
+                };
+
+                function normalizeText(value) {
+                    return String(value || "")
+                        .normalize("NFD")
+                        .replace(
+                            /[\u0300-\u036f]/g,
+                            ""
+                        )
+                        .toLowerCase()
+                        .trim();
+                }
+
+                function parseLocalDate(value) {
+                    const parts =
+                        String(value || "")
+                            .split("-")
+                            .map(Number);
+
+                    if (
+                        parts.length !== 3 ||
+                        parts.some(
+                            function (part) {
+                                return !Number.isFinite(
+                                    part
+                                );
+                            }
+                        )
+                    ) {
+                        return null;
+                    }
+
+                    return new Date(
+                        parts[0],
+                        parts[1] - 1,
+                        parts[2],
+                        12,
+                        0,
+                        0,
+                        0
+                    );
+                }
+
+                function toIsoDate(date) {
+                    const year =
+                        date.getFullYear();
+
+                    const month =
+                        String(
+                            date.getMonth() + 1
+                        ).padStart(2, "0");
+
+                    const day =
+                        String(
+                            date.getDate()
+                        ).padStart(2, "0");
+
+                    return [
+                        year,
+                        month,
+                        day
+                    ].join("-");
+                }
+
+                function formatDate(value) {
+                    const date =
+                        typeof value === "string"
+                            ? parseLocalDate(value)
+                            : value;
+
+                    if (!date) {
+                        return "—";
+                    }
+
+                    return date.toLocaleDateString(
+                        "pt-BR"
+                    );
+                }
+
+                function getFallbackPeriod() {
+                    const end =
+                        new Date();
+
+                    end.setHours(
+                        12,
+                        0,
+                        0,
+                        0
+                    );
+
+                    const start =
+                        new Date(end);
+
+                    start.setDate(
+                        start.getDate() - 29
+                    );
+
+                    return {
+                        start: start,
+                        end: end
+                    };
+                }
+
+                function getPeriod() {
+                    const fallback =
+                        getFallbackPeriod();
+
+                    return {
+                        start:
+                            parseLocalDate(
+                                page?.dataset.startDate
+                            ) ||
+                            fallback.start,
+
+                        end:
+                            parseLocalDate(
+                                page?.dataset.endDate
+                            ) ||
+                            fallback.end
+                    };
+                }
+
+                function getBusinessDays(
+                    start,
+                    end
+                ) {
+                    const result = [];
+
+                    const current =
+                        new Date(start);
+
+                    while (current <= end) {
+                        const weekDay =
+                            current.getDay();
+
+                        if (
+                            weekDay !== 0 &&
+                            weekDay !== 6
+                        ) {
+                            result.push(
+                                toIsoDate(current)
+                            );
+                        }
+
+                        current.setDate(
+                            current.getDate() + 1
+                        );
+                    }
+
+                    return result;
+                }
+
+                function getUniquePendingDates(
+                    row,
+                    businessDaySet
+                ) {
+                    const values =
+                        Array.from(
+                            row.querySelectorAll(
+                                "[data-pending-date]"
+                            )
+                        )
+                        .map(
+                            function (element) {
+                                return String(
+                                    element.dataset
+                                        .pendingDate ||
+                                    ""
+                                ).trim();
+                            }
+                        )
+                        .filter(
+                            function (value) {
+                                return (
+                                    value &&
+                                    businessDaySet.has(
+                                        value
+                                    )
+                                );
+                            }
+                        );
+
+                    return Array.from(
+                        new Set(values)
+                    ).sort();
+                }
+
+                function getLongestPendingStreak(
+                    businessDays,
+                    pendingSet
+                ) {
+                    let longest = 0;
+                    let current = 0;
+
+                    businessDays.forEach(
+                        function (date) {
+                            if (
+                                pendingSet.has(
+                                    date
+                                )
+                            ) {
+                                current += 1;
+
+                                longest =
+                                    Math.max(
+                                        longest,
+                                        current
+                                    );
+                            } else {
+                                current = 0;
+                            }
+                        }
+                    );
+
+                    return longest;
+                }
+
+                function getEndingPendingStreak(
+                    businessDays,
+                    pendingSet
+                ) {
+                    let streak = 0;
+
+                    for (
+                        let index =
+                            businessDays.length - 1;
+                        index >= 0;
+                        index -= 1
+                    ) {
+                        if (
+                            pendingSet.has(
+                                businessDays[index]
+                            )
+                        ) {
+                            streak += 1;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    return streak;
+                }
+
+                function classifyRisk(
+                    missed,
+                    compliance,
+                    endingStreak
+                ) {
+                    if (missed === 0) {
+                        return {
+                            key: "perfect",
+                            label: "100% de envio"
+                        };
+                    }
+
+                    if (
+                        compliance < 70 ||
+                        endingStreak >= 5
+                    ) {
+                        return {
+                            key: "critical",
+                            label: "Crítico"
+                        };
+                    }
+
+                    if (
+                        compliance < 90 ||
+                        endingStreak >= 3
+                    ) {
+                        return {
+                            key: "attention",
+                            label: "Atenção"
+                        };
+                    }
+
+                    return {
+                        key: "regular",
+                        label: "Regular"
+                    };
+                }
+
+                function createDateTag(
+                    value,
+                    isMissed
+                ) {
+                    const tag =
+                        document.createElement(
+                            "span"
+                        );
+
+                    tag.className =
+                        "production-date " +
+                        (
+                            isMissed
+                                ? "is-missed"
+                                : "is-sent"
+                        );
+
+                    tag.textContent =
+                        formatDate(value);
+
+                    tag.title =
+                        (
+                            isMissed
+                                ? "Não enviado em "
+                                : "Enviado em "
+                        ) +
+                        formatDate(value);
+
+                    return tag;
+                }
+
+                function renderRowCalendar(
+                    row,
+                    businessDays,
+                    pendingSet
+                ) {
+                    const preview =
+                        row.querySelector(
+                            '[data-field="dates-preview"]'
+                        );
+
+                    const details =
+                        row.querySelector(
+                            '[data-field="dates-details"]'
+                        );
+
+                    const remaining =
+                        row.querySelector(
+                            '[data-field="dates-remaining"]'
+                        );
+
+                    preview.innerHTML = "";
+                    remaining.innerHTML = "";
+
+                    const previewLimit = 6;
+
+                    const previewDates =
+                        businessDays.slice(
+                            Math.max(
+                                businessDays.length -
+                                previewLimit,
+                                0
+                            )
+                        );
+
+                    const previousDates =
+                        businessDays.slice(
+                            0,
+                            Math.max(
+                                businessDays.length -
+                                previewLimit,
+                                0
+                            )
+                        );
+
+                    previewDates.forEach(
+                        function (date) {
+                            preview.appendChild(
+                                createDateTag(
+                                    date,
+                                    pendingSet.has(date)
+                                )
+                            );
+                        }
+                    );
+
+                    details.hidden =
+                        previousDates.length === 0;
+
+                    if (
+                        previousDates.length > 0
+                    ) {
+                        const summary =
+                            details.querySelector(
+                                "summary"
+                            );
+
+                        summary.textContent =
+                            "Ver " +
+                            previousDates.length +
+                            " dia" +
+                            (
+                                previousDates.length === 1
+                                    ? ""
+                                    : "s"
+                            ) +
+                            " útil" +
+                            (
+                                previousDates.length === 1
+                                    ? ""
+                                    : "eis"
+                            ) +
+                            " anterior" +
+                            (
+                                previousDates.length === 1
+                                    ? ""
+                                    : "es"
+                            );
+
+                        previousDates.forEach(
+                            function (date) {
+                                remaining.appendChild(
+                                    createDateTag(
+                                        date,
+                                        pendingSet.has(
+                                            date
+                                        )
+                                    )
+                                );
+                            }
+                        );
+                    }
+                }
+
+                function updateRow(
+                    row,
+                    metric
+                ) {
+                    row.dataset.risk =
+                        metric.risk.key;
+
+                    row.dataset.compliance =
+                        String(
+                            metric.compliance
+                        );
+
+                    row.dataset.missed =
+                        String(
+                            metric.missed
+                        );
+
+                    row.dataset.sent =
+                        String(
+                            metric.sent
+                        );
+
+                    row.querySelector(
+                        '[data-field="business-days"]'
+                    ).textContent =
+                        metric.businessDays;
+
+                    row.querySelector(
+                        '[data-field="sent"]'
+                    ).textContent =
+                        metric.sent;
+
+                    row.querySelector(
+                        '[data-field="missed"]'
+                    ).textContent =
+                        metric.missed;
+
+                    row.querySelector(
+                        '[data-field="compliance"]'
+                    ).textContent =
+                        metric.compliance
+                            .toLocaleString(
+                                "pt-BR",
+                                {
+                                    maximumFractionDigits:
+                                        1
+                                }
+                            ) +
+                        "%";
+
+                    row.querySelector(
+                        '[data-field="compliance-bar"]'
+                    ).style.width =
+                        metric.compliance + "%";
+
+                    const riskBadge =
+                        row.querySelector(
+                            '[data-field="risk"]'
+                        );
+
+                    riskBadge.textContent =
+                        metric.risk.label;
+
+                    riskBadge.className =
+                        "production-risk-badge " +
+                        "is-" +
+                        metric.risk.key;
+
+                    row.querySelector(
+                        '[data-field="first-pending"]'
+                    ).textContent =
+                        metric.firstPending
+                            ? formatDate(
+                                metric.firstPending
+                            )
+                            : "—";
+
+                    row.querySelector(
+                        '[data-field="last-pending"]'
+                    ).textContent =
+                        metric.lastPending
+                            ? formatDate(
+                                metric.lastPending
+                            )
+                            : "—";
+
+                    renderRowCalendar(
+                        row,
+                        metric.businessDayDates,
+                        metric.pendingSet
+                    );
+                }
+
+                function buildMetrics() {
+                    const period =
+                        getPeriod();
+
+                    const businessDays =
+                        getBusinessDays(
+                            period.start,
+                            period.end
+                        );
+
+                    const businessDaySet =
+                        new Set(
+                            businessDays
+                        );
+
+                    walletMetrics =
+                        rows.map(
+                            function (row) {
+                                const pendingDates =
+                                    getUniquePendingDates(
+                                        row,
+                                        businessDaySet
+                                    );
+
+                                const pendingSet =
+                                    new Set(
+                                        pendingDates
+                                    );
+
+                                const missed =
+                                    Math.min(
+                                        pendingDates.length,
+                                        businessDays.length
+                                    );
+
+                                const sent =
+                                    Math.max(
+                                        businessDays.length -
+                                        missed,
+                                        0
+                                    );
+
+                                const compliance =
+                                    businessDays.length > 0
+                                        ? (
+                                            sent /
+                                            businessDays.length
+                                        ) * 100
+                                        : 0;
+
+                                const longestStreak =
+                                    getLongestPendingStreak(
+                                        businessDays,
+                                        pendingSet
+                                    );
+
+                                const endingStreak =
+                                    getEndingPendingStreak(
+                                        businessDays,
+                                        pendingSet
+                                    );
+
+                                const risk =
+                                    classifyRisk(
+                                        missed,
+                                        compliance,
+                                        endingStreak
+                                    );
+
+                                const metric = {
+                                    row: row,
+
+                                    name:
+                                        row.dataset
+                                            .walletName ||
+                                        "Carteira",
+
+                                    businessDays:
+                                        businessDays.length,
+
+                                    businessDayDates:
+                                        businessDays,
+
+                                    sent: sent,
+                                    missed: missed,
+                                    compliance:
+                                        compliance,
+
+                                    pendingDates:
+                                        pendingDates,
+
+                                    pendingSet:
+                                        pendingSet,
+
+                                    firstPending:
+                                        pendingDates[0] ||
+                                        "",
+
+                                    lastPending:
+                                        pendingDates[
+                                            pendingDates.length -
+                                            1
+                                        ] ||
+                                        "",
+
+                                    longestStreak:
+                                        longestStreak,
+
+                                    endingStreak:
+                                        endingStreak,
+
+                                    risk: risk
+                                };
+
+                                updateRow(
+                                    row,
+                                    metric
+                                );
+
+                                return metric;
+                            }
+                        );
+
+                    periodContext = {
+                        period: period,
+                        businessDays:
+                            businessDays
+                    };
+                }
+
+                function renderSummary(
+                    metrics
+                ) {
+                    const businessDays =
+                        periodContext
+                            ?.businessDays
+                            ?.length ||
+                        0;
+
+                    const totalSent =
+                        metrics.reduce(
+                            function (total, metric) {
+                                return (
+                                    total +
+                                    metric.sent
+                                );
+                            },
+                            0
+                        );
+
+                    const totalMissed =
+                        metrics.reduce(
+                            function (total, metric) {
+                                return (
+                                    total +
+                                    metric.missed
+                                );
+                            },
+                            0
+                        );
+
+                    const possibleTotal =
+                        totalSent +
+                        totalMissed;
+
+                    const overallCompliance =
+                        possibleTotal > 0
+                            ? (
+                                totalSent /
+                                possibleTotal
+                            ) * 100
+                            : 0;
+
+                    const perfectWallets =
+                        metrics.filter(
+                            function (metric) {
+                                return (
+                                    metric.missed === 0
+                                );
+                            }
+                        );
+
+                    businessDaysElement.textContent =
+                        businessDays;
+
+                    totalSentElement.textContent =
+                        totalSent.toLocaleString(
+                            "pt-BR"
+                        );
+
+                    totalMissedElement.textContent =
+                        totalMissed.toLocaleString(
+                            "pt-BR"
+                        );
+
+                    averageComplianceElement.textContent =
+                        overallCompliance.toLocaleString(
+                            "pt-BR",
+                            {
+                                maximumFractionDigits: 1
+                            }
+                        ) +
+                        "%";
+
+                    perfectWalletsElement.textContent =
+                        perfectWallets.length;
+
+                    complianceDonutValue.textContent =
+                        overallCompliance.toLocaleString(
+                            "pt-BR",
+                            {
+                                maximumFractionDigits: 1
+                            }
+                        ) +
+                        "%";
+
+                    donutSent.textContent =
+                        totalSent.toLocaleString(
+                            "pt-BR"
+                        );
+
+                    donutMissed.textContent =
+                        totalMissed.toLocaleString(
+                            "pt-BR"
+                        );
+
+                    complianceDonut.style.background =
+                        "conic-gradient(" +
+                        "#12b76a 0% " +
+                        overallCompliance +
+                        "%, #f97066 " +
+                        overallCompliance +
+                        "% 100%)";
+                }
+
+                function renderManagementInsights(
+                    metrics
+                ) {
+                    if (
+                        metrics.length === 0
+                    ) {
+                        [
+                            immediateAction,
+                            topSender,
+                            recurrenceRisk,
+                            leadershipReview
+                        ].forEach(
+                            function (element) {
+                                element.textContent =
+                                    "Sem dados";
+                            }
+                        );
+
+                        immediateActionText.textContent =
+                            "Nenhuma carteira corresponde aos filtros atuais.";
+
+                        topSenderText.textContent =
+                            "Nenhuma carteira corresponde aos filtros atuais.";
+
+                        recurrenceRiskText.textContent =
+                            "Nenhuma carteira corresponde aos filtros atuais.";
+
+                        leadershipReviewText.textContent =
+                            "Ajuste os filtros para visualizar os indicadores.";
+
+                        return;
+                    }
+
+                    const worst =
+                        [...metrics]
+                            .sort(
+                                function (a, b) {
+                                    if (
+                                        a.compliance !==
+                                        b.compliance
+                                    ) {
+                                        return (
+                                            a.compliance -
+                                            b.compliance
+                                        );
+                                    }
+
+                                    return (
+                                        b.endingStreak -
+                                        a.endingStreak
+                                    );
+                                }
+                            )[0];
+
+                    const best =
+                        [...metrics]
+                            .sort(
+                                function (a, b) {
+                                    if (
+                                        a.sent !==
+                                        b.sent
+                                    ) {
+                                        return (
+                                            b.sent -
+                                            a.sent
+                                        );
+                                    }
+
+                                    return (
+                                        b.compliance -
+                                        a.compliance
+                                    );
+                                }
+                            )[0];
+
+                    const longest =
+                        [...metrics]
+                            .sort(
+                                function (a, b) {
+                                    return (
+                                        b.longestStreak -
+                                        a.longestStreak
+                                    );
+                                }
+                            )[0];
+
+                    const needsReview =
+                        metrics.filter(
+                            function (metric) {
+                                return (
+                                    metric.risk.key ===
+                                        "critical" ||
+                                    metric.risk.key ===
+                                        "attention"
+                                );
+                            }
+                        );
+
+                    immediateAction.textContent =
+                        worst.name;
+
+                    immediateActionText.textContent =
+                        worst.missed +
+                        " não envio" +
+                        (
+                            worst.missed === 1
+                                ? ""
+                                : "s"
+                        ) +
+                        " em " +
+                        worst.businessDays +
+                        " dias úteis; aderência de " +
+                        worst.compliance.toLocaleString(
+                            "pt-BR",
+                            {
+                                maximumFractionDigits: 1
+                            }
+                        ) +
+                        "%. Validar o motivo com o responsável.";
+
+                    topSender.textContent =
+                        best.name;
+
+                    topSenderText.textContent =
+                        best.sent +
+                        " envio" +
+                        (
+                            best.sent === 1
+                                ? ""
+                                : "s"
+                        ) +
+                        " e " +
+                        best.compliance.toLocaleString(
+                            "pt-BR",
+                            {
+                                maximumFractionDigits: 1
+                            }
+                        ) +
+                        "% de aderência no período.";
+
+                    recurrenceRisk.textContent =
+                        longest.longestStreak > 0
+                            ? longest.name
+                            : "Sem recorrência";
+
+                    recurrenceRiskText.textContent =
+                        longest.longestStreak > 0
+                            ? (
+                                longest.longestStreak +
+                                " dia" +
+                                (
+                                    longest.longestStreak === 1
+                                        ? ""
+                                        : "s"
+                                ) +
+                                " útil" +
+                                (
+                                    longest.longestStreak === 1
+                                        ? ""
+                                        : "eis"
+                                ) +
+                                " consecutivo" +
+                                (
+                                    longest.longestStreak === 1
+                                        ? ""
+                                        : "s"
+                                ) +
+                                " sem envio."
+                            )
+                            : "Nenhuma sequência de não envio foi identificada.";
+
+                    leadershipReview.textContent =
+                        needsReview.length +
+                        " carteira" +
+                        (
+                            needsReview.length === 1
+                                ? ""
+                                : "s"
+                        );
+
+                    leadershipReviewText.textContent =
+                        needsReview.length > 0
+                            ? "Requerem acompanhamento direto do gestor e registro da tratativa."
+                            : "Todas as carteiras filtradas estão regulares ou com 100% de envio.";
+                }
+
+                function renderRankingChart(
+                    metrics
+                ) {
+                    rankingChart.innerHTML = "";
+
+                    if (
+                        metrics.length === 0
+                    ) {
+                        rankingChart.innerHTML = `
+                            <div class="production-chart-empty">
+                                Nenhuma carteira corresponde aos filtros atuais.
+                            </div>
+                        `;
+
+                        return;
+                    }
+
+                    const ranking =
+                        [...metrics]
+                            .sort(
+                                function (a, b) {
+                                    if (
+                                        chartSortMode ===
+                                        "missed"
+                                    ) {
+                                        if (
+                                            a.missed !==
+                                            b.missed
+                                        ) {
+                                            return (
+                                                b.missed -
+                                                a.missed
+                                            );
+                                        }
+
+                                        return (
+                                            a.compliance -
+                                            b.compliance
+                                        );
+                                    }
+
+                                    if (
+                                        a.sent !==
+                                        b.sent
+                                    ) {
+                                        return (
+                                            b.sent -
+                                            a.sent
+                                        );
+                                    }
+
+                                    return (
+                                        b.compliance -
+                                        a.compliance
+                                    );
+                                }
+                            );
+
+                    ranking.forEach(
+                        function (metric) {
+                            const row =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            row.className =
+                                "production-ranking-row has-tooltip";
+
+                            row.dataset.tooltip =
+                                metric.name +
+                                ": " +
+                                metric.sent +
+                                " envios, " +
+                                metric.missed +
+                                " não envios e " +
+                                metric.compliance
+                                    .toLocaleString(
+                                        "pt-BR",
+                                        {
+                                            maximumFractionDigits:
+                                                1
+                                        }
+                                    ) +
+                                "% de aderência.";
+
+                            const header =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            header.className =
+                                "production-ranking-row-header";
+
+                            const name =
+                                document.createElement(
+                                    "strong"
+                                );
+
+                            name.textContent =
+                                metric.name;
+
+                            const value =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            value.textContent =
+                                metric.sent +
+                                " enviado" +
+                                (
+                                    metric.sent === 1
+                                        ? ""
+                                        : "s"
+                                ) +
+                                " • " +
+                                metric.compliance
+                                    .toLocaleString(
+                                        "pt-BR",
+                                        {
+                                            maximumFractionDigits:
+                                                1
+                                        }
+                                    ) +
+                                "%";
+
+                            header.appendChild(name);
+                            header.appendChild(value);
+
+                            const track =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            track.className =
+                                "production-ranking-track";
+
+                            const sent =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            sent.className =
+                                "production-ranking-sent";
+
+                            sent.style.width =
+                                metric.compliance + "%";
+
+                            const missed =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            missed.className =
+                                "production-ranking-missed";
+
+                            missed.style.width =
+                                (
+                                    100 -
+                                    metric.compliance
+                                ) +
+                                "%";
+
+                            track.appendChild(sent);
+                            track.appendChild(missed);
+
+                            row.appendChild(header);
+                            row.appendChild(track);
+
+                            rankingChart.appendChild(
+                                row
+                            );
+                        }
+                    );
+                }
+
+                function renderRiskChart(
+                    metrics,
+                    selectedRisk
+                ) {
+                    riskChart.innerHTML = "";
+
+                    const groups = [
+                        {
+                            key: "critical",
+                            label: "Crítico",
+                            description:
+                                "Aderência abaixo de 70% ou 5 dias úteis finais sem envio."
+                        },
+                        {
+                            key: "attention",
+                            label: "Atenção",
+                            description:
+                                "Aderência abaixo de 90% ou 3 dias úteis finais sem envio."
+                        },
+                        {
+                            key: "regular",
+                            label: "Regular",
+                            description:
+                                "Aderência igual ou superior a 90%, com pendência pontual."
+                        },
+                        {
+                            key: "perfect",
+                            label: "100% de envio",
+                            description:
+                                "Nenhum dia útil sem envio no período."
+                        }
+                    ];
+
+                    groups.forEach(
+                        function (group) {
+                            const count =
+                                metrics.filter(
+                                    function (metric) {
+                                        return (
+                                            metric.risk.key ===
+                                            group.key
+                                        );
+                                    }
+                                ).length;
+
+                            const item =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            item.type =
+                                "button";
+
+                            item.className =
+                                "production-risk-item " +
+                                "is-" +
+                                group.key +
+                                " has-tooltip";
+
+                            if (
+                                selectedRisk ===
+                                group.key
+                            ) {
+                                item.classList.add(
+                                    "is-active"
+                                );
+                            }
+
+                            item.dataset.tooltip =
+                                group.description;
+
+                            item.dataset.riskKey =
+                                group.key;
+
+                            item.setAttribute(
+                                "aria-pressed",
+                                String(
+                                    selectedRisk ===
+                                    group.key
+                                )
+                            );
+
+                            item.innerHTML = `
+                                <span></span>
+
+                                <div>
+                                    <strong>
+                                        ${group.label}
+                                    </strong>
+
+                                    <small>
+                                        ${group.description}
+                                    </small>
+                                </div>
+
+                                <b>
+                                    ${count}
+                                </b>
+                            `;
+
+                            item.addEventListener(
+                                "click",
+                                function () {
+                                    rangeFilter.value =
+                                        rangeFilter.value ===
+                                        group.key
+                                            ? "all"
+                                            : group.key;
+
+                                    applyFilters();
+
+                                    document
+                                        .getElementById(
+                                            "productionTableSection"
+                                        )
+                                        ?.scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "start"
+                                        });
+                                }
+                            );
+
+                            riskChart.appendChild(
+                                item
+                            );
+                        }
+                    );
+                }
+
+                function getSearchFilteredMetrics() {
+                    const searchValue =
+                        normalizeText(
+                            searchInput.value
+                        );
+
+                    return walletMetrics.filter(
+                        function (metric) {
+                            return (
+                                !searchValue ||
+                                normalizeText(
+                                    metric.name
+                                ).includes(
+                                    searchValue
+                                )
+                            );
+                        }
+                    );
+                }
+
+                function getActiveMetrics(
+                    searchMetrics
+                ) {
+                    const selectedRisk =
+                        rangeFilter.value;
+
+                    if (
+                        selectedRisk === "all"
+                    ) {
+                        return searchMetrics;
+                    }
+
+                    return searchMetrics.filter(
+                        function (metric) {
+                            return (
+                                metric.risk.key ===
+                                selectedRisk
+                            );
+                        }
+                    );
+                }
+
+                function updateActiveFilter() {
+                    const selectedRisk =
+                        rangeFilter.value;
+
+                    const searchValue =
+                        searchInput.value.trim();
+
+                    const labels = [];
+
+                    if (
+                        selectedRisk !== "all"
+                    ) {
+                        labels.push(
+                            RISK_LABELS[
+                                selectedRisk
+                            ]
+                        );
+                    }
+
+                    if (searchValue) {
+                        labels.push(
+                            'Pesquisa: "' +
+                            searchValue +
+                            '"'
+                        );
+                    }
+
+                    activeFilter.hidden =
+                        labels.length === 0;
+
+                    activeFilter.textContent =
+                        labels.length > 0
+                            ? (
+                                "Filtro ativo: " +
+                                labels.join(" • ")
+                            )
+                            : "";
+                }
+
+                function getSortValue(
+                    metric,
+                    key
+                ) {
+                    if (key === "name") {
+                        return normalizeText(
+                            metric.name
+                        );
+                    }
+
+                    if (key === "risk") {
+                        return (
+                            RISK_ORDER[
+                                metric.risk.key
+                            ] ||
+                            0
+                        );
+                    }
+
+                    if (
+                        key === "firstPending" ||
+                        key === "lastPending"
+                    ) {
+                        return metric[key] || "";
+                    }
+
+                    return Number(
+                        metric[key] || 0
+                    );
+                }
+
+                function compareMetrics(
+                    first,
+                    second,
+                    key,
+                    direction
+                ) {
+                    const firstValue =
+                        getSortValue(
+                            first,
+                            key
+                        );
+
+                    const secondValue =
+                        getSortValue(
+                            second,
+                            key
+                        );
+
+                    let result = 0;
+
+                    if (
+                        typeof firstValue ===
+                        "string"
+                    ) {
+                        result =
+                            firstValue.localeCompare(
+                                secondValue,
+                                "pt-BR"
+                            );
+                    } else {
+                        result =
+                            firstValue -
+                            secondValue;
+                    }
+
+                    return (
+                        direction === "asc"
+                            ? result
+                            : -result
+                    );
+                }
+
+                function updateSortButtons() {
+                    sortButtons.forEach(
+                        function (button) {
+                            const isActive =
+                                button.dataset.sortKey ===
+                                currentSort.key;
+
+                            button.classList.toggle(
+                                "is-active",
+                                isActive
+                            );
+
+                            button.classList.toggle(
+                                "is-asc",
+                                isActive &&
+                                currentSort.direction ===
+                                    "asc"
+                            );
+
+                            button.classList.toggle(
+                                "is-desc",
+                                isActive &&
+                                currentSort.direction ===
+                                    "desc"
+                            );
+
+                            const header =
+                                button.closest("th");
+
+                            header?.setAttribute(
+                                "aria-sort",
+                                isActive
+                                    ? (
+                                        currentSort.direction ===
+                                        "asc"
+                                            ? "ascending"
+                                            : "descending"
+                                    )
+                                    : "none"
+                            );
+                        }
+                    );
+                }
+
+                function applyTableSort() {
+                    const ordered =
+                        [...walletMetrics]
+                            .sort(
+                                function (
+                                    first,
+                                    second
+                                ) {
+                                    return compareMetrics(
+                                        first,
+                                        second,
+                                        currentSort.key,
+                                        currentSort.direction
+                                    );
+                                }
+                            );
+
+                    ordered.forEach(
+                        function (metric) {
+                            tableBody.appendChild(
+                                metric.row
+                            );
+                        }
+                    );
+
+                    updateSortButtons();
+                }
+
+                function updateCalendarExpansion() {
+                    walletMetrics.forEach(
+                        function (metric) {
+                            const details =
+                                metric.row.querySelector(
+                                    '[data-field="dates-details"]'
+                                );
+
+                            if (
+                                !details ||
+                                details.hidden
+                            ) {
+                                return;
+                            }
+
+                            details.open =
+                                calendarsExpanded &&
+                                !metric.row.hidden;
+                        }
+                    );
+
+                    calendarToggleButton?.setAttribute(
+                        "aria-pressed",
+                        String(calendarsExpanded)
+                    );
+
+                    calendarToggleButton?.classList.toggle(
+                        "is-active",
+                        calendarsExpanded
+                    );
+
+                    if (calendarToggleLabel) {
+                        calendarToggleLabel.textContent =
+                            calendarsExpanded
+                                ? "Recolher calendários"
+                                : "Abrir calendários";
+                    }
+
+                    calendarToggleButton?.setAttribute(
+                        "title",
+                        calendarsExpanded
+                            ? "Recolher todos os calendários"
+                            : "Abrir todos os calendários das carteiras visíveis"
+                    );
+                }
+
+                function updateTableExpansion(
+                    expanded
+                ) {
+                    tableExpanded =
+                        Boolean(expanded);
+
+                    tableSection?.classList.toggle(
+                        "is-expanded",
+                        tableExpanded
+                    );
+
+                    document.body.classList.toggle(
+                        "production-table-expanded",
+                        tableExpanded
+                    );
+
+                    tableExpandButton?.setAttribute(
+                        "aria-pressed",
+                        String(tableExpanded)
+                    );
+
+                    if (tableExpandLabel) {
+                        tableExpandLabel.textContent =
+                            tableExpanded
+                                ? "Reduzir tabela"
+                                : "Expandir tabela";
+                    }
+
+                    tableExpandButton?.setAttribute(
+                        "title",
+                        tableExpanded
+                            ? "Reduzir a tabela"
+                            : "Expandir a tabela"
+                    );
+                }
+
+                function applyFilters() {
+                    const searchMetrics =
+                        getSearchFilteredMetrics();
+
+                    const activeMetrics =
+                        getActiveMetrics(
+                            searchMetrics
+                        );
+
+                    const activeRows =
+                        new Set(
+                            activeMetrics.map(
+                                function (metric) {
+                                    return metric.row;
+                                }
+                            )
+                        );
+
+                    walletMetrics.forEach(
+                        function (metric) {
+                            metric.row.hidden =
+                                !activeRows.has(
+                                    metric.row
+                                );
+                        }
+                    );
+
+                    visibleCount.textContent =
+                        activeMetrics.length;
+
+                    noResult.hidden =
+                        activeMetrics.length > 0 ||
+                        rows.length === 0;
+
+                    updateActiveFilter();
+                    renderSummary(activeMetrics);
+                    renderManagementInsights(
+                        activeMetrics
+                    );
+                    renderRankingChart(
+                        activeMetrics
+                    );
+                    renderRiskChart(
+                        searchMetrics,
+                        rangeFilter.value
+                    );
+
+                    updateCalendarExpansion();
+                }
+
+                sortButtons.forEach(
+                    function (button) {
+                        button.addEventListener(
+                            "click",
+                            function () {
+                                const key =
+                                    button.dataset.sortKey;
+
+                                if (
+                                    currentSort.key === key
+                                ) {
+                                    currentSort.direction =
+                                        currentSort.direction ===
+                                        "asc"
+                                            ? "desc"
+                                            : "asc";
+                                } else {
+                                    currentSort.key =
+                                        key;
+
+                                    currentSort.direction =
+                                        key === "name" ||
+                                        key ===
+                                            "firstPending" ||
+                                        key ===
+                                            "lastPending"
+                                            ? "asc"
+                                            : "desc";
+                                }
+
+                                applyTableSort();
+                            }
+                        );
+                    }
+                );
+
+                chartSortButton?.addEventListener(
+                    "click",
+                    function () {
+                        chartSortMode =
+                            chartSortMode === "sent"
+                                ? "missed"
+                                : "sent";
+
+                        chartSortButton.dataset.mode =
+                            chartSortMode;
+
+                        chartSortLabel.textContent =
+                            chartSortMode === "sent"
+                                ? "Mais envios"
+                                : "Mais não envios";
+
+                        const searchMetrics =
+                            getSearchFilteredMetrics();
+
+                        renderRankingChart(
+                            getActiveMetrics(
+                                searchMetrics
+                            )
+                        );
+                    }
+                );
+
+                calendarToggleButton?.addEventListener(
+                    "click",
+                    function () {
+                        calendarsExpanded =
+                            !calendarsExpanded;
+
+                        updateCalendarExpansion();
+                    }
+                );
+
+                tableExpandButton?.addEventListener(
+                    "click",
+                    function () {
+                        updateTableExpansion(
+                            !tableExpanded
+                        );
+                    }
+                );
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+                        if (
+                            event.key === "Escape" &&
+                            tableExpanded
+                        ) {
+                            updateTableExpansion(
+                                false
+                            );
+
+                            tableExpandButton?.focus();
+                        }
+                    }
+                );
+
+                searchInput.addEventListener(
+                    "input",
+                    applyFilters
+                );
+
+                rangeFilter.addEventListener(
+                    "change",
+                    applyFilters
+                );
+
+                clearButton.addEventListener(
+                    "click",
+                    function () {
+                        searchInput.value = "";
+                        rangeFilter.value = "all";
+                        applyFilters();
+                        searchInput.focus();
+                    }
+                );
+
+                refreshButton.addEventListener(
+                    "click",
+                    function () {
+                        refreshButton.disabled = true;
+
+                        refreshButton.innerHTML = `
+                            <i
+                                class="fa fa-spinner fa-spin"
+                                aria-hidden="true">
+                            </i>
+
+                            Atualizando
+                        `;
+
+                        if (
+                            typeof window
+                                .showWorkspaceLoading ===
+                            "function"
+                        ) {
+                            window.showWorkspaceLoading(
+                                "Atualizando conferência",
+                                "Aguarde enquanto os dados são recalculados."
+                            );
+                        }
+
+                        window.location.reload();
+                    }
+                );
+
+                buildMetrics();
+
+                totalRows.textContent =
+                    walletMetrics.length;
+
+                visibleCount.textContent =
+                    walletMetrics.length;
+
+                applyTableSort();
+                applyFilters();
+            }
+        );
+    </script>
+</body>
+</html>

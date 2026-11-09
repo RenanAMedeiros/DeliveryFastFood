@@ -1,0 +1,1254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    {% include "components/_head.html" %}
+    <title>Tickets | Workspace Qore</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard_metas.css' %}?v=1.3.3">
+    <link rel="stylesheet" href="{% static 'css/dashboard_tickets.css' %}?v=3.5.0">
+</head>
+<body class="metas-page tickets-page">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="metas-main tickets-main" id="ticketsDashboard">
+        <div class="metas-shell">
+
+            <header class="metas-hero tickets-hero">
+                <div class="metas-hero-brand tickets-hero-brand">
+                    <span class="metas-hero-mark tickets-hero-mark">
+                        <i class="fa fa-ticket" aria-hidden="true"></i>
+                    </span>
+
+                    <div class="metas-hero-copy">
+                        <span class="metas-eyebrow">Workspace / Monitoramento de Serviços</span>
+                        <h1>Tickets, Atendimento e Operação</h1>
+                        <p>
+                            Visão consolidada dos tickets das áreas de Sistemas,
+                            Desenvolvimento, Processos, Projetos, Processamento,
+                            Integrações, Acessos e Business Intelligence.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="metas-hero-actions">
+                    <div class="metas-source-pill">
+                        <i class="fa fa-database" aria-hidden="true"></i>
+                        <span>
+                            <small>Fonte</small>
+                            <strong>TiFlux</strong>
+                        </span>
+                    </div>
+
+                    <div class="metas-source-pill">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <span>
+                            <small>Atualização</small>
+                            <strong id="ticketsUpdatedAt">—</strong>
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="metas-button metas-button-ghost"
+                        id="ticketsThemeButton"
+                    >
+                        <i
+                            class="fa fa-moon-o"
+                            id="ticketsThemeIcon"
+                            aria-hidden="true"
+                        ></i>
+                        <span id="ticketsThemeText">Modo escuro</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="metas-button metas-button-primary"
+                        id="ticketsRefreshButton"
+                    >
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Atualizar dados
+                    </button>
+                </div>
+            </header>
+
+            <div class="metas-section-nav-slot tickets-section-nav-slot">
+                <nav class="metas-section-nav" aria-label="Navegação do dashboard">
+                    <div class="metas-section-nav-inner">
+                        <a href="#tickets-section-overview" class="metas-section-nav-item is-active">
+                            <span class="metas-section-nav-icon"><i class="fa fa-th-large"></i></span>
+                            <span><strong>Visão Geral</strong><small>Indicadores principais</small></span>
+                        </a>
+                        <a href="#tickets-section-dashboards" class="metas-section-nav-item">
+                            <span class="metas-section-nav-icon"><i class="fa fa-bar-chart"></i></span>
+                            <span><strong>Dashboards</strong><small>Distribuições e rankings</small></span>
+                        </a>
+                        <a href="#ticketsStatusReportSection" class="metas-section-nav-item">
+                            <span class="metas-section-nav-icon"><i class="fa fa-clipboard"></i></span>
+                            <span><strong>Status Report</strong><small>Prework e visão das lideranças</small></span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+
+            <div
+                class="metas-status tickets-status"
+                id="ticketsStatus"
+                role="status"
+                hidden
+            ></div>
+
+            <section
+                class="metas-control-card tickets-control-card"
+                aria-label="Filtros do Dashboard de Tickets"
+            >
+                <button type="button" class="tickets-filters-toggle" id="ticketsFiltersToggle" aria-expanded="false">
+                    <span><i class="fa fa-sliders"></i><strong>Filtros globais</strong><small>Período e dimensões do dashboard</small></span>
+                    <span id="ticketsFiltersToggleText">Exibir filtros</span>
+                    <i class="fa fa-chevron-down" id="ticketsFiltersToggleIcon"></i>
+                </button>
+                <div id="ticketsFiltersBody" hidden>
+                <form
+                    id="ticketsFilters"
+                    data-url="{% url 'dashboard_tickets' %}"
+                    autocomplete="off"
+                >
+                    <div class="tickets-filter-grid">
+                        <div class="tickets-filter-copy">
+                            <span class="metas-kicker">Período</span>
+                            <strong>Data de criação do ticket</strong>
+                            <small id="ticketsPeriodStatus">
+                                Histórico a partir de 01/01/2025
+                            </small>
+                        </div>
+
+                        <label class="tickets-filter-field">
+                            <span>Data inicial</span>
+                            <input
+                                type="date"
+                                id="ticketsDateStart"
+                                name="data_inicial"
+                                value="2025-01-01"
+                                min="2025-01-01"
+                            >
+                        </label>
+
+                        <label class="tickets-filter-field">
+                            <span>Data final</span>
+                            <input
+                                type="date"
+                                id="ticketsDateEnd"
+                                name="data_final"
+                            >
+                        </label>
+
+                        <div class="tickets-filter-actions">
+                            <button
+                                type="submit"
+                                class="metas-button metas-button-primary"
+                                id="ticketsApplyButton"
+                            >
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                Aplicar período
+                            </button>
+
+                            <button
+                                type="button"
+                                class="metas-button metas-button-ghost"
+                                id="ticketsClearButton"
+                            >
+                                <i class="fa fa-eraser" aria-hidden="true"></i>
+                                Limpar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </section>
+
+            <section class="metas-section tickets-overview-section metas-section-anchor" id="tickets-section-overview">
+                <header class="metas-section-head tickets-section-head">
+                    <div>
+                        <span class="metas-kicker">Visão geral</span>
+                        <h2>Volume de tickets no período</h2>
+                        <p>
+                            O total considera somente as mesas definidas para o
+                            monitoramento operacional do Workspace.
+                        </p>
+                    </div>
+
+                    <span class="tickets-period-badge" id="ticketsPeriodBadge">
+                        01/01/2025 até hoje
+                    </span>
+                </header>
+
+                <div class="tickets-kpi-grid">
+                    <article class="metas-kpi tickets-kpi tickets-kpi-primary">
+                        <div class="metas-kpi-top">
+                            <span>Total de tickets</span>
+                            <i class="fa fa-ticket" aria-hidden="true"></i>
+                        </div>
+                        <strong id="ticketsTotal">—</strong>
+                        <small>Tickets encontrados no período selecionado</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Início do recorte</span>
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <strong id="ticketsStartKpi">—</strong>
+                        <small>Data inicial aplicada ao dashboard</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Fim do recorte</span>
+                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                        </div>
+                        <strong id="ticketsEndKpi">—</strong>
+                        <small>Data final aplicada ao dashboard</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top">
+                            <span>Último ticket na fonte</span>
+                            <i class="fa fa-history" aria-hidden="true"></i>
+                        </div>
+                        <strong id="ticketsLatestKpi">—</strong>
+                        <small>Registro mais recente disponibilizado pelo TiFlux</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top"><span>Tickets abertos</span><i class="fa fa-folder-open"></i></div>
+                        <strong id="ticketsOpenKpi">—</strong>
+                        <small>Registros ativos no recorte</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top"><span>Tickets fechados</span><i class="fa fa-check-circle"></i></div>
+                        <strong id="ticketsClosedKpi">—</strong>
+                        <small>Registros concluídos no recorte</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top"><span>Responsáveis</span><i class="fa fa-users"></i></div>
+                        <strong id="ticketsResponsibleKpi">—</strong>
+                        <small>Responsáveis distintos</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top"><span>Empresas</span><i class="fa fa-building"></i></div>
+                        <strong id="ticketsCompanyKpi">—</strong>
+                        <small>Empresas distintas</small>
+                    </article>
+
+                    <article class="metas-kpi tickets-kpi">
+                        <div class="metas-kpi-top"><span>Clientes</span><i class="fa fa-handshake-o"></i></div>
+                        <strong id="ticketsClientKpi">—</strong>
+                        <small>Clientes distintos</small>
+                    </article>
+                </div>
+
+                <div class="tickets-summary-grid">
+                    <article class="tickets-summary-card">
+                        <header><h3>Resumo de tickets</h3></header>
+                        <div class="tickets-summary-metrics tickets-summary-metrics-7">
+                            <div role="button" tabindex="0" data-summary-filter="all"><span>Todos</span><strong class="is-green"><i class="fa fa-ticket"></i><b id="ticketsSummaryTotal">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="open"><span>Abertos</span><strong class="is-cyan"><i class="fa fa-folder-open"></i><b id="ticketsSummaryOpen">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="closed"><span>Fechados</span><strong class="is-blue"><i class="fa fa-check-circle"></i><b id="ticketsSummaryClosed">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="has-responsible"><span>Responsáveis</span><strong class="is-purple"><i class="fa fa-users"></i><b id="ticketsSummaryResponsible">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="has-company"><span>Empresas</span><strong class="is-orange"><i class="fa fa-building"></i><b id="ticketsSummaryCompany">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="has-client"><span>Clientes</span><strong class="is-red"><i class="fa fa-handshake-o"></i><b id="ticketsSummaryClient">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="has-project"><span>Projetos</span><strong class="is-navy"><i class="fa fa-folder-open"></i><b id="ticketsSummaryProject">0</b></strong></div>
+                        </div>
+                    </article>
+
+                    <article class="tickets-summary-card">
+                        <header><h3>Vencimento de atendimento</h3></header>
+                        <div class="tickets-summary-metrics tickets-summary-metrics-4">
+                            <div role="button" tabindex="0" data-summary-filter="attend-all"><span>Com prazo</span><strong class="is-navy"><i class="fa fa-clock-o"></i><b id="ticketsAttendAll">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="attend-overdue"><span>Vencidos</span><strong class="is-red"><i class="fa fa-exclamation-triangle"></i><b id="ticketsAttendOverdue">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="attend-today"><span>Hoje</span><strong class="is-orange"><i class="fa fa-warning"></i><b id="ticketsAttendToday">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="attend-tomorrow"><span>Amanhã</span><strong class="is-blue"><i class="fa fa-calendar"></i><b id="ticketsAttendTomorrow">0</b></strong></div>
+                        </div>
+                    </article>
+
+                    <article class="tickets-summary-card">
+                        <header><h3>Vencimento de solução</h3></header>
+                        <div class="tickets-summary-metrics tickets-summary-metrics-4">
+                            <div role="button" tabindex="0" data-summary-filter="solve-all"><span>Com prazo</span><strong class="is-navy"><i class="fa fa-clock-o"></i><b id="ticketsSolveAll">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="solve-overdue"><span>Vencidos</span><strong class="is-red"><i class="fa fa-exclamation-triangle"></i><b id="ticketsSolveOverdue">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="solve-today"><span>Hoje</span><strong class="is-orange"><i class="fa fa-warning"></i><b id="ticketsSolveToday">0</b></strong></div>
+                            <div role="button" tabindex="0" data-summary-filter="solve-tomorrow"><span>Amanhã</span><strong class="is-blue"><i class="fa fa-calendar"></i><b id="ticketsSolveTomorrow">0</b></strong></div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="metas-section tickets-dashboard-section metas-section-anchor" id="tickets-section-dashboards">
+                <header class="metas-section-head tickets-section-head">
+                    <div><span class="metas-kicker">Dashboards</span><h2>Distribuição dos tickets</h2><p>Rankings calculados sobre o recorte atual dos filtros globais.</p></div>
+                </header>
+                <div class="tickets-dashboard-grid">
+                    <article class="metas-card tickets-ranking-card"><header><div><h3>Tickets por mesa</h3><p>Volume por área responsável</p></div><i class="fa fa-sitemap"></i></header><div id="ticketsDeskRanking"></div></article>
+                    <article class="metas-card tickets-ranking-card"><header><div><h3>Tickets por responsável</h3><p>Distribuição operacional</p></div><i class="fa fa-user-circle"></i></header><div id="ticketsResponsibleRanking"></div></article>
+                    <article class="metas-card tickets-ranking-card"><header><div><h3>Tickets por empresa</h3><p>Maiores volumes</p></div><i class="fa fa-building"></i></header><div id="ticketsCompanyRanking"></div></article>
+                    <article class="metas-card tickets-ranking-card"><header><div><h3>Tickets por cliente</h3><p>Maiores solicitantes</p></div><i class="fa fa-handshake-o"></i></header><div id="ticketsClientRanking"></div></article>
+                </div>
+            </section>
+
+            <section class="metas-section tickets-status-report metas-section-anchor" id="ticketsStatusReportSection" data-url="{% url 'dashboard_tickets_status_report_api' %}" hidden>
+                <header class="metas-section-head tickets-section-head tickets-status-report__head">
+                    <div>
+                        <span class="metas-kicker">Status Report</span>
+                        <h2>Ritmo semanal das lideranças</h2>
+                        <p>O tema, os indicadores e as análises mudam automaticamente conforme o dia da semana.</p>
+                    </div>
+                    <div class="tickets-status-report__actions">
+                        <span class="tickets-status-report__updated" id="ticketsStatusReportUpdated">Aguardando abertura</span>
+                        <button type="button" class="metas-button metas-button-ghost" id="ticketsStatusReportRefresh">
+                            <i class="fa fa-refresh"></i> Atualizar relatório
+                        </button>
+                    </div>
+                </header>
+
+                <div class="tickets-status-report__notice">
+                    <i class="fa fa-info-circle"></i>
+                    <span>O sistema traz números, desvios e exceções. O líder seleciona o que entra na reunião e registra somente causa, impacto, decisão e plano.</span>
+                </div>
+
+                <div class="tickets-status-report__filters">
+                    <label><span>Data do diário</span><input type="date" id="ticketsStatusReportDate"></label>
+                    <label><span>Visão</span><select id="ticketsStatusReportLeader"><option value="all">Consolidado das lideranças</option></select></label>
+                    <label><span>Situação</span><select id="ticketsStatusReportSituation"><option value="all">Todas</option><option value="red">Críticas</option><option value="yellow">Atenção</option><option value="green">Em dia</option><option value="unassigned">Não atribuídas</option></select></label>
+                </div>
+
+                <nav class="tickets-status-report__tabs" aria-label="Visões do Status Report">
+                    <button type="button" class="is-active" data-status-view="summary"><i class="fa fa-th-large"></i> Consolidado</button>
+                    <button type="button" data-status-view="leaders"><i class="fa fa-users"></i> Por líder</button>
+                    <button type="button" data-status-view="daily"><i class="fa fa-calendar-check-o"></i> Diário</button>
+                    <button type="button" data-status-view="decisions"><i class="fa fa-gavel"></i> Decisões</button>
+                </nav>
+
+                <div id="ticketsStatusReportContent" class="tickets-status-report__content">
+                    <div class="tickets-status-report__empty"><i class="fa fa-circle-o-notch fa-spin"></i><span>Preparando o relatório...</span></div>
+                </div>
+            </section>
+
+            <section class="metas-section tickets-base-section" id="ticketsBaseSection">
+                <header class="metas-section-head tickets-section-head tickets-base-head">
+                    <div>
+                        <span class="metas-kicker">Base analítica</span>
+                        <h2>Tickets encontrados</h2>
+                        <p>
+                            Consulte os registros do período e refine a visão por
+                            mesa, cliente, responsável, estágio, status ou situação.
+                        </p>
+                    </div>
+
+                </header>
+
+                <div class="tickets-portfolio-area" id="ticketsPortfolioArea">
+                    <div class="tickets-table-toolbar">
+                        <div class="tickets-view-tabs" role="tablist" aria-label="Situação dos tickets">
+                            <button type="button" class="is-active" id="ticketsOpenTab" data-view="open"><i class="fa fa-folder-open"></i>Abertos <strong id="ticketsOpenTabCount">0</strong></button>
+                            <button type="button" id="ticketsClosedTab" data-view="closed"><i class="fa fa-check-circle"></i>Fechados <strong id="ticketsClosedTabCount">0</strong></button>
+                        </div>
+                        <button type="button" class="tickets-portfolio-action" id="ticketsAnalyticToggle" aria-expanded="true"><i class="fa fa-filter"></i><span>Recolher filtros</span></button>
+                    </div>
+
+                    <div id="ticketsAnalyticBody">
+                        <div class="tickets-analytic-filters">
+                            <label class="tickets-analytic-search">
+                                <span>Pesquisar</span>
+                                <div>
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    <input type="search" id="ticketsSearch" placeholder="Ticket, solicitante, cliente ou responsável...">
+                                </div>
+                            </label>
+                            <label><span>Mesa</span><select id="ticketsDeskFilter"><option value="">Todas</option></select></label>
+                            <label><span>Cliente</span><select id="ticketsClientFilter"><option value="">Todos</option></select></label>
+                            <label><span>Responsável</span><select id="ticketsResponsibleFilter"><option value="">Todos</option></select></label>
+                            <label><span>Estágio</span><select id="ticketsStageFilter"><option value="">Todos</option></select></label>
+                            <label><span>Status</span><select id="ticketsStatusFilter"><option value="">Todos</option></select></label>
+                            <label><span>Categoria</span><select id="ticketsCategoryFilter"><option value="">Todas</option></select></label>
+                            <label><span>Empresa</span><select id="ticketsCompanyFilter"><option value="">Todas</option></select></label>
+                            <label><span>Catálogo</span><select id="ticketsCatalogFilter"><option value="">Todos</option></select></label>
+                            <label>
+                                <span>Projeto Workspace</span>
+                                <select id="ticketsProjectFilter">
+                                    <option value="">Todos</option>
+                                    <option value="cadastrado">Cadastrado</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="nao_elegivel">Não elegível</option>
+                                </select>
+                            </label>
+                            <label><span>Faixa de dias aberto</span><select id="ticketsDaysBandFilter"><option value="">Todas</option></select></label>
+                            <label><span>Faixa hora criação</span><select id="ticketsCreationShiftFilter"><option value="">Todas</option></select></label>
+                            <label><span>Origem ticket</span><select id="ticketsOriginFilter"><option value="">Todas</option></select></label>
+                        </div>
+                        <div class="tickets-active-filters" id="ticketsActiveFilters"></div>
+                    </div>
+
+                    <div class="tickets-list-tools projetos-list-tools">
+                        <div class="tickets-list-tools__copy">
+                            <strong>Tabela de tickets</strong>
+                            <span>Ordene, filtre, reorganize ou oculte colunas conforme a análise.</span>
+                        </div>
+                        <div class="tickets-list-tools__actions projetos-list-tools__actions">
+                            <div class="tickets-columns-menu-wrap">
+                                <button type="button" class="tickets-portfolio-action" id="ticketsColumnsButton" aria-expanded="false"><i class="fa fa-columns"></i> Colunas</button>
+                                <div class="tickets-columns-menu" id="ticketsColumnsMenu" hidden></div>
+                            </div>
+                            <button type="button" class="tickets-portfolio-action" id="ticketsExportCsv"><i class="fa fa-download" aria-hidden="true"></i> Exportar CSV</button>
+                            <button type="button" class="tickets-portfolio-action" id="ticketsTableExpand" aria-pressed="false"><i class="fa fa-expand" aria-hidden="true"></i><span>Expandir</span></button>
+                        </div>
+                    </div>
+
+                <article class="tickets-table-card projetos-view is-active" id="ticketsTableCard">
+                    <div class="tickets-table-wrap projetos-table-wrap" id="ticketsTableWrap">
+                        <table class="tickets-table projetos-table">
+                            <thead id="ticketsTableHead"></thead>
+                            <tbody id="ticketsTableBody">
+                                <tr>
+                                    <td colspan="40" class="tickets-table-empty">
+                                        Carregando tickets...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="tickets-table-footer">
+                        <span id="ticketsTableCount">0 registros</span>
+                        <div class="tickets-pagination" id="ticketsPagination"></div>
+                    </footer>
+                </article>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <div
+        class="metas-loading tickets-loading"
+        id="ticketsLoading"
+        aria-hidden="true"
+    >
+        <div class="metas-loading-card">
+            <div class="metas-loading-bars">
+                <span></span><span></span><span></span>
+            </div>
+            <strong>Carregando Dashboard de Tickets</strong>
+            <p>Consultando e processando os dados do TiFlux...</p>
+        </div>
+    </div>
+
+    <div
+        class="metas-toast tickets-toast"
+        id="ticketsToast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+    <div
+        class="tickets-smart-tooltip"
+        id="ticketsSmartTooltip"
+        role="tooltip"
+        aria-hidden="true"
+    ></div>
+
+    {% comment %}Script legado mantido apenas como histórico local desta versão.{% endcomment %}
+    {% comment %}
+    <script type="application/x-disabled" id="ticketsLegacyScript">
+(function () {
+    "use strict";
+
+    const elements = {
+        form: document.getElementById("ticketsFilters"),
+        dateStart: document.getElementById("ticketsDateStart"),
+        dateEnd: document.getElementById("ticketsDateEnd"),
+        clearButton: document.getElementById("ticketsClearButton"),
+        refreshButton: document.getElementById("ticketsRefreshButton"),
+        themeButton: document.getElementById("ticketsThemeButton"),
+        themeIcon: document.getElementById("ticketsThemeIcon"),
+        themeText: document.getElementById("ticketsThemeText"),
+        loading: document.getElementById("ticketsLoading"),
+        status: document.getElementById("ticketsStatus"),
+        toast: document.getElementById("ticketsToast"),
+        updatedAt: document.getElementById("ticketsUpdatedAt"),
+        periodStatus: document.getElementById("ticketsPeriodStatus"),
+        periodBadge: document.getElementById("ticketsPeriodBadge"),
+        total: document.getElementById("ticketsTotal"),
+        startKpi: document.getElementById("ticketsStartKpi"),
+        endKpi: document.getElementById("ticketsEndKpi"),
+        latestKpi: document.getElementById("ticketsLatestKpi"),
+        filteredCount: document.getElementById("ticketsFilteredCount"),
+        search: document.getElementById("ticketsSearch"),
+        deskFilter: document.getElementById("ticketsDeskFilter"),
+        clientFilter: document.getElementById("ticketsClientFilter"),
+        responsibleFilter: document.getElementById("ticketsResponsibleFilter"),
+        stageFilter: document.getElementById("ticketsStageFilter"),
+        statusFilter: document.getElementById("ticketsStatusFilter"),
+        categoryFilter: document.getElementById("ticketsCategoryFilter"),
+        companyFilter: document.getElementById("ticketsCompanyFilter"),
+        catalogFilter: document.getElementById("ticketsCatalogFilter"),
+        closedFilter: document.getElementById("ticketsClosedFilter"),
+        pageSize: document.getElementById("ticketsPageSize"),
+        clearAnalyticFilters: document.getElementById("ticketsClearAnalyticFilters"),
+        exportCsv: document.getElementById("ticketsExportCsv"),
+        activeFilters: document.getElementById("ticketsActiveFilters"),
+        tableBody: document.getElementById("ticketsTableBody"),
+        tableCount: document.getElementById("ticketsTableCount"),
+        pagination: document.getElementById("ticketsPagination"),
+    };
+
+    let toastTimer = null;
+    let sourceTickets = [];
+    let filteredTickets = [];
+    let currentPage = 1;
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    function init() {
+        elements.dateEnd.value = isoToday();
+        initTheme();
+        bindEvents();
+        loadData(false);
+    }
+
+    function bindEvents() {
+        elements.form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            loadData(false);
+        });
+
+        elements.clearButton.addEventListener("click", function () {
+            elements.dateStart.value = "2025-01-01";
+            elements.dateEnd.value = isoToday();
+            loadData(false);
+        });
+
+        elements.refreshButton.addEventListener("click", function () {
+            loadData(true);
+        });
+
+        elements.themeButton.addEventListener("click", toggleTheme);
+
+        elements.search.addEventListener("input", function () {
+            currentPage = 1;
+            applyAnalyticFilters();
+        });
+
+        [
+            elements.deskFilter,
+            elements.clientFilter,
+            elements.responsibleFilter,
+            elements.stageFilter,
+            elements.statusFilter,
+            elements.categoryFilter,
+            elements.companyFilter,
+            elements.catalogFilter,
+            elements.closedFilter,
+            elements.pageSize,
+        ].forEach(function (element) {
+            element.addEventListener("change", function () {
+                currentPage = 1;
+                applyAnalyticFilters();
+            });
+        });
+
+        elements.clearAnalyticFilters.addEventListener(
+            "click",
+            clearAnalyticFilters
+        );
+
+        elements.exportCsv.addEventListener("click", exportCsv);
+    }
+
+    async function loadData(forceRefresh) {
+        const start = elements.dateStart.value;
+        const end = elements.dateEnd.value;
+
+        if (!start || !end) {
+            showToast("Informe as datas inicial e final.", true);
+            return;
+        }
+
+        if (start > end) {
+            showToast(
+                "A data inicial não pode ser maior que a data final.",
+                true
+            );
+            return;
+        }
+
+        const params = new URLSearchParams({
+            dados: "1",
+            data_inicial: start,
+            data_final: end,
+        });
+
+        if (forceRefresh) {
+            params.set("refresh", "1");
+        }
+
+        showLoading(true);
+        setStatus("", false, true);
+
+        try {
+            const response = await fetch(
+                `${elements.form.dataset.url}?${params.toString()}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json",
+                    },
+                    cache: "no-store",
+                }
+            );
+
+            const payload = await response.json();
+
+            if (!response.ok || !payload.sucesso) {
+                throw new Error(
+                    payload.erro
+                    || payload.mensagem
+                    || "Não foi possível carregar o dashboard."
+                );
+            }
+
+            renderDashboard(payload);
+
+            if (payload.aviso) {
+                setStatus(payload.aviso, false, false);
+            }
+
+            showToast(
+                forceRefresh
+                    ? "Dados atualizados com sucesso."
+                    : "Dashboard carregado com sucesso."
+            );
+        } catch (error) {
+            console.error("Erro ao carregar tickets:", error);
+            setStatus(error.message, true, false);
+            showToast(error.message, true);
+            renderEmpty();
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function renderDashboard(payload) {
+        const start = payload.data_inicial || elements.dateStart.value;
+        const end = payload.data_final || elements.dateEnd.value;
+
+        elements.total.textContent = formatNumber(payload.total_tickets);
+        elements.startKpi.textContent = formatDate(start);
+        elements.endKpi.textContent = formatDate(end);
+        elements.latestKpi.textContent = formatDateTime(
+            payload.ultima_data_encontrada
+        );
+        elements.updatedAt.textContent = formatDateTime(payload.atualizado_em);
+
+        const periodText = `${formatDate(start)} até ${formatDate(end)}`;
+        elements.periodStatus.textContent = periodText;
+        elements.periodBadge.textContent = periodText;
+
+        elements.dateStart.value = start;
+        elements.dateEnd.value = end;
+
+        sourceTickets = Array.isArray(payload.tickets)
+            ? payload.tickets
+                .slice()
+                .sort(function (a, b) {
+                    return String(b.data_criacao || "").localeCompare(
+                        String(a.data_criacao || "")
+                    );
+                })
+            : [];
+
+        currentPage = 1;
+        populateAnalyticFilters();
+        applyAnalyticFilters();
+
+        if (!payload.aviso) {
+            setStatus("", false, true);
+        }
+    }
+
+    function populateAnalyticFilters() {
+        fillSelect(
+            elements.deskFilter,
+            uniqueValues("mesa"),
+            "Todas"
+        );
+        fillSelect(
+            elements.clientFilter,
+            uniqueValues("cliente"),
+            "Todos"
+        );
+        fillSelect(
+            elements.responsibleFilter,
+            uniqueValues("responsavel"),
+            "Todos"
+        );
+        fillSelect(
+            elements.stageFilter,
+            uniqueValues("estagio"),
+            "Todos"
+        );
+        fillSelect(
+            elements.statusFilter,
+            uniqueValues("status"),
+            "Todos"
+        );
+        fillSelect(
+            elements.categoryFilter,
+            uniqueValues("categoria"),
+            "Todas"
+        );
+        fillSelect(
+            elements.companyFilter,
+            uniqueValues("empresa"),
+            "Todas"
+        );
+        fillSelect(
+            elements.catalogFilter,
+            uniqueValues("services_catalog_name"),
+            "Todos"
+        );
+    }
+
+    function uniqueValues(field) {
+        return [
+            ...new Set(
+                sourceTickets
+                    .map(function (ticket) {
+                        return String(ticket[field] || "").trim();
+                    })
+                    .filter(Boolean)
+            ),
+        ].sort(function (a, b) {
+            return a.localeCompare(b, "pt-BR", { sensitivity: "base" });
+        });
+    }
+
+    function fillSelect(element, values, allLabel) {
+        const selected = element.value;
+
+        element.innerHTML = [
+            `<option value="">${escapeHtml(allLabel)}</option>`,
+            ...values.map(function (value) {
+                return (
+                    `<option value="${escapeHtml(value)}">`
+                    + `${escapeHtml(value)}</option>`
+                );
+            }),
+        ].join("");
+
+        if (values.includes(selected)) {
+            element.value = selected;
+        }
+    }
+
+    function applyAnalyticFilters() {
+        const term = normalizeText(elements.search.value);
+        const desk = elements.deskFilter.value;
+        const client = elements.clientFilter.value;
+        const responsible = elements.responsibleFilter.value;
+        const stage = elements.stageFilter.value;
+        const status = elements.statusFilter.value;
+        const category = elements.categoryFilter.value;
+        const company = elements.companyFilter.value;
+        const catalog = elements.catalogFilter.value;
+        const closed = elements.closedFilter.value;
+
+        filteredTickets = sourceTickets.filter(function (ticket) {
+            const searchable = normalizeText([
+                ticket.ticket,
+                ticket.mesa,
+                ticket.solicitante,
+                ticket.cliente,
+                ticket.responsavel,
+                ticket.estagio,
+                ticket.status,
+                ticket.title,
+                ticket.services_catalogs_item_name,
+                ticket.services_catalogs_area_name,
+                ticket.services_catalog_name,
+                ticket.ticket_cslog,
+                ticket.categoria,
+                ticket.empresa,
+                ticket.nome_projeto,
+                ticket.last_answer_type,
+            ].join(" "));
+
+            if (term && !searchable.includes(term)) return false;
+            if (desk && ticket.mesa !== desk) return false;
+            if (client && ticket.cliente !== client) return false;
+            if (responsible && ticket.responsavel !== responsible) return false;
+            if (stage && ticket.estagio !== stage) return false;
+            if (status && ticket.status !== status) return false;
+            if (category && ticket.categoria !== category) return false;
+            if (company && ticket.empresa !== company) return false;
+            if (catalog && ticket.services_catalog_name !== catalog) return false;
+            if (closed === "aberto" && Boolean(ticket.fechado)) return false;
+            if (closed === "fechado" && !Boolean(ticket.fechado)) return false;
+
+            return true;
+        });
+
+        const pageSize = Number(elements.pageSize.value || 25);
+        const totalPages = Math.max(
+            1,
+            Math.ceil(filteredTickets.length / pageSize)
+        );
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        elements.total.textContent = formatNumber(filteredTickets.length);
+        elements.filteredCount.textContent = formatNumber(filteredTickets.length);
+
+        renderActiveFilters();
+        renderTable();
+        renderPagination();
+    }
+
+    function renderTable() {
+        const pageSize = Number(elements.pageSize.value || 25);
+        const startIndex = (currentPage - 1) * pageSize;
+        const pageTickets = filteredTickets.slice(
+            startIndex,
+            startIndex + pageSize
+        );
+
+        if (!pageTickets.length) {
+            elements.tableBody.innerHTML = `
+                <tr>
+                    <td colspan="22" class="metas-empty">
+                        Nenhum ticket encontrado para os filtros selecionados.
+                    </td>
+                </tr>
+            `;
+            elements.tableCount.textContent = "0 registros";
+            return;
+        }
+
+        elements.tableBody.innerHTML = pageTickets.map(function (ticket) {
+            const closedClass = ticket.fechado
+                ? "is-closed"
+                : "is-open";
+            const closedLabel = ticket.fechado
+                ? "Fechado"
+                : "Aberto";
+
+            return `
+                <tr>
+                    <td>
+                        <strong class="tickets-ticket-number">
+                            #${escapeHtml(ticket.ticket || "—")}
+                        </strong>
+                    </td>
+                    <td title="${escapeHtml(ticket.title || "")}">
+                        ${escapeHtml(ticket.title || "Não informado")}
+                    </td>
+                    <td>${escapeHtml(formatDateTime(ticket.data_criacao))}</td>
+                    <td>${escapeHtml(formatDateTime(ticket.updated_at))}</td>
+                    <td>${escapeHtml(formatDateTime(ticket.attend_expiration))}</td>
+                    <td>${escapeHtml(formatDateTime(ticket.solve_expiration))}</td>
+                    <td>${escapeHtml(ticket.attend_sla_solution || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.attend_first_sla_attendance || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.last_answer_type || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.mesa || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.solicitante || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.cliente || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.responsavel || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.estagio || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.services_catalogs_item_name || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.services_catalogs_area_name || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.services_catalog_name || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.ticket_cslog || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.categoria || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.empresa || "Não informado")}</td>
+                    <td>${escapeHtml(ticket.nome_projeto || "Não informado")}</td>
+                    <td>
+                        <span class="tickets-state ${closedClass}">
+                            <i></i>${closedLabel}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        const first = startIndex + 1;
+        const last = Math.min(
+            startIndex + pageSize,
+            filteredTickets.length
+        );
+
+        elements.tableCount.textContent = (
+            `${formatNumber(first)}–${formatNumber(last)} de `
+            + `${formatNumber(filteredTickets.length)} registros`
+        );
+    }
+
+    function renderPagination() {
+        const pageSize = Number(elements.pageSize.value || 25);
+        const totalPages = Math.max(
+            1,
+            Math.ceil(filteredTickets.length / pageSize)
+        );
+
+        if (totalPages <= 1) {
+            elements.pagination.innerHTML = "";
+            return;
+        }
+
+        const pages = paginationPages(currentPage, totalPages);
+
+        elements.pagination.innerHTML = `
+            <button type="button" data-page="${currentPage - 1}"
+                ${currentPage === 1 ? "disabled" : ""}
+                aria-label="Página anterior">
+                <i class="fa fa-angle-left" aria-hidden="true"></i>
+            </button>
+            ${pages.map(function (page) {
+                if (page === "...") {
+                    return `<span>…</span>`;
+                }
+
+                return `
+                    <button type="button" data-page="${page}"
+                        class="${page === currentPage ? "is-active" : ""}">
+                        ${page}
+                    </button>
+                `;
+            }).join("")}
+            <button type="button" data-page="${currentPage + 1}"
+                ${currentPage === totalPages ? "disabled" : ""}
+                aria-label="Próxima página">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </button>
+        `;
+
+        elements.pagination.querySelectorAll("button[data-page]").forEach(
+            function (button) {
+                button.addEventListener("click", function () {
+                    const page = Number(button.dataset.page);
+
+                    if (page < 1 || page > totalPages) return;
+
+                    currentPage = page;
+                    renderTable();
+                    renderPagination();
+                    document.getElementById("ticketsBaseSection").scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                });
+            }
+        );
+    }
+
+    function paginationPages(current, total) {
+        if (total <= 7) {
+            return Array.from({ length: total }, function (_, index) {
+                return index + 1;
+            });
+        }
+
+        if (current <= 4) return [1, 2, 3, 4, 5, "...", total];
+        if (current >= total - 3) {
+            return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
+        }
+
+        return [1, "...", current - 1, current, current + 1, "...", total];
+    }
+
+    function renderActiveFilters() {
+        const filters = [];
+
+        if (elements.search.value.trim()) {
+            filters.push(`Pesquisa: ${elements.search.value.trim()}`);
+        }
+
+        [
+            ["Mesa", elements.deskFilter],
+            ["Cliente", elements.clientFilter],
+            ["Responsável", elements.responsibleFilter],
+            ["Estágio", elements.stageFilter],
+            ["Status", elements.statusFilter],
+            ["Categoria", elements.categoryFilter],
+            ["Empresa", elements.companyFilter],
+            ["Catálogo", elements.catalogFilter],
+            ["Situação", elements.closedFilter],
+        ].forEach(function (item) {
+            if (item[1].value) {
+                const option = item[1].options[item[1].selectedIndex];
+                filters.push(`${item[0]}: ${option.textContent}`);
+            }
+        });
+
+        elements.activeFilters.innerHTML = filters.map(function (filter) {
+            return `<span><i class="fa fa-filter"></i>${escapeHtml(filter)}</span>`;
+        }).join("");
+    }
+
+    function clearAnalyticFilters() {
+        elements.search.value = "";
+        elements.deskFilter.value = "";
+        elements.clientFilter.value = "";
+        elements.responsibleFilter.value = "";
+        elements.stageFilter.value = "";
+        elements.statusFilter.value = "";
+        elements.categoryFilter.value = "";
+        elements.companyFilter.value = "";
+        elements.catalogFilter.value = "";
+        elements.closedFilter.value = "";
+        elements.pageSize.value = "25";
+        currentPage = 1;
+        applyAnalyticFilters();
+    }
+
+    function exportCsv() {
+        if (!filteredTickets.length) {
+            showToast("Não existem tickets para exportar.", true);
+            return;
+        }
+
+        const header = [
+            "title",
+            "solve_expiration",
+            "attend_sla_solution",
+            "requestor_name",
+            "created_at",
+            "updated_at",
+            "is_closed",
+            "ticket_number",
+            "attend_expiration",
+            "attend_first_sla_attendance",
+            "last_answer_type",
+            "desk_name",
+            "stage_name",
+            "client_name",
+            "responsible_name",
+            "services_catalogs_item_name",
+            "services_catalogs_area_name",
+            "services_catalog_name",
+            "Sistemas-Ticket CSLOG-NÃO PREENCHER",
+            "Categoria-Categoria",
+            "Empresa-Empresa",
+            "Nome projeto-Nome projeto",
+        ];
+
+        const rows = filteredTickets.map(function (ticket) {
+            return [
+                ticket.title,
+                formatDateTime(ticket.solve_expiration),
+                ticket.attend_sla_solution,
+                ticket.requestor_name,
+                formatDateTime(ticket.created_at),
+                formatDateTime(ticket.updated_at),
+                ticket.is_closed ? "true" : "false",
+                ticket.ticket_number,
+                formatDateTime(ticket.attend_expiration),
+                ticket.attend_first_sla_attendance,
+                ticket.last_answer_type,
+                ticket.desk_name,
+                ticket.stage_name,
+                ticket.client_name,
+                ticket.responsible_name,
+                ticket.services_catalogs_item_name,
+                ticket.services_catalogs_area_name,
+                ticket.services_catalog_name,
+                ticket.ticket_cslog,
+                ticket.categoria,
+                ticket.empresa,
+                ticket.nome_projeto,
+            ];
+        });
+
+        const csv = [header, ...rows]
+            .map(function (row) {
+                return row.map(csvCell).join(";");
+            })
+            .join("\r\n");
+
+        const blob = new Blob(["\ufeff", csv], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `tickets_${elements.dateStart.value}_${elements.dateEnd.value}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+
+        showToast("Arquivo CSV gerado com sucesso.");
+    }
+
+    function csvCell(value) {
+        return `"${String(value ?? "").replace(/"/g, '""')}"`;
+    }
+
+    function normalizeText(value) {
+        return String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, function (character) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;",
+            }[character];
+        });
+    }
+
+    function renderEmpty() {
+        elements.total.textContent = "—";
+        elements.startKpi.textContent = "—";
+        elements.endKpi.textContent = "—";
+        elements.latestKpi.textContent = "—";
+        elements.updatedAt.textContent = "—";
+        sourceTickets = [];
+        filteredTickets = [];
+        elements.filteredCount.textContent = "0";
+        elements.tableBody.innerHTML = `
+            <tr>
+                <td colspan="22" class="metas-empty">
+                    Não foi possível carregar os tickets.
+                </td>
+            </tr>
+        `;
+        elements.tableCount.textContent = "0 registros";
+        elements.pagination.innerHTML = "";
+    }
+
+    function showLoading(show) {
+        elements.loading.classList.toggle("is-visible", Boolean(show));
+        elements.loading.setAttribute("aria-hidden", show ? "false" : "true");
+        elements.refreshButton.disabled = Boolean(show);
+    }
+
+    function setStatus(message, isError, hide) {
+        elements.status.hidden = Boolean(hide) || !message;
+        elements.status.textContent = message || "";
+        elements.status.classList.toggle("is-error", Boolean(isError));
+    }
+
+    function showToast(message, isError) {
+        window.clearTimeout(toastTimer);
+        elements.toast.textContent = message;
+        elements.toast.classList.toggle("is-error", Boolean(isError));
+        elements.toast.classList.add("is-visible");
+
+        toastTimer = window.setTimeout(function () {
+            elements.toast.classList.remove("is-visible");
+        }, 3200);
+    }
+
+    function initTheme() {
+        const saved = localStorage.getItem("workspace-dashboard-theme");
+
+        if (saved === "dark" || saved === "light") {
+            document.documentElement.setAttribute("data-theme", saved);
+        }
+
+        updateThemeButton();
+    }
+
+    function toggleTheme() {
+        const current = (
+            document.documentElement.getAttribute("data-theme") || "light"
+        );
+        const next = current === "dark" ? "light" : "dark";
+
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("workspace-dashboard-theme", next);
+        updateThemeButton();
+    }
+
+    function updateThemeButton() {
+        const dark = (
+            document.documentElement.getAttribute("data-theme") === "dark"
+        );
+
+        elements.themeIcon.className = dark
+            ? "fa fa-sun-o"
+            : "fa fa-moon-o";
+        elements.themeText.textContent = dark
+            ? "Modo claro"
+            : "Modo escuro";
+    }
+
+    function isoToday() {
+        const now = new Date();
+        const local = new Date(
+            now.getTime() - now.getTimezoneOffset() * 60000
+        );
+        return local.toISOString().slice(0, 10);
+    }
+
+    function parseDate(value) {
+        if (!value) return null;
+
+        const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value)
+            ? `${value}T12:00:00`
+            : value;
+        const parsed = new Date(normalized);
+
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatDate(value) {
+        const parsed = parseDate(value);
+
+        if (!parsed) return "—";
+
+        return parsed.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    }
+
+    function formatDateTime(value) {
+        const parsed = parseDate(value);
+
+        if (!parsed) return "—";
+
+        return parsed.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
+
+    function formatNumber(value) {
+        return Number(value || 0).toLocaleString("pt-BR");
+    }
+})();
+    </script>
+    {% endcomment %}
+    <script src="{% static 'js/dashboard_tickets.js' %}?v=3.5.2"></script>
+</body>
+</html>

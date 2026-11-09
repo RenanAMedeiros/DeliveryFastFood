@@ -1,0 +1,102 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Modal
+Arquivo: components/ui/_modal.html
+
+Objetivo:
+Padronizar visualmente modais do Workspace sem alterar:
+- IDs usados pelo JavaScript;
+- eventos de abertura/fechamento;
+- backdrop;
+- foco;
+- Bootstrap;
+- formulários;
+- botões;
+- AJAX/fetch;
+- regras de negócio.
+
+Parâmetros:
+- modal_dom_id             recomendado
+- modal_title              opcional
+- modal_description        opcional
+- modal_size               opcional: sm | md | lg | xl (default: md)
+- modal_body_html          conteúdo HTML já renderizado
+- modal_footer_html        opcional
+- modal_extra_class        opcional
+- modal_close_label        opcional (default: "Fechar")
+- modal_show_close         opcional (True/False; default implícito: True)
+- modal_scrollable         opcional (True/False)
+- modal_centered           opcional (True/False)
+
+IMPORTANTE:
+Este componente é um padrão visual e estrutural.
+Se a página já utiliza Bootstrap Modal, mantenha os atributos funcionais
+existentes e adicione as classes ws-modal* na estrutura atual.
+===============================================================================
+{% endcomment %}
+
+<div
+    {% if modal_dom_id %}id="{{ modal_dom_id }}"{% endif %}
+    class="ws-modal{% if modal_size %} ws-modal--{{ modal_size }}{% else %} ws-modal--md{% endif %}{% if modal_scrollable %} ws-modal--scrollable{% endif %}{% if modal_centered %} ws-modal--centered{% endif %}{% if modal_extra_class %} {{ modal_extra_class }}{% endif %}"
+    role="dialog"
+    aria-modal="true"
+    {% if modal_title %}aria-labelledby="{{ modal_dom_id|default:'ws-modal' }}-title"{% endif %}
+>
+    <div class="ws-modal__dialog">
+
+        <div class="ws-modal__content">
+
+            {% if modal_title or modal_description or modal_show_close != False %}
+                <header class="ws-modal__header">
+
+                    <div class="ws-modal__heading">
+
+                        {% if modal_title %}
+                            <h2
+                                id="{{ modal_dom_id|default:'ws-modal' }}-title"
+                                class="ws-modal__title"
+                            >
+                                {{ modal_title }}
+                            </h2>
+                        {% endif %}
+
+                        {% if modal_description %}
+                            <p class="ws-modal__description">
+                                {{ modal_description }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                    {% if modal_show_close != False %}
+                        <button
+                            type="button"
+                            class="ws-modal__close"
+                            aria-label="{{ modal_close_label|default:'Fechar' }}"
+                            title="{{ modal_close_label|default:'Fechar' }}"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    {% endif %}
+
+                </header>
+            {% endif %}
+
+            <div class="ws-modal__body">
+                {{ modal_body_html|default:""|safe }}
+            </div>
+
+            {% if modal_footer_html %}
+                <footer class="ws-modal__footer">
+                    {{ modal_footer_html|safe }}
+                </footer>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>

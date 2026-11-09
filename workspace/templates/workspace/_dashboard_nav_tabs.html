@@ -1,0 +1,29 @@
+<a
+    href="{% if 'gerencial' in dashboards_liberados %}{% url 'dashboard_gerencial' %}{% else %}javascript:void(0);{% endif %}"
+    class="{% if request.resolver_match.url_name == 'dashboard_gerencial' %}active{% endif %}{% if 'gerencial' not in dashboards_liberados %} db-locked{% endif %}"
+    {% if 'gerencial' not in dashboards_liberados %}aria-disabled="true" tabindex="-1" title="Você não tem acesso a este dashboard. Solicite a liberação da carteira correspondente."{% endif %}>
+    <i class="fa fa-line-chart" aria-hidden="true"></i>
+    <span><strong>Gerencial</strong><small>Visão estratégica e pessoas</small></span>
+    {% if 'gerencial' not in dashboards_liberados %}<span class="dashboard-lock-badge" aria-hidden="true"><i class="fa fa-lock"></i></span>{% endif %}
+</a><a
+    href="{% if 'operacional' in dashboards_liberados %}{% url 'dashboard_operacional' %}{% else %}javascript:void(0);{% endif %}"
+    class="{% if request.resolver_match.url_name == 'dashboard_operacional' %}active{% endif %}{% if 'operacional' not in dashboards_liberados %} db-locked{% endif %}"
+    {% if 'operacional' not in dashboards_liberados %}aria-disabled="true" tabindex="-1" title="Você não tem acesso a este dashboard. Solicite a liberação da carteira correspondente."{% endif %}>
+    <i class="fa fa-cogs" aria-hidden="true"></i>
+    <span><strong>Operacional</strong><small>Clientes, carteiras e operações</small></span>
+    {% if 'operacional' not in dashboards_liberados %}<span class="dashboard-lock-badge" aria-hidden="true"><i class="fa fa-lock"></i></span>{% endif %}
+</a><a
+    href="{% if 'acompanhamento' in dashboards_liberados %}{% url 'dashboard_acompanhamento' %}{% else %}javascript:void(0);{% endif %}"
+    class="{% if request.resolver_match.url_name == 'dashboard_acompanhamento' %}active{% endif %}{% if 'acompanhamento' not in dashboards_liberados %} db-locked{% endif %}"
+    {% if 'acompanhamento' not in dashboards_liberados %}aria-disabled="true" tabindex="-1" title="Você não tem acesso a este dashboard. Solicite a liberação da carteira correspondente."{% endif %}>
+    <i class="fa fa-eye" aria-hidden="true"></i>
+    <span><strong>Acompanhamento</strong><small>Telecom, importações e tickets</small></span>
+    {% if 'acompanhamento' not in dashboards_liberados %}<span class="dashboard-lock-badge" aria-hidden="true"><i class="fa fa-lock"></i></span>{% endif %}
+</a><a
+    href="{% if 'metas_controles' in dashboards_liberados %}{% url 'dashboard_metas' %}{% else %}javascript:void(0);{% endif %}"
+    class="{% if request.resolver_match.url_name == 'dashboard_metas' %}active{% endif %}{% if 'metas_controles' not in dashboards_liberados %} db-locked{% endif %}"
+    {% if 'metas_controles' not in dashboards_liberados %}aria-disabled="true" tabindex="-1" title="Você não tem acesso a este dashboard. Solicite a liberação da carteira correspondente."{% endif %}>
+    <i class="fa fa-bullseye" aria-hidden="true"></i>
+    <span><strong>Metas</strong><small>Resultados e controles</small></span>
+    {% if 'metas_controles' not in dashboards_liberados %}<span class="dashboard-lock-badge" aria-hidden="true"><i class="fa fa-lock"></i></span>{% endif %}
+</a>

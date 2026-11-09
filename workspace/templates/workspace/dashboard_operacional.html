@@ -1,0 +1,688 @@
+{% load static %}<!DOCTYPE html><html lang="pt-br"><head>{% include "components/_head.html" %}<title>Dashboards operacionais | Workspace Qore</title><link rel="stylesheet" href="{% static 'css/style_meus_dashboards.css' %}?v=1.0.0">
+<style id="db-operacional-responsive-final">
+/* =========================================================
+   RESPONSIVIDADE FINAL — DASHBOARDS OPERACIONAIS
+   Referência principal: 1920 × 1080
+   Ajustes exclusivamente estruturais e visuais.
+========================================================= */
+
+html {
+    width: 100%;
+    max-width: 100%;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.db-page,
+.db-shell,
+.db-hero,
+.db-nav,
+.db-workspace,
+.db-sidebar,
+.db-side-head,
+.db-side-top,
+.db-search,
+.db-list,
+.db-card,
+.db-card-copy,
+.db-viewer,
+.db-view-head,
+.db-view-heading,
+.db-view-copy,
+.db-tags,
+.db-actions,
+.db-frame-wrap,
+.db-frame,
+.db-loading {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.db-page {
+    width: 100%;
+    padding:
+        20px
+        clamp(16px, 2.5vw, 48px)
+        30px;
+}
+
+.db-shell {
+    width: min(1800px, 100%);
+    margin: 0 auto;
+}
+
+.db-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.db-hero > div:first-child {
+    min-width: 0;
+}
+
+.db-hero h1,
+.db-hero p,
+.db-card-copy strong,
+.db-card-copy small,
+.db-view-copy h2,
+.db-view-copy p,
+.db-tag span {
+    overflow-wrap: anywhere;
+}
+
+.db-nav {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.db-workspace {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(310px, 350px)
+        minmax(0, 1fr);
+    align-items: stretch;
+    gap: 18px;
+}
+
+.db-sidebar {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.db-side-head {
+    flex: 0 0 auto;
+}
+
+.db-search {
+    width: 100%;
+}
+
+.db-search input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.db-list {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.db-list > li {
+    min-width: 0;
+}
+
+.db-card {
+    width: 100%;
+    min-width: 0;
+}
+
+.db-card-copy {
+    min-width: 0;
+}
+
+.db-viewer {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.db-view-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.db-view-heading {
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.db-view-copy {
+    min-width: 0;
+}
+
+.db-tags,
+.db-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.db-actions {
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.db-action,
+.db-external {
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+.db-frame-wrap {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.db-frame {
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    display: block;
+    border: 0;
+}
+
+.db-loading {
+    max-width: 100%;
+}
+
+/* =========================================================
+   FULL HD — REFERÊNCIA PRINCIPAL
+========================================================= */
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+    .db-page {
+        padding:
+            24px
+            clamp(42px, 3.125vw, 60px)
+            34px;
+    }
+
+    .db-shell {
+        width: 100%;
+        max-width: 1800px;
+    }
+
+    .db-hero {
+        min-height: 118px;
+        padding: 24px 30px;
+        gap: 30px;
+    }
+
+    .db-hero h1 {
+        font-size: clamp(32px, 2.15vw, 40px);
+    }
+
+    .db-hero p {
+        max-width: 960px;
+        font-size: 13px;
+    }
+
+    .db-hero-icon {
+        flex: 0 0 auto;
+    }
+
+    .db-nav {
+        margin-top: 14px;
+        margin-bottom: 14px;
+    }
+
+    .db-workspace {
+        grid-template-columns:
+            minmax(330px, 370px)
+            minmax(0, 1fr);
+        gap: 20px;
+        min-height: min(760px, calc(100dvh - 280px));
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        min-height: min(760px, calc(100dvh - 280px));
+        max-height: min(760px, calc(100dvh - 280px));
+    }
+
+    .db-side-head {
+        padding: 18px;
+    }
+
+    .db-list {
+        max-height: 100%;
+    }
+
+    .db-card {
+        min-height: 82px;
+        padding: 13px 15px;
+    }
+
+    .db-card-copy strong {
+        font-size: 11px;
+    }
+
+    .db-card-copy small,
+    .db-meta {
+        font-size: 9px;
+    }
+
+    .db-view-head {
+        padding: 17px 19px;
+    }
+
+    .db-view-copy h2 {
+        font-size: 17px;
+    }
+
+    .db-view-copy p {
+        font-size: 10px;
+    }
+
+    .db-action,
+    .db-external {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 9px;
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: min(690px, calc(100dvh - 365px));
+    }
+}
+
+/* =========================================================
+   ULTRAWIDE
+========================================================= */
+
+@media only screen and (min-width: 2200px) {
+    .db-page {
+        padding-left: 72px;
+        padding-right: 72px;
+    }
+
+    .db-shell {
+        max-width: 1920px;
+    }
+}
+
+/* =========================================================
+   DESKTOP / NOTEBOOK GRANDE
+========================================================= */
+
+@media only screen and (min-width: 1280px) and (max-width: 1599px) {
+    .db-page {
+        padding:
+            16px
+            clamp(24px, 2.8vw, 42px)
+            26px;
+    }
+
+    .db-shell {
+        width: 100%;
+        max-width: 1500px;
+    }
+
+    .db-workspace {
+        grid-template-columns:
+            minmax(290px, 325px)
+            minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        min-height: min(680px, calc(100dvh - 245px));
+        max-height: min(680px, calc(100dvh - 245px));
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: min(610px, calc(100dvh - 325px));
+    }
+}
+
+/* =========================================================
+   NOTEBOOK / 1024–1279
+========================================================= */
+
+@media only screen and (min-width: 1024px) and (max-width: 1279px) {
+    .db-page {
+        padding:
+            14px
+            clamp(18px, 2.4vw, 28px)
+            24px;
+    }
+
+    .db-workspace {
+        grid-template-columns:
+            minmax(265px, 295px)
+            minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .db-hero {
+        gap: 18px;
+    }
+
+    .db-view-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .db-actions {
+        justify-content: flex-start;
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        min-height: min(620px, calc(100dvh - 225px));
+        max-height: min(620px, calc(100dvh - 225px));
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: min(550px, calc(100dvh - 340px));
+    }
+}
+
+/* =========================================================
+   TELAS DE ALTURA REDUZIDA / ZOOM
+========================================================= */
+
+@media only screen and (min-width: 1024px) and (max-height: 820px) {
+    .db-page {
+        padding-top: 10px;
+        padding-bottom: 14px;
+    }
+
+    .db-hero {
+        min-height: 84px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .db-nav {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        min-height: 500px;
+        max-height: calc(100dvh - 190px);
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: 430px;
+    }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media only screen and (min-width: 701px) and (max-width: 1023px) {
+    .db-page {
+        padding: 14px 18px 24px;
+    }
+
+    .db-hero {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .db-hero-icon {
+        align-self: flex-start;
+    }
+
+    .db-workspace {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .db-sidebar {
+        max-height: 430px;
+    }
+
+    .db-list {
+        max-height: 320px;
+    }
+
+    .db-viewer {
+        min-height: 620px;
+        max-height: none;
+    }
+
+    .db-view-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .db-actions {
+        justify-content: flex-start;
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: 540px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media only screen and (max-width: 700px) {
+    .db-page {
+        width: 100%;
+        padding: 10px 12px 22px;
+    }
+
+    .db-hero {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 18px 16px;
+    }
+
+    .db-hero h1 {
+        font-size: clamp(26px, 8vw, 32px);
+    }
+
+    .db-hero p {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .db-hero-icon {
+        align-self: flex-start;
+    }
+
+    .db-nav {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    .db-workspace {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .db-sidebar {
+        max-height: 410px;
+    }
+
+    .db-side-head {
+        padding: 12px;
+    }
+
+    .db-list {
+        max-height: 300px;
+    }
+
+    .db-card {
+        min-height: 72px;
+        padding: 11px 12px;
+    }
+
+    .db-viewer {
+        min-height: 560px;
+        max-height: none;
+    }
+
+    .db-view-head {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 13px;
+    }
+
+    .db-view-heading {
+        width: 100%;
+    }
+
+    .db-tags {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .db-tag {
+        max-width: 100%;
+    }
+
+    .db-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .db-action,
+    .db-external {
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+        padding: 0 10px;
+        justify-content: center;
+        white-space: normal;
+        text-align: center;
+    }
+
+    #dbExpand {
+        grid-column: 1 / -1;
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: 470px;
+    }
+}
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
+@media only screen and (max-width: 420px) {
+    .db-page {
+        padding-left: 9px;
+        padding-right: 9px;
+    }
+
+    .db-actions {
+        grid-template-columns: 1fr;
+    }
+
+    #dbExpand {
+        grid-column: auto;
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        border-radius: 14px;
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: 430px;
+    }
+}
+
+/* =========================================================
+   PAISAGEM COM POUCA ALTURA
+========================================================= */
+
+@media only screen and (max-height: 560px) and (orientation: landscape) {
+    .db-page {
+        padding-top: 8px;
+        padding-bottom: 12px;
+    }
+
+    .db-workspace {
+        min-height: 430px;
+    }
+
+    .db-sidebar,
+    .db-viewer {
+        min-height: 430px;
+        max-height: none;
+    }
+
+    .db-frame-wrap,
+    .db-frame {
+        min-height: 360px;
+    }
+}
+
+/* =========================================================
+   TOUCH
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+    .db-card,
+    .db-action,
+    .db-external {
+        min-height: 44px;
+    }
+}
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .db-card,
+    .db-action,
+    .db-external,
+    .db-frame,
+    .db-loading {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'workspace/core/css/workspace_dashboards_core.css' %}?v=1.0.0">
+</head><body class="ws-app db-workspace-page">{% include "components/navbar/_navbar.html" %}<main class="db-page ws-main"><div class="db-shell ws-page"><section class="db-hero"><div><span class="db-eyebrow">Meus dashboards</span><h1>Dashboards operacionais</h1><p>Indicadores das carteiras e operações acompanhadas pelo Workspace.</p></div><span class="db-hero-icon"><i class="fa fa-cogs" aria-hidden="true"></i></span></section><nav class="db-nav" aria-label="Categorias de dashboards">{% include "workspace/_dashboard_nav_tabs.html" %}</nav><section class="db-workspace"><aside class="db-sidebar ws-panel"><header class="db-side-head"><div class="db-side-top"><div><span>Painéis disponíveis</span><h2>Dashboards operacionais</h2></div><strong class="db-count" id="dbCount">15</strong></div><label class="db-search"><i class="fa fa-search" aria-hidden="true"></i><input type="search" id="dbSearch" placeholder="Pesquisar dashboard..." autocomplete="off"></label></header><ul class="db-list"><li><button type="button" class="db-card" data-title="Banco do Brasil Consórcio" data-description="Indicadores da carteira Banco do Brasil Consórcio." data-icon="fa fa-university" data-company="Banco do Brasil" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiMWExYTQ5YjUtODQ0OS00YWZhLWEzMTgtNTc5ZTZjMGUyMmU5IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-university" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Banco do Brasil Consórcio</strong><small>Indicadores da carteira Banco do Brasil Consórcio.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Banco do Brasil Jurídico" data-description="Indicadores jurídicos do Banco do Brasil." data-icon="fa fa-gavel" data-company="Banco do Brasil" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjg5OThmOWMtNGUwZi00ZjJmLWJjY2YtNmU5N2EwMjdhZWUzIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-gavel" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Banco do Brasil Jurídico</strong><small>Indicadores jurídicos do Banco do Brasil.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Bem Mulher Galpão" data-description="Indicadores operacionais da Bem Mulher Galpão." data-icon="fa fa-female" data-company="Bem Mulher" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzRiMTdmZTItNjc4Yi00MzgzLThlZjktNmFkMThkYmQ0NGNmIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-female" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Bem Mulher Galpão</strong><small>Indicadores operacionais da Bem Mulher Galpão.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Bem Mulher Site" data-description="Indicadores operacionais da Bem Mulher Site." data-icon="fa fa-female" data-company="Bem Mulher" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiYzg5ZjAyYTAtMjRmNy00ZDhiLTg5ZGUtYjRkNmU3YmJlNDk0IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-female" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Bem Mulher Site</strong><small>Indicadores operacionais da Bem Mulher Site.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Bradesco" data-description="Indicadores operacionais da carteira Bradesco." data-icon="fa fa-university" data-company="Bradesco" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiMWE1MmU5NTktMjk3My00NDM1LTg1YzctOWU2MjBhM2MyNWNlIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-university" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Bradesco</strong><small>Indicadores operacionais da carteira Bradesco.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="C6 Bank" data-description="Indicadores operacionais da carteira C6 Bank." data-icon="fa fa-credit-card" data-company="C6 Bank" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiZmIzNjk2ZTMtMmFkYS00Y2JkLTkwNTMtNzc4YzllMWE4Nzk4IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></span><span class="db-card-copy"><strong>C6 Bank</strong><small>Indicadores operacionais da carteira C6 Bank.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Movida" data-description="Indicadores operacionais da carteira Movida." data-icon="fa fa-car" data-company="Movida" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiNTE5OGJmYTUtM2Q4NS00NTY3LWFjM2UtM2U0ZTQyMjg2MWUyIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-car" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Movida</strong><small>Indicadores operacionais da carteira Movida.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Porto Seguro Amigável" data-description="Indicadores da operação amigável." data-icon="fa fa-handshake-o" data-company="Porto Seguro" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTU1YTUyNmQtZmRjZC00NzcwLWIzNzctY2NjZDJhNzZlMzkyIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-handshake-o" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Porto Seguro Amigável</strong><small>Indicadores da operação amigável.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Porto Seguro Contencioso" data-description="Indicadores operacionais do contencioso." data-icon="fa fa-gavel" data-company="Porto Seguro" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjIyNDE2OGUtMDEwZC00ODNhLWI4ZDItMTQwY2U3ZjNlNDAwIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-gavel" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Porto Seguro Contencioso</strong><small>Indicadores operacionais do contencioso.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Pravaler" data-description="Indicadores operacionais da carteira Pravaler." data-icon="fa fa-graduation-cap" data-company="Pravaler" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiODE5MWRkOWUtZmMyZC00ZWUxLTlmNjctZDcyZmE0YzdkMDNiIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-graduation-cap" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Pravaler</strong><small>Indicadores operacionais da carteira Pravaler.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Rodobens" data-description="Indicadores operacionais da carteira Rodobens." data-icon="fa fa-truck" data-company="Rodobens" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiODc2MGJmODktNTYxMy00OGRjLTgyNmMtY2JkZTI5NTJlN2Y2IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-truck" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Rodobens</strong><small>Indicadores operacionais da carteira Rodobens.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Santander" data-description="Indicadores operacionais da carteira Santander." data-icon="fa fa-university" data-company="Santander" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiZDQ2ZTg0YWQtMjIwMi00MTdiLWI1NWEtMDM3NzgwNjRiNjJhIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-university" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Santander</strong><small>Indicadores operacionais da carteira Santander.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Unidas" data-description="Indicadores operacionais da carteira Unidas." data-icon="fa fa-car" data-company="Unidas" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTkwMjg3MWQtNjg0Mi00YTk4LThmMTctYzlkODAyZTBiZGU4IiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-car" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Unidas</strong><small>Indicadores operacionais da carteira Unidas.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Unidas Cliente" data-description="Visão de cliente da operação Unidas." data-icon="fa fa-user-circle-o" data-company="Unidas" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiZGE5ZDQxZDAtNzVlOC00N2IxLWIwNmEtZjc2NDQzNWJmNWUzIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Unidas Cliente</strong><small>Visão de cliente da operação Unidas.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li><li><button type="button" class="db-card" data-title="Volkswagen" data-description="Indicadores operacionais da carteira Volkswagen." data-icon="fa fa-car" data-company="Volkswagen" data-area="Operacional" data-owner="" data-src="https://app.powerbi.com/view?r=eyJrIjoiMjEzNjYwMWYtY2I5Yy00NTE3LTkzODAtZjliOTNiYzQ2YmExIiwidCI6IjlkNzI2ZTYzLTA0ZTItNDY0ZC05NDcxLWFiZTg4MjMzYjUyZCJ9" aria-pressed="false"><span class="db-card-icon"><i class="fa fa-car" aria-hidden="true"></i></span><span class="db-card-copy"><strong>Volkswagen</strong><small>Indicadores operacionais da carteira Volkswagen.</small><span class="db-meta">Operacional</span></span><i class="fa fa-angle-right db-arrow" aria-hidden="true"></i></button></li></ul><div class="db-empty" id="dbEmpty"><i class="fa fa-search" aria-hidden="true"></i><strong>Nenhum dashboard encontrado</strong></div></aside><section class="db-viewer ws-panel" id="dbViewer"><header class="db-view-head"><div class="db-view-heading"><span class="db-view-icon" id="dbViewIcon"><i class="fa fa-cogs" aria-hidden="true"></i></span><div class="db-view-copy"><h2 id="dbViewTitle">Selecione um dashboard</h2><p id="dbViewDescription">Escolha um painel para visualizar os indicadores.</p><div class="db-tags"><span class="db-tag" id="dbCompany" hidden><i class="fa fa-building-o"></i><span></span></span><span class="db-tag" id="dbArea" hidden><i class="fa fa-sitemap"></i><span></span></span><span class="db-tag" id="dbOwner" hidden><i class="fa fa-user-o"></i><span></span></span></div></div></div><div class="db-actions"><button class="db-action" id="dbReload"><i class="fa fa-refresh"></i>Atualizar</button><a class="db-external" id="dbExternal" href="#" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link"></i>Abrir</a><button class="db-action" id="dbExpand" aria-pressed="false"><i class="fa fa-expand" id="dbExpandIcon"></i><span id="dbExpandLabel">Expandir</span></button></div></header><div class="db-frame-wrap"><div class="db-loading" id="dbLoading"><span class="db-bars"><span></span><span></span><span></span></span><strong>Carregando dashboard</strong><small>Aguarde enquanto os indicadores são preparados.</small></div><iframe class="db-frame" id="dbFrame" src="about:blank" title="Dashboards operacionais" allowfullscreen="true" allow="fullscreen"></iframe></div></section></section></div></main>{% include "components/_footer.html" %}{{ links_liberados|json_script:"linksLiberados" }}<script src="{% static 'js/meus_dashboards.js' %}?v=1.0.1"></script></body></html>

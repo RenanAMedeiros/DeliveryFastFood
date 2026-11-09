@@ -1,0 +1,131 @@
+{% comment %}
+===============================================================================
+WORKSPACE UI CORE
+Componente: Chart Container
+Arquivo: components/ui/_chart_container.html
+
+Objetivo:
+Padronizar visualmente áreas de gráficos do Workspace sem alterar:
+- biblioteca do gráfico;
+- datasets;
+- séries;
+- eventos;
+- tooltips;
+- filtros;
+- cores;
+- legendas;
+- backend;
+- AJAX/fetch;
+- inicializações JavaScript.
+
+Parâmetros:
+- chart_title              opcional
+- chart_description        opcional
+- chart_badge              opcional
+- chart_dom_id             opcional
+- chart_extra_class        opcional
+- chart_content            conteúdo HTML já renderizado do gráfico
+- chart_actions_html       opcional
+- chart_footer_html        opcional
+- chart_height             opcional: sm | md | lg | xl (default: md)
+- chart_no_panel           opcional (True/False)
+
+Uso:
+
+{% include "components/ui/_chart_container.html" with
+    chart_title="Evolução diária"
+    chart_description="Produção registrada ao longo do período."
+    chart_content=grafico_html
+    chart_height="lg"
+%}
+
+IMPORTANTE:
+O canvas/svg/elemento real do gráfico continua sendo definido pela página.
+Este componente apenas fornece enquadramento, largura, altura mínima e
+comportamento responsivo.
+===============================================================================
+{% endcomment %}
+
+{% if chart_no_panel %}
+<div
+    {% if chart_dom_id %}id="{{ chart_dom_id }}"{% endif %}
+    class="ws-chart-region{% if chart_extra_class %} {{ chart_extra_class }}{% endif %}"
+>
+{% else %}
+<section
+    {% if chart_dom_id %}id="{{ chart_dom_id }}"{% endif %}
+    class="ws-panel ws-chart-panel{% if chart_extra_class %} {{ chart_extra_class }}{% endif %}"
+>
+{% endif %}
+
+    {% if chart_title or chart_description or chart_actions_html %}
+        <header class="ws-panel__header ws-chart-panel__header">
+
+            <div class="ws-panel__heading">
+
+                <span class="ws-panel__icon ws-chart-panel__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                        <path d="M4 19V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M10 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M16 19V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M22 19H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M5 9L10 5L16 10L21 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+
+                <div class="ws-panel__heading-copy">
+
+                    <div class="ws-panel__title-row">
+
+                        {% if chart_title %}
+                            <h2 class="ws-panel__title">
+                                {{ chart_title }}
+                            </h2>
+                        {% endif %}
+
+                        {% if chart_badge %}
+                            <span class="ws-panel__badge">
+                                {{ chart_badge }}
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    {% if chart_description %}
+                        <p class="ws-panel__description">
+                            {{ chart_description }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% if chart_actions_html %}
+                <div class="ws-panel__actions ws-chart-panel__actions">
+                    {{ chart_actions_html|safe }}
+                </div>
+            {% endif %}
+
+        </header>
+    {% endif %}
+
+    <div class="ws-chart-region">
+
+        <div class="ws-chart-box ws-chart-box--{{ chart_height|default:'md' }}">
+            {{ chart_content|default:""|safe }}
+        </div>
+
+        {% if chart_footer_html %}
+            <div class="ws-chart-footer">
+                {{ chart_footer_html|safe }}
+            </div>
+        {% endif %}
+
+    </div>
+
+{% if chart_no_panel %}
+</div>
+{% else %}
+</section>
+{% endif %}

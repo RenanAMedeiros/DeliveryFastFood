@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Controle de Pedidos</title>
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="pedidos-page login-pedidos-page">
+    <main class="login-pedidos-shell">
+        <section class="login-pedidos-card">
+            <div class="login-pedidos-brand">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                <span>Controle de Pedidos</span>
+            </div>
+
+            <h1>Entrar</h1>
+            <p>Acesse o sistema com seu usuario e senha.</p>
+
+            {% if error_message %}
+                <div class="login-pedidos-alert">{{ error_message }}</div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}" class="pedidos-form login-pedidos-form">
+                {% csrf_token %}
+                <label class="pedidos-form-wide">
+                    Usuario
+                    <input name="usuario" id="usuario" autocomplete="username" required autofocus>
+                </label>
+
+                <label class="pedidos-form-wide">
+                    Senha
+                    <input name="senha" id="senha" type="password" autocomplete="current-password" required>
+                </label>
+
+                <div class="login-pedidos-actions">
+                    <a href="{% url 'esqueci_minha_senha' %}">Esqueci minha senha</a>
+                    <button class="pedidos-primary" type="submit">Entrar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

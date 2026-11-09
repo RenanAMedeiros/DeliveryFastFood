@@ -1,0 +1,356 @@
+{% load static %}
+
+<div
+    class="tf-request-backdrop"
+    id="tfNewRequestBackdrop"
+    aria-hidden="true"
+    hidden>
+
+    <section
+        class="tf-request-modal"
+        id="tfNewRequestDialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tfNewRequestTitle"
+        tabindex="-1">
+
+        <header class="tf-request-modal-header">
+            <div>
+                <span class="tf-request-eyebrow">
+                    Metas e controles
+                </span>
+
+                <h2 id="tfNewRequestTitle">
+                    Abrir nova solicitação
+                </h2>
+
+                <p>
+                    Escolha o processo que deseja iniciar no Workspace.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="tf-request-close"
+                id="tfCloseRequestModal"
+                aria-label="Fechar janela"
+                title="Fechar">
+
+                <i
+                    class="fa fa-times"
+                    aria-hidden="true">
+                </i>
+            </button>
+        </header>
+
+        <div class="tf-request-modal-body">
+            <div class="tf-request-intro">
+                <span class="tf-request-intro-icon">
+                    <i
+                        class="fa fa-line-chart"
+                        aria-hidden="true">
+                    </i>
+                </span>
+
+                <div>
+                    <strong>Processos disponíveis</strong>
+
+                    <p>
+                        Utilize os formulários abaixo para solicitar a
+                        produção ou registrar o envio das metas.
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="tf-service-grid tf-service-grid-workspace"
+                id="tfServiceGrid">
+
+                <!--
+                    Caminho relativo preserva a mesma rota em
+                    desenvolvimento, homologação e produção.
+                -->
+                <a
+                    href="/form_requisicao_metas/"
+                    class="tf-service-option">
+
+                    <span class="tf-service-icon">
+                        <i
+                            class="fa fa-cogs"
+                            aria-hidden="true">
+                        </i>
+                    </span>
+
+                    <span class="tf-service-copy">
+                        <strong>
+                            Envio de Produção
+                        </strong>
+
+                        <small>
+                            Produção
+                        </small>
+
+                        <span class="tf-service-description">
+                            Abra uma solicitação e envie seus resultados.
+                        </span>
+                    </span>
+
+                    <i
+                        class="fa fa-angle-right tf-service-arrow"
+                        aria-hidden="true">
+                    </i>
+                </a>
+
+                <a
+                    href="/form_envio_metas/"
+                    class="tf-service-option">
+
+                    <span class="tf-service-icon">
+                        <i
+                            class="fa fa-upload"
+                            aria-hidden="true">
+                        </i>
+                    </span>
+
+                    <span class="tf-service-copy">
+                        <strong>
+                            Envio de metas
+                        </strong>
+
+                        <small>
+                            Metas e controles
+                        </small>
+
+                        <span class="tf-service-description">
+                            Registre e encaminhe os arquivos ou
+                            informações de metas para processamento.
+                        </span>
+                    </span>
+
+                    <i
+                        class="fa fa-angle-right tf-service-arrow"
+                        aria-hidden="true">
+                    </i>
+                </a>
+            </div>
+        </div>
+
+        <footer class="tf-request-modal-footer">
+            <span>
+                <i
+                    class="fa fa-shield"
+                    aria-hidden="true">
+                </i>
+
+                A solicitação será registrada no Workspace.
+            </span>
+        </footer>
+    </section>
+</div>
+
+<script>
+    (function () {
+        "use strict";
+
+        const backdrop =
+            document.getElementById(
+                "tfNewRequestBackdrop"
+            );
+
+        const dialog =
+            document.getElementById(
+                "tfNewRequestDialog"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "tfCloseRequestModal"
+            );
+
+        const serviceLinks =
+            Array.from(
+                document.querySelectorAll(
+                    ".tf-service-option"
+                )
+            );
+
+        let lastFocusedElement = null;
+
+        if (!backdrop || !dialog) {
+            return;
+        }
+
+        window.openTaskflowRequestModal =
+            function () {
+                lastFocusedElement =
+                    document.activeElement;
+
+                backdrop.hidden = false;
+
+                backdrop.removeAttribute(
+                    "hidden"
+                );
+
+                backdrop.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.classList.add(
+                    "tf-modal-open"
+                );
+
+                document
+                    .querySelectorAll(
+                        ".nav-item.dropdown-open"
+                    )
+                    .forEach(function (item) {
+                        item.classList.remove(
+                            "dropdown-open"
+                        );
+
+                        item
+                            .querySelector(
+                                ".nav-dropdown-trigger"
+                            )
+                            ?.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+                    });
+
+                window.requestAnimationFrame(
+                    function () {
+                        dialog.focus();
+                    }
+                );
+            };
+
+        window.closeTaskflowRequestModal =
+            function () {
+                backdrop.hidden = true;
+
+                backdrop.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                backdrop.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.classList.remove(
+                    "tf-modal-open"
+                );
+
+                if (
+                    window.location.hash ===
+                    "#nova-solicitacao"
+                ) {
+                    history.replaceState(
+                        null,
+                        document.title,
+                        window.location.pathname +
+                        window.location.search
+                    );
+                }
+
+                if (
+                    lastFocusedElement &&
+                    typeof lastFocusedElement.focus ===
+                    "function"
+                ) {
+                    lastFocusedElement.focus();
+                }
+            };
+
+        document
+            .querySelectorAll(
+                ".task-open-request"
+            )
+            .forEach(function (openButton) {
+                if (
+                    openButton.dataset
+                        .workspaceRequestBound ===
+                    "true"
+                ) {
+                    return;
+                }
+
+                openButton.dataset
+                    .workspaceRequestBound =
+                    "true";
+
+                openButton.addEventListener(
+                    "click",
+                    function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        window
+                            .openTaskflowRequestModal();
+                    }
+                );
+            });
+
+        serviceLinks.forEach(
+            function (serviceLink) {
+                serviceLink.addEventListener(
+                    "click",
+                    function () {
+                        if (
+                            typeof window.showWorkspaceLoading ===
+                            "function"
+                        ) {
+                            window.showWorkspaceLoading(
+                                "Abrindo solicitação",
+                                "Preparando o formulário selecionado..."
+                            );
+                        }
+                    }
+                );
+            }
+        );
+
+        if (
+            window.location.hash ===
+            "#nova-solicitacao"
+        ) {
+            window.openTaskflowRequestModal();
+        }
+
+        closeButton?.addEventListener(
+            "click",
+            function () {
+                window.closeTaskflowRequestModal();
+
+                window.location.href =
+                    "{% url 'home' %}";
+            }
+        );
+
+        backdrop.addEventListener(
+            "click",
+            function (event) {
+                if (event.target === backdrop) {
+                    window
+                        .closeTaskflowRequestModal();
+                }
+            }
+        );
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+                if (
+                    event.key === "Escape" &&
+                    !backdrop.hidden
+                ) {
+                    window
+                        .closeTaskflowRequestModal();
+                }
+            }
+        );
+    })();
+</script>

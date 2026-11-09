@@ -1,0 +1,1241 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+
+<head>
+    <title>Financeiro | Workspace Qore</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style_financeiro_2.css' %}?v=1.4.0"
+    >
+</head>
+
+<body class="financeiro-page">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <main class="financeiro-main">
+
+        <div class="financeiro-shell">
+
+            <!-- =================================================
+                 CABEÇALHO - PADRÃO WORKSPACE
+            ================================================== -->
+
+            <section class="financeiro-hero">
+
+                <div class="financeiro-hero-left">
+
+                    <button
+                        type="button"
+                        class="financeiro-hero-back"
+                        onclick="window.history.back()"
+                        aria-label="Voltar"
+                        title="Voltar"
+                    >
+                        <i
+                            class="fa fa-arrow-left"
+                            aria-hidden="true">
+                        </i>
+                    </button>
+
+                    <div class="financeiro-hero-content">
+
+                        <span class="financeiro-eyebrow">
+                            <span class="financeiro-eyebrow-line"></span>
+                            FINANCEIRO E CONTROLES
+                        </span>
+
+                        <h1>
+                            Fechamento financeiro
+                        </h1>
+
+                        <p>
+                            Consulte os serviços processados, valide os retornos
+                            faturáveis e acompanhe os valores para fechamento
+                            financeiro por período.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="financeiro-hero-workspace-card">
+
+                    <span class="financeiro-workspace-icon">
+                        <i
+                            class="fa fa-table"
+                            aria-hidden="true">
+                        </i>
+                    </span>
+
+                    <div>
+                        <strong>
+                            Workspace Qore
+                        </strong>
+
+                        <small>
+                            Gestão financeira e acompanhamento de consultas.
+                        </small>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ERROS
+            ================================================== -->
+
+            {% if erro_periodo %}
+                <section class="financeiro-panel">
+                    <div class="financeiro-empty-state">
+                        <span class="financeiro-empty-icon">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        </span>
+
+                        <div>
+                            <strong>Período inválido</strong>
+                            <p>{{ erro_periodo }}</p>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if erro_consulta %}
+                <section class="financeiro-panel">
+                    <div class="financeiro-empty-state">
+                        <span class="financeiro-empty-icon">
+                            <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        </span>
+
+                        <div>
+                            <strong>Não foi possível carregar os dados</strong>
+                            <p>{{ erro_consulta }}</p>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+
+            <!-- =================================================
+                 FILTROS
+            ================================================== -->
+
+            <section class="financeiro-panel">
+
+                <div class="financeiro-panel-header">
+
+                    <div>
+                        <span class="financeiro-section-kicker">
+                            Consulta
+                        </span>
+
+                        <h2>
+                            Período financeiro
+                        </h2>
+
+                        <p>
+                            A tela abre com o mês atual até a data de hoje.
+                            Clique em Consultar para atualizar esse período ou altere as datas para consultar outro intervalo.
+                        </p>
+                    </div>
+
+                </div>
+
+                <form
+                    method="get"
+                    action="{% url 'financeiro_2' %}"
+                    id="financeiroFilterForm"
+                >
+
+                    <div class="financeiro-filter-grid">
+
+                        <!-- DATA INICIAL -->
+
+                        <div class="financeiro-field">
+
+                            <label for="financeiroDataInicial">
+                                Data inicial
+                            </label>
+
+                            <div class="financeiro-input-wrapper">
+
+                                <i
+                                    class="fa fa-calendar"
+                                    aria-hidden="true">
+                                </i>
+
+                                <input
+                                    type="date"
+                                    id="financeiroDataInicial"
+                                    name="data_inicial"
+                                    value="{{ data_inicial_iso }}"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATA FINAL -->
+
+                        <div class="financeiro-field">
+
+                            <label for="financeiroDataFinal">
+                                Data final
+                            </label>
+
+                            <div class="financeiro-input-wrapper">
+
+                                <i
+                                    class="fa fa-calendar"
+                                    aria-hidden="true">
+                                </i>
+
+                                <input
+                                    type="date"
+                                    id="financeiroDataFinal"
+                                    name="data_final"
+                                    value="{{ data_final_iso }}"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- REGRA -->
+
+                        <div class="financeiro-field">
+
+                            <label>
+                                Regra financeira
+                            </label>
+
+                            <div class="financeiro-static-field">
+
+                                <span class="financeiro-static-icon">
+                                    <i
+                                        class="fa fa-check"
+                                        aria-hidden="true">
+                                    </i>
+                                </span>
+
+                                <div>
+                                    <strong>Status 200</strong>
+                                    <small>Somente retornos faturáveis entram no cálculo</small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTÃO -->
+
+                        <div class="financeiro-filter-action">
+
+                            <button
+                                type="submit"
+                                class="financeiro-primary-button"
+                                id="financeiroConsultarButton"
+                            >
+
+                                <i
+                                    class="fa fa-search"
+                                    aria-hidden="true">
+                                </i>
+
+                                <span>
+                                    Consultar
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATUS DA COMPETÊNCIA
+            ================================================== -->
+
+            <section class="financeiro-panel">
+
+                <div class="financeiro-panel-header">
+
+                    <div>
+
+                        <span class="financeiro-section-kicker">
+                            Competência
+                        </span>
+
+                        <h2>
+                            Situação do período
+                        </h2>
+
+                        <p>
+                            Informações do período atualmente carregado.
+                        </p>
+
+                        <div
+                            class="financeiro-sync-note"
+                            id="financeiroUltimaSincronizacao"
+                            aria-live="polite"
+                        >
+                            <i
+                                class="fa fa-refresh"
+                                aria-hidden="true">
+                            </i>
+
+                            <span>
+                                Última sincronização:
+                            </span>
+
+                            <strong id="financeiroUltimaSincronizacaoData">
+                                -
+                            </strong>
+
+                            <span
+                                class="financeiro-sync-origin"
+                                id="financeiroUltimaSincronizacaoOrigem"
+                                hidden
+                            ></span>
+                        </div>
+
+                    </div>
+
+                    <span class="financeiro-status-pill">
+                        <span></span>
+                        <span id="financeiroPeriodoDescricao">{{ periodo_descricao }}</span>
+                    </span>
+
+                </div>
+
+
+                <div class="financeiro-info-grid">
+
+
+                    <article class="financeiro-info-card">
+
+                        <span class="financeiro-info-icon">
+                            <i
+                                class="fa fa-calendar"
+                                aria-hidden="true">
+                            </i>
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Período selecionado
+                            </small>
+
+                            <strong id="financeiroPeriodoSelecionado">
+                                {{ data_inicial|date:"d/m/Y" }}
+                                até
+                                {{ data_final|date:"d/m/Y" }}
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="financeiro-info-card">
+
+                        <span class="financeiro-info-icon">
+                            <i
+                                class="fa fa-clock-o"
+                                aria-hidden="true">
+                            </i>
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Competência
+                            </small>
+
+                            <strong id="financeiroCompetenciaExibicao">
+                                {{ competencia_exibicao }}
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="financeiro-info-card">
+
+                        <span class="financeiro-info-icon">
+                            <i
+                                class="fa fa-check-circle"
+                                aria-hidden="true">
+                            </i>
+                        </span>
+
+                        <div>
+
+                            <small>
+                                Regra de faturamento
+                            </small>
+
+                            <strong>
+                                STATUS_RETORNO = 200
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+            <section
+                class="financeiro-query-error"
+                id="financeiroConsultaErro"
+                hidden
+            >
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <div>
+                    <strong>Não foi possível carregar os dados</strong>
+                    <p id="financeiroConsultaErroTexto"></p>
+                </div>
+            </section>
+
+
+            <!-- =================================================
+                 INDICADORES
+            ================================================== -->
+
+            <section class="financeiro-summary-grid">
+
+
+                <article class="financeiro-summary-card">
+
+                    <div class="financeiro-summary-top">
+
+                        <span class="financeiro-summary-icon">
+                            <i class="fa fa-database"></i>
+                        </span>
+
+                        <span class="financeiro-summary-label">
+                            Total consultado
+                        </span>
+
+                    </div>
+
+                    <strong class="financeiro-summary-value" id="financeiroTotalRegistros">
+                        0
+                    </strong>
+
+                    <small>
+                        Registros consolidados
+                    </small>
+
+                </article>
+
+
+                <article class="financeiro-summary-card">
+
+                    <div class="financeiro-summary-top">
+
+                        <span class="financeiro-summary-icon is-success">
+                            <i class="fa fa-check"></i>
+                        </span>
+
+                        <span class="financeiro-summary-label">
+                            Retornos válidos
+                        </span>
+
+                    </div>
+
+                    <strong class="financeiro-summary-value" id="financeiroTotalStatus200">
+                        0
+                    </strong>
+
+                    <small>
+                        STATUS_RETORNO = 200
+                    </small>
+
+                </article>
+
+
+                <article class="financeiro-summary-card">
+
+                    <div class="financeiro-summary-top">
+
+                        <span class="financeiro-summary-icon is-warning">
+                            <i class="fa fa-exclamation"></i>
+                        </span>
+
+                        <span class="financeiro-summary-label">
+                            Outros retornos
+                        </span>
+
+                    </div>
+
+                    <strong class="financeiro-summary-value" id="financeiroTotalOutrosStatus">
+                        0
+                    </strong>
+
+                    <small>
+                        Não entram no faturamento
+                    </small>
+
+                </article>
+
+
+                <article class="financeiro-summary-card is-highlight">
+
+                    <div class="financeiro-summary-top">
+
+                        <span class="financeiro-summary-icon">
+                            <i class="fa fa-money"></i>
+                        </span>
+
+                        <span class="financeiro-summary-label">
+                            Total financeiro
+                        </span>
+
+                    </div>
+
+                    <strong class="financeiro-summary-value" id="financeiroTotalFinanceiro">
+                        R$ 0,00
+                    </strong>
+
+                    <small>
+                        Valor calculado no período
+                    </small>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 BASES
+            ================================================== -->
+
+            <section class="financeiro-panel">
+
+                <div class="financeiro-panel-header">
+
+                    <div>
+
+                        <span class="financeiro-section-kicker">
+                            Origem
+                        </span>
+
+                        <h2>
+                            Bases consultadas
+                        </h2>
+
+                        <p>
+                            Quantidade retornada por cada base de processamento.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="financeiro-bases-grid">
+
+
+                    <article class="financeiro-base-card">
+
+                        <span class="financeiro-base-icon">
+                            <i class="fa fa-database"></i>
+                        </span>
+
+                        <div>
+                            <small>Origem</small>
+                            <strong>Base Geral</strong>
+                            <span>Registros do período</span>
+                        </div>
+
+                        <b>
+                            <span id="financeiroBaseGeral">0</span>
+                        </b>
+
+                    </article>
+
+
+                    <article class="financeiro-base-card">
+
+                        <span class="financeiro-base-icon">
+                            <i class="fa fa-database"></i>
+                        </span>
+
+                        <div>
+                            <small>Origem</small>
+                            <strong>C6</strong>
+                            <span>Registros do período</span>
+                        </div>
+
+                        <b>
+                            <span id="financeiroBaseC6">0</span>
+                        </b>
+
+                    </article>
+
+
+                    <article class="financeiro-base-card">
+
+                        <span class="financeiro-base-icon">
+                            <i class="fa fa-database"></i>
+                        </span>
+
+                        <div>
+                            <small>Origem</small>
+                            <strong>Santander</strong>
+                            <span>Registros do período</span>
+                        </div>
+
+                        <b>
+                            <span id="financeiroBaseSantander">0</span>
+                        </b>
+
+                    </article>
+
+                </div>
+
+                <div id="financeiroErrosBases" class="financeiro-base-errors" hidden></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RESUMO FINANCEIRO
+            ================================================== -->
+
+            <section class="financeiro-panel">
+
+                <div class="financeiro-panel-header">
+
+                    <div>
+
+                        <span class="financeiro-section-kicker">
+                            Faturamento
+                        </span>
+
+                        <h2>
+                            Resumo financeiro
+                        </h2>
+
+                        <p>
+                            Composição financeira considerando somente
+                            registros com retorno 200.
+                        </p>
+
+                    </div>
+
+
+                    <div class="financeiro-total-box">
+
+                        <small>
+                            Total do período
+                        </small>
+
+                        <strong id="financeiroTotalPeriodo">
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="financeiro-table-container">
+
+                    <table class="financeiro-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Serviço</th>
+                                <th>Método</th>
+                                <th class="is-center">
+                                    Quantidade
+                                </th>
+                                <th class="is-right">
+                                    Valor unitário
+                                </th>
+                                <th class="is-right">
+                                    Valor total
+                                </th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="financeiroServicosBody">
+
+                            <tr class="financeiro-table-empty-row">
+                                <td colspan="5">
+                                    Carregando composição financeira...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CONFERÊNCIA
+            ================================================== -->
+
+            <section
+                class="financeiro-panel"
+                id="financeiroAnaliticoPanel"
+            >
+
+                <div class="financeiro-panel-header financeiro-panel-header-analytic">
+
+                    <div>
+
+                        <span class="financeiro-section-kicker">
+                            Conferência
+                        </span>
+
+                        <h2 id="financeiroAnaliticoTitulo">
+                            Retornos válidos
+                        </h2>
+
+                        <p id="financeiroAnaliticoDescricao">
+                            Registros com STATUS_RETORNO = 200.
+                            A tabela exibe até {{ limite_registros_tela|default:20 }}
+                            linhas por página.
+                        </p>
+
+                    </div>
+
+
+                    <div class="financeiro-analytic-header-actions">
+
+                        <div class="financeiro-table-search">
+
+                            <i
+                                class="fa fa-search"
+                                aria-hidden="true">
+                            </i>
+
+                            <input
+                                type="search"
+                                id="financeiroAnaliticoSearch"
+                                placeholder="Pesquisar na tabela..."
+                                autocomplete="off"
+                                aria-label="Pesquisar registros"
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="financeiro-error-toggle"
+                            id="financeiroAlternarRetornos"
+                            data-mode="success"
+                        >
+
+                            <i
+                                class="fa fa-exclamation-triangle"
+                                aria-hidden="true">
+                            </i>
+
+                            <span id="financeiroAlternarRetornosTexto">
+                                Ver erros
+                            </span>
+
+                            <strong id="financeiroAlternarRetornosQuantidade">
+                                0
+                            </strong>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="financeiro-table-container">
+
+                    <table
+                        class="financeiro-table financeiro-analytic-table"
+                        id="financeiroAnaliticoTable"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="0"
+                                        data-sort-type="number"
+                                    >
+                                        ID Contrato
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="1"
+                                        data-sort-type="text"
+                                    >
+                                        Empresa
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="2"
+                                        data-sort-type="text"
+                                    >
+                                        Carteira
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="3"
+                                        data-sort-type="date"
+                                    >
+                                        Data
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="4"
+                                        data-sort-type="text"
+                                    >
+                                        Método
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="5"
+                                        data-sort-type="text"
+                                    >
+                                        Entrada
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th class="is-center">
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button is-center"
+                                        data-sort-index="6"
+                                        data-sort-type="number"
+                                    >
+                                        Status
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                                <th>
+                                    <button
+                                        type="button"
+                                        class="financeiro-sort-button"
+                                        data-sort-index="7"
+                                        data-sort-type="text"
+                                    >
+                                        Exception
+                                        <i class="fa fa-sort"></i>
+                                    </button>
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="financeiroAnaliticoBody">
+
+                            <tr class="financeiro-table-empty-row">
+                                <td colspan="8">
+                                    Carregando registros...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="financeiro-table-footer">
+
+                    <span id="financeiroAnaliticoContador">
+                        0 registros
+                    </span>
+
+                    <div
+                        class="financeiro-pagination"
+                        id="financeiroAnaliticoPaginacao"
+                        aria-label="Paginação da tabela"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+<!-- =================================================
+     AÇÕES
+================================================== -->
+
+<section class="financeiro-panel">
+
+    <div class="financeiro-panel-header">
+
+        <div>
+
+            <span class="financeiro-section-kicker">
+                Fechamento
+            </span>
+
+            <h2>
+                Competências financeiras
+            </h2>
+
+            <p>
+                Cada competência é liberada no mês seguinte e permanece
+                disponível até que o fechamento seja confirmado.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% if erro_fechamento %}
+
+        <div class="financeiro-closing-error">
+
+            <i
+                class="fa fa-exclamation-triangle"
+                aria-hidden="true">
+            </i>
+
+            <span>
+                {{ erro_fechamento }}
+            </span>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="financeiro-closing-list">
+
+        {% for fechamento in fechamentos_disponiveis %}
+
+            <article class="financeiro-closing-row">
+
+                <div class="financeiro-closing-main">
+
+                    <span class="financeiro-closing-icon">
+
+                        <i
+                            class="fa {% if fechamento.fechado %}fa-lock{% else %}fa-calendar-check-o{% endif %}"
+                            aria-hidden="true">
+                        </i>
+
+                    </span>
+
+
+                    <div class="financeiro-closing-content">
+
+                        <div class="financeiro-closing-title">
+
+                            <strong>
+                                Competência {{ fechamento.competencia }}
+                            </strong>
+
+
+                            {% if fechamento.fechado %}
+
+                                <span class="financeiro-closing-status is-closed">
+                                    <span></span>
+                                    Fechado
+                                </span>
+
+                            {% else %}
+
+                                <span class="financeiro-closing-status is-available">
+                                    <span></span>
+                                    Disponível para fechamento
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="financeiro-closing-meta">
+
+                            <span>
+
+                                <i
+                                    class="fa fa-calendar"
+                                    aria-hidden="true">
+                                </i>
+
+                                {{ fechamento.data_inicial|date:"d/m/Y" }}
+                                até
+                                {{ fechamento.data_final|date:"d/m/Y" }}
+
+                            </span>
+
+
+                            <span>
+
+                                <i
+                                    class="fa fa-check-circle"
+                                    aria-hidden="true">
+                                </i>
+
+                                Somente STATUS_RETORNO = 200
+
+                            </span>
+
+
+                            {% if fechamento.fechado %}
+
+                                <span>
+
+                                    <i
+                                        class="fa fa-list-ol"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    {{ fechamento.quantidade|default:0 }} consultas
+
+                                </span>
+
+                                <span>
+
+                                    <i
+                                        class="fa fa-money"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    R$ {{ fechamento.valor_total|default:0|floatformat:2 }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if fechamento.fechado %}
+
+                            <div class="financeiro-closing-audit">
+
+                                <span>
+                                    <strong>Fechado por:</strong>
+                                    {{ fechamento.fechado_por|default:"-" }}
+                                </span>
+
+                                <span>
+                                    <strong>Fechado em:</strong>
+                                    {{ fechamento.fechado_em|date:"d/m/Y H:i" }}
+                                </span>
+
+
+                                {% if fechamento.atualizado_em %}
+
+                                    <span>
+                                        <strong>Atualizado por:</strong>
+                                        {{ fechamento.atualizado_por|default:"-" }}
+                                    </span>
+
+                                    <span>
+                                        <strong>Atualizado em:</strong>
+                                        {{ fechamento.atualizado_em|date:"d/m/Y H:i" }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="financeiro-actions">
+
+                    {% if fechamento.fechado %}
+
+                        <a
+                            href="{% url 'financeiro_2' %}?acao=exportar_fechamento&competencia={{ fechamento.competencia_slug }}"
+                            class="financeiro-secondary-button financeiro-export-button"
+                            data-no-workspace-loading="true"
+                            title="Baixar Excel fechado"
+                        >
+
+                            <i
+                                class="fa fa-file-excel-o"
+                                aria-hidden="true">
+                            </i>
+
+                            Baixar Excel
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'financeiro_2' %}?acao=gerar_pdf_fechamento&competencia={{ fechamento.competencia_slug }}"
+                            class="financeiro-secondary-button financeiro-pdf-button"
+                            data-no-workspace-loading="true"
+                            title="Baixar PDF fechado"
+                        >
+
+                            <i
+                                class="fa fa-file-pdf-o"
+                                aria-hidden="true">
+                            </i>
+
+                            Baixar PDF
+
+                        </a>
+
+                    {% else %}
+
+                        <form
+                            method="post"
+                            action="{% url 'financeiro_2' %}"
+                            class="financeiro-closing-form"
+                            onsubmit="return confirm('Confirmar o fechamento definitivo da competência {{ fechamento.competencia }}? Após o fechamento, os dados e documentos permanecerão congelados.');"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="acao"
+                                value="fechar_competencia"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="competencia"
+                                value="{{ fechamento.competencia_slug }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="financeiro-close-button financeiro-confirm-close-button"
+                            >
+
+                                <i
+                                    class="fa fa-lock"
+                                    aria-hidden="true">
+                                </i>
+
+                                Fechar competência
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+        {% empty %}
+
+            <div class="financeiro-empty-state">
+
+                <span class="financeiro-empty-icon">
+
+                    <i
+                        class="fa fa-calendar-times-o"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <div>
+
+                    <strong>
+                        Nenhuma competência disponível
+                    </strong>
+
+                    <p>
+                        Ainda não existe mês completo disponível
+                        para fechamento.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+        </div>
+
+    </main>
+
+    {% include "components/_footer.html" %}
+
+    <script
+        src="{% static 'js/financeiro_2.js' %}?v=1.4.1">
+    </script>
+
+</body>
+
+</html>

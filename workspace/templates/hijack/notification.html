@@ -1,0 +1,79 @@
+{% load static %}
+
+{% comment %}
+Sobrescreve o template padrão do django-hijack (hijack/notification.html)
+apenas para ajustar os textos para o vocabulário do Workspace.
+
+A precedência funciona porque o app 'workspace' vem antes de 'hijack'
+no INSTALLED_APPS. O middleware HijackUserMiddleware injeta este bloco
+automaticamente antes do </body> de toda página HTML.
+{% endcomment %}
+
+{% block content %}
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{% static 'hijack/hijack.css' %}"
+        media="screen">
+
+    <div class="djhj" id="djhj">
+
+        <div class="djhj-notification">
+
+            <div class="djhj-message">
+                Você está simulando a visão de
+                <em>{{ request.user }}</em>.
+            </div>
+
+            {% comment %}
+            Os dois botões de submit postam para hijack:release — a diferença
+            está no "next" que cada um envia. O ReleaseUserView devolve a
+            sessão ao superusuário e redireciona para esse destino, então
+            "Simular outro usuário" encerra a simulação atual e já cai na aba
+            "Simular usuário" das Configurações, pronta para escolher o
+            próximo. O "?simular=" na URL é o que abre essa aba (a troca de
+            painel da página é feita por CSS, via input :checked).
+
+            Cada botão carrega o próprio name="next" (em vez de um input
+            hidden compartilhado) para que só um valor de "next" chegue no
+            POST, sem depender da ordem dos campos no formulário.
+            {% endcomment %}
+
+            <form
+                action="{% url 'hijack:release' %}"
+                method="POST"
+                class="djhj-actions">
+
+                {% csrf_token %}
+
+                <button
+                    class="djhj-button"
+                    type="button"
+                    onclick="document.getElementById('djhj').style.display = 'none';">
+                    Ocultar aviso
+                </button>
+
+                <button
+                    class="djhj-button"
+                    type="submit"
+                    name="next"
+                    value="{% url 'configuracao' %}?simular=">
+                    Simular outro usuário
+                </button>
+
+                <button
+                    class="djhj-button"
+                    type="submit"
+                    name="next"
+                    value="{{ request.path }}">
+                    Parar simulação visão Usuário
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+{% endblock content %}

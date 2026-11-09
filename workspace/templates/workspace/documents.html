@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+{% include "components/navbar/_notificacao.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Arquivos</title>
+    <link rel="stylesheet" href="{% static 'css/style_documents.css' %}?v=1.0">
+</head>
+
+<body>
+
+    {% include "components/navbar/_navbar.html" %}
+
+
+    <main>
+    <div class="title-button-container">
+        
+        <a href="javascript:void(0);" class="filter_icon" onclick="filterMenu()">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+        </a>
+
+    </div>
+
+    <form id="filter-form" method="get" action="{% url 'documents' %}">
+        <div class="filter-header">
+            <div class="filter">
+                
+                <input type="text" id="search_id" name="search_id" placeholder="ID Anexo" value="{{ request.GET.search_id }}">
+            </div>
+            <div class="filter">
+                
+                <select name="search_tipo" id="tipo">
+                    <option value="" disabled selected>Tipo Documento</option>
+                    <option value="NF" {% if request.GET.search_tipo == "NF" %}selected{% endif %}>Nota Fiscal</option>
+                    <option value="Comprovante" {% if request.GET.search_tipo == "Comprovante" %}selected{% endif %}>Comprovante</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label for="search_date_from">Data Inclusão De:</label>
+                <input type="date" id="search_date_from" name="search_date_from" value="{{ request.GET.search_date_from }}">
+            </div>
+            <div class="filter">
+                <label for="search_date_to">Data Inclusão Até:</label>
+                <input type="date" id="search_date_to" name="search_date_to" value="{{ request.GET.search_date_to }}">
+            </div>
+            <div class="buttons_container">
+
+                <div class="filter">
+                    <button type="submit" class="search-button">Pesquisar</button>
+                </div>
+    
+                <div class="filter">
+                    <button type="button" class="clear-button" onclick="clearForm()">Limpar</button>
+                </div>
+            </div>
+
+            <script>
+                function clearForm() {
+                    window.location.href = "{% url 'documents' %}";
+                }
+            </script>
+        </div>
+    </form>
+
+    <table class="filesTable">
+        <thead>
+            <tr>
+                <th>ID Anexo</th>
+                <th>Nome do Arquivo</th>
+                <th>Criado Por</th>
+                <th>Data Inclusão</th>
+                <th>Tipo Documento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in documentos_com_tipo %}
+            <tr>
+                <td>{{ item.documento.protocolo }}</td>
+                <td>{{ item.documento.nome_arquivo }}</td>
+                <td>{{ item.documento.criado_por.nome }}</td>
+                <td>{{ item.documento.data_upload|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.tipo_documento }}</td>
+                <td>
+                    {% if item.documento.get_file_extension == 'pdf' %}
+                    <a href="{% url 'visualizar_documento' item.documento.id %}" target="_blank">
+                        <button class="btn visualizar-btn">Visualizar</button>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'baixar_documento' item.documento.id %}">
+                        <button class="btn baixar-btn">Baixar</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</main>
+    <script>
+        function toggleMenu() {
+            document.getElementById('subMenu').classList.toggle('open-menu');
+        }
+
+        function filterMenu() {
+            var nav = document.getElementById("filter-form");
+            if (nav.style.display === "flex") {
+                nav.style.display = "none";
+            } else {
+                nav.style.display = "flex";
+                nav.style.flexDirection = "column"
+            }
+        }
+    </script>
+
+    
+</body>
+
+</html>

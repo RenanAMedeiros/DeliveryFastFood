@@ -1,0 +1,699 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    {% include "components/_head.html" %}
+    <title>Produção e Metas | Workspace Qore</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_metas.css' %}?v=1.3.3">
+</head>
+<body class="metas-page{% if modo_embed %} is-embedded{% endif %}">
+
+    {% if not modo_embed %}
+        {% include "components/navbar/_navbar.html" %}
+    {% endif %}
+
+    <main class="metas-main" id="metasDashboard">
+        <div class="metas-shell">
+
+            <header class="metas-hero">
+                <div class="metas-hero-brand">
+                    <span class="metas-hero-mark">
+                        <i class="fa fa-bullseye" aria-hidden="true"></i>
+                    </span>
+
+                    <div class="metas-hero-copy">
+                        <span class="metas-eyebrow">Workspace / Monitoramento Executivo</span>
+                        <h1>Metas, Atingimento e Eficiência</h1>
+                        <p>Leitura executiva de produção, pagamento, HO, metas, eficiência, quebra, carteiras digitais e performance por liderança.</p>
+                    </div>
+                </div>
+
+                <div class="metas-hero-actions">
+                    <div class="metas-source-pill">
+                        <i class="fa fa-database" aria-hidden="true"></i>
+                        <span>
+                            <small>Fonte</small>
+                            <strong id="metasDataSource">Banco Workspace Qore</strong>
+                        </span>
+                    </div>
+
+                    <div class="metas-source-pill">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <span>
+                            <small>Atualização</small>
+                            <strong id="metasUpdatedAt">—</strong>
+                        </span>
+                    </div>
+
+                    <button type="button" class="metas-button metas-button-ghost" id="metasThemeButton">
+                        <i class="fa fa-moon-o" id="metasThemeIcon" aria-hidden="true"></i>
+                        <span id="metasThemeText">Modo escuro</span>
+                    </button>
+
+                    <button type="button" class="metas-button metas-button-primary" id="metasRefreshButton">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Atualizar dados
+                    </button>
+                </div>
+            </header>
+
+            <div class="metas-section-nav-slot" id="metasSectionNavSlot">
+                <nav class="metas-section-nav" id="metasSectionNav" aria-label="Navegação do dashboard">
+                <div class="metas-section-nav-inner">
+                    <a href="#metas-section-overview" class="metas-section-nav-item is-active" data-section-nav="metas-section-overview">
+                        <span class="metas-section-nav-icon"><i class="fa fa-th-large" aria-hidden="true"></i></span>
+                        <span><strong>Visão Geral</strong><small>KPIs e composição</small></span>
+                    </a>
+
+                    <a href="#metas-section-daily" class="metas-section-nav-item" data-section-nav="metas-section-daily">
+                        <span class="metas-section-nav-icon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                        <span><strong>Diário de Bordo</strong><small>Mês atual</small></span>
+                    </a>
+
+                    <a href="#metas-section-intelligence" class="metas-section-nav-item" data-section-nav="metas-section-intelligence">
+                        <span class="metas-section-nav-icon"><i class="fa fa-lightbulb-o" aria-hidden="true"></i></span>
+                        <span><strong>Inteligência</strong><small>Leitura automática</small></span>
+                    </a>
+
+                    <a href="#metas-section-evolution" class="metas-section-nav-item" data-section-nav="metas-section-evolution">
+                        <span class="metas-section-nav-icon"><i class="fa fa-line-chart" aria-hidden="true"></i></span>
+                        <span><strong>Evolução</strong><small>Mensal e ICM</small></span>
+                    </a>
+
+                    <a href="#metas-section-comparison" class="metas-section-nav-item" data-section-nav="metas-section-comparison">
+                        <span class="metas-section-nav-icon"><i class="fa fa-exchange" aria-hidden="true"></i></span>
+                        <span><strong>Comparativos</strong><small>Mês e D.U.</small></span>
+                    </a>
+
+                    <a href="#metas-section-rankings" class="metas-section-nav-item" data-section-nav="metas-section-rankings">
+                        <span class="metas-section-nav-icon"><i class="fa fa-trophy" aria-hidden="true"></i></span>
+                        <span><strong>Rankings</strong><small>Mês atual</small></span>
+                    </a>
+
+                    <a href="#metas-section-matrix" class="metas-section-nav-item" data-section-nav="metas-section-matrix">
+                        <span class="metas-section-nav-icon"><i class="fa fa-table" aria-hidden="true"></i></span>
+                        <span><strong>Matriz</strong><small>Empresa → Carteira</small></span>
+                    </a>
+
+                    <a href="#metas-section-base" class="metas-section-nav-item" data-section-nav="metas-section-base">
+                        <span class="metas-section-nav-icon"><i class="fa fa-database" aria-hidden="true"></i></span>
+                        <span><strong>Base</strong><small>Dados analíticos</small></span>
+                    </a>
+                </div>
+                </nav>
+            </div>
+
+            <div class="metas-status" id="metasStatus" hidden></div>
+
+            <section class="metas-control-card" id="metas-section-filters" aria-label="Controles do dashboard">
+                <form id="metasFilters" data-url="{% url 'dashboard_metas' %}" autocomplete="off">
+                    <div class="metas-period-grid">
+                        <div class="metas-period-label">
+                            <span class="metas-kicker">Período</span>
+                            <strong>Calendário oficial</strong>
+                            <small id="metasPeriodStatus">Todos os meses</small>
+                        </div>
+                        <div class="metas-period-content">
+                            <div class="metas-month-row" id="metasMonthButtons"></div>
+                            <div class="metas-date-range" hidden>
+                                <label>De <input type="date" id="metasDateStart"></label>
+                                <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                                <label>Até <input type="date" id="metasDateEnd"></label>
+                            </div>
+                        </div>
+                        <div class="metas-period-actions">
+                            <button type="button" class="metas-button metas-button-ghost" id="metasAdvancedToggle">
+                                <i class="fa fa-sliders" aria-hidden="true"></i> Mais filtros
+                            </button>
+                            <button type="button" class="metas-button metas-button-ghost" id="metasClearButton">
+                                <i class="fa fa-eraser" aria-hidden="true"></i> Limpar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="metas-selector-grid">
+                        <article class="metas-selector-card">
+                            <div class="metas-selector-head">
+                                <span class="metas-selector-icon"><i class="fa fa-th-large"></i></span>
+                                <span><strong>Tipo de carteira</strong><small>Seleção global</small></span>
+                            </div>
+                            <div class="metas-choice-list" id="metasWalletTypeBlocks"></div>
+                        </article>
+                        <article class="metas-selector-card">
+                            <div class="metas-selector-head">
+                                <span class="metas-selector-icon"><i class="fa fa-cogs"></i></span>
+                                <span><strong>Produção da carteira</strong><small>Seleção global</small></span>
+                            </div>
+                            <div class="metas-choice-list" id="metasProductionTypeBlocks"></div>
+                        </article>
+                        <article class="metas-selector-card">
+                            <div class="metas-selector-head">
+                                <span class="metas-selector-icon"><i class="fa fa-bolt"></i></span>
+                                <span><strong>Perfil da carteira</strong><small>OPERACIONAL ou IA • seleção global</small></span>
+                            </div>
+                            <div class="metas-choice-list" id="metasDigitalBlocks"></div>
+                        </article>
+                    </div>
+
+                    <div class="metas-advanced" id="metasAdvancedFilters" hidden>
+                        <div class="metas-advanced-grid">
+                            <label>Empresa<select id="metasCompany"><option value="">Todas</option></select></label>
+                            <label>Carteira<select id="metasWallet"><option value="">Todas</option></select></label>
+                            <label>Atuação da carteira<select id="metasActuation"><option value="">Todas</option></select></label>
+                            <label>Superintendente<select id="metasSuperintendent"><option value="">Todos</option></select></label>
+                            <label>Gerente<select id="metasManager"><option value="">Todos</option></select></label>
+                            <label>Coordenador<select id="metasCoordinator"><option value="">Todos</option></select></label>
+                        </div>
+                    </div>
+                </form>
+                <div class="metas-active-filters" id="metasActiveFilters"></div>
+            </section>
+
+            <section class="metas-section metas-section-anchor metas-overview-section" id="metas-section-overview">
+                <header class="metas-section-head">
+                    <div><span class="metas-kicker">Visão geral</span><h2>Produção e cumprimento de metas</h2></div>
+                </header>
+                <div class="metas-kpi-grid" id="metasKpiGrid"></div>
+            </section>
+
+            <section class="metas-section metas-composition-section metas-section-anchor" id="metas-section-composition">
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Composição do recorte</span>
+                        <h2>Distribuição das carteiras e valores</h2>
+                        <p>As roscas representam quantidade de carteiras. As legendas mostram Produção, Pagamento e HO do recorte atual. Clique em uma categoria para filtrar todo o dashboard.</p>
+                    </div>
+                </header>
+
+                <div class="metas-grid-3 metas-composition-grid">
+                    <article class="metas-card metas-composition-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Tipo de carteira</h3>
+                                <p>HO, PA e demais classificações existentes.</p>
+                            </div>
+                            <i class="fa fa-th-large metas-composition-head-icon" aria-hidden="true"></i>
+                        </header>
+                        <div class="metas-composition-card-body">
+                            <div class="metas-composition-chart-box">
+                                <canvas id="metasWalletTypeDonut"></canvas>
+                                <div class="metas-composition-center" id="metasWalletTypeCenter"></div>
+                            </div>
+                            <div class="metas-composition-legend" id="metasWalletTypeLegend"></div>
+                        </div>
+                    </article>
+
+                    <article class="metas-card metas-composition-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Produção da carteira</h3>
+                                <p>CASH, RISCO e qualquer outro tipo cadastrado.</p>
+                            </div>
+                            <i class="fa fa-cogs metas-composition-head-icon" aria-hidden="true"></i>
+                        </header>
+                        <div class="metas-composition-card-body">
+                            <div class="metas-composition-chart-box">
+                                <canvas id="metasProductionTypeDonut"></canvas>
+                                <div class="metas-composition-center" id="metasProductionTypeCenter"></div>
+                            </div>
+                            <div class="metas-composition-legend" id="metasProductionTypeLegend"></div>
+                        </div>
+                    </article>
+
+                    <article class="metas-card metas-composition-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Perfil da carteira</h3>
+                                <p>OPERACIONAL x IA.</p>
+                            </div>
+                            <i class="fa fa-bolt metas-composition-head-icon" aria-hidden="true"></i>
+                        </header>
+                        <div class="metas-composition-card-body">
+                            <div class="metas-composition-chart-box">
+                                <canvas id="metasDigitalDonut"></canvas>
+                                <div class="metas-composition-center" id="metasDigitalCenter"></div>
+                            </div>
+                            <div class="metas-composition-legend" id="metasDigitalLegend"></div>
+                        </div>
+                    </article>
+
+                    <article class="metas-card metas-composition-card metas-actuation-composition-card">
+                        <header class="metas-card-head">
+                            <div>
+                                <h3>Atuação da carteira</h3>
+                                <p>Massivo, Educacional, Garantia, Jurídico e demais atuações.</p>
+                            </div>
+                            <i class="fa fa-pie-chart metas-composition-head-icon" aria-hidden="true"></i>
+                        </header>
+
+                        <div class="metas-composition-card-body metas-actuation-composition-body">
+                            <div class="metas-composition-chart-box">
+                                <canvas id="metasActuationDonut"></canvas>
+                                <div class="metas-composition-center" id="metasActuationCenter"></div>
+                            </div>
+
+                            <div class="metas-composition-legend" id="metasActuationLegend"></div>
+                        </div>
+
+                    </article>
+                </div>
+            </section>
+
+            <section class="metas-section metas-daily-ops-section metas-section-anchor" id="metas-section-daily">
+                <header class="metas-section-head metas-section-head-actions metas-daily-section-head">
+                    <div>
+                        <span class="metas-kicker">Diário de Bordo <em class="metas-current-badge">Mês atual</em></span>
+                        <h2>Acompanhamento operacional do mês</h2>
+                        <p>Leitura do último D.U. disponível, ritmo necessário, projeção de fechamento e diagnóstico de conversão.</p>
+                    </div>
+
+                    <div class="metas-daily-period-controls">
+                        <span class="metas-daily-du-badge" id="metasDailyDuBadge">D.U. —</span>
+                        <label class="metas-daily-month-select" for="metasDailyMonth">
+                            <span>Competência</span>
+                            <select id="metasDailyMonth"></select>
+                        </label>
+                    </div>
+                </header>
+
+                <article class="metas-daily-command-card" id="metasDailyCommandCard">
+                    <div class="metas-daily-command-top">
+                        <div class="metas-daily-status-block">
+                            <span class="metas-daily-status-label">Status do mês</span>
+                            <strong id="metasDailyStatus">Calculando…</strong>
+                            <small id="metasDailyStatusDetail">—</small>
+                        </div>
+
+                        <div class="metas-daily-intelligence">
+                            <span class="metas-kicker">Leitura de hoje</span>
+                            <p id="metasDailyNarrative">Carregando inteligência operacional…</p>
+                        </div>
+                    </div>
+
+                    <div class="metas-daily-command-kpis" id="metasDailyCommandKpis"></div>
+
+                    <div class="metas-daily-signal-grid" id="metasDailySignals"></div>
+
+                    <div class="metas-daily-diagnosis" id="metasDailyDiagnosis">
+                        <div class="metas-daily-diagnosis-icon">
+                            <i class="fa fa-stethoscope" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <span>Diagnóstico operacional</span>
+                            <strong>Calculando principal ponto de atenção…</strong>
+                            <p>—</p>
+                        </div>
+                    </div>
+
+                    <div class="metas-daily-deflator-note">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <span><strong>Deflator:</strong> não existe um campo oficial de deflator na base atual. O painel usa <strong>Quebra = Produção − Pago</strong> e <strong>Eficiência = Pago ÷ Produção</strong> como sinais operacionais de conversão.</span>
+                    </div>
+                </article>
+
+                <div class="metas-grid-2 metas-daily-grid">
+                    <article class="metas-card metas-daily-chart-card">
+                        <header class="metas-card-head metas-daily-card-head">
+                            <div>
+                                <span class="metas-kicker">Ritmo até a meta</span>
+                                <h3>Acompanhamento e projeção</h3>
+                                <p id="metasDailySummary">—</p>
+                            </div>
+
+                            <div class="metas-daily-chart-modes" aria-label="Modo do gráfico diário">
+                                <button type="button" class="is-active" data-daily-chart-mode="pace">
+                                    Ritmo da Meta
+                                </button>
+                                <button type="button" data-daily-chart-mode="flow">
+                                    Produção x Pagamento
+                                </button>
+                            </div>
+                        </header>
+
+                        <div class="metas-chart-wrap is-tall metas-daily-chart-wrap">
+                            <canvas id="metasDailyChart"></canvas>
+                        </div>
+
+                        <div class="metas-daily-chart-footer" id="metasDailyChartFooter">
+                            <span><i class="is-actual"></i> Realizado</span>
+                            <span><i class="is-target"></i> Trajetória necessária</span>
+                            <span><i class="is-projection"></i> Projeção</span>
+                        </div>
+                    </article>
+
+                    <article class="metas-card metas-daily-table-card">
+                        <header class="metas-card-head metas-daily-card-head">
+                            <div>
+                                <span class="metas-kicker">Diário operacional</span>
+                                <h3>Últimos D.U.s</h3>
+                                <p>Produção, pagamento, eficiência, quebra, HO, ICM e gap para a meta.</p>
+                            </div>
+
+                            <button type="button" class="metas-button metas-button-secondary metas-daily-table-toggle" id="metasDailyTableToggle">
+                                Ver mês completo
+                            </button>
+                        </header>
+
+                        <div class="metas-table-wrap is-medium metas-daily-table-wrap">
+                            <table class="metas-table metas-daily-table">
+                                <thead>
+                                    <tr>
+                                        <th>D.U.</th>
+                                        <th>Data</th>
+                                        <th>Produzido</th>
+                                        <th>Pago</th>
+                                        <th>Eficiência</th>
+                                        <th>Quebra</th>
+                                        <th>HO dia</th>
+                                        <th>HO acum.</th>
+                                        <th>ICM</th>
+                                        <th>Gap Meta</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="metasDailyBody"></tbody>
+                            </table>
+                        </div>
+                    </article>
+                </div>
+
+                <article class="metas-card metas-card-spaced metas-du-comparison-card">
+                    <header class="metas-card-head metas-du-card-head">
+                        <div class="metas-du-title-block">
+                            <span class="metas-kicker">Comparativo por D.U.</span>
+                            <h3>Comparativo por Dia Útil</h3>
+                            <p>Compara o mesmo D.U. entre os meses. Valor diário e acumulado são classificados separadamente.</p>
+                        </div>
+
+                        <div class="metas-du-header-tools">
+                            <div class="metas-du-legend" aria-label="Legenda do comparativo">
+                                <span class="metas-du-legend-item is-best"><i></i> Maior valor no D.U.</span>
+                                <span class="metas-du-legend-item is-low"><i></i> Menor valor no D.U.</span>
+                                <span class="metas-du-legend-item is-neutral"><i></i> Intermediário</span>
+                            </div>
+
+                            <label class="metas-du-filter" for="metasDuMetric">
+                                <span>Indicador comparado</span>
+                                <select id="metasDuMetric">
+                                    <option value="producao_realizada">Total produzido</option>
+                                    <option value="pagamento">Total pago</option>
+                                    <option value="valor_ho">Total HO</option>
+                                    <option value="entrega_amigavel">Entrega amigável</option>
+                                </select>
+                            </label>
+                        </div>
+                    </header>
+
+                    <div class="metas-du-rulebar">
+                        <span><strong>Regra:</strong> verde = maior valor do mesmo D.U. entre os meses; vermelho = menor valor do mesmo D.U.; “—” = D.U. futuro e não participa da comparação.</span>
+                        <span id="metasDuMetricStatus">Indicador: Total produzido</span>
+                    </div>
+
+                    <div class="metas-table-wrap is-medium metas-du-table-wrap">
+                        <table class="metas-table metas-du-table">
+                            <thead id="metasDuComparisonHead"></thead>
+                            <tbody id="metasDuComparisonBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+
+            <section class="metas-section metas-section-anchor metas-intelligence-section" id="metas-section-intelligence">
+                <header class="metas-section-head">
+                    <div><span class="metas-kicker">Leitura inteligente</span><h2>Análises automáticas do recorte</h2></div>
+                </header>
+                <div class="metas-insight-grid" id="metasInsightGrid"></div>
+            </section>
+
+            <section class="metas-section metas-section-anchor metas-evolution-section" id="metas-section-evolution">
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Evolução mensal</span>
+                        <h2>Produção, pagamento, HO e meta</h2>
+                        <p>Os meses vêm do calendário; mês sem lançamento permanece com zero.</p>
+                    </div>
+                </header>
+                <div class="metas-grid-2">
+                    <article class="metas-card">
+                        <header class="metas-card-head"><div><h3>Evolução dos valores</h3><p>Clique no mês para filtrar o dashboard.</p></div></header>
+                        <div class="metas-chart-wrap"><canvas id="metasMonthlyChart"></canvas></div>
+                    </article>
+                    <article class="metas-card">
+                        <header class="metas-card-head"><div><h3>ICM mensal</h3><p>HO / Meta por competência.</p></div></header>
+                        <div class="metas-chart-wrap"><canvas id="metasIcmChart"></canvas></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="metas-section metas-monthly-comparison-section metas-section-anchor" id="metas-section-comparison">
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Comparativo mensal</span>
+                        <h2>Base, carteira, pagamento, eficiência, meta e atingimento</h2>
+                        <p>Leitura mensal e variação contra o mês anterior disponível. Percentuais são comparados em pontos percentuais.</p>
+                    </div>
+                </header>
+
+                <article class="metas-analysis-guide is-open" id="metasAnalysisGuide">
+                    <div class="metas-analysis-guide-summary">
+                        <div class="metas-analysis-guide-intro">
+                            <span class="metas-analysis-guide-icon"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                            <div>
+                                <span class="metas-kicker">Entenda a análise</span>
+                                <strong>Como ler M/M, p.p. e as cores</strong>
+                            </div>
+                        </div>
+
+                        <div class="metas-analysis-guide-quick">
+                            <span><strong>M/M</strong> = mês anterior</span>
+                            <span><strong>p.p.</strong> = pontos percentuais</span>
+                        </div>
+
+                        <div class="metas-analysis-guide-legend">
+                            <span class="is-positive"><i></i> Favorável / aumento</span>
+                            <span class="is-negative"><i></i> Atenção / redução</span>
+                            <span class="is-neutral"><i></i> Estável</span>
+                        </div>
+
+                        <button type="button" class="metas-analysis-guide-toggle" id="metasAnalysisGuideToggle"
+                            aria-expanded="true" aria-controls="metasAnalysisGuideDetails">
+                            <span>Ocultar explicação</span>
+                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div class="metas-analysis-guide-alert" role="note">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span><strong>Volume ≠ performance.</strong> Meta, Base e Valor da Carteira podem crescer sem representar melhora operacional.</span>
+                    </div>
+
+                    <div class="metas-analysis-guide-details" id="metasAnalysisGuideDetails">
+                        <div class="metas-analysis-guide-detail-grid">
+                            <div class="metas-analysis-guide-detail">
+                                <span class="metas-analysis-guide-detail-icon"><i class="fa fa-exchange"></i></span>
+                                <div>
+                                    <strong>M/M — variação mensal</strong>
+                                    <p>Compara o valor do mês atual com o mês anterior. Ex.: +12,50% significa crescimento de 12,50% sobre o mês anterior.</p>
+                                </div>
+                            </div>
+
+                            <div class="metas-analysis-guide-detail">
+                                <span class="metas-analysis-guide-detail-icon"><i class="fa fa-percent"></i></span>
+                                <div>
+                                    <strong>p.p. — pontos percentuais</strong>
+                                    <p>Usado em Eficiência, Quebra % e ICM. Ex.: 60% → 72% representa +12 p.p.</p>
+                                </div>
+                            </div>
+
+                            <div class="metas-analysis-guide-detail">
+                                <span class="metas-analysis-guide-detail-icon is-positive"><i class="fa fa-arrow-up"></i></span>
+                                <div>
+                                    <strong>Verde — evolução favorável</strong>
+                                    <p>Em ICM e Eficiência, crescimento é favorável. Em Quebra e Quebra %, redução é favorável. Em volume, verde representa aumento e não necessariamente melhor desempenho.</p>
+                                </div>
+                            </div>
+
+                            <div class="metas-analysis-guide-detail">
+                                <span class="metas-analysis-guide-detail-icon is-negative"><i class="fa fa-arrow-down"></i></span>
+                                <div>
+                                    <strong>Vermelho — ponto de atenção</strong>
+                                    <p>Em performance, sinaliza movimento desfavorável. Em volume, pode representar somente redução do volume analisado.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metas-analysis-guide-example">
+                            <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                            <p><strong>Exemplo:</strong> uma Meta 80% maior indica aumento de volume, mas não significa que a performance melhorou 80%. Analise em conjunto com HO, ICM, Pagamento, Eficiência e Quebra.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="metas-card metas-monthly-comparison-card">
+                    <div class="metas-table-wrap is-medium metas-monthly-comparison-wrap">
+                        <table class="metas-table metas-monthly-comparison-table">
+                            <thead id="metasMonthlyComparisonHead"></thead>
+                            <tbody id="metasMonthlyComparisonBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+
+            <section class="metas-section metas-rankings-section metas-section-anchor" id="metas-section-rankings">
+                <header class="metas-section-head">
+                    <div>
+                        <span class="metas-kicker">Rankings <em class="metas-current-badge">Mês atual</em></span>
+                        <h2>Liderança por cumprimento de meta</h2>
+                        <p>Meta, HO, ICM Geral e progresso de atingimento.</p>
+                    </div>
+                </header>
+
+                <div class="metas-grid-3 metas-leadership-ranking-grid">
+                    <article class="metas-ranking-card">
+                        <header><div class="metas-ranking-title"><span class="metas-ranking-title-icon"><i class="fa fa-user-circle" aria-hidden="true"></i></span><div><h3>Superintendentes</h3><small>Liderança executiva</small></div></div><i class="fa fa-sitemap metas-ranking-header-symbol" aria-hidden="true"></i></header>
+                        <div id="metasSuperintendentRanking"></div>
+                    </article>
+                    <article class="metas-ranking-card">
+                        <header><div class="metas-ranking-title"><span class="metas-ranking-title-icon"><i class="fa fa-user-circle" aria-hidden="true"></i></span><div><h3>Gerentes</h3><small>Gestão de resultado</small></div></div><i class="fa fa-users metas-ranking-header-symbol" aria-hidden="true"></i></header>
+                        <div id="metasManagerRanking"></div>
+                    </article>
+                    <article class="metas-ranking-card">
+                        <header><div class="metas-ranking-title"><span class="metas-ranking-title-icon"><i class="fa fa-user-circle" aria-hidden="true"></i></span><div><h3>Coordenadores</h3><small>Gestão operacional</small></div></div><i class="fa fa-users metas-ranking-header-symbol" aria-hidden="true"></i></header>
+                        <div id="metasCoordinatorRanking"></div>
+                    </article>
+                </div>
+
+                <article class="metas-ranking-card metas-company-wallet-ranking-card">
+                    <header class="metas-company-wallet-ranking-header">
+                        <div>
+                            <span class="metas-kicker">Empresa → Carteira</span>
+                            <h3>Ranking de ICM Geral</h3>
+                            <p>Empresas ordenadas por ICM. Expanda para analisar o ranking das carteiras, Meta e HO.</p>
+                        </div>
+
+                        <div class="metas-company-wallet-ranking-actions">
+                            <div class="metas-company-wallet-ranking-legend">
+                                <span class="is-achieved"><i></i> ≥ 100%</span>
+                                <span class="is-close"><i></i> 90% a 99,99%</span>
+                                <span class="is-risk"><i></i> &lt; 90%</span>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="metas-button metas-button-secondary"
+                                id="metasCompanyWalletExpandAll"
+                            >
+                                Expandir empresas
+                            </button>
+                        </div>
+                    </header>
+
+                    <div
+                        class="metas-company-wallet-ranking-summary"
+                        id="metasCompanyWalletRankingSummary"
+                    ></div>
+
+                    <div class="metas-company-wallet-ranking-table">
+                        <div class="metas-company-wallet-ranking-columns" aria-hidden="true">
+                            <span>Rank</span>
+                            <span>Empresa / Carteira</span>
+                            <span>Meta</span>
+                            <span>Total HO</span>
+                            <span>ICM Geral</span>
+                        </div>
+
+                        <div id="metasCompanyWalletRanking"></div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="metas-section metas-section-anchor metas-matrix-section" id="metas-section-matrix">
+                <header class="metas-section-head metas-section-head-actions">
+                    <div><span class="metas-kicker">Matriz Empresa → Carteira</span><h2>Visão por Ano/Mês</h2><p>Empresa expansível com detalhe das carteiras.</p></div>
+                    <div class="metas-du-legend metas-matrix-legend" aria-label="Legenda da variação mensal">
+                        <span class="metas-du-legend-item is-best metas-matrix-legend-favorable">
+                            <i></i>
+                            Favorável
+                        </span>
+                        <span class="metas-du-legend-item is-low metas-matrix-legend-attention">
+                            <i></i>
+                            Atenção
+                        </span>
+                        <span class="metas-du-legend-item is-neutral metas-matrix-legend-volume-up">
+                            <i></i>
+                            Meta ↑ volume
+                        </span>
+                        <span class="metas-du-legend-item is-neutral metas-matrix-legend-volume-down">
+                            <i></i>
+                            Meta ↓ volume
+                        </span>
+                    </div>
+                    <div class="metas-toolbar">
+                        <select id="metasMatrixMetric">
+                            <option value="producao_realizada" selected>Produção</option>
+                            <option value="pagamento">Total pago</option>
+                            <option value="entrega_amigavel">Entrega amigável</option>
+                            <option value="meta">Meta</option>
+                            <option value="valor_ho">Total HO</option>
+                            <option value="icm">ICM</option>
+                        </select>
+                        <button type="button" class="metas-button metas-button-ghost" id="metasExpandCompanies">Expandir todas</button>
+                    </div>
+                </header>
+                <article class="metas-card">
+                    <div class="metas-table-wrap is-large">
+                        <table class="metas-table metas-matrix-table">
+                            <thead id="metasMatrixHead"></thead>
+                            <tbody id="metasMatrixBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+
+            <section class="metas-section metas-section-anchor metas-base-section" id="metas-section-base">
+                <header class="metas-section-head metas-section-head-actions">
+                    <div><span class="metas-kicker">Base analítica</span><h2>Dados da query operacional</h2><p>Datas e D.U. enriquecidos pelo calendário oficial.</p></div>
+                    <div class="metas-toolbar">
+                        <input type="search" id="metasAnalyticSearch" placeholder="Pesquisar empresa, carteira ou liderança...">
+                        <select id="metasAnalyticPageSize"><option value="25">25 linhas</option><option value="50">50 linhas</option><option value="100">100 linhas</option></select>
+                        <button type="button" class="metas-button metas-button-ghost" id="metasExportCsv"><i class="fa fa-download"></i> CSV</button>
+                    </div>
+                </header>
+                <article class="metas-card">
+                    <div class="metas-table-wrap is-large">
+                        <table class="metas-table metas-analytic-table">
+                            <thead>
+                                <tr>
+                                    <th>Data produção</th><th>D.U.</th><th>Empresa</th><th>Carteira</th><th>Tipo</th><th>Produção carteira</th><th>Atuação</th><th>Digital</th><th>Produção</th><th>Pagamento</th><th>HO</th><th>Entrega</th><th>Meta competência</th><th>Meta</th><th>Superint.</th><th>Gerente</th><th>Coordenador</th>
+                                </tr>
+                            </thead>
+                            <tbody id="metasAnalyticBody"></tbody>
+                        </table>
+                    </div>
+                    <footer class="metas-table-footer"><span id="metasAnalyticCount">0 registros</span><div id="metasAnalyticPagination"></div></footer>
+                </article>
+            </section>
+
+        </div>
+    </main>
+
+    {% if not modo_embed %}
+        {% include "components/_footer.html" %}
+    {% endif %}
+
+    <div class="metas-loading" id="metasLoading" aria-hidden="true">
+        <div class="metas-loading-card">
+            <div class="metas-loading-bars"><span></span><span></span><span></span></div>
+            <strong>Carregando Produção e Metas</strong>
+            <p>Consultando banco e calendário oficial...</p>
+        </div>
+    </div>
+
+    <div class="metas-du-tooltip" id="metasDuTooltip" role="tooltip" aria-hidden="true"></div>
+
+    <div class="metas-toast" id="metasToast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="{% static 'js/dashboard_metas.js' %}?v=1.3.4"></script>
+</body>
+</html>

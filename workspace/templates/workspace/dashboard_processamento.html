@@ -1,0 +1,524 @@
+{% load static custom_filters %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+{% include "components/_head.html" %}
+
+<head>
+    <title>Processamento de Dados | Workspace Qore</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/dashboard_processamento.css' %}?v=2.2.2">
+</head>
+
+<body
+    class="workspace-processing{% if modo_embed %} is-embedded{% endif %}"
+    data-embedded="{% if modo_embed %}true{% else %}false{% endif %}"
+    data-user-role="{{ user.role }}"
+    data-user-status="{{ user.status }}"
+    data-user-department="{{ user.departamento }}"
+    data-user-company="{{ user.empresa }}">
+
+    {% if not modo_embed %}
+        {% include "components/navbar/_navbar.html" %}
+    {% endif %}
+
+    <main class="processing-main">
+        <div class="processing-shell">
+
+            <header class="processing-toolbar">
+                <div class="processing-toolbar-copy">
+                    <span class="processing-eyebrow">
+                        Monitoramento operacional
+                    </span>
+
+                    <h1>Processamento de Dados</h1>
+
+                    <p>
+                        Acompanhe os arquivos de cobrança, volumes processados,
+                        desempenho, falhas e produtividade da operação.
+                    </p>
+                </div>
+
+                <div class="processing-toolbar-actions">
+                    <div class="processing-updated">
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+
+                        <div>
+                            <strong>Última atualização</strong>
+                            <span id="processingUpdatedAt">Carregando...</span>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="processing-theme-button"
+                        id="processingThemeButton"
+                        aria-label="Alternar modo claro e escuro"
+                        title="Alternar modo claro e escuro">
+
+                        <i
+                            class="fa fa-moon-o"
+                            id="processingThemeIcon"
+                            aria-hidden="true">
+                        </i>
+
+                        <span id="processingThemeText">Modo escuro</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="processing-refresh-button"
+                        id="processingRefreshButton">
+
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        <span>Atualizar dados</span>
+                    </button>
+                </div>
+            </header>
+
+            <form
+                class="processing-filter-panel"
+                id="processingFilters"
+                data-url="{% url 'dashboard_processamento' %}">
+
+                <div class="processing-filter-live">
+                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                    <span>Os filtros são aplicados automaticamente.</span>
+                </div>
+
+                <div class="processing-filter-grid">
+                    <div class="processing-field">
+                        <label for="processingStartDate">Data inicial</label>
+                        <input
+                            type="date"
+                            id="processingStartDate"
+                            name="data_inicio">
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingEndDate">Data final</label>
+                        <input
+                            type="date"
+                            id="processingEndDate"
+                            name="data_fim">
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingBank">Banco / Empresa</label>
+                        <select id="processingBank" name="banco">
+                            <option value="">Todos os bancos</option>
+                        </select>
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingWallet">Carteira</label>
+                        <select id="processingWallet" name="carteira">
+                            <option value="">Todas as carteiras</option>
+                        </select>
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingType">Tipo</label>
+                        <select id="processingType" name="tipo">
+                            <option value="">Todos os tipos</option>
+                        </select>
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingStatus">Status</label>
+                        <select id="processingStatus" name="status">
+                            <option value="">Todos os status</option>
+                        </select>
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingEmployee">Funcionário</label>
+                        <select id="processingEmployee" name="funcionario">
+                            <option value="">Todos os funcionários</option>
+                        </select>
+                    </div>
+
+                    <div class="processing-field">
+                        <label for="processingSearch">Arquivo ou protocolo</label>
+
+                        <div class="processing-search-wrap">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+
+                            <input
+                                type="search"
+                                id="processingSearch"
+                                name="busca"
+                                placeholder="Digite para pesquisar..."
+                                autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="processing-filter-actions">
+                        <button
+                            type="button"
+                            class="processing-clear-button"
+                            id="processingClearButton"
+                            title="Limpar filtros e voltar para hoje">
+
+                            <i class="fa fa-eraser" aria-hidden="true"></i>
+                            <span>Limpar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <section
+                class="processing-kpi-grid"
+                aria-label="Principais indicadores do processamento">
+
+                <article class="processing-kpi-card">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-files-o" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Arquivos processados</span>
+                    <strong class="processing-kpi-value" id="metricFiles">0</strong>
+                    <small class="processing-kpi-note" id="metricFilesNote">0 em processamento</small>
+                </article>
+
+                <article class="processing-kpi-card is-success">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-database" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Linhas processadas</span>
+                    <strong class="processing-kpi-value" id="metricLines">0</strong>
+                    <small class="processing-kpi-note" id="metricLinesNote">0 linhas/min</small>
+                </article>
+
+                <article class="processing-kpi-card is-purple">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Tempo total</span>
+                    <strong class="processing-kpi-value" id="metricTotalTime">0s</strong>
+                    <small class="processing-kpi-note" id="metricTotalTimeNote">0 finalizados</small>
+                </article>
+
+                <article class="processing-kpi-card is-warning">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Tempo médio por arquivo</span>
+                    <strong class="processing-kpi-value" id="metricAverageTime">0s</strong>
+                    <small class="processing-kpi-note" id="metricAverageTimeNote">Média do período</small>
+                </article>
+
+                <article class="processing-kpi-card is-success">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Taxa de sucesso</span>
+                    <strong class="processing-kpi-value" id="metricSuccess">0%</strong>
+                    <small class="processing-kpi-note" id="metricSuccessNote">0 concluídos</small>
+                </article>
+
+                <article class="processing-kpi-card is-danger">
+                    <div class="processing-kpi-top">
+                        <span class="processing-kpi-icon">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <span class="processing-kpi-label">Arquivos com erro</span>
+                    <strong class="processing-kpi-value" id="metricErrors">0</strong>
+                    <small class="processing-kpi-note" id="metricErrorsNote">Nenhum erro identificado</small>
+                </article>
+            </section>
+
+            <section class="processing-dashboard-grid">
+
+                <article class="processing-card span-8 is-interactive is-fixed-source">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Processamentos ao longo do tempo</h2>
+                            <p>
+                                Visão fixa do período disponível. Clique em uma data
+                                para filtrar os demais indicadores.
+                            </p>
+                        </div>
+
+                        <span class="processing-card-badge">
+                            Base fixa · clicável
+                        </span>
+                    </header>
+
+                    <div class="processing-chart-wrap">
+                        <canvas id="processingTrendChart"></canvas>
+                        <div class="processing-chart-empty" id="processingTrendEmpty">
+                            Sem dados para apresentar.
+                        </div>
+                    </div>
+                </article>
+
+                <article class="processing-card span-4 is-interactive">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Status dos processamentos</h2>
+                            <p>Clique em um status para filtrar o dashboard.</p>
+                        </div>
+                    </header>
+
+                    <div class="processing-chart-wrap is-compact">
+                        <canvas id="processingStatusChart"></canvas>
+                        <div class="processing-chart-empty" id="processingStatusEmpty">
+                            Sem dados para apresentar.
+                        </div>
+                    </div>
+
+                    <div class="processing-status-summary" id="processingStatusSummary"></div>
+                </article>
+
+                <article class="processing-card span-5 is-interactive">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Principais motivos de erro</h2>
+                            <p>Clique em um motivo para pesquisar os registros relacionados.</p>
+                        </div>
+                    </header>
+
+                    <div class="processing-chart-wrap is-compact">
+                        <canvas id="processingErrorsChart"></canvas>
+                        <div class="processing-chart-empty" id="processingErrorsEmpty">
+                            Nenhum erro encontrado.
+                        </div>
+                    </div>
+                </article>
+
+                <article class="processing-card span-7 is-interactive">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Volume por banco ou empresa</h2>
+                            <p>Clique em uma barra para filtrar os demais visuais.</p>
+                        </div>
+
+                        <span class="processing-card-badge">Top 8</span>
+                    </header>
+
+                    <div class="processing-chart-wrap is-compact">
+                        <canvas id="processingBanksChart"></canvas>
+                        <div class="processing-chart-empty" id="processingBanksEmpty">
+                            Sem dados para apresentar.
+                        </div>
+                    </div>
+                </article>
+
+                <article class="processing-card span-6 is-interactive is-fixed-source">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Tempo médio por dia</h2>
+                            <p>
+                                Visão fixa do período disponível. Clique em uma data
+                                para filtrar os demais indicadores.
+                            </p>
+                        </div>
+
+                        <span class="processing-card-badge">
+                            Base fixa · clicável
+                        </span>
+                    </header>
+
+                    <div class="processing-chart-wrap is-compact">
+                        <canvas id="processingAverageChart"></canvas>
+                        <div class="processing-chart-empty" id="processingAverageEmpty">
+                            Sem dados para apresentar.
+                        </div>
+                    </div>
+                </article>
+
+                <article class="processing-card span-6 is-interactive">
+                    <header class="processing-card-header">
+                        <div class="processing-card-title">
+                            <h2>Produtividade por funcionário</h2>
+                            <p>Clique em uma barra para filtrar o responsável.</p>
+                        </div>
+
+                        <span class="processing-card-badge">Top 8</span>
+                    </header>
+
+                    <div class="processing-chart-wrap is-compact">
+                        <canvas id="processingEmployeesChart"></canvas>
+                        <div class="processing-chart-empty" id="processingEmployeesEmpty">
+                            Sem dados para apresentar.
+                        </div>
+                    </div>
+                </article>
+
+                <section
+                    class="processing-insights"
+                    id="processingInsights"
+                    aria-label="Insights do período">
+                </section>
+
+                <article
+                    class="processing-card processing-table-card"
+                    id="processingTableCard">
+
+                    <header class="processing-card-header processing-table-header">
+                        <div class="processing-card-title">
+                            <h2>Últimos processamentos</h2>
+                            <p>
+                                Clique em uma linha para abrir os detalhes. Ordene,
+                                pesquise, redimensione e arraste as colunas.
+                            </p>
+                        </div>
+
+                        <span class="processing-card-badge">Visão analítica</span>
+                    </header>
+
+                    <div class="processing-table-toolbar">
+                        <div class="processing-table-info" id="processingTableInfo">
+                            Carregando registros...
+                        </div>
+
+                        <div class="processing-table-actions">
+                            <button
+                                type="button"
+                                class="processing-table-action"
+                                id="processingClearColumnFilters"
+                                title="Limpar pesquisas das colunas">
+
+                                <i class="fa fa-search-minus" aria-hidden="true"></i>
+                                <span>Limpar pesquisas</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="processing-table-action"
+                                id="processingResetColumns"
+                                title="Restaurar ordem e largura das colunas">
+
+                                <i class="fa fa-columns" aria-hidden="true"></i>
+                                <span>Restaurar colunas</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="processing-table-action is-primary"
+                                id="processingExpandTable"
+                                aria-expanded="false"
+                                title="Expandir tabela">
+
+                                <i
+                                    class="fa fa-expand"
+                                    id="processingExpandTableIcon"
+                                    aria-hidden="true">
+                                </i>
+
+                                <span id="processingExpandTableText">Expandir tabela</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="processing-table-wrap" id="processingTableWrap">
+                        <table class="processing-table" id="processingTable">
+                            <colgroup id="processingTableColgroup"></colgroup>
+                            <thead id="processingTableHead"></thead>
+
+                            <tbody id="processingTableBody">
+                                <tr>
+                                    <td colspan="18" class="processing-table-empty">
+                                        Carregando processamentos...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="processing-pagination">
+                        <button
+                            type="button"
+                            class="processing-pagination-button"
+                            id="processingPrevPage">
+
+                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            Anterior
+                        </button>
+
+                        <span
+                            class="processing-pagination-label"
+                            id="processingPaginationLabel">
+
+                            Página <strong>1</strong> de <strong>1</strong>
+                        </span>
+
+                        <button
+                            type="button"
+                            class="processing-pagination-button"
+                            id="processingNextPage">
+
+                            Próxima
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    {% if not modo_embed %}
+        {% include "components/_footer.html" %}
+    {% endif %}
+
+    <div
+        class="processing-toast"
+        id="processingToast"
+        role="status"
+        aria-live="polite">
+    </div>
+
+    <dialog
+        class="processing-detail-dialog"
+        id="processingDetailDialog">
+
+        <header class="processing-detail-header">
+            <div>
+                <h2 id="processingDetailTitle">Detalhes do processamento</h2>
+                <p id="processingDetailSubtitle"></p>
+            </div>
+
+            <button
+                type="button"
+                class="processing-detail-close"
+                id="processingDetailClose"
+                aria-label="Fechar detalhes">
+
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <div
+            class="processing-detail-body"
+            id="processingDetailBody">
+        </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <script
+        src="{% static 'js/dashboard_processamento.js' %}?v=2.2.1">
+    </script>
+
+</body>
+</html>

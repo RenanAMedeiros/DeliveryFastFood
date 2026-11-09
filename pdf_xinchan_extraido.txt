@@ -1,0 +1,182 @@
+Xinchan — Sistema de Vendas | Página 1
+ XINCHAN
+ Projeto do Sistema de Vendas e Gestão
+ Documento de especificação — versão inicial
+Objetivo: criar um sistema simples, rápido e responsivo para controlar vendas, pedidos, caixa, clientes, estoque e
+delivery da Xinchan.
+
+
+---PAGE---
+
+Xinchan — Sistema de Vendas | Página 2
+1. Tela inicial — Dashboard
+
+Resumo de hoje: faturamento, número de pedidos, pedidos em preparo, pedidos em entrega, valor no caixa e
+lucro estimado.
+
+Atalhos principais: Nova Venda, Pedidos, Caixa, Estoque, Clientes e Relatórios.
+2. Nova Venda
+
+Cadastro/seleção do cliente: nome e WhatsApp.
+
+Tipo do pedido: Balcão, Retirada ou Delivery.
+
+Categorias de produtos: Japonês, Pastéis, Doces, Bebidas, Combos e Promoções.
+
+Cada produto deve permitir quantidade, adicionais, observações e variações.
+
+Exemplo: Pastel de frango — R$ 10; adicionais de Catupiry, Bacon ou Cheddar.
+3. Finalização do pedido
+
+Mostrar subtotal, taxa de entrega, desconto e total.
+
+Formas de pagamento: Pix, Dinheiro, Débito, Crédito e Outro.
+
+Para dinheiro: informar valor recebido e calcular troco automaticamente.
+
+Confirmar pedido e gerar número único, como Pedido #152.
+4. Pedidos
+
+Painel por status: Novos, Em preparo, Prontos, Em entrega e Entregues.
+
+Também deve existir o status Cancelado e Aguardando pagamento.
+
+Cada pedido pode ser aberto para consultar todos os detalhes.
+5. Tela da cozinha
+
+A cozinha vê somente os pedidos e itens necessários para preparo.
+
+Exibir número do pedido, produtos, quantidades e observações.
+
+Botões: Iniciar preparo e Pedido pronto.
+6. Delivery
+
+Exibir cliente, telefone, endereço, total e forma de pagamento.
+
+Selecionar entregador e acompanhar status: Aguardando, Em preparo, Pronto, Saiu para entrega e Entregue.
+
+Permitir configuração de taxa de entrega por região.
+7. Clientes
+
+Cadastro com nome, WhatsApp e endereço.
+
+Histórico de pedidos, total gasto, quantidade de pedidos e último pedido.
+
+Mostrar produtos mais comprados.
+
+
+---PAGE---
+
+Xinchan — Sistema de Vendas | Página 3
+
+Permitir ação rápida para repetir o último pedido.
+8. Estoque
+
+Controlar ingredientes, embalagens, bebidas e produtos.
+
+Campos: quantidade, unidade, estoque mínimo, custo, fornecedor e validade.
+
+Alertas automáticos para estoque baixo.
+
+Opcionalmente, baixar estoque automaticamente conforme as vendas.
+9. Ficha técnica e custos
+
+Cadastrar ingredientes e quantidades usadas em cada produto.
+
+Calcular custo de produção, preço de venda e lucro bruto estimado.
+
+Exemplo: Pastel de frango — custo R$ 4,20; venda R$ 10,00; lucro bruto R$ 5,80.
+10. Caixa
+
+Abertura com saldo inicial.
+
+Registrar vendas, entradas, despesas e sangrias.
+
+Fechamento comparando valor esperado e valor contado.
+
+Mostrar diferença positiva ou negativa.
+11. Relatórios
+
+Filtros: hoje, ontem, semana, mês e período personalizado.
+
+Vendas: faturamento, pedidos, ticket médio e produtos vendidos.
+
+Lucro: receita, custos, taxas, descontos e lucro estimado.
+
+Produtos: mais vendidos, menos vendidos, maior margem e menor margem.
+12. Promoções
+
+Criar cupons por percentual ou valor.
+
+Criar combos e promoções por horário.
+
+Permitir promoções do tipo 'Compre 2, leve 3'.
+13. WhatsApp
+
+Gerar mensagens prontas para pedido confirmado, pedido pronto, saída para entrega e pedido entregue.
+
+Exemplo: 'Xinchan — Seu pedido #152 foi confirmado! Total: R$ 42,00. Estamos preparando seu pedido.'
+14. Configurações
+
+Nome, logo, WhatsApp, Instagram, endereço, horários, taxas de entrega, formas de pagamento, categorias,
+produtos, usuários, permissões, impressora e integrações.
+
+
+---PAGE---
+
+Xinchan — Sistema de Vendas | Página 4
+15. Usuários e permissões
+
+Administrador: acesso total.
+
+Atendente: vendas e consulta de pedidos.
+
+Cozinha: pedidos e preparo.
+
+Entregador: entregas atribuídas.
+16. Função especial — Repetir pedido
+
+Na ficha do cliente, mostrar o último pedido e permitir repetir com um toque.
+
+Exemplo: Combo X + 2 pastéis + Coca.
+
+
+---PAGE---
+
+Xinchan — Sistema de Vendas | Página 5
+Estrutura do menu
+ 1
+■ Início
+2
+■ Nova Venda
+3
+■ Pedidos
+4
+■■■ Cozinha
+5
+■ Delivery
+6
+■ Clientes
+7
+■ Produtos
+8
+■ Estoque
+9
+■ Ficha Técnica
+10
+■ Caixa
+11
+■ Promoções
+12
+■ Relatórios
+13
+■■ Configurações
+Plano de desenvolvimento
+ Versão 1 — Essencial
+Nova venda + Produtos + Pedidos + Caixa + Clientes + Delivery
+Versão 2 — Gestão
+Estoque + Ficha técnica + Custos + Lucro + Relatórios + Funcionários
+Versão 3 — Automação
+WhatsApp + Promoções + Impressão de pedidos + Integrações com delivery + Dashboard avançado
+Recomendação: começar pela Versão 1 para colocar o sistema em uso rapidamente e depois adicionar estoque,
+ficha técnica, lucro, promoções e automações.

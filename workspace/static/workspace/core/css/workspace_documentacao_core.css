@@ -1,0 +1,1478 @@
+/* ==========================================================================
+   WORKSPACE UI CORE — DOCUMENTAÇÃO v1.0.0
+
+   Camada compartilhada por:
+   - Central de Documentação;
+   - Senha e Acesso;
+   - Envio de Metas;
+   - Envio de Produção;
+   - Meus Dashboards;
+   - Meus Envios.
+
+   Objetivo:
+   padronizar identidade, tipografia, espaçamentos, painéis, tabelas,
+   imagens, responsividade e zoom sem alterar regras funcionais.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   TOKENS / PONTE COM O WORKSPACE UI CORE
+   ========================================================================== */
+
+:root {
+    --doc-navy-950: var(--ws-navy-950, #071124);
+    --doc-navy-900: var(--ws-navy-900, #0B1832);
+    --doc-navy-800: var(--ws-navy-800, #101C44);
+
+    --doc-blue-700: var(--ws-primary-hover, #1D4ED8);
+    --doc-blue-600: var(--ws-primary, #2563EB);
+    --doc-blue-500: var(--ws-primary-500, #4689F5);
+    --doc-cyan-400: var(--ws-primary-light, #60A5FA);
+
+    --doc-bg: var(--ws-app-bg, #F4F7FB);
+    --doc-surface: var(--ws-surface-card, #FFFFFF);
+    --doc-surface-soft: var(--ws-surface-soft, #F8FAFC);
+
+    --doc-text: var(--ws-text-primary, #172033);
+    --doc-text-secondary: var(--ws-text-secondary, #35405A);
+    --doc-muted: var(--ws-text-muted, #667085);
+    --doc-muted-light: var(--ws-text-placeholder, #98A2B3);
+
+    --doc-border: var(--ws-border, #DDE3EC);
+    --doc-border-strong: var(--ws-border-strong, #C7CFDC);
+
+    --doc-success: var(--ws-success, #16A34A);
+    --doc-success-soft: var(--ws-success-soft, #F0FDF4);
+
+    --doc-warning: var(--ws-warning, #D97706);
+    --doc-warning-soft: var(--ws-warning-soft, #FFFBEB);
+
+    --doc-danger: var(--ws-danger, #D92D20);
+    --doc-danger-soft: var(--ws-danger-soft, #FEF3F2);
+
+    --doc-shadow:
+        var(
+            --ws-shadow-md,
+            0 10px 28px rgba(16, 28, 68, 0.10)
+        );
+
+    --doc-shadow-soft:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        );
+}
+
+
+/* ==========================================================================
+   BASE DA PÁGINA
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    color: var(--doc-text);
+
+    font-family:
+        var(
+            --ws-font-family,
+            "Inter",
+            "Segoe UI",
+            Arial,
+            sans-serif
+        );
+
+    background:
+        radial-gradient(
+            circle at 4% 8%,
+            rgba(37, 99, 235, 0.07),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 96% 90%,
+            rgba(56, 189, 248, 0.05),
+            transparent 22%
+        ),
+        var(--doc-bg);
+
+    overflow-x: hidden;
+}
+
+body.taskflow-home.doc-workspace *,
+body.taskflow-home.doc-workspace *::before,
+body.taskflow-home.doc-workspace *::after {
+    box-sizing: border-box;
+}
+
+body.taskflow-home.doc-workspace
+.doc-main {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    /*
+     * Espaço visual real entre a navbar e o primeiro bloco da documentação.
+     * Não depende de altura física do monitor ou de browser zoom.
+     */
+    padding:
+        clamp(26px, 1.7vw, 34px)
+        clamp(14px, 2.3vw, 44px)
+        clamp(30px, 2vw, 42px) !important;
+
+    overflow: visible;
+
+    flex: 1 0 auto;
+}
+
+body.taskflow-home.doc-workspace
+.doc-wrapper,
+body.taskflow-home.doc-workspace
+.doc-index-wrapper,
+body.taskflow-home.doc-workspace
+.doc-password-page,
+body.taskflow-home.doc-workspace
+.doc-meta-page,
+body.taskflow-home.doc-workspace
+.doc-production-page,
+body.taskflow-home.doc-workspace
+.doc-dashboard-page,
+body.taskflow-home.doc-workspace
+.doc-history-page {
+    width: min(1500px, 100%) !important;
+    min-width: 0;
+    max-width: 100% !important;
+
+    margin-inline: auto !important;
+}
+
+
+/* ==========================================================================
+   HERO — PADRÃO WORKSPACE
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-hero {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    min-height: 158px !important;
+
+    margin-bottom:
+        clamp(14px, 1vw, 18px) !important;
+
+    padding:
+        clamp(22px, 1.6vw, 28px)
+        clamp(22px, 2vw, 34px) !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap:
+        clamp(16px, 1.5vw, 26px);
+
+    overflow: hidden;
+
+    color: #FFFFFF;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+    border-radius:
+        var(
+            --ws-radius-2xl,
+            18px
+        ) !important;
+
+    background:
+        radial-gradient(
+            circle at 88% 5%,
+            rgba(96, 165, 250, 0.20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--doc-navy-950),
+            var(--doc-navy-800)
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-lg,
+            0 18px 42px rgba(16, 28, 68, 0.14)
+        );
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-copy {
+    min-width: 0;
+    max-width: 980px;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-eyebrow,
+body.taskflow-home.doc-workspace
+.doc-hero .eyebrow {
+    margin-bottom: 9px !important;
+
+    color:
+        var(
+            --ws-primary-light,
+            #60A5FA
+        ) !important;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        ) !important;
+
+    letter-spacing:
+        var(
+            --ws-tracking-kicker,
+            0.12em
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero h1 {
+    margin: 0;
+
+    color: #FFFFFF;
+
+    font-size:
+        clamp(
+            29px,
+            2vw,
+            36px
+        ) !important;
+
+    font-weight:
+        var(
+            --ws-weight-extrabold,
+            800
+        ) !important;
+
+    line-height: 1.12 !important;
+
+    letter-spacing: -0.035em !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero p {
+    max-width: 860px;
+
+    margin-top: 9px !important;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.74
+        );
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.60
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-side {
+    min-width: min(245px, 100%) !important;
+
+    padding: 12px 13px !important;
+
+    gap: 11px;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-icon {
+    width: 44px !important;
+    height: 44px !important;
+
+    flex: 0 0 44px !important;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-side strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-side span {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height: 1.45;
+}
+
+body.taskflow-home.doc-workspace
+.doc-hero-back {
+    width: 38px;
+    height: 38px;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        );
+}
+
+
+/* ==========================================================================
+   CENTRAL DE DOCUMENTAÇÃO — SIDEBAR + CAPA
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-layout {
+    width: 100%;
+    min-width: 0;
+
+    grid-template-columns:
+        minmax(
+            min(270px, 100%),
+            310px
+        )
+        minmax(0, 1fr) !important;
+
+    gap:
+        clamp(14px, 1vw, 18px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar,
+body.taskflow-home.doc-workspace
+.doc-cover,
+body.taskflow-home.doc-workspace
+.doc-content {
+    min-width: 0;
+    max-width: 100%;
+
+    border-color:
+        var(
+            --ws-border-soft,
+            #E7EBF1
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        ) !important;
+
+    background:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+
+    box-shadow:
+        var(
+            --ws-shadow-sm,
+            0 6px 18px rgba(16, 28, 68, 0.06)
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar {
+    top: 88px;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar-header {
+    padding: 18px !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar-header span,
+body.taskflow-home.doc-workspace
+.doc-menu-label {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar-header h2 {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-sidebar-header p {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height: 1.45;
+}
+
+body.taskflow-home.doc-workspace
+.doc-search-wrap {
+    padding:
+        12px
+        12px
+        10px !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-search {
+    height:
+        var(
+            --ws-control-height-lg,
+            44px
+        ) !important;
+
+    padding-left: 39px !important;
+
+    color:
+        var(
+            --ws-text-primary,
+            #172033
+        );
+
+    font-size:
+        var(
+            --ws-font-md,
+            13px
+        ) !important;
+
+    border-color:
+        var(
+            --ws-control-border,
+            #D8DFE9
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-sm,
+            8px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-search:focus {
+    border-color:
+        var(
+            --ws-primary,
+            #2563EB
+        ) !important;
+
+    box-shadow:
+        0 0 0 3px
+        var(
+            --ws-focus-ring,
+            rgba(37, 99, 235, 0.16)
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-nav-link {
+    min-height: 60px;
+
+    padding:
+        10px
+        12px !important;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-nav-copy strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-nav-copy small,
+body.taskflow-home.doc-workspace
+.doc-nav-meta,
+body.taskflow-home.doc-workspace
+.doc-nav-status {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-cover-header {
+    padding:
+        clamp(20px, 1.5vw, 24px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-cover-header h2 {
+    font-size:
+        var(
+            --ws-font-2xl,
+            20px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-cover-header p {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height: 1.55;
+}
+
+body.taskflow-home.doc-workspace
+.doc-cover-body {
+    padding:
+        clamp(20px, 1.5vw, 26px) !important;
+}
+
+
+/* ==========================================================================
+   DOCUMENTOS — PAINEL PRINCIPAL
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-panel {
+    min-width: 0;
+    max-width: 100%;
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        ) !important;
+
+    overflow: hidden;
+
+    background:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-header {
+    padding:
+        clamp(18px, 1.4vw, 24px) !important;
+
+    gap: 14px;
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-eyebrow {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    letter-spacing:
+        var(
+            --ws-tracking-kicker,
+            0.12em
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-header h2 {
+    font-size:
+        clamp(
+            19px,
+            1.35vw,
+            23px
+        ) !important;
+
+    line-height: 1.22 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-header p {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height: 1.55 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-badge {
+    min-height: 30px;
+
+    padding:
+        6px
+        10px;
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-panel-body {
+    padding:
+        clamp(22px, 1.7vw, 30px) !important;
+}
+
+
+/* ==========================================================================
+   SEÇÕES E CONTEÚDO
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-section + .doc-section {
+    margin-top:
+        clamp(22px, 1.6vw, 28px) !important;
+
+    padding-top:
+        clamp(18px, 1.35vw, 24px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-section-heading {
+    margin-bottom: 13px !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-section-number,
+body.taskflow-home.doc-workspace
+.doc-access-step-number {
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    display: grid;
+    place-items: center;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-section-heading h3,
+body.taskflow-home.doc-workspace
+.doc-access-guide-header h3 {
+    font-size:
+        var(
+            --ws-font-lg,
+            16px
+        ) !important;
+
+    line-height: 1.28 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-section-heading p,
+body.taskflow-home.doc-workspace
+.doc-access-guide-header p {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.45 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-text,
+body.taskflow-home.doc-workspace
+.doc-list,
+body.taskflow-home.doc-workspace
+.doc-ordered-list,
+body.taskflow-home.doc-workspace
+.doc-section > p {
+    color:
+        var(
+            --ws-text-secondary,
+            #35405A
+        );
+
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+
+    line-height:
+        var(
+            --ws-line-relaxed,
+            1.65
+        ) !important;
+}
+
+
+/* ==========================================================================
+   GUIAS, CARDS E BLOCOS DE DESTAQUE
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-access-guide,
+body.taskflow-home.doc-workspace
+.doc-intro-card,
+body.taskflow-home.doc-workspace
+.doc-highlight,
+body.taskflow-home.doc-workspace
+.doc-success-box,
+body.taskflow-home.doc-workspace
+.doc-contact-box {
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-guide {
+    padding:
+        clamp(16px, 1.2vw, 20px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-steps {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(250px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap:
+        clamp(10px, 0.8vw, 14px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-step {
+    min-width: 0;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-step-heading strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-step-heading span,
+body.taskflow-home.doc-workspace
+.doc-access-caption {
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    line-height: 1.50 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-image-wrap {
+    width: 100%;
+    max-width: 100%;
+
+    overflow: hidden;
+
+    border-radius:
+        var(
+            --ws-radius-md,
+            10px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-access-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+body.taskflow-home.doc-workspace
+.doc-field-grid,
+body.taskflow-home.doc-workspace
+.doc-responsibility-grid,
+body.taskflow-home.doc-workspace
+.doc-category-grid,
+body.taskflow-home.doc-workspace
+.doc-summary-grid {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(220px, 100%),
+                1fr
+            )
+        ) !important;
+
+    gap:
+        clamp(10px, 0.8vw, 14px) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-field-card,
+body.taskflow-home.doc-workspace
+.doc-responsibility-card,
+body.taskflow-home.doc-workspace
+.doc-category-card,
+body.taskflow-home.doc-workspace
+.doc-summary-card,
+body.taskflow-home.doc-workspace
+.doc-security-rule {
+    min-width: 0;
+
+    border-color:
+        var(
+            --ws-border-soft,
+            #E7EBF1
+        ) !important;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+
+    background:
+        var(
+            --ws-surface-card,
+            #FFFFFF
+        );
+}
+
+body.taskflow-home.doc-workspace
+.doc-field-card h4,
+body.taskflow-home.doc-workspace
+.doc-responsibility-card h4,
+body.taskflow-home.doc-workspace
+.doc-category-card strong,
+body.taskflow-home.doc-workspace
+.doc-summary-card strong {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-field-card p,
+body.taskflow-home.doc-workspace
+.doc-responsibility-card li,
+body.taskflow-home.doc-workspace
+.doc-category-card p,
+body.taskflow-home.doc-workspace
+.doc-summary-card span {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.50 !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-highlight,
+body.taskflow-home.doc-workspace
+.doc-success-box,
+body.taskflow-home.doc-workspace
+.doc-intro-card {
+    padding:
+        14px
+        15px !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-highlight p,
+body.taskflow-home.doc-workspace
+.doc-success-box p,
+body.taskflow-home.doc-workspace
+.doc-intro-card p,
+body.taskflow-home.doc-workspace
+.doc-contact-box span {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.55 !important;
+}
+
+
+/* ==========================================================================
+   FLUXOS
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-flow,
+body.taskflow-home.doc-workspace
+.doc-flow-line {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.taskflow-home.doc-workspace
+.doc-flow-step,
+body.taskflow-home.doc-workspace
+.doc-flow-card {
+    min-width: 0;
+
+    border-radius:
+        var(
+            --ws-radius-lg,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-flow-step strong,
+body.taskflow-home.doc-workspace
+.doc-flow-card strong {
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.45;
+}
+
+
+/* ==========================================================================
+   TABELAS — HORIZONTAL LOCAL, SEM SCROLL GLOBAL
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-rule-table-wrap {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+
+    overscroll-behavior-x: contain;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        var(
+            --ws-scroll-thumb,
+            #C7CED9
+        )
+        transparent;
+}
+
+body.taskflow-home.doc-workspace
+.doc-rule-table {
+    width: 100%;
+    min-width: 820px;
+
+    border-collapse: collapse;
+}
+
+body.taskflow-home.doc-workspace
+.doc-rule-table th {
+    padding:
+        10px
+        11px !important;
+
+    color:
+        var(
+            --ws-table-head-text,
+            #526078
+        );
+
+    font-size:
+        var(
+            --ws-font-2xs,
+            10px
+        ) !important;
+
+    background:
+        var(
+            --ws-table-head-bg,
+            #F7F9FC
+        );
+}
+
+body.taskflow-home.doc-workspace
+.doc-rule-table td {
+    padding:
+        10px
+        11px !important;
+
+    font-size:
+        var(
+            --ws-font-xs,
+            11px
+        ) !important;
+
+    line-height: 1.45;
+}
+
+
+/* ==========================================================================
+   CENTRAL — VIEWER / IFRAME
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+.doc-viewer {
+    min-width: 0;
+    max-width: 100%;
+
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-viewer-header {
+    min-height: 54px;
+
+    padding:
+        10px
+        14px !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-viewer-title {
+    font-size:
+        var(
+            --ws-font-sm,
+            12px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace
+.doc-frame-wrap {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.taskflow-home.doc-workspace
+.doc-frame {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace
+footer {
+    margin-top: auto;
+
+    flex: 0 0 auto;
+}
+
+
+/* ==========================================================================
+   MODO EMBUTIDO
+   ========================================================================== */
+
+body.taskflow-home.doc-workspace.doc-embedded {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    min-height: 0 !important;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    background:
+        var(
+            --ws-app-bg,
+            #F4F7FB
+        );
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-main {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 !important;
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-wrapper,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-index-wrapper,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-password-page,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-meta-page,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-production-page,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-dashboard-page,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-history-page {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-content,
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-panel {
+    border-radius:
+        var(
+            --ws-radius-xl,
+            14px
+        ) !important;
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-panel-header {
+    padding:
+        16px
+        18px !important;
+}
+
+body.taskflow-home.doc-workspace.doc-embedded
+.doc-panel-body {
+    padding:
+        clamp(18px, 1.6vw, 24px) !important;
+}
+
+
+/* ==========================================================================
+   DESKTOP / NOTEBOOK — ZOOM SAFETY
+   ========================================================================== */
+
+@media (max-width: 1023px) and (hover: hover) and (pointer: fine) {
+
+    body.taskflow-home.doc-workspace {
+        overflow-x: auto;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-main {
+        min-width:
+            var(
+                --ws-desktop-min-width,
+                1024px
+            );
+    }
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE — DESKTOP INTERMEDIÁRIO
+   Ajustes dimensionais apenas; não empilha sidebar/conteúdo.
+   ========================================================================== */
+
+@media only screen and (max-width: 1180px) {
+
+    body.taskflow-home.doc-workspace
+    .doc-main {
+        padding-inline:
+            clamp(
+                16px,
+                2vw,
+                26px
+            ) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-layout {
+        grid-template-columns:
+            minmax(
+                min(245px, 100%),
+                285px
+            )
+            minmax(0, 1fr) !important;
+    }
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE — TABLET TOUCH
+   Mudança estrutural apenas em dispositivo touch.
+   Desktop/notebook com zoom mantém sidebar + conteúdo na mesma composição.
+   ========================================================================== */
+
+@media only screen and (max-width: 1100px) and (pointer: coarse) {
+
+    body.taskflow-home.doc-workspace
+    .doc-main {
+        padding-top: 22px !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-hero {
+        min-height: 0 !important;
+
+        align-items: stretch;
+        flex-direction: column;
+
+        padding:
+            20px
+            22px !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-hero-side {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-layout {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-sidebar {
+        position: relative;
+        top: auto;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+
+/* ==========================================================================
+   RESPONSIVIDADE — MOBILE
+   ========================================================================== */
+
+@media only screen and (max-width: 640px) and (pointer: coarse) {
+
+    body.taskflow-home.doc-workspace
+    .doc-main {
+        padding:
+            16px
+            12px
+            24px !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-hero {
+        padding:
+            18px
+            18px !important;
+
+        border-radius:
+            var(
+                --ws-radius-xl,
+                14px
+            ) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-hero h1 {
+        font-size:
+            clamp(
+                25px,
+                7vw,
+                30px
+            ) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-hero p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-panel,
+    body.taskflow-home.doc-workspace
+    .doc-content,
+    body.taskflow-home.doc-workspace
+    .doc-cover,
+    body.taskflow-home.doc-workspace
+    .doc-sidebar {
+        border-radius:
+            var(
+                --ws-radius-xl,
+                14px
+            ) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-panel-header,
+    body.taskflow-home.doc-workspace
+    .doc-panel-body,
+    body.taskflow-home.doc-workspace
+    .doc-cover-header,
+    body.taskflow-home.doc-workspace
+    .doc-cover-body {
+        padding:
+            16px !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-field-grid,
+    body.taskflow-home.doc-workspace
+    .doc-responsibility-grid,
+    body.taskflow-home.doc-workspace
+    .doc-category-grid,
+    body.taskflow-home.doc-workspace
+    .doc-summary-grid,
+    body.taskflow-home.doc-workspace
+    .doc-access-steps {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-search {
+        font-size: 16px !important;
+    }
+
+    body.taskflow-home.doc-workspace
+    .doc-rule-table {
+        min-width: 760px;
+    }
+}
+
+
+/* ==========================================================================
+   TOUCH
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    body.taskflow-home.doc-workspace
+    button,
+    body.taskflow-home.doc-workspace
+    .doc-nav-link {
+        min-height: 44px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.taskflow-home.doc-workspace *,
+    body.taskflow-home.doc-workspace *::before,
+    body.taskflow-home.doc-workspace *::after {
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

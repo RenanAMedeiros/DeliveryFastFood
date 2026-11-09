@@ -1,0 +1,242 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+td:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: left;
+    border-left: none;
+    border-right: none;
+    position: sticky;
+    top: 0;
+    z-index: 500
+}
+
+th {
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-size: 14px;
+
+}
+
+td {
+    font-size: 13px;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+.small {
+    color: white;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+}
+
+.title-button-container {
+    display: flex;
+    align-items: center;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 10px;
+}
+
+.textfield>label {
+    color: #000000de;
+    margin-bottom: 13px;
+}
+
+.textfield>input,
+.textfield>select,
+.textfield>textarea {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #514869;
+    color: #000000de;
+    font-size: 12pt;
+    box-shadow: 0px 10px 40px #00000056;
+    outline: none;
+    box-sizing: border-box;
+}
+
+
+.filesTable h1 {
+    font-size: 24px;
+    color: #f0ffffde;
+}
+
+
+
+.filter-header {
+    background-color: white;
+    padding: 10px 1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 20px;
+}
+
+.filter {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    width: 100%;
+}
+
+.filter>select,
+.filter>input[type="date"],
+.filter>input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #fff;
+    color: #000909de;
+    border: 1px solid #ddd;
+}
+
+.filter>label {
+    display: block;
+    color: #000909de;
+    font-size: 11px;
+}
+
+.buttons_container {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    
+}
+
+/* Estilo geral para todos os botões */
+.btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 10px;
+    cursor: pointer;
+    margin-right: 10px;
+    /* Espaçamento entre botões */
+    
+}
+
+/* Estilo específico para o botão Visualizar */
+.visualizar-btn {
+    background-color: #101C44;
+    /* Verde */
+    color: white;
+}
+
+.visualizar-btn:hover {
+    background-color: #101C44;
+    transform: scale(1.05);
+}
+
+/* Estilo específico para o botão Baixar */
+.baixar-btn {
+    background-color: #101C44;
+    /* Azul */
+    color: white;
+}
+
+.baixar-btn:hover {
+    background-color: #101C44;
+    transform: scale(1.05);
+}
+
+
+
+.search-button,
+.clear-button {
+    text-wrap: nowrap;
+    padding: 9px 8px;
+    min-width: 100px;
+    border: none;
+    border-radius: 8px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    color: white;
+    background-color: #30445E;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    
+    font-size: 10px;
+    align-self: center;
+}
+
+.search-button:hover,
+.clear-button:hover {
+    background-color: #101C44;
+
+}
+
+
+.filter_icon {
+    display: none;
+    background-color: #FFD021;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.textfield-search {
+    display: flex;
+    border-radius: 20px;
+}
+
+
+@media only screen and (max-width: 768px) {
+    #filter-form {
+        display: none;
+        width: 100%;
+    }
+
+    .filter-header {
+        width: 100%;
+        overflow-x: scroll;
+        box-sizing: border-box;
+
+    }
+
+    .filter {
+        min-width: 150px;
+    }
+
+    .filter_icon {
+        display: flex;
+    }
+}

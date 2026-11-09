@@ -1,0 +1,13 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Taskflow">
+  <!-- Fundo: azul escuro com cantos arredondados -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#101C44"></rect>
+  <!-- Monograma TF em amarelo (grossura generosa p/ 16x16 ficar nítido) -->
+  <!-- Barra do T -->
+  <rect x="116" y="100" width="280" height="64" rx="32" fill="#FFD021"></rect>
+  <!-- Haste central (T e F compartilham a mesma) -->
+  <rect x="236" y="100" width="64" height="312" rx="32" fill="#FFD021"></rect>
+  <!-- Barra média do F -->
+  <rect x="236" y="208" width="170" height="56" rx="28" fill="#FFD021"></rect>
+  <!-- Barra inferior curta do F -->
+  <rect x="236" y="316" width="140" height="52" rx="26" fill="#FFD021"></rect>
+</svg>

@@ -1,0 +1,5801 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+{% include "components/_head.html" %}
+
+<style>
+    :root {
+        --qore-navy-950: #031129;
+        --qore-navy-900: #071a3f;
+        --qore-navy-800: #102757;
+        --qore-blue-700: #155eef;
+        --qore-blue-600: #2563eb;
+        --qore-blue-500: #2e90fa;
+        --qore-cyan-400: #38bdf8;
+        --qore-white: #ffffff;
+        --qore-bg: #f4f7fb;
+        --qore-surface: #ffffff;
+        --qore-surface-soft: #f8fafc;
+        --qore-text: #172033;
+        --qore-muted: #667085;
+        --qore-muted-light: #98a2b3;
+        --qore-border: #dfe6f0;
+        --qore-border-strong: #c9d3e1;
+        --qore-success: #12b76a;
+        --qore-success-soft: #ecfdf3;
+        --qore-warning: #f79009;
+        --qore-warning-soft: #fffaeb;
+        --qore-danger: #d92d20;
+        --qore-danger-soft: #fef3f2;
+        --qore-info-soft: #eff6ff;
+        --qore-shadow: 0 18px 48px rgba(3, 17, 41, 0.11);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        min-width: 320px;
+        min-height: 100%;
+    }
+
+    body.qore-goals-page {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        color: var(--qore-text);
+        font-family: "Inter", Arial, sans-serif;
+        background:
+            radial-gradient(
+                circle at 4% 10%,
+                rgba(37, 99, 235, 0.10),
+                transparent 27%
+            ),
+            radial-gradient(
+                circle at 96% 92%,
+                rgba(56, 189, 248, 0.08),
+                transparent 24%
+            ),
+            var(--qore-bg);
+    }
+
+    body.qore-modal-open {
+        overflow: hidden;
+    }
+
+    button,
+    input,
+    select {
+        font: inherit;
+    }
+
+    button {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden] {
+        display: none !important;
+    }
+
+    .qore-goals-main {
+        width: 100%;
+        padding:
+            24px
+            clamp(16px, 2.5vw, 42px)
+            40px;
+        flex: 1 0 auto;
+    }
+
+    .qore-goals-shell {
+        width: min(1420px, 100%);
+        margin: 0 auto;
+    }
+
+    /* =========================================================
+       CABEÇALHO DA PÁGINA
+    ========================================================= */
+
+    .qore-page-header {
+        margin-bottom: 18px;
+        padding:
+            25px
+            clamp(22px, 3vw, 36px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        overflow: hidden;
+        color: var(--qore-white);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 88% 10%,
+                rgba(56, 189, 248, 0.22),
+                transparent 27%
+            ),
+            linear-gradient(
+                135deg,
+                var(--qore-navy-950),
+                var(--qore-navy-800)
+            );
+        box-shadow: var(--qore-shadow);
+    }
+
+    .qore-page-header-main {
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .qore-page-back {
+        width: 44px;
+        height: 44px;
+        margin-top: 2px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        flex: 0 0 44px;
+        color: var(--qore-white);
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.20);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 24px rgba(3, 17, 41, 0.18);
+        cursor: pointer;
+        transition:
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .qore-page-back:hover,
+    .qore-page-back:focus-visible {
+        color: var(--qore-white);
+        border-color: rgba(255, 255, 255, 0.36);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 13px 28px rgba(3, 17, 41, 0.24);
+        outline: 0;
+        transform: translateX(-2px);
+    }
+
+    .qore-page-back:active {
+        transform: translateX(0);
+    }
+
+    .qore-page-header-copy {
+        min-width: 0;
+    }
+
+    .qore-page-eyebrow {
+        margin-bottom: 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #79ccff;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .qore-page-eyebrow::before {
+        content: "";
+        width: 22px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--qore-cyan-400);
+    }
+
+    .qore-page-header h1 {
+        margin: 0;
+        color: var(--qore-white);
+        font-size: clamp(27px, 2.5vw, 38px);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.045em;
+    }
+
+    .qore-page-header p {
+        max-width: 760px;
+        margin: 9px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .qore-page-header-badge {
+        min-width: 210px;
+        padding: 13px 15px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(8px);
+    }
+
+    .qore-page-header-badge-icon {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 40px;
+        color: #8ed8ff;
+        font-size: 15px;
+        border-radius: 11px;
+        background: rgba(37, 99, 235, 0.22);
+    }
+
+    .qore-page-header-badge strong,
+    .qore-page-header-badge small {
+        display: block;
+    }
+
+    .qore-page-header-badge strong {
+        margin-bottom: 3px;
+        color: var(--qore-white);
+        font-size: 10px;
+    }
+
+    .qore-page-header-badge small {
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+
+    .qore-form-layout {
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(280px, 330px);
+        align-items: start;
+        gap: 18px;
+    }
+
+    .qore-form-card,
+    .qore-help-card {
+        border: 1px solid rgba(16, 39, 87, 0.08);
+        border-radius: 18px;
+        background: var(--qore-surface);
+        box-shadow: 0 13px 34px rgba(3, 17, 41, 0.07);
+    }
+
+    .qore-form-card {
+        overflow: hidden;
+    }
+
+    .qore-form-card-header {
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-bottom: 1px solid var(--qore-border);
+        background:
+            linear-gradient(
+                180deg,
+                #ffffff,
+                #fbfcfe
+            );
+    }
+
+    .qore-form-card-header h2 {
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .qore-form-card-header p {
+        margin: 5px 0 0;
+        color: var(--qore-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .qore-form-progress {
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+        gap: 7px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .qore-progress-dots {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .qore-progress-dot {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        display: grid;
+        place-items: center;
+        color: transparent;
+        font-size: 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 50%;
+        background: #d9e0ea;
+        transition:
+            color 0.18s ease,
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .qore-progress-dot.is-active {
+        border-color: var(--qore-blue-500);
+        background: var(--qore-white);
+        box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.10);
+        transform: scale(1.05);
+    }
+
+    .qore-progress-dot.is-complete {
+        color: var(--qore-white);
+        border-color: var(--qore-blue-600);
+        background: var(--qore-blue-600);
+        box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.09);
+    }
+
+    .qore-progress-dot.is-complete i {
+        display: block;
+    }
+
+    .qore-progress-dot i {
+        display: none;
+        line-height: 1;
+    }
+
+    .qore-progress-text {
+        min-width: 148px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        font-weight: 800;
+        line-height: 1.3;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .qore-progress-text.is-complete {
+        color: var(--qore-blue-700);
+    }
+
+    .qore-form-body {
+        padding: 24px;
+    }
+
+    .qore-form-section + .qore-form-section {
+        margin-top: 26px;
+        padding-top: 24px;
+        border-top: 1px solid var(--qore-border);
+    }
+
+    .qore-section-heading {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .qore-section-number {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 34px;
+        color: var(--qore-blue-700);
+        font-size: 11px;
+        font-weight: 800;
+        border-radius: 10px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-section-heading h3 {
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    .qore-section-heading p {
+        margin: 4px 0 0;
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .qore-grid-2,
+    .qore-grid-3,
+    .qore-grid-4 {
+        display: grid;
+        gap: 16px;
+    }
+
+    .qore-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .qore-grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .qore-grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* =========================================================
+       CAMPOS
+    ========================================================= */
+
+    .qore-field {
+        min-width: 0;
+    }
+
+    .qore-field-label {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-required::after {
+        content: " *";
+        color: var(--qore-danger);
+    }
+
+    .qore-optional {
+        color: var(--qore-muted-light);
+        font-size: 8px;
+        font-weight: 600;
+    }
+
+    .qore-control-wrap {
+        position: relative;
+    }
+
+    .qore-control-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        z-index: 2;
+        width: 16px;
+        color: var(--qore-muted-light);
+        font-size: 12px;
+        text-align: center;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-control-wrap:focus-within .qore-control-icon {
+        color: var(--qore-blue-600);
+    }
+
+    .qore-control {
+        width: 100%;
+        height: 50px;
+        padding: 0 42px 0 43px;
+        color: var(--qore-text);
+        font-size: 11px;
+        border: 1px solid var(--qore-border);
+        border-radius: 11px;
+        outline: 0;
+        background: var(--qore-surface-soft);
+        transition:
+            border-color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease;
+    }
+
+    select.qore-control {
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .qore-select-arrow {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        z-index: 2;
+        color: var(--qore-muted-light);
+        font-size: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .qore-control:hover:not(:disabled) {
+        border-color: var(--qore-border-strong);
+    }
+
+    .qore-control:focus {
+        border-color: var(--qore-blue-600);
+        background: var(--qore-white);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+
+    .qore-control:disabled {
+        color: #98a2b3;
+        cursor: not-allowed;
+        background: #eef1f5;
+    }
+
+    .qore-field.is-invalid .qore-control {
+        border-color: #fda29b;
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-field.is-invalid .qore-control:focus {
+        box-shadow: 0 0 0 4px rgba(217, 45, 32, 0.09);
+    }
+
+    .qore-field-message {
+        min-height: 15px;
+        margin: 6px 0 0;
+        color: var(--qore-muted-light);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .qore-field-message.is-error {
+        color: var(--qore-danger);
+        font-weight: 700;
+    }
+
+    .qore-control-loading {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        width: 14px;
+        height: 14px;
+        display: none;
+        border: 2px solid rgba(37, 99, 235, 0.18);
+        border-top-color: var(--qore-blue-600);
+        border-radius: 50%;
+        transform: translateY(-50%);
+        animation: qoreSpin 0.75s linear infinite;
+    }
+
+    .qore-control-wrap.is-loading .qore-select-arrow {
+        display: none;
+    }
+
+    .qore-control-wrap.is-loading .qore-control-loading {
+        display: block;
+    }
+
+    /* =========================================================
+       RESUMO LATERAL
+    ========================================================= */
+
+    .qore-help-card {
+        position: sticky;
+        top: 92px;
+        overflow: hidden;
+    }
+
+    .qore-help-card-header {
+        padding: 19px 20px;
+        color: var(--qore-white);
+        background:
+            linear-gradient(
+                135deg,
+                var(--qore-navy-950),
+                var(--qore-navy-800)
+            );
+    }
+
+    .qore-help-card-header span {
+        display: block;
+        margin-bottom: 6px;
+        color: #7dd3fc;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+    }
+
+    .qore-help-card-header h2 {
+        margin: 0;
+        color: var(--qore-white);
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .qore-help-card-body {
+        padding: 18px;
+    }
+
+    .qore-help-step {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .qore-help-step + .qore-help-step {
+        margin-top: 15px;
+    }
+
+    .qore-help-step-icon {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        color: var(--qore-blue-700);
+        font-size: 10px;
+        line-height: 1;
+        border-radius: 8px;
+        background: var(--qore-info-soft);
+    }
+
+    .qore-help-step .qore-help-step-icon {
+        display: grid;
+        place-items: center;
+    }
+
+    .qore-help-step .qore-help-step-icon i {
+        display: block;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1;
+    }
+
+    .qore-help-step strong,
+    .qore-help-step span {
+        display: block;
+    }
+
+    .qore-help-step strong {
+        margin-bottom: 3px;
+        color: #344054;
+        font-size: 9px;
+    }
+
+    .qore-help-step span {
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .qore-live-summary {
+        margin-top: 18px;
+        padding-top: 17px;
+        border-top: 1px solid var(--qore-border);
+    }
+
+    .qore-live-summary-title {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #344054;
+        font-size: 9px;
+        font-weight: 800;
+    }
+
+    .qore-live-summary-title i {
+        color: var(--qore-blue-600);
+    }
+
+    .qore-summary-row {
+        padding: 8px 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px dashed var(--qore-border);
+    }
+
+    .qore-summary-row:last-child {
+        border-bottom: 0;
+    }
+
+    .qore-summary-row span {
+        color: var(--qore-muted);
+        font-size: 8px;
+    }
+
+    .qore-summary-row strong {
+        max-width: 185px;
+        color: var(--qore-text);
+        font-size: 8px;
+        line-height: 1.35;
+        text-align: right;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .qore-security-note {
+        margin: 17px 18px 18px;
+        padding: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        color: #027a48;
+        border: 1px solid #abefc6;
+        border-radius: 11px;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-security-note i {
+        margin-top: 1px;
+        font-size: 10px;
+    }
+
+    .qore-security-note p {
+        margin: 0;
+        font-size: 8px;
+        font-weight: 600;
+        line-height: 1.45;
+    }
+
+    /* =========================================================
+       AÇÕES
+    ========================================================= */
+
+    .qore-form-actions {
+        min-height: 82px;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid var(--qore-border);
+        background: #fbfcfe;
+    }
+
+    .qore-actions-left,
+    .qore-actions-right {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        flex: 0 0 auto;
+    }
+
+    .qore-form-actions .qore-button {
+        width: auto;
+        min-height: 41px;
+        padding-right: 14px;
+        padding-left: 14px;
+        white-space: nowrap;
+    }
+
+    .qore-form-actions .qore-button-danger-soft {
+        min-width: 96px;
+    }
+
+    .qore-form-actions .qore-button-primary {
+        min-width: 150px;
+    }
+
+    .qore-button {
+        min-height: 43px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--qore-text);
+        font-size: 10px;
+        font-weight: 800;
+        text-decoration: none;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        background: var(--qore-white);
+        cursor: pointer;
+        transition:
+            border-color 0.18s ease,
+            color 0.18s ease,
+            background-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .qore-button:hover,
+    .qore-button:focus-visible {
+        color: var(--qore-text);
+        text-decoration: none;
+        border-color: var(--qore-border-strong);
+        background: #f8fafc;
+        outline: 0;
+        transform: translateY(-1px);
+    }
+
+    .qore-button-primary {
+        min-width: 138px;
+        color: var(--qore-white);
+        border-color: var(--qore-blue-600);
+        background:
+            linear-gradient(
+                135deg,
+                var(--qore-blue-600),
+                var(--qore-blue-700)
+            );
+        box-shadow: 0 11px 24px rgba(37, 99, 235, 0.24);
+    }
+
+    .qore-button-primary:hover,
+    .qore-button-primary:focus-visible {
+        color: var(--qore-white);
+        border-color: var(--qore-blue-700);
+        background:
+            linear-gradient(
+                135deg,
+                #3478f6,
+                var(--qore-blue-700)
+            );
+        box-shadow: 0 14px 28px rgba(37, 99, 235, 0.31);
+    }
+
+    .qore-button-danger-soft {
+        color: #b42318;
+        border-color: #fecdca;
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-button-danger-soft:hover,
+    .qore-button-danger-soft:focus-visible {
+        color: #912018;
+        border-color: #fda29b;
+        background: #fee4e2;
+    }
+
+    .qore-button-loader {
+        width: 15px;
+        height: 15px;
+        display: none;
+        border: 2px solid rgba(255, 255, 255, 0.30);
+        border-top-color: var(--qore-white);
+        border-radius: 50%;
+        animation: qoreSpin 0.75s linear infinite;
+    }
+
+    .qore-button-primary.is-loading .qore-button-loader {
+        display: block;
+    }
+
+    .qore-button-primary.is-loading > i {
+        display: none;
+    }
+
+    .qore-button:disabled {
+        cursor: wait;
+        opacity: 0.80;
+        transform: none;
+    }
+
+    /* =========================================================
+       TOASTS
+    ========================================================= */
+
+    #toast-container {
+        position: fixed;
+        top: 92px;
+        right: 18px;
+        z-index: 22000;
+        width: min(370px, calc(100vw - 36px));
+        display: grid;
+        gap: 10px;
+        pointer-events: none;
+    }
+
+    .qore-toast {
+        overflow: hidden;
+        color: var(--qore-text);
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: var(--qore-white);
+        box-shadow: 0 18px 44px rgba(3, 17, 41, 0.18);
+        opacity: 0;
+        pointer-events: auto;
+        transform: translateX(24px);
+        transition:
+            opacity 0.22s ease,
+            transform 0.22s ease;
+    }
+
+    .qore-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .qore-toast.hide {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    .qore-toast-content {
+        padding: 13px;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) 28px;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .qore-toast-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 800;
+        border-radius: 10px;
+    }
+
+    .qore-toast-icon.success {
+        color: #027a48;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-toast-icon.error {
+        color: var(--qore-danger);
+        background: var(--qore-danger-soft);
+    }
+
+    .qore-toast-icon.warning {
+        color: #b54708;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-toast-icon.info {
+        color: var(--qore-blue-700);
+        background: var(--qore-info-soft);
+    }
+
+    .qore-toast-copy {
+        min-width: 0;
+    }
+
+    .qore-toast-copy strong,
+    .qore-toast-copy span {
+        display: block;
+    }
+
+    .qore-toast-copy strong {
+        margin-bottom: 3px;
+        color: var(--qore-text);
+        font-size: 10px;
+    }
+
+    .qore-toast-copy span {
+        color: var(--qore-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .qore-toast-close {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        color: var(--qore-muted-light);
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .qore-toast-close:hover,
+    .qore-toast-close:focus-visible {
+        color: var(--qore-text);
+        background: #f2f4f7;
+        outline: 0;
+    }
+
+    .qore-toast-progress {
+        height: 3px;
+        transform-origin: left center;
+        animation-name: qoreToastProgress;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+    }
+
+    .qore-toast-progress.success {
+        background: var(--qore-success);
+    }
+
+    .qore-toast-progress.error {
+        background: var(--qore-danger);
+    }
+
+    .qore-toast-progress.warning {
+        background: var(--qore-warning);
+    }
+
+    .qore-toast-progress.info {
+        background: var(--qore-blue-600);
+    }
+
+    /* =========================================================
+       MODAL DE CONFIRMAÇÃO
+    ========================================================= */
+
+    .qore-confirm-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 21000;
+        padding: 18px;
+        display: none;
+        place-items: center;
+        background: rgba(3, 17, 41, 0.70);
+        backdrop-filter: blur(5px);
+    }
+
+    .qore-confirm-overlay.show {
+        display: grid;
+    }
+
+    .qore-confirm-dialog {
+        width: min(460px, 100%);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.80);
+        border-radius: 18px;
+        background: var(--qore-white);
+        box-shadow: 0 28px 80px rgba(3, 17, 41, 0.36);
+        animation: qoreDialogIn 0.20s ease-out both;
+    }
+
+    .qore-confirm-body {
+        padding: 24px;
+        text-align: center;
+    }
+
+    .qore-confirm-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 16px;
+        display: grid;
+        place-items: center;
+        color: #b54708;
+        font-size: 20px;
+        border: 1px solid #fedf89;
+        border-radius: 17px;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-confirm-dialog h3 {
+        margin: 0;
+        color: var(--qore-text);
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .qore-confirm-dialog p {
+        margin: 9px 0 0;
+        color: var(--qore-muted);
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    .qore-confirm-actions {
+        padding: 14px 18px 18px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+
+    @keyframes qoreSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes qoreToastProgress {
+        from {
+            transform: scaleX(1);
+        }
+
+        to {
+            transform: scaleX(0);
+        }
+    }
+
+    @keyframes qoreDialogIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px) scale(0.985);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* =========================================================
+       RESPONSIVIDADE FINAL — PADRÃO WORKSPACE QORE
+       Referência principal: 1920 x 1080
+
+       Este bloco altera somente dimensões, espaçamentos,
+       disposição dos componentes e comportamento responsivo.
+    ========================================================= */
+
+    body.qore-goals-page {
+        overflow-x: hidden;
+    }
+
+    .qore-goals-main,
+    .qore-goals-shell,
+    .qore-page-header,
+    .qore-page-header-main,
+    .qore-page-header-copy,
+    .qore-form-layout,
+    .qore-form-card,
+    .qore-help-card,
+    .qore-form-card-header,
+    .qore-form-body,
+    .qore-form-section,
+    .qore-grid-2,
+    .qore-grid-3,
+    .qore-grid-4,
+    .qore-field,
+    .qore-help-card-body,
+    .qore-help-step,
+    .qore-live-summary,
+    .qore-form-actions,
+    .qore-actions-left,
+    .qore-actions-right {
+        min-width: 0;
+    }
+
+    .qore-page-header-copy,
+    .qore-page-header p,
+    .qore-form-card-header > div,
+    .qore-section-heading > div,
+    .qore-help-step > div,
+    .qore-security-note p,
+    .qore-toast-copy {
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================================================
+       FULL HD — MODELO PRINCIPAL DO WORKSPACE
+    ========================================================= */
+
+    @media only screen and (min-width: 1600px) and (min-height: 900px) {
+        .qore-goals-main {
+            padding:
+                24px
+                clamp(42px, 3.125vw, 60px)
+                42px;
+        }
+
+        .qore-goals-shell {
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .qore-page-header {
+            margin-bottom: 20px;
+            padding: 28px 36px;
+            gap: 28px;
+        }
+
+        .qore-page-header-main {
+            gap: 18px;
+        }
+
+        .qore-page-header h1 {
+            font-size: 38px;
+        }
+
+        .qore-page-header p {
+            max-width: 980px;
+            font-size: 13px;
+        }
+
+        .qore-page-header-badge {
+            min-width: 250px;
+            padding: 15px 17px;
+        }
+
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(320px, 360px);
+            gap: 22px;
+        }
+
+        .qore-form-card-header {
+            padding: 22px 28px;
+        }
+
+        .qore-form-body {
+            padding: 28px;
+        }
+
+        .qore-form-section + .qore-form-section {
+            margin-top: 28px;
+            padding-top: 26px;
+        }
+
+        .qore-grid-2,
+        .qore-grid-3 {
+            gap: 18px;
+        }
+
+        .qore-help-card {
+            top: 96px;
+        }
+
+        .qore-help-card-header {
+            padding: 21px 22px;
+        }
+
+        .qore-help-card-body {
+            padding: 20px;
+        }
+
+        .qore-form-actions {
+            padding: 18px 28px;
+        }
+    }
+
+    /* =========================================================
+       TELAS MUITO LARGAS / ULTRAWIDE / 2K / 4K
+       Mantém o conteúdo centralizado sem esticar em excesso.
+    ========================================================= */
+
+    @media only screen and (min-width: 2200px) {
+        .qore-goals-main {
+            padding-right: 72px;
+            padding-left: 72px;
+        }
+
+        .qore-goals-shell {
+            max-width: 1920px;
+        }
+
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(340px, 380px);
+            gap: 24px;
+        }
+    }
+
+    /* =========================================================
+       DESKTOP E NOTEBOOK GRANDE — 1280 ATÉ 1599
+    ========================================================= */
+
+    @media only screen and (min-width: 1280px) and (max-width: 1599px) {
+        .qore-goals-main {
+            padding:
+                18px
+                clamp(28px, 3.2vw, 50px)
+                34px;
+        }
+
+        .qore-goals-shell {
+            width: 100%;
+            max-width: 1500px;
+        }
+
+        .qore-page-header {
+            padding:
+                24px
+                clamp(24px, 2.6vw, 34px);
+        }
+
+        .qore-page-header h1 {
+            font-size: clamp(30px, 2.5vw, 36px);
+        }
+
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(285px, 325px);
+        }
+    }
+
+    /* =========================================================
+       NOTEBOOK E DESKTOP COM ALTURA REDUZIDA
+       Inclui o cenário 1366 x 768.
+    ========================================================= */
+
+    @media only screen and (min-width: 1024px) and (max-height: 820px) {
+        .qore-goals-main {
+            padding-top: 14px;
+            padding-bottom: 28px;
+        }
+
+        .qore-page-header {
+            margin-bottom: 14px;
+            padding: 18px 24px;
+            border-radius: 17px;
+        }
+
+        .qore-page-header h1 {
+            font-size: clamp(27px, 2.5vw, 32px);
+        }
+
+        .qore-page-header p {
+            margin-top: 6px;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .qore-page-header-badge {
+            padding: 10px 12px;
+        }
+
+        .qore-form-card-header {
+            padding: 17px 22px;
+        }
+
+        .qore-form-body {
+            padding: 20px 22px;
+        }
+
+        .qore-form-section + .qore-form-section {
+            margin-top: 21px;
+            padding-top: 20px;
+        }
+
+        .qore-section-heading {
+            margin-bottom: 13px;
+        }
+
+        .qore-control {
+            height: 46px;
+        }
+
+        .qore-help-card-header {
+            padding: 16px 18px;
+        }
+
+        .qore-help-card-body {
+            padding: 16px;
+        }
+
+        .qore-help-step + .qore-help-step {
+            margin-top: 12px;
+        }
+
+        .qore-form-actions {
+            padding: 14px 22px;
+        }
+    }
+
+    /* =========================================================
+       NOTEBOOK MÉDIO — 1024 ATÉ 1279
+    ========================================================= */
+
+    @media only screen and (min-width: 1024px) and (max-width: 1279px) {
+        .qore-goals-main {
+            padding:
+                16px
+                clamp(20px, 2.8vw, 34px)
+                30px;
+        }
+
+        .qore-goals-shell {
+            width: 100%;
+            max-width: 1240px;
+        }
+
+        .qore-page-header {
+            gap: 18px;
+            padding: 22px 24px;
+        }
+
+        .qore-page-header h1 {
+            font-size: 30px;
+        }
+
+        .qore-page-header p {
+            font-size: 11px;
+        }
+
+        .qore-page-header-badge {
+            min-width: 205px;
+        }
+
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(270px, 300px);
+            gap: 16px;
+        }
+
+        .qore-form-card-header {
+            padding: 19px 22px;
+        }
+
+        .qore-form-body {
+            padding: 22px;
+        }
+
+        .qore-form-actions {
+            padding: 15px 22px;
+        }
+    }
+
+    /* =========================================================
+       TRANSIÇÃO PARA TABLET — ATÉ 1179
+    ========================================================= */
+
+    @media only screen and (max-width: 1179px) {
+        .qore-form-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-help-card {
+            position: static;
+        }
+
+        .qore-help-card-body {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .qore-help-step + .qore-help-step {
+            margin-top: 0;
+        }
+
+        .qore-live-summary,
+        .qore-security-note {
+            grid-column: 1 / -1;
+        }
+    }
+
+    /* =========================================================
+       TABLET — 681 ATÉ 900
+    ========================================================= */
+
+    @media only screen and (min-width: 681px) and (max-width: 900px) {
+        .qore-goals-main {
+            padding: 16px 20px 28px;
+        }
+
+        .qore-goals-shell {
+            width: 100%;
+            max-width: none;
+        }
+
+        .qore-page-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 18px;
+            padding: 23px 24px;
+        }
+
+        .qore-page-header-main {
+            width: 100%;
+        }
+
+        .qore-page-header h1 {
+            font-size: clamp(29px, 4.2vw, 34px);
+        }
+
+        .qore-page-header-badge {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .qore-form-card-header {
+            padding: 19px 20px;
+        }
+
+        .qore-form-body {
+            padding: 20px;
+        }
+
+        .qore-grid-3,
+        .qore-grid-4 {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-grid-3 > .qore-field:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        .qore-form-actions {
+            padding: 16px 20px;
+            flex-wrap: wrap;
+        }
+    }
+
+    /* =========================================================
+       CELULARES E TABLETS PEQUENOS — ATÉ 680
+    ========================================================= */
+
+    @media only screen and (max-width: 680px) {
+        .qore-goals-main {
+            padding: 14px 12px 28px;
+        }
+
+        .qore-page-header {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px 18px;
+            border-radius: 17px;
+        }
+
+        .qore-page-header-main {
+            width: 100%;
+            gap: 12px;
+        }
+
+        .qore-page-header-badge {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .qore-page-back {
+            width: 40px;
+            height: 40px;
+            flex-basis: 40px;
+        }
+
+        .qore-grid-2,
+        .qore-grid-3,
+        .qore-grid-4 {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-grid-3 > .qore-field:last-child:nth-child(odd) {
+            grid-column: auto;
+        }
+
+        .qore-form-card-header,
+        .qore-form-body,
+        .qore-form-actions {
+            padding-right: 17px;
+            padding-left: 17px;
+        }
+
+        .qore-form-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .qore-form-progress {
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .qore-progress-text {
+            min-width: 0;
+            text-align: left;
+            white-space: normal;
+        }
+
+        .qore-control {
+            height: 48px;
+            font-size: 16px;
+        }
+
+        .qore-help-card-body {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-live-summary,
+        .qore-security-note {
+            grid-column: auto;
+        }
+
+        .qore-form-actions {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .qore-actions-left,
+        .qore-actions-right {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .qore-form-actions .qore-button,
+        .qore-form-actions .qore-button-danger-soft,
+        .qore-form-actions .qore-button-primary {
+            width: 100%;
+            min-width: 0;
+        }
+
+        #toast-container {
+            top: 78px;
+            right: 10px;
+            width: calc(100vw - 20px);
+        }
+    }
+
+    /* =========================================================
+       CELULARES PEQUENOS — ATÉ 420
+    ========================================================= */
+
+    @media only screen and (max-width: 420px) {
+        .qore-goals-main {
+            padding-right: 9px;
+            padding-left: 9px;
+        }
+
+        .qore-page-header {
+            padding: 18px 15px;
+        }
+
+        .qore-form-card-header,
+        .qore-form-body,
+        .qore-form-actions {
+            padding-right: 14px;
+            padding-left: 14px;
+        }
+
+        .qore-confirm-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* =========================================================
+       TELAS BAIXAS EM MODO PAISAGEM
+    ========================================================= */
+
+    @media only screen and (max-height: 560px) and (orientation: landscape) {
+        .qore-goals-main {
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .qore-page-header {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .qore-help-card {
+            position: static;
+        }
+
+        .qore-confirm-overlay {
+            align-items: flex-start;
+            overflow-y: auto;
+        }
+
+        .qore-confirm-dialog {
+            margin: auto;
+        }
+    }
+
+    /* =========================================================
+       ACESSIBILIDADE — REDUÇÃO DE MOVIMENTO
+    ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* =========================================================
+       REFINO RESPONSIVO COMPLEMENTAR — ENVIO DE METAS
+       Ajustes exclusivamente estruturais e visuais.
+       Rotas, IDs, campos, validações e JavaScript permanecem intactos.
+    ========================================================= */
+
+    body.qore-goals-page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .qore-goals-main,
+    .qore-goals-shell,
+    .qore-page-header,
+    .qore-page-header-main,
+    .qore-page-header-copy,
+    .qore-form-layout,
+    .qore-form-layout > *,
+    .qore-form-card,
+    .qore-help-card,
+    .qore-form-card-header,
+    .qore-form-card-header > *,
+    .qore-form-body,
+    .qore-form-section,
+    .qore-section-heading,
+    .qore-section-heading > *,
+    .qore-grid-2,
+    .qore-grid-3,
+    .qore-grid-4,
+    .qore-field,
+    .qore-control-wrap,
+    .qore-help-card-body,
+    .qore-help-step,
+    .qore-live-summary,
+    .qore-summary-row,
+    .qore-security-note,
+    .qore-form-actions,
+    .qore-actions-left,
+    .qore-actions-right {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .qore-goals-page img,
+    .qore-goals-page svg,
+    .qore-goals-page canvas,
+    .qore-goals-page iframe {
+        max-width: 100%;
+    }
+
+    .qore-control,
+    .qore-button {
+        max-width: 100%;
+    }
+
+    .qore-page-header-copy,
+    .qore-page-header p,
+    .qore-form-card-header > div,
+    .qore-section-heading > div,
+    .qore-help-step > div,
+    .qore-security-note p,
+    .qore-toast-copy,
+    .qore-summary-row strong {
+        overflow-wrap: anywhere;
+    }
+
+    .qore-confirm-overlay {
+        max-width: 100vw;
+        max-height: 100dvh;
+        overflow-y: auto;
+    }
+
+    .qore-confirm-dialog {
+        max-width: 100%;
+        max-height: calc(100dvh - 24px);
+    }
+
+    .qore-confirm-dialog {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .qore-confirm-body {
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    .qore-confirm-actions {
+        flex: 0 0 auto;
+    }
+
+    /* FULL HD — melhor aproveitamento e leitura confortável */
+    @media only screen and (min-width: 1600px) and (min-height: 900px) {
+        .qore-goals-shell {
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(330px, 370px);
+            gap: 22px;
+        }
+
+        .qore-page-header {
+            padding: 29px 38px;
+        }
+
+        .qore-page-header p {
+            max-width: 1040px;
+            font-size: 13px;
+        }
+
+        .qore-form-card-header {
+            padding: 23px 30px;
+        }
+
+        .qore-form-card-header h2 {
+            font-size: 19px;
+        }
+
+        .qore-form-card-header p {
+            font-size: 11px;
+        }
+
+        .qore-form-body {
+            padding: 30px;
+        }
+
+        .qore-form-section + .qore-form-section {
+            margin-top: 30px;
+            padding-top: 28px;
+        }
+
+        .qore-section-heading {
+            margin-bottom: 18px;
+        }
+
+        .qore-section-heading h3 {
+            font-size: 14px;
+        }
+
+        .qore-section-heading p {
+            font-size: 10px;
+        }
+
+        .qore-field-label {
+            font-size: 11px;
+        }
+
+        .qore-field-message,
+        .qore-optional {
+            font-size: 9px;
+        }
+
+        .qore-control {
+            min-height: 50px;
+            font-size: 12px;
+        }
+
+        .qore-grid-2,
+        .qore-grid-3,
+        .qore-grid-4 {
+            gap: 18px;
+        }
+
+        .qore-help-card {
+            top: 96px;
+        }
+
+        .qore-help-card-header {
+            padding: 21px 22px;
+        }
+
+        .qore-help-card-header h2 {
+            font-size: 16px;
+        }
+
+        .qore-help-card-body {
+            padding: 20px;
+        }
+
+        .qore-help-step strong,
+        .qore-live-summary-title {
+            font-size: 10px;
+        }
+
+        .qore-help-step span,
+        .qore-summary-row span,
+        .qore-summary-row strong,
+        .qore-security-note p {
+            font-size: 9px;
+        }
+
+        .qore-form-actions {
+            padding: 19px 30px;
+        }
+
+        .qore-form-actions .qore-button {
+            min-height: 42px;
+            font-size: 10px;
+        }
+    }
+
+    /* Desktop / notebook: evita compressão lateral */
+    @media only screen and (min-width: 1280px) and (max-width: 1599px) {
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(285px, 325px);
+        }
+
+        .qore-grid-4 {
+            grid-template-columns:
+                repeat(4, minmax(150px, 1fr));
+        }
+    }
+
+    /* 1024–1279: mantém campos utilizáveis e resumo lateral controlado */
+    @media only screen and (min-width: 1024px) and (max-width: 1279px) {
+        .qore-form-layout {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(270px, 300px);
+        }
+
+        .qore-grid-4 {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-grid-4 > .qore-field:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        .qore-help-card {
+            top: 82px;
+        }
+    }
+
+    /* Telas de pouca altura / zoom aumentado */
+    @media only screen and (min-width: 1024px) and (max-height: 820px) {
+        .qore-goals-main {
+            padding-top: 14px;
+            padding-bottom: 26px;
+        }
+
+        .qore-help-card {
+            top: 80px;
+            max-height: calc(100dvh - 96px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .qore-page-header {
+            margin-bottom: 14px;
+        }
+    }
+
+    /* Abaixo de 1180 o resumo passa a integrar o fluxo normal */
+    @media only screen and (max-width: 1179px) {
+        .qore-form-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-help-card {
+            position: static;
+            top: auto;
+            max-height: none;
+            overflow: hidden;
+        }
+    }
+
+    /* Tablet */
+    @media only screen and (min-width: 681px) and (max-width: 1023px) {
+        .qore-goals-main {
+            width: 100%;
+        }
+
+        .qore-grid-2,
+        .qore-grid-3,
+        .qore-grid-4 {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-grid-3 > .qore-field:last-child:nth-child(odd),
+        .qore-grid-4 > .qore-field:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        .qore-form-actions {
+            flex-wrap: wrap;
+        }
+
+        .qore-actions-left,
+        .qore-actions-right {
+            flex-wrap: wrap;
+        }
+    }
+
+    /* Mobile */
+    @media only screen and (max-width: 680px) {
+        .qore-goals-main {
+            width: 100%;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .qore-page-header-main,
+        .qore-form-card-header,
+        .qore-section-heading,
+        .qore-help-step,
+        .qore-summary-row {
+            min-width: 0;
+        }
+
+        .qore-grid-2,
+        .qore-grid-3,
+        .qore-grid-4 {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-grid-2 > *,
+        .qore-grid-3 > *,
+        .qore-grid-4 > * {
+            grid-column: auto;
+        }
+
+        .qore-form-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-actions-left,
+        .qore-actions-right {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .qore-form-actions .qore-button {
+            width: 100%;
+            min-width: 0;
+            white-space: normal;
+        }
+
+        .qore-help-card-body {
+            grid-template-columns: 1fr;
+        }
+
+        .qore-confirm-overlay {
+            align-items: start;
+            padding: 10px;
+        }
+
+        .qore-confirm-dialog {
+            margin: auto 0;
+            max-height: calc(100dvh - 20px);
+        }
+
+        #toast-container {
+            right: 10px;
+            left: 10px;
+            width: auto;
+            max-width: none;
+        }
+    }
+
+    @media only screen and (max-width: 420px) {
+        .qore-goals-main {
+            padding-left: 9px;
+            padding-right: 9px;
+        }
+
+        .qore-page-header,
+        .qore-form-card,
+        .qore-help-card {
+            border-radius: 14px;
+        }
+
+        .qore-confirm-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Paisagem com pouca altura */
+    @media only screen and (max-height: 560px) and (orientation: landscape) {
+        .qore-confirm-overlay {
+            align-items: start;
+            overflow-y: auto;
+        }
+
+        .qore-confirm-dialog {
+            margin: auto;
+            max-height: calc(100dvh - 20px);
+        }
+
+        .qore-help-card {
+            position: static;
+            max-height: none;
+        }
+    }
+
+
+
+    /* =========================================================
+       ENVIO DE METAS EM LOTE — 2026-08-13
+       Estrutura inspirada no Envio de Produção.
+    ========================================================= */
+
+    body.qore-goals-page .qore-form-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .qore-meta-config-grid {
+        display: grid;
+        grid-template-columns:
+            minmax(190px, 1.15fr)
+            minmax(150px, .72fr)
+            minmax(160px, .78fr)
+            minmax(190px, 1fr);
+        gap: 14px;
+    }
+
+    .qore-distribution-box {
+        margin-top: 16px;
+        padding: 15px;
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: var(--qore-surface-soft);
+    }
+
+    .qore-distribution-title {
+        margin-bottom: 10px;
+        color: #344054;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .qore-distribution-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .qore-distribution-option {
+        position: relative;
+        min-width: 0;
+        min-height: 76px;
+        padding: 12px 13px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        border: 1px solid var(--qore-border);
+        border-radius: 11px;
+        background: #fff;
+        cursor: pointer;
+        transition:
+            border-color .18s ease,
+            background-color .18s ease,
+            box-shadow .18s ease;
+    }
+
+    .qore-distribution-option:has(input:checked) {
+        border-color: var(--qore-blue-600);
+        background: #f5f9ff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    .qore-distribution-option input {
+        margin-top: 3px;
+        accent-color: var(--qore-blue-600);
+    }
+
+    .qore-distribution-option strong,
+    .qore-distribution-option span {
+        display: block;
+    }
+
+    .qore-distribution-option strong {
+        color: #344054;
+        font-size: 9.5px;
+    }
+
+    .qore-distribution-option span {
+        margin-top: 3px;
+        color: var(--qore-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .qore-wallet-panel {
+        overflow: hidden;
+        border: 1px solid var(--qore-border);
+        border-radius: 13px;
+        background: var(--qore-surface-soft);
+    }
+
+    .qore-wallet-panel-head {
+        padding: 13px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--qore-border);
+        background: #fff;
+    }
+
+    .qore-wallet-panel-head strong,
+    .qore-wallet-panel-head span {
+        display: block;
+    }
+
+    .qore-wallet-panel-head strong {
+        color: #344054;
+        font-size: 10px;
+    }
+
+    .qore-wallet-panel-head span {
+        margin-top: 2px;
+        color: var(--qore-muted);
+        font-size: 8px;
+    }
+
+    .qore-wallet-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .qore-wallet-list {
+        max-height: 310px;
+        padding: 12px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+
+    .qore-wallet-choice {
+        min-width: 0;
+        min-height: 58px;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
+        align-items: start;
+        gap: 8px;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .qore-wallet-choice.is-added {
+        opacity: .58;
+        background: #f3f4f6;
+        cursor: default;
+    }
+
+    .qore-wallet-choice input {
+        margin-top: 2px;
+        accent-color: var(--qore-blue-600);
+    }
+
+    .qore-wallet-choice strong,
+    .qore-wallet-choice span {
+        display: block;
+        min-width: 0;
+    }
+
+    .qore-wallet-choice strong {
+        color: #344054;
+        font-size: 9px;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    .qore-wallet-choice span {
+        margin-top: 3px;
+        color: var(--qore-muted);
+        font-size: 7.5px;
+    }
+
+    .qore-wallet-panel-footer {
+        padding: 11px 13px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid var(--qore-border);
+        background: #fff;
+    }
+
+    .qore-wallet-panel-status {
+        color: var(--qore-muted);
+        font-size: 8.5px;
+        line-height: 1.4;
+    }
+
+    .qore-meta-table-wrap {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        border: 1px solid var(--qore-border);
+        border-radius: 12px;
+        scrollbar-width: thin;
+    }
+
+    .qore-meta-table {
+        width: 100%;
+        min-width: 1220px;
+        border-collapse: collapse;
+        background: #fff;
+    }
+
+    .qore-meta-table th,
+    .qore-meta-table td {
+        padding: 10px 9px;
+        vertical-align: middle;
+        border-bottom: 1px solid #edf1f6;
+    }
+
+    .qore-meta-table th {
+        color: #475467;
+        font-size: 8px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        background: #f8fafc;
+        white-space: nowrap;
+    }
+
+    .qore-meta-table td {
+        color: #344054;
+        font-size: 8.8px;
+    }
+
+    .qore-meta-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .qore-meta-wallet strong,
+    .qore-meta-wallet span {
+        display: block;
+    }
+
+    .qore-meta-wallet strong {
+        font-size: 9.2px;
+    }
+
+    .qore-meta-wallet span {
+        margin-top: 2px;
+        color: var(--qore-muted);
+        font-size: 7.3px;
+        line-height: 1.35;
+    }
+
+    .qore-meta-auto-value {
+        color: #475467;
+        font-size: 8px;
+        line-height: 1.35;
+    }
+
+    .qore-meta-input {
+        width: 100%;
+        min-width: 105px;
+        height: 36px;
+        padding: 0 9px;
+        color: var(--qore-text);
+        font-size: 9px;
+        font-weight: 700;
+        border: 1px solid var(--qore-border);
+        border-radius: 8px;
+        outline: 0;
+        background: #fff;
+    }
+
+    .qore-meta-input:focus {
+        border-color: var(--qore-blue-600);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .09);
+    }
+
+    .qore-meta-input[readonly] {
+        color: #475467;
+        background: #f2f4f7;
+        cursor: default;
+    }
+
+    .qore-meta-remove {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        color: #b42318;
+        border: 1px solid #fecdca;
+        border-radius: 8px;
+        background: #fef3f2;
+        cursor: pointer;
+    }
+
+    .qore-meta-remove svg {
+        width: 15px;
+        height: 15px;
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+
+    .qore-meta-remove:hover,
+    .qore-meta-remove:focus-visible {
+        color: #912018;
+        border-color: #fda29b;
+        background: #fee4e2;
+        outline: 0;
+    }
+
+    .qore-meta-summary-grid {
+        margin-top: 13px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .qore-meta-summary-card {
+        min-width: 0;
+        min-height: 70px;
+        padding: 11px 12px;
+        border: 1px solid var(--qore-border);
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .qore-meta-summary-card span,
+    .qore-meta-summary-card strong {
+        display: block;
+    }
+
+    .qore-meta-summary-card span {
+        color: var(--qore-muted);
+        font-size: 7.6px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .qore-meta-summary-card strong {
+        margin-top: 5px;
+        color: #344054;
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    .qore-meta-summary-card.is-success {
+        border-color: #abefc6;
+        background: var(--qore-success-soft);
+    }
+
+    .qore-meta-summary-card.is-success strong {
+        color: #027a48;
+    }
+
+    .qore-meta-summary-card.is-warning {
+        border-color: #fedf89;
+        background: var(--qore-warning-soft);
+    }
+
+    .qore-meta-summary-card.is-warning strong {
+        color: #b54708;
+    }
+
+    .qore-distribution-progress {
+        margin-top: 12px;
+        overflow: hidden;
+        height: 8px;
+        border-radius: 999px;
+        background: #e7edf5;
+    }
+
+    .qore-distribution-progress > span {
+        width: 0;
+        height: 100%;
+        display: block;
+        border-radius: inherit;
+        background: linear-gradient(
+            90deg,
+            var(--qore-blue-600),
+            var(--qore-cyan-400)
+        );
+        transition: width .2s ease;
+    }
+
+    .qore-meta-validation {
+        min-height: 20px;
+        margin-top: 9px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--qore-muted);
+        font-size: 8.5px;
+        font-weight: 700;
+    }
+
+    .qore-meta-validation.is-success {
+        color: #027a48;
+    }
+
+    .qore-meta-validation.is-warning {
+        color: #b54708;
+    }
+
+    .qore-empty-wallets {
+        grid-column: 1 / -1;
+        padding: 24px;
+        color: var(--qore-muted);
+        font-size: 9px;
+        text-align: center;
+    }
+
+    @media only screen and (max-width: 1180px) {
+        .qore-meta-config-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-wallet-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .qore-meta-summary-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media only screen and (max-width: 760px) {
+        .qore-meta-config-grid,
+        .qore-distribution-grid,
+        .qore-wallet-list,
+        .qore-meta-summary-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .qore-wallet-panel-head,
+        .qore-wallet-panel-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .qore-wallet-actions {
+            width: 100%;
+        }
+
+        .qore-wallet-actions .qore-button,
+        .qore-wallet-panel-footer .qore-button {
+            flex: 1 1 130px;
+        }
+
+        .qore-meta-input {
+            font-size: 16px;
+        }
+    }
+
+
+
+    /* =========================================================
+       WORKSPACE UI CORE — FORM ENVIO DE METAS
+       MIGRAÇÃO VISUAL OFICIAL
+
+       Escopo:
+       - identidade visual;
+       - tipografia;
+       - tamanhos;
+       - spacing;
+       - controles;
+       - cards;
+       - seleção de carteiras;
+       - distribuição;
+       - tabela;
+       - responsividade;
+       - zoom.
+
+       Preservado:
+       - IDs;
+       - names;
+       - rotas;
+       - POST/CSRF;
+       - data-*;
+       - validações;
+       - modais;
+       - eventos;
+       - JavaScript;
+       - regras de distribuição e envio.
+    ========================================================= */
+
+    :root {
+        --qore-navy-950: var(--ws-navy-950, #071124);
+        --qore-navy-900: var(--ws-navy-900, #0B1832);
+        --qore-navy-800: var(--ws-navy-800, #101C44);
+
+        --qore-blue-700: var(--ws-primary-hover, #1D4ED8);
+        --qore-blue-600: var(--ws-primary, #2563EB);
+        --qore-blue-500: var(--ws-primary-500, #4689F5);
+        --qore-cyan-400: #38BDF8;
+
+        --qore-white: var(--ws-white, #FFFFFF);
+        --qore-bg: var(--ws-app-bg, #F4F7FB);
+        --qore-surface: var(--ws-surface-card, #FFFFFF);
+        --qore-surface-soft: var(--ws-surface-soft, #F8FAFC);
+
+        --qore-text: var(--ws-text-primary, #172033);
+        --qore-muted: var(--ws-text-muted, #667085);
+        --qore-muted-light: var(--ws-text-placeholder, #98A2B3);
+
+        --qore-border: var(--ws-border, #DDE3EC);
+        --qore-border-strong: var(--ws-border-strong, #C7CFDC);
+
+        --qore-success: var(--ws-success, #16A34A);
+        --qore-success-soft: var(--ws-success-soft, #F0FDF4);
+
+        --qore-warning: var(--ws-warning, #D97706);
+        --qore-warning-soft: var(--ws-warning-soft, #FFFBEB);
+
+        --qore-danger: var(--ws-danger, #D92D20);
+        --qore-danger-soft: var(--ws-danger-soft, #FEF3F2);
+
+        --qore-info-soft: var(--ws-primary-soft, #EFF6FF);
+
+        --qore-shadow:
+            var(
+                --ws-shadow-md,
+                0 10px 28px rgba(16, 28, 68, 0.10)
+            );
+    }
+
+
+    /* ---------------------------------------------------------
+       PÁGINA
+    --------------------------------------------------------- */
+
+    body.qore-goals-page {
+        width: 100%;
+        min-width: 320px;
+        max-width: 100%;
+
+        min-height: 100vh;
+        min-height: 100dvh;
+
+        margin: 0;
+        padding: 0;
+
+        color:
+            var(
+                --ws-text-primary,
+                #172033
+            );
+
+        font-family:
+            var(
+                --ws-font-family,
+                "Inter",
+                "Segoe UI",
+                Arial,
+                sans-serif
+            );
+
+        background:
+            radial-gradient(
+                circle at 4% 10%,
+                rgba(37, 99, 235, 0.08),
+                transparent 27%
+            ),
+            radial-gradient(
+                circle at 96% 92%,
+                rgba(56, 189, 248, 0.06),
+                transparent 24%
+            ),
+            var(
+                --ws-app-bg,
+                #F4F7FB
+            );
+    }
+
+    body.qore-goals-page
+    .qore-goals-main {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+
+        padding:
+            clamp(12px, 1.2vw, 20px)
+            var(--ws-page-padding-x, clamp(16px, 1.45vw, 30px))
+            clamp(24px, 1.8vw, 34px);
+
+        flex: 1 0 auto;
+    }
+
+    body.qore-goals-page
+    .qore-goals-shell {
+        width: min(1420px, 100%);
+        min-width: 0;
+        max-width: 100%;
+
+        margin-inline: auto;
+    }
+
+    /*
+     * O template atual não possui card lateral.
+     * Portanto, utilizamos toda a largura disponível para o formulário.
+     */
+    body.qore-goals-page
+    .qore-form-layout {
+        width: 100%;
+        min-width: 0;
+
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+
+        gap:
+            clamp(12px, 1vw, 18px);
+    }
+
+
+    /* ---------------------------------------------------------
+       HERO
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-page-header {
+        margin-bottom:
+            clamp(12px, 0.85vw, 16px);
+
+        padding:
+            clamp(18px, 1.35vw, 25px)
+            clamp(20px, 1.8vw, 34px);
+
+        gap:
+            clamp(14px, 1.4vw, 24px);
+
+        border-radius:
+            var(
+                --ws-radius-2xl,
+                18px
+            );
+    }
+
+    body.qore-goals-page
+    .qore-page-eyebrow {
+        margin-bottom: 8px;
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        font-weight:
+            var(
+                --ws-weight-extrabold,
+                800
+            );
+
+        letter-spacing:
+            var(
+                --ws-tracking-kicker,
+                0.13em
+            );
+    }
+
+    body.qore-goals-page
+    .qore-page-header h1 {
+        font-size:
+            clamp(
+                28px,
+                1.8vw,
+                36px
+            ) !important;
+
+        font-weight:
+            var(
+                --ws-weight-extrabold,
+                800
+            );
+
+        line-height:
+            var(
+                --ws-line-tight,
+                1.15
+            );
+    }
+
+    body.qore-goals-page
+    .qore-page-header p {
+        max-width: 980px;
+
+        margin-top: 8px;
+
+        font-size:
+            var(
+                --ws-font-sm,
+                12px
+            ) !important;
+
+        line-height:
+            var(
+                --ws-line-relaxed,
+                1.60
+            );
+    }
+
+    body.qore-goals-page
+    .qore-page-header-badge strong {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-page-header-badge small {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+
+        line-height: 1.45;
+    }
+
+
+    /* ---------------------------------------------------------
+       CARD DO FORMULÁRIO
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-form-card {
+        width: 100%;
+        min-width: 0;
+
+        border-color:
+            var(
+                --ws-border-soft,
+                #E7EBF1
+            );
+
+        border-radius:
+            var(
+                --ws-radius-2xl,
+                18px
+            );
+
+        background:
+            var(
+                --ws-surface-card,
+                #FFFFFF
+            );
+
+        box-shadow:
+            var(
+                --ws-shadow-sm,
+                0 6px 18px rgba(16, 28, 68, 0.06)
+            );
+    }
+
+    body.qore-goals-page
+    .qore-form-card-header {
+        min-height: 72px;
+
+        padding:
+            15px
+            clamp(18px, 1.2vw, 24px);
+    }
+
+    body.qore-goals-page
+    .qore-form-card-header h2 {
+        font-size:
+            var(
+                --ws-font-xl,
+                18px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-form-card-header p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        line-height:
+            var(
+                --ws-line-base,
+                1.45
+            );
+    }
+
+    body.qore-goals-page
+    .qore-form-progress,
+    body.qore-goals-page
+    .qore-progress-text {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-form-body {
+        padding:
+            clamp(18px, 1.4vw, 24px);
+    }
+
+
+    /* ---------------------------------------------------------
+       SEÇÕES
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-form-section + .qore-form-section {
+        margin-top:
+            clamp(20px, 1.4vw, 26px);
+
+        padding-top:
+            clamp(18px, 1.3vw, 24px);
+    }
+
+    body.qore-goals-page
+    .qore-section-heading {
+        margin-bottom: 14px;
+    }
+
+    body.qore-goals-page
+    .qore-section-heading h3 {
+        font-size:
+            var(
+                --ws-font-base,
+                14px
+            ) !important;
+
+        line-height:
+            var(
+                --ws-line-heading,
+                1.25
+            );
+    }
+
+    body.qore-goals-page
+    .qore-section-heading p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        line-height:
+            var(
+                --ws-line-base,
+                1.45
+            );
+    }
+
+    body.qore-goals-page
+    .qore-section-number {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       CONFIGURAÇÃO DA META / CAMPOS
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-meta-config-grid {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(210px, 100%),
+                    1fr
+                )
+            ) !important;
+
+        gap:
+            clamp(10px, 0.8vw, 14px);
+    }
+
+    body.qore-goals-page
+    .qore-field-label {
+        color:
+            var(
+                --ws-text-muted-strong,
+                #526078
+            );
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        font-weight:
+            var(
+                --ws-weight-bold,
+                700
+            );
+    }
+
+    body.qore-goals-page
+    .qore-optional {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-control {
+        width: 100%;
+        min-width: 0;
+
+        height:
+            var(
+                --ws-control-height-lg,
+                44px
+            ) !important;
+
+        min-height:
+            var(
+                --ws-control-height-lg,
+                44px
+            );
+
+        padding-right: 40px;
+        padding-left: 41px;
+
+        border-color:
+            var(
+                --ws-control-border,
+                #D8DFE9
+            );
+
+        border-radius:
+            var(
+                --ws-radius-sm,
+                8px
+            );
+
+        font-size:
+            var(
+                --ws-font-md,
+                13px
+            ) !important;
+
+        background:
+            var(
+                --ws-control-bg,
+                #FFFFFF
+            );
+    }
+
+    body.qore-goals-page
+    .qore-control:focus {
+        border-color:
+            var(
+                --ws-primary,
+                #2563EB
+            );
+
+        background:
+            var(
+                --ws-control-bg,
+                #FFFFFF
+            );
+
+        box-shadow:
+            0 0 0 3px
+            var(
+                --ws-focus-ring,
+                rgba(37, 99, 235, 0.16)
+            );
+    }
+
+    body.qore-goals-page
+    .qore-field-message {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+
+        line-height: 1.4;
+    }
+
+
+    /* ---------------------------------------------------------
+       FORMA DE DISTRIBUIÇÃO
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-distribution-title {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-distribution-grid {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(220px, 100%),
+                    1fr
+                )
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-distribution-option {
+        min-height: 80px;
+
+        border-radius:
+            var(
+                --ws-radius-md,
+                10px
+            );
+    }
+
+    body.qore-goals-page
+    .qore-distribution-option strong {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-distribution-option > span > span {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+
+        line-height: 1.4;
+    }
+
+
+    /* ---------------------------------------------------------
+       SELEÇÃO DAS CARTEIRAS
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-wallet-panel {
+        border-radius:
+            var(
+                --ws-radius-lg,
+                12px
+            );
+    }
+
+    body.qore-goals-page
+    .qore-wallet-panel-head {
+        padding:
+            12px
+            clamp(13px, 0.9vw, 16px);
+    }
+
+    body.qore-goals-page
+    .qore-wallet-panel-head strong {
+        font-size:
+            var(
+                --ws-font-sm,
+                12px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-wallet-panel-head span,
+    body.qore-goals-page
+    .qore-wallet-panel-status,
+    body.qore-goals-page
+    .qore-wallet-choice span,
+    body.qore-goals-page
+    .qore-empty-wallets {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-wallet-list {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(240px, 100%),
+                    1fr
+                )
+            ) !important;
+
+        max-height:
+            clamp(
+                250px,
+                36vh,
+                360px
+            );
+
+        gap: 8px;
+    }
+
+    body.qore-goals-page
+    .qore-wallet-choice strong {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-wallet-actions .qore-button,
+    body.qore-goals-page
+    .qore-wallet-panel-footer .qore-button {
+        min-height:
+            var(
+                --ws-button-height-md,
+                38px
+            );
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       TABELA DE DISTRIBUIÇÃO
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-meta-table-wrap {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+
+        max-height:
+            clamp(
+                360px,
+                48vh,
+                560px
+            );
+
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+
+        overscroll-behavior: contain;
+
+        scrollbar-gutter: stable;
+
+        scrollbar-width: thin;
+
+        scrollbar-color:
+            var(
+                --ws-scroll-thumb,
+                #C7CED9
+            )
+            transparent;
+    }
+
+    body.qore-goals-page
+    .qore-meta-table {
+        width: 100%;
+        min-width: 1220px;
+        max-width: none;
+    }
+
+    body.qore-goals-page
+    .qore-meta-table thead th {
+        position: sticky;
+
+        top: 0;
+
+        z-index: 5;
+
+        padding: 10px 9px;
+
+        color:
+            var(
+                --ws-table-head-text,
+                #526078
+            );
+
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+
+        background:
+            var(
+                --ws-table-head-bg,
+                #F7F9FC
+            );
+    }
+
+    body.qore-goals-page
+    .qore-meta-table td {
+        padding: 10px 9px;
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-meta-wallet strong {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-meta-wallet span {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-meta-input {
+        font-size:
+            var(
+                --ws-font-sm,
+                12px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       RESUMO DA DISTRIBUIÇÃO
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-meta-summary-grid {
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(150px, 100%),
+                    1fr
+                )
+            ) !important;
+
+        gap:
+            clamp(8px, 0.65vw, 10px);
+    }
+
+    body.qore-goals-page
+    .qore-meta-summary-card {
+        min-height: 72px;
+
+        border-radius:
+            var(
+                --ws-radius-md,
+                10px
+            );
+    }
+
+    body.qore-goals-page
+    .qore-meta-summary-card span {
+        font-size:
+            var(
+                --ws-font-2xs,
+                10px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-meta-summary-card strong {
+        font-size:
+            var(
+                --ws-font-base,
+                14px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-meta-validation {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       AÇÕES
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-form-actions {
+        min-height: 72px;
+
+        padding:
+            14px
+            clamp(18px, 1.2vw, 24px);
+    }
+
+    body.qore-goals-page
+    .qore-button {
+        font-family:
+            var(
+                --ws-font-family,
+                "Inter",
+                "Segoe UI",
+                Arial,
+                sans-serif
+            );
+
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        border-radius:
+            var(
+                --ws-radius-sm,
+                8px
+            );
+    }
+
+    body.qore-goals-page
+    .qore-form-actions .qore-button {
+        min-height:
+            var(
+                --ws-button-height-lg,
+                44px
+            );
+
+        font-size:
+            var(
+                --ws-font-sm,
+                12px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       SEGURANÇA / MODAL
+    --------------------------------------------------------- */
+
+    body.qore-goals-page
+    .qore-security-note p {
+        font-size:
+            var(
+                --ws-font-xs,
+                11px
+            ) !important;
+
+        line-height:
+            var(
+                --ws-line-base,
+                1.45
+            );
+    }
+
+    body.qore-goals-page
+    .qore-confirm-dialog h3 {
+        font-size:
+            var(
+                --ws-font-xl,
+                18px
+            ) !important;
+    }
+
+    body.qore-goals-page
+    .qore-confirm-dialog p {
+        font-size:
+            var(
+                --ws-font-sm,
+                12px
+            ) !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       RESPONSIVIDADE PROGRESSIVA
+    --------------------------------------------------------- */
+
+    @media only screen and (max-width: 1100px) {
+
+        body.qore-goals-page
+        .qore-meta-config-grid {
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(
+                        min(190px, 100%),
+                        1fr
+                    )
+                ) !important;
+        }
+    }
+
+    @media only screen and (max-width: 820px) {
+
+        body.qore-goals-page
+        .qore-page-header {
+            align-items: stretch;
+
+            flex-direction: column;
+
+            padding: 16px;
+
+            border-radius: 15px;
+        }
+
+        body.qore-goals-page
+        .qore-page-header-badge {
+            width: 100%;
+            min-width: 0;
+        }
+
+        body.qore-goals-page
+        .qore-wallet-panel-head,
+        body.qore-goals-page
+        .qore-wallet-panel-footer,
+        body.qore-goals-page
+        .qore-form-actions {
+            align-items: stretch;
+
+            flex-direction: column;
+        }
+
+        body.qore-goals-page
+        .qore-wallet-actions,
+        body.qore-goals-page
+        .qore-actions-left,
+        body.qore-goals-page
+        .qore-actions-right {
+            width: 100%;
+
+            flex-wrap: wrap;
+        }
+    }
+
+    @media only screen and (max-width: 640px) {
+
+        body.qore-goals-page
+        .qore-goals-main {
+            padding:
+                10px
+                12px
+                22px;
+        }
+
+        body.qore-goals-page
+        .qore-page-header h1 {
+            font-size:
+                clamp(
+                    23px,
+                    7vw,
+                    28px
+                ) !important;
+        }
+
+        body.qore-goals-page
+        .qore-page-header p {
+            font-size:
+                var(
+                    --ws-font-xs,
+                    11px
+                ) !important;
+        }
+
+        body.qore-goals-page
+        .qore-meta-config-grid,
+        body.qore-goals-page
+        .qore-distribution-grid,
+        body.qore-goals-page
+        .qore-wallet-list,
+        body.qore-goals-page
+        .qore-meta-summary-grid {
+            grid-template-columns:
+                minmax(0, 1fr) !important;
+        }
+
+        /*
+         * 16px evita zoom automático em inputs/selects no mobile.
+         */
+        body.qore-goals-page
+        .qore-control,
+        body.qore-goals-page
+        .qore-meta-input {
+            font-size: 16px !important;
+        }
+
+        body.qore-goals-page
+        .qore-actions-left,
+        body.qore-goals-page
+        .qore-actions-right {
+            flex-direction: column;
+        }
+
+        body.qore-goals-page
+        .qore-form-actions .qore-button,
+        body.qore-goals-page
+        .qore-wallet-actions .qore-button,
+        body.qore-goals-page
+        .qore-wallet-panel-footer .qore-button {
+            width: 100%;
+        }
+
+        body.qore-goals-page
+        .qore-meta-table-wrap {
+            max-height: 480px;
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       VIEWPORT BAIXA / ZOOM
+       Não reduzimos a tabela para "caber" no restante da viewport.
+       O documento mantém scroll vertical natural.
+    --------------------------------------------------------- */
+
+    @media only screen and (max-height: 760px) and (min-width: 641px) {
+
+        body.qore-goals-page
+        .qore-goals-main {
+            padding-top: 10px;
+            padding-bottom: 22px;
+        }
+
+        body.qore-goals-page
+        .qore-page-header {
+            margin-bottom: 12px;
+
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        body.qore-goals-page
+        .qore-meta-table-wrap {
+            max-height: 420px;
+        }
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        body.qore-goals-page
+        .qore-page-back,
+        body.qore-goals-page
+        .qore-button,
+        body.qore-goals-page
+        .qore-distribution-option,
+        body.qore-goals-page
+        .qore-wallet-choice {
+            transition: none !important;
+        }
+    }
+
+</style>
+
+<body class="qore-goals-page ws-app">
+
+    {% include "components/navbar/_navbar.html" %}
+
+    <div
+        id="toast-container"
+        aria-live="polite"
+        aria-atomic="true">
+    </div>
+
+    <main class="qore-goals-main ws-main">
+        <div class="qore-goals-shell ws-page">
+
+            <header class="qore-page-header">
+                <div class="qore-page-header-main">
+                    <button
+                        type="button"
+                        class="qore-page-back"
+                        id="backToRequestMenu"
+                        aria-label="Voltar para o menu Tarefas e Solicitações"
+                        title="Voltar para Tarefas e Solicitações">
+
+                        <i
+                            class="fa fa-arrow-left"
+                            aria-hidden="true">
+                        </i>
+                    </button>
+
+                    <div class="qore-page-header-copy">
+                        <span class="qore-page-eyebrow">
+                            Metas e controles
+                        </span>
+
+                        <h1>Envio de metas</h1>
+
+                        <p>
+                            Selecione a empresa e a carteira, revise as informações
+                            disponíveis e confirme os responsáveis pelo acompanhamento.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="qore-page-header-badge">
+                    <span
+                        class="qore-page-header-badge-icon"
+                        aria-hidden="true">
+
+                        <i class="fa fa-line-chart"></i>
+                    </span>
+
+                    <div>
+                        <strong>Workspace Qore</strong>
+
+                        <small>
+                            Dados centralizados para decisões mais inteligentes.
+                        </small>
+                    </div>
+                </div>
+            </header>
+
+            <div class="qore-form-layout">
+                <form
+                    method="post"
+                    action="{% url 'salvar_envio_metas' %}"
+                    id="formEnvioMetas"
+                    class="qore-form-card ws-panel"
+                    novalidate>
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        id="inicioPreenchimentoField"
+                        name="inicio_preenchimento"
+                        value="{{ inicio_preenchimento|date:'c' }}">
+
+                    <header class="qore-form-card-header">
+                        <div>
+                            <h2>Envio de metas em lote</h2>
+                            <p>
+                                Configure a meta da empresa, selecione as carteiras e distribua o valor.
+                            </p>
+                        </div>
+
+                        <div
+                            class="qore-form-progress"
+                            id="formProgress"
+                            aria-label="Progresso do preenchimento">
+
+                            <div class="qore-progress-dots" aria-hidden="true">
+                                <span class="qore-progress-dot" data-step-indicator="1" title="Configuração">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <span class="qore-progress-dot" data-step-indicator="2" title="Carteiras">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <span class="qore-progress-dot" data-step-indicator="3" title="Distribuição">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <span class="qore-progress-dot" data-step-indicator="4" title="Envio">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                            </div>
+
+                            <span
+                                class="qore-progress-text"
+                                id="formProgressText">
+                                0 de 4 etapas preenchidas
+                            </span>
+                        </div>
+                    </header>
+
+                    <div class="qore-form-body">
+
+                        <!-- ==================================================
+                             01 — CONFIGURAÇÃO DA SOLICITAÇÃO
+                        =================================================== -->
+                        <section class="qore-form-section">
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">01</span>
+
+                                <div>
+                                    <h3>Configuração da solicitação</h3>
+                                    <p>
+                                        Selecione a empresa, o perfil operacional (IA ou Operacional), a competência e informe a meta total da empresa.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-meta-config-grid">
+                                <div class="qore-field" id="empresaFieldGroup">
+                                    <label for="empresaSelect" class="qore-field-label">
+                                        <span class="qore-required">Empresa</span>
+                                    </label>
+
+                                    <div class="qore-control-wrap" id="empresaControlWrap">
+                                        <i class="fa fa-building-o qore-control-icon" aria-hidden="true"></i>
+
+                                        <select
+                                            class="qore-control"
+                                            id="empresaSelect"
+                                            required>
+                                            <option value="">Carregando empresas...</option>
+                                        </select>
+
+                                        <i class="fa fa-angle-down qore-select-arrow" aria-hidden="true"></i>
+                                        <span class="qore-control-loading" aria-hidden="true"></span>
+                                    </div>
+
+                                    <p class="qore-field-message" id="empresaFieldMessage">
+                                        Selecione a empresa relacionada à meta.
+                                    </p>
+                                </div>
+
+                                <div class="qore-field" id="digitalFieldGroup">
+                                    <label for="digitalProfileSelect" class="qore-field-label">
+                                        <span class="qore-required">Digital</span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-bolt qore-control-icon" aria-hidden="true"></i>
+
+                                        <select
+                                            class="qore-control"
+                                            id="digitalProfileSelect"
+                                            required>
+                                            <option value="">Selecione</option>
+                                            <option value="0">OPERACIONAL</option>
+                                            <option value="1">IA</option>
+                                        </select>
+
+                                        <i class="fa fa-angle-down qore-select-arrow" aria-hidden="true"></i>
+                                    </div>
+
+                                    <p class="qore-field-message" id="digitalFieldMessage">
+                                        Digital = Sim corresponde a IA. Digital = Não corresponde a OPERACIONAL.
+                                    </p>
+                                </div>
+
+                                <div class="qore-field" id="competenciaFieldGroup">
+                                    <label for="competenciaSelect" class="qore-field-label">
+                                        <span class="qore-required">Competência</span>
+                                        <span class="qore-optional">Mês / ano</span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-calendar qore-control-icon" aria-hidden="true"></i>
+
+                                        <input
+                                            type="month"
+                                            class="qore-control"
+                                            id="competenciaSelect"
+                                            value="{{ competencia_padrao|date:'Y-m' }}"
+                                            required>
+                                    </div>
+
+                                    <p class="qore-field-message" id="competenciaFieldMessage">
+                                        Inicia no mês atual e pode ser alterada para cadastros retroativos.
+                                    </p>
+                                </div>
+
+                                <div class="qore-field" id="metaTotalFieldGroup">
+                                    <label for="metaTotalField" class="qore-field-label">
+                                        <span class="qore-required">Meta total da empresa</span>
+                                    </label>
+
+                                    <div class="qore-control-wrap">
+                                        <i class="fa fa-bullseye qore-control-icon" aria-hidden="true"></i>
+
+                                        <input
+                                            type="text"
+                                            class="qore-control"
+                                            id="metaTotalField"
+                                            inputmode="decimal"
+                                            autocomplete="off"
+                                            placeholder="Ex.: R$ 1.000.000,00"
+                                            required>
+                                    </div>
+
+                                    <p class="qore-field-message" id="metaTotalFieldMessage">
+                                        O total distribuído entre as carteiras deverá fechar exatamente este valor.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-distribution-box">
+                                <div class="qore-distribution-title">
+                                    <span class="qore-required">Forma de distribuição da meta</span>
+                                </div>
+
+                                <div class="qore-distribution-grid">
+                                    <label class="qore-distribution-option">
+                                        <input
+                                            type="radio"
+                                            name="forma_distribuicao"
+                                            value="IGUAL"
+                                            required>
+
+                                        <span>
+                                            <strong>Divisão igual automática</strong>
+                                            <span>
+                                                Divide a meta igualmente e ajusta automaticamente os centavos.
+                                            </span>
+                                        </span>
+                                    </label>
+
+                                    <label class="qore-distribution-option">
+                                        <input
+                                            type="radio"
+                                            name="forma_distribuicao"
+                                            value="PERCENTUAL"
+                                            required>
+
+                                        <span>
+                                            <strong>Distribuir por percentual</strong>
+                                            <span>
+                                                Você informa os percentuais. A soma precisa chegar a 100%.
+                                            </span>
+                                        </span>
+                                    </label>
+
+                                    <label class="qore-distribution-option">
+                                        <input
+                                            type="radio"
+                                            name="forma_distribuicao"
+                                            value="VALOR"
+                                            required>
+
+                                        <span>
+                                            <strong>Distribuir por valor</strong>
+                                            <span>
+                                                Você informa os valores. O percentual é calculado automaticamente.
+                                            </span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ==================================================
+                             02 — SELEÇÃO DE CARTEIRAS
+                        =================================================== -->
+                        <section class="qore-form-section">
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">02</span>
+
+                                <div>
+                                    <h3>Seleção das carteiras</h3>
+                                    <p>
+                                        Selecione uma ou várias carteiras da empresa e do perfil IA/OPERACIONAL escolhido.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-wallet-panel">
+                                <div class="qore-wallet-panel-head">
+                                    <div>
+                                        <strong>Carteiras disponíveis</strong>
+                                        <span id="walletCatalogLabel">
+                                            Selecione Empresa e perfil IA/OPERACIONAL para carregar as carteiras.
+                                        </span>
+                                    </div>
+
+                                    <div class="qore-wallet-actions">
+                                        <button
+                                            type="button"
+                                            class="qore-button"
+                                            id="selectAllWalletsButton">
+                                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                                            Selecionar todas
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="qore-button"
+                                            id="clearWalletSelectionButton">
+                                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                                            Limpar seleção
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="qore-wallet-list"
+                                    id="walletSelectionList">
+                                    <div class="qore-empty-wallets">
+                                        Aguardando Empresa e perfil IA/OPERACIONAL.
+                                    </div>
+                                </div>
+
+                                <div class="qore-wallet-panel-footer">
+                                    <span
+                                        class="qore-wallet-panel-status"
+                                        id="walletSelectionStatus">
+                                        0 carteiras selecionadas.
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        class="qore-button qore-button-primary"
+                                        id="addSelectedWalletsButton">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        Adicionar selecionadas
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ==================================================
+                             03 — DISTRIBUIÇÃO
+                        =================================================== -->
+                        <section
+                            class="qore-form-section"
+                            id="distributionSection"
+                            hidden>
+
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">03</span>
+
+                                <div>
+                                    <h3>Distribuição das metas</h3>
+                                    <p>
+                                        Revise as carteiras e a divisão da meta. A soma precisa fechar exatamente o total da empresa.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-meta-table-wrap ws-table-scroll">
+                                <table class="qore-meta-table ws-table--wide">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Carteira</th>
+                                            <th>Tipo</th>
+                                            <th>Produção</th>
+                                            <th>Atuação</th>
+                                            <th>Digital</th>
+                                            <th>Meta atual</th>
+                                            <th>% da meta</th>
+                                            <th>Nova meta</th>
+                                            <th>Ação</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="metaDistributionBody">
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="qore-meta-summary-grid">
+                                <div class="qore-meta-summary-card">
+                                    <span>Carteiras</span>
+                                    <strong id="summaryWalletCount">0</strong>
+                                </div>
+
+                                <div class="qore-meta-summary-card">
+                                    <span>Meta da empresa</span>
+                                    <strong id="summaryCompanyMeta">R$ 0,00</strong>
+                                </div>
+
+                                <div class="qore-meta-summary-card">
+                                    <span>Meta distribuída</span>
+                                    <strong id="summaryDistributedMeta">R$ 0,00</strong>
+                                </div>
+
+                                <div class="qore-meta-summary-card">
+                                    <span>Percentual</span>
+                                    <strong id="summaryPercent">0,00%</strong>
+                                </div>
+
+                                <div
+                                    class="qore-meta-summary-card"
+                                    id="summaryDifferenceCard">
+                                    <span>Diferença</span>
+                                    <strong id="summaryDifference">R$ 0,00</strong>
+                                </div>
+                            </div>
+
+                            <div class="qore-distribution-progress" aria-hidden="true">
+                                <span id="distributionProgressBar"></span>
+                            </div>
+
+                            <div
+                                class="qore-meta-validation"
+                                id="distributionValidation">
+                                Adicione carteiras para iniciar a distribuição.
+                            </div>
+                        </section>
+
+                        <!-- ==================================================
+                             04 — ENVIO
+                        =================================================== -->
+                        <section class="qore-form-section">
+                            <div class="qore-section-heading">
+                                <span class="qore-section-number">04</span>
+
+                                <div>
+                                    <h3>Revisão e envio</h3>
+                                    <p>
+                                        O envio só será liberado quando a distribuição estiver completa e consistente.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="qore-security-note" style="margin: 0;">
+                                <i class="fa fa-shield" aria-hidden="true"></i>
+                                <p id="finalValidationText">
+                                    Preencha a configuração e selecione as carteiras para continuar.
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+
+                    <footer class="qore-form-actions">
+                        <div class="qore-actions-left">
+                            <button
+                                type="button"
+                                class="qore-button qore-button-danger-soft"
+                                id="clearAllButton">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                Limpar
+                            </button>
+                        </div>
+
+                        <div class="qore-actions-right">
+                            <button
+                                type="button"
+                                class="qore-button"
+                                id="cancelButton">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="qore-button qore-button-primary"
+                                id="submitButton"
+                                disabled>
+                                <span class="qore-button-loader" aria-hidden="true"></span>
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                <span id="submitButtonLabel">
+                                    Enviar todas as metas
+                                </span>
+                            </button>
+                        </div>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div
+        id="confirmModal"
+        class="qore-confirm-overlay"
+        aria-hidden="true">
+
+        <section
+            class="qore-confirm-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmModalTitle"
+            aria-describedby="confirmModalText"
+            tabindex="-1">
+
+            <div class="qore-confirm-body">
+                <div
+                    class="qore-confirm-icon"
+                    aria-hidden="true">
+
+                    <i class="fa fa-exclamation"></i>
+                </div>
+
+                <h3 id="confirmModalTitle">
+                    Confirmar ação
+                </h3>
+
+                <p id="confirmModalText">
+                    Deseja continuar?
+                </p>
+            </div>
+
+            <div class="qore-confirm-actions">
+                <button
+                    type="button"
+                    class="qore-button"
+                    id="btnCancelarModal">
+
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="qore-button qore-button-primary"
+                    id="btnConfirmarModal">
+
+                    Confirmar envio
+                </button>
+            </div>
+        </section>
+    </div>
+
+    {% include "components/_footer.html" %}
+
+    <script>
+        (function () {
+            "use strict";
+
+            const form = document.getElementById("formEnvioMetas");
+            const empresaSelect = document.getElementById("empresaSelect");
+            const empresaControlWrap = document.getElementById("empresaControlWrap");
+            const digitalProfileSelect = document.getElementById("digitalProfileSelect");
+            const competenciaField = document.getElementById("competenciaSelect");
+            const metaTotalField = document.getElementById("metaTotalField");
+            const inicioPreenchimentoField = document.getElementById("inicioPreenchimentoField");
+
+            const walletCatalogLabel = document.getElementById("walletCatalogLabel");
+            const walletSelectionList = document.getElementById("walletSelectionList");
+            const walletSelectionStatus = document.getElementById("walletSelectionStatus");
+            const selectAllWalletsButton = document.getElementById("selectAllWalletsButton");
+            const clearWalletSelectionButton = document.getElementById("clearWalletSelectionButton");
+            const addSelectedWalletsButton = document.getElementById("addSelectedWalletsButton");
+
+            const distributionSection = document.getElementById("distributionSection");
+            const metaDistributionBody = document.getElementById("metaDistributionBody");
+            const summaryWalletCount = document.getElementById("summaryWalletCount");
+            const summaryCompanyMeta = document.getElementById("summaryCompanyMeta");
+            const summaryDistributedMeta = document.getElementById("summaryDistributedMeta");
+            const summaryPercent = document.getElementById("summaryPercent");
+            const summaryDifference = document.getElementById("summaryDifference");
+            const summaryDifferenceCard = document.getElementById("summaryDifferenceCard");
+            const distributionProgressBar = document.getElementById("distributionProgressBar");
+            const distributionValidation = document.getElementById("distributionValidation");
+            const finalValidationText = document.getElementById("finalValidationText");
+
+            const clearAllButton = document.getElementById("clearAllButton");
+            const cancelButton = document.getElementById("cancelButton");
+            const backToRequestMenu = document.getElementById("backToRequestMenu");
+            const submitButton = document.getElementById("submitButton");
+            const submitButtonLabel = document.getElementById("submitButtonLabel");
+
+            const confirmModal = document.getElementById("confirmModal");
+            const confirmModalTitle = document.getElementById("confirmModalTitle");
+            const confirmModalText = document.getElementById("confirmModalText");
+            const btnCancelarModal = document.getElementById("btnCancelarModal");
+            const btnConfirmarModal = document.getElementById("btnConfirmarModal");
+
+            const progressDots = Array.from(
+                document.querySelectorAll("[data-step-indicator]")
+            );
+            const formProgress = document.getElementById("formProgress");
+            const formProgressText = document.getElementById("formProgressText");
+
+            const LISTAR_EMPRESAS_URL = "{% url 'listar_empresas_carteiras' %}";
+            const LISTAR_CARTEIRAS_URL = "{% url 'listar_carteiras_por_empresa' %}";
+            const DADOS_META_BASE_URL = "/api/carteira-meta/";
+            const MEUS_ENVIOS_URL = "{% url 'meus_envios_producao' %}";
+
+            let walletCatalog = [];
+            let selectedCatalogIds = new Set();
+            let rowsData = [];
+            let loadingWallets = false;
+            let sending = false;
+            let confirmationResolver = null;
+
+            function csrfToken() {
+                return form.querySelector(
+                    'input[name="csrfmiddlewaretoken"]'
+                )?.value || "";
+            }
+
+            function normalizeText(value) {
+                return String(value === null || value === undefined ? "" : value).trim();
+            }
+
+            function parseMoneyToCents(value) {
+                let text = normalizeText(value)
+                    .replace(/R\$/gi, "")
+                    .replace(/\s+/g, "");
+
+                if (!text) {
+                    return 0;
+                }
+
+                if (text.includes(",")) {
+                    text = text.replace(/\./g, "").replace(",", ".");
+                } else {
+                    text = text.replace(/[^0-9.-]/g, "");
+                }
+
+                const number = Number(text);
+
+                if (!Number.isFinite(number)) {
+                    return 0;
+                }
+
+                return Math.max(0, Math.round(number * 100));
+            }
+
+            function formatCurrencyFromCents(cents) {
+                return (Math.max(0, Number(cents) || 0) / 100).toLocaleString(
+                    "pt-BR",
+                    {
+                        style: "currency",
+                        currency: "BRL"
+                    }
+                );
+            }
+
+            function formatPercent(value, decimals = 2) {
+                const number = Number(value) || 0;
+
+                return number.toLocaleString(
+                    "pt-BR",
+                    {
+                        minimumFractionDigits: decimals,
+                        maximumFractionDigits: decimals
+                    }
+                ) + "%";
+            }
+
+            function currentMode() {
+                return document.querySelector(
+                    'input[name="forma_distribuicao"]:checked'
+                )?.value || "";
+            }
+
+            function currentMonthValue() {
+                const now = new Date();
+                const month = String(now.getMonth() + 1).padStart(2, "0");
+                return now.getFullYear() + "-" + month;
+            }
+
+            function digitalProfileLabel(value) {
+                return String(value) === "1" ? "IA" : "OPERACIONAL";
+            }
+
+            function showToast({
+                title,
+                desc,
+                type = "success",
+                duration = 4300
+            }) {
+                const container = document.getElementById("toast-container");
+
+                if (!container) {
+                    return;
+                }
+
+                const icons = {
+                    success: "✓",
+                    error: "✕",
+                    warning: "!",
+                    info: "i"
+                };
+
+                const toast = document.createElement("article");
+                toast.className = "qore-toast";
+                toast.setAttribute("role", "status");
+
+                const content = document.createElement("div");
+                content.className = "qore-toast-content";
+
+                const icon = document.createElement("span");
+                icon.className = "qore-toast-icon " + type;
+                icon.textContent = icons[type] || icons.info;
+
+                const copy = document.createElement("div");
+                copy.className = "qore-toast-copy";
+
+                const titleElement = document.createElement("strong");
+                titleElement.textContent = title || "Aviso";
+
+                const descElement = document.createElement("span");
+                descElement.textContent = desc || "";
+
+                const closeButton = document.createElement("button");
+                closeButton.type = "button";
+                closeButton.className = "qore-toast-close";
+                closeButton.setAttribute("aria-label", "Fechar aviso");
+                closeButton.innerHTML =
+                    '<i class="fa fa-times" aria-hidden="true"></i>';
+
+                const progress = document.createElement("div");
+                progress.className = "qore-toast-progress " + type;
+                progress.style.animationDuration = duration + "ms";
+
+                copy.appendChild(titleElement);
+                copy.appendChild(descElement);
+                content.appendChild(icon);
+                content.appendChild(copy);
+                content.appendChild(closeButton);
+                toast.appendChild(content);
+                toast.appendChild(progress);
+                container.prepend(toast);
+
+                function closeToast() {
+                    window.clearTimeout(toast._timer);
+                    toast.classList.remove("show");
+                    toast.classList.add("hide");
+
+                    window.setTimeout(function () {
+                        toast.remove();
+                    }, 240);
+                }
+
+                closeButton.addEventListener("click", closeToast);
+
+                window.requestAnimationFrame(function () {
+                    window.requestAnimationFrame(function () {
+                        toast.classList.add("show");
+                    });
+                });
+
+                toast._timer = window.setTimeout(closeToast, duration);
+            }
+
+            function setLoading(show, title, text) {
+                if (show) {
+                    if (
+                        typeof window.showWorkspaceLoading ===
+                        "function"
+                    ) {
+                        window.showWorkspaceLoading(
+                            title || "Carregando informações",
+                            text || "Aguarde enquanto processamos as informações."
+                        );
+                    }
+                } else if (
+                    typeof window.hideWorkspaceLoading ===
+                    "function"
+                ) {
+                    window.hideWorkspaceLoading();
+                }
+
+                if (submitButton) {
+                    submitButton.classList.toggle(
+                        "is-loading",
+                        Boolean(show && sending)
+                    );
+                }
+            }
+
+            function confirmAction(title, text) {
+                return new Promise(function (resolve) {
+                    confirmationResolver = resolve;
+                    confirmModalTitle.textContent = title;
+                    confirmModalText.textContent = text;
+                    confirmModal.classList.add("show");
+                    confirmModal.setAttribute("aria-hidden", "false");
+                    document.body.classList.add("qore-modal-open");
+                    btnConfirmarModal.focus();
+                });
+            }
+
+            function closeConfirmation(result) {
+                if (!confirmationResolver) {
+                    return;
+                }
+
+                const resolver = confirmationResolver;
+                confirmationResolver = null;
+
+                confirmModal.classList.remove("show");
+                confirmModal.setAttribute("aria-hidden", "true");
+                document.body.classList.remove("qore-modal-open");
+
+                resolver(Boolean(result));
+            }
+
+            btnCancelarModal.addEventListener("click", function () {
+                closeConfirmation(false);
+            });
+
+            btnConfirmarModal.addEventListener("click", function () {
+                closeConfirmation(true);
+            });
+
+            function resetRows() {
+                rowsData = [];
+                renderRows();
+                updateEverything();
+            }
+
+            function resetWalletSelection() {
+                selectedCatalogIds.clear();
+                renderWalletCatalog();
+            }
+
+            function resetContextAfterCompanyOrDigitalChange() {
+                resetRows();
+                resetWalletSelection();
+                walletCatalog = [];
+
+                walletSelectionList.innerHTML =
+                    '<div class="qore-empty-wallets">Carregando carteiras...</div>';
+            }
+
+            async function loadCompanies() {
+                empresaControlWrap.classList.add("is-loading");
+                empresaSelect.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        LISTAR_EMPRESAS_URL,
+                        {
+                            credentials: "same-origin",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.ok) {
+                        throw new Error(
+                            data.mensagem || "Erro ao carregar empresas."
+                        );
+                    }
+
+                    empresaSelect.innerHTML =
+                        '<option value="">Selecione uma empresa</option>';
+
+                    (data.empresas || []).forEach(function (empresa) {
+                        const option = document.createElement("option");
+                        option.value = String(empresa.id);
+                        option.textContent = empresa.nome;
+                        empresaSelect.appendChild(option);
+                    });
+
+                    empresaSelect.disabled = false;
+                } catch (error) {
+                    empresaSelect.innerHTML =
+                        '<option value="">Erro ao carregar empresas</option>';
+
+                    showToast({
+                        title: "Erro ao carregar empresas",
+                        desc: error.message || "Não foi possível carregar as empresas.",
+                        type: "error"
+                    });
+                } finally {
+                    empresaControlWrap.classList.remove("is-loading");
+                    updateEverything();
+                }
+            }
+
+            async function loadWallets() {
+                const empresaId = empresaSelect.value;
+                const digitalValue = digitalProfileSelect.value;
+
+                resetContextAfterCompanyOrDigitalChange();
+
+                if (!empresaId || digitalValue === "") {
+                    walletCatalog = [];
+                    walletSelectionList.innerHTML =
+                        '<div class="qore-empty-wallets">Selecione Empresa e perfil IA/OPERACIONAL.</div>';
+                    walletCatalogLabel.textContent =
+                        "Selecione Empresa e perfil IA/OPERACIONAL para carregar as carteiras.";
+                    updateEverything();
+                    return;
+                }
+
+                loadingWallets = true;
+                updateEverything();
+
+                try {
+                    const url =
+                        LISTAR_CARTEIRAS_URL +
+                        "?empresa_id=" +
+                        encodeURIComponent(empresaId) +
+                        "&digital=" +
+                        encodeURIComponent(digitalValue);
+
+                    const response = await fetch(
+                        url,
+                        {
+                            credentials: "same-origin",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.ok) {
+                        throw new Error(
+                            data.mensagem || "Erro ao carregar carteiras."
+                        );
+                    }
+
+                    const expectedDigital = digitalValue === "1";
+
+                    walletCatalog = (data.carteiras || []).filter(
+                        function (wallet) {
+                            return Boolean(wallet.digital) === expectedDigital;
+                        }
+                    );
+
+                    walletCatalogLabel.textContent =
+                        walletCatalog.length +
+                        " " +
+                        (walletCatalog.length === 1
+                            ? "carteira disponível"
+                            : "carteiras disponíveis") +
+                        " para o perfil " +
+                        digitalProfileLabel(digitalValue) +
+                        ".";
+
+                    renderWalletCatalog();
+                } catch (error) {
+                    walletCatalog = [];
+                    walletSelectionList.innerHTML =
+                        '<div class="qore-empty-wallets">Não foi possível carregar as carteiras.</div>';
+
+                    walletCatalogLabel.textContent =
+                        "Erro ao carregar carteiras.";
+
+                    showToast({
+                        title: "Erro ao carregar carteiras",
+                        desc: error.message || "Tente novamente.",
+                        type: "error"
+                    });
+                } finally {
+                    loadingWallets = false;
+                    updateEverything();
+                }
+            }
+
+            function alreadyAdded(walletId) {
+                return rowsData.some(function (row) {
+                    return String(row.id) === String(walletId);
+                });
+            }
+
+            function renderWalletCatalog() {
+                walletSelectionList.innerHTML = "";
+
+                if (!walletCatalog.length) {
+                    walletSelectionList.innerHTML =
+                        '<div class="qore-empty-wallets">Nenhuma carteira disponível para o filtro selecionado.</div>';
+                    updateWalletSelectionStatus();
+                    return;
+                }
+
+                walletCatalog.forEach(function (wallet) {
+                    const added = alreadyAdded(wallet.id);
+
+                    const label = document.createElement("label");
+                    label.className =
+                        "qore-wallet-choice" +
+                        (added ? " is-added" : "");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = String(wallet.id);
+                    checkbox.checked = selectedCatalogIds.has(String(wallet.id));
+                    checkbox.disabled = added;
+
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            selectedCatalogIds.add(String(wallet.id));
+                        } else {
+                            selectedCatalogIds.delete(String(wallet.id));
+                        }
+
+                        updateWalletSelectionStatus();
+                        updateEverything();
+                    });
+
+                    const copy = document.createElement("span");
+
+                    const strong = document.createElement("strong");
+                    strong.textContent = wallet.nome;
+
+                    const small = document.createElement("span");
+                    small.textContent =
+                        (wallet.digital ? "IA" : "OPERACIONAL") +
+                        (added ? " · já adicionada" : "");
+
+                    copy.appendChild(strong);
+                    copy.appendChild(small);
+                    label.appendChild(checkbox);
+                    label.appendChild(copy);
+                    walletSelectionList.appendChild(label);
+                });
+
+                updateWalletSelectionStatus();
+            }
+
+            function updateWalletSelectionStatus() {
+                const count = selectedCatalogIds.size;
+
+                walletSelectionStatus.textContent =
+                    count +
+                    " " +
+                    (count === 1
+                        ? "carteira selecionada."
+                        : "carteiras selecionadas.");
+
+                selectAllWalletsButton.disabled =
+                    loadingWallets ||
+                    !walletCatalog.some(function (wallet) {
+                        return !alreadyAdded(wallet.id);
+                    });
+
+                clearWalletSelectionButton.disabled =
+                    loadingWallets || count === 0;
+
+                addSelectedWalletsButton.disabled =
+                    loadingWallets || count === 0;
+            }
+
+            selectAllWalletsButton.addEventListener("click", function () {
+                walletCatalog.forEach(function (wallet) {
+                    if (!alreadyAdded(wallet.id)) {
+                        selectedCatalogIds.add(String(wallet.id));
+                    }
+                });
+
+                renderWalletCatalog();
+                updateEverything();
+            });
+
+            clearWalletSelectionButton.addEventListener("click", function () {
+                selectedCatalogIds.clear();
+                renderWalletCatalog();
+                updateEverything();
+            });
+
+            async function fetchWalletDetails(walletId) {
+                const competencia = competenciaField.value;
+                let url =
+                    DADOS_META_BASE_URL +
+                    encodeURIComponent(walletId) +
+                    "/";
+
+                if (competencia) {
+                    url +=
+                        "?competencia=" +
+                        encodeURIComponent(competencia);
+                }
+
+                const response = await fetch(
+                    url,
+                    {
+                        cache: "no-store",
+                        credentials: "same-origin",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok || !data.ok) {
+                    throw new Error(
+                        data.mensagem ||
+                        "Não foi possível carregar os dados automáticos da carteira."
+                    );
+                }
+
+                return data;
+            }
+
+            addSelectedWalletsButton.addEventListener(
+                "click",
+                async function () {
+                    const ids = Array.from(selectedCatalogIds);
+
+                    if (!ids.length) {
+                        return;
+                    }
+
+                    setLoading(
+                        true,
+                        "Carregando carteiras",
+                        "Aguarde enquanto os dados automáticos são consultados."
+                    );
+
+                    try {
+                        const details = await Promise.all(
+                            ids.map(fetchWalletDetails)
+                        );
+
+                        details.forEach(function (detail, index) {
+                            const walletId = ids[index];
+                            const catalogItem = walletCatalog.find(
+                                function (wallet) {
+                                    return String(wallet.id) === String(walletId);
+                                }
+                            );
+
+                            if (!catalogItem || alreadyAdded(walletId)) {
+                                return;
+                            }
+
+                            rowsData.push({
+                                id: String(walletId),
+                                nome: catalogItem.nome,
+                                detail: detail,
+                                percent: 0,
+                                valueCents: 0
+                            });
+                        });
+
+                        selectedCatalogIds.clear();
+                        recalculateDistribution();
+                        renderWalletCatalog();
+
+                        showToast({
+                            title: "Carteiras adicionadas",
+                            desc:
+                                ids.length +
+                                " " +
+                                (ids.length === 1
+                                    ? "carteira foi adicionada."
+                                    : "carteiras foram adicionadas."),
+                            type: "success"
+                        });
+                    } catch (error) {
+                        showToast({
+                            title: "Erro ao adicionar carteiras",
+                            desc: error.message || "Tente novamente.",
+                            type: "error"
+                        });
+                    } finally {
+                        setLoading(false);
+                        updateEverything();
+                    }
+                }
+            );
+
+            async function refreshRowsForCompetition() {
+                if (!rowsData.length || !competenciaField.value) {
+                    updateEverything();
+                    return;
+                }
+
+                setLoading(
+                    true,
+                    "Atualizando competência",
+                    "Validando as informações das carteiras para a competência selecionada."
+                );
+
+                try {
+                    const details = await Promise.all(
+                        rowsData.map(function (row) {
+                            return fetchWalletDetails(row.id);
+                        })
+                    );
+
+                    rowsData.forEach(function (row, index) {
+                        row.detail = details[index] || row.detail || {};
+                    });
+
+                    renderRows();
+                    updateEverything();
+
+                    const duplicadas = rowsData.filter(function (row) {
+                        return Boolean(
+                            row.detail &&
+                            row.detail.meta_existe &&
+                            row.detail.competencia === competenciaField.value
+                        );
+                    });
+
+                    if (duplicadas.length) {
+                        const nomes = duplicadas
+                            .slice(0, 5)
+                            .map(function (row) {
+                                return row.nome;
+                            })
+                            .join(", ");
+
+                        const restante = Math.max(
+                            0,
+                            duplicadas.length - 5
+                        );
+
+                        showToast({
+                            title: "Meta já cadastrada",
+                            desc:
+                                "Já existe meta para " +
+                                competenciaField.value.split("-").reverse().join("/") +
+                                " em: " +
+                                nomes +
+                                (restante > 0
+                                    ? " e mais " + restante + "."
+                                    : ".") +
+                                " O envio para essas carteiras será bloqueado.",
+                            type: "warning",
+                            duration: 7000
+                        });
+                    }
+                } catch (error) {
+                    showToast({
+                        title: "Erro ao validar competência",
+                        desc:
+                            error.message ||
+                            "Não foi possível atualizar as informações das carteiras.",
+                        type: "error"
+                    });
+                } finally {
+                    setLoading(false);
+                    updateEverything();
+                }
+            }
+
+            function getCompanyMetaCents() {
+                return parseMoneyToCents(metaTotalField.value);
+            }
+
+            function distributeEqual(totalCents) {
+                const count = rowsData.length;
+
+                if (!count || totalCents <= 0) {
+                    rowsData.forEach(function (row) {
+                        row.valueCents = 0;
+                        row.percent = 0;
+                    });
+                    return;
+                }
+
+                const base = Math.floor(totalCents / count);
+                let remainder = totalCents - (base * count);
+
+                rowsData.forEach(function (row) {
+                    row.valueCents = base;
+
+                    if (remainder > 0) {
+                        row.valueCents += 1;
+                        remainder -= 1;
+                    }
+
+                    row.percent =
+                        totalCents > 0
+                            ? (row.valueCents / totalCents) * 100
+                            : 0;
+                });
+            }
+
+            function distributeByPercent(totalCents) {
+                if (totalCents <= 0) {
+                    rowsData.forEach(function (row) {
+                        row.valueCents = 0;
+                    });
+                    return;
+                }
+
+                const totalPercent = rowsData.reduce(
+                    function (sum, row) {
+                        return sum + (Number(row.percent) || 0);
+                    },
+                    0
+                );
+
+                rowsData.forEach(function (row) {
+                    row.valueCents = Math.round(
+                        totalCents *
+                        ((Number(row.percent) || 0) / 100)
+                    );
+                });
+
+                if (
+                    rowsData.length &&
+                    Math.abs(totalPercent - 100) <= 0.0001
+                ) {
+                    const sumValues = rowsData.reduce(
+                        function (sum, row) {
+                            return sum + row.valueCents;
+                        },
+                        0
+                    );
+
+                    const difference = totalCents - sumValues;
+                    rowsData[rowsData.length - 1].valueCents += difference;
+                }
+            }
+
+            function distributeByValue(totalCents) {
+                rowsData.forEach(function (row) {
+                    row.percent =
+                        totalCents > 0
+                            ? (row.valueCents / totalCents) * 100
+                            : 0;
+                });
+            }
+
+            function recalculateDistribution() {
+                const mode = currentMode();
+                const totalCents = getCompanyMetaCents();
+
+                if (mode === "IGUAL") {
+                    distributeEqual(totalCents);
+                } else if (mode === "PERCENTUAL") {
+                    distributeByPercent(totalCents);
+                } else if (mode === "VALOR") {
+                    distributeByValue(totalCents);
+                } else {
+                    rowsData.forEach(function (row) {
+                        row.valueCents = 0;
+                        row.percent = 0;
+                    });
+                }
+
+                renderRows();
+                updateEverything();
+            }
+
+            function renderRows() {
+                metaDistributionBody.innerHTML = "";
+                distributionSection.hidden = rowsData.length === 0;
+
+                rowsData.forEach(function (row, index) {
+                    const tr = document.createElement("tr");
+
+                    const detail = row.detail || {};
+                    const responsible =
+                        detail.superintendente_nome ||
+                        detail.gerente_nome ||
+                        detail.coordenador_nome ||
+                        "Responsável não informado";
+
+                    const cells = [
+                        String(index + 1),
+                        null,
+                        detail.tipo || "—",
+                        detail.producao || "—",
+                        detail.modalidade || "—",
+                        detail.digital_label || detail.digital || "—",
+                        detail.meta || "Sem meta atual"
+                    ];
+
+                    cells.forEach(function (value, cellIndex) {
+                        const td = document.createElement("td");
+
+                        if (cellIndex === 1) {
+                            td.className = "qore-meta-wallet";
+                            const strong = document.createElement("strong");
+                            strong.textContent = row.nome;
+                            const span = document.createElement("span");
+                            span.textContent = responsible;
+                            td.appendChild(strong);
+                            td.appendChild(span);
+                        } else {
+                            td.textContent = value;
+                            td.className = "qore-meta-auto-value";
+                        }
+
+                        tr.appendChild(td);
+                    });
+
+                    const percentTd = document.createElement("td");
+                    const percentInput = document.createElement("input");
+                    percentInput.type = "number";
+                    percentInput.min = "0";
+                    percentInput.max = "100";
+                    percentInput.step = "0.01";
+                    percentInput.className = "qore-meta-input";
+                    percentInput.dataset.rowPercent = String(index);
+                    percentInput.value =
+                        Number(row.percent || 0).toFixed(4);
+                    percentInput.readOnly =
+                        currentMode() !== "PERCENTUAL";
+
+                    percentInput.addEventListener(
+                        "input",
+                        function () {
+                            row.percent = Math.max(
+                                0,
+                                Number(percentInput.value) || 0
+                            );
+                            distributeByPercent(getCompanyMetaCents());
+                            renderRows();
+                            updateEverything();
+                        }
+                    );
+
+                    percentTd.appendChild(percentInput);
+                    tr.appendChild(percentTd);
+
+                    const valueTd = document.createElement("td");
+                    const valueInput = document.createElement("input");
+                    valueInput.type = "text";
+                    valueInput.inputMode = "decimal";
+                    valueInput.className = "qore-meta-input";
+                    valueInput.dataset.rowValue = String(index);
+                    valueInput.value = formatCurrencyFromCents(
+                        row.valueCents
+                    );
+                    valueInput.readOnly =
+                        currentMode() !== "VALOR";
+
+                    valueInput.addEventListener(
+                        "focus",
+                        function () {
+                            if (!valueInput.readOnly) {
+                                valueInput.select();
+                            }
+                        }
+                    );
+
+                    valueInput.addEventListener(
+                        "change",
+                        function () {
+                            row.valueCents =
+                                parseMoneyToCents(valueInput.value);
+                            valueInput.value =
+                                formatCurrencyFromCents(row.valueCents);
+                            distributeByValue(getCompanyMetaCents());
+                            renderRows();
+                            updateEverything();
+                        }
+                    );
+
+                    valueTd.appendChild(valueInput);
+                    tr.appendChild(valueTd);
+
+                    const actionTd = document.createElement("td");
+                    const removeButton = document.createElement("button");
+                    removeButton.type = "button";
+                    removeButton.className = "qore-meta-remove";
+                    removeButton.setAttribute(
+                        "aria-label",
+                        "Remover " + row.nome
+                    );
+                    removeButton.title = "Remover carteira";
+                    removeButton.innerHTML =
+                        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                        '<path d="M4 7h16"></path>' +
+                        '<path d="M9 7V4h6v3"></path>' +
+                        '<path d="M7 7l1 13h8l1-13"></path>' +
+                        '<path d="M10 11v5"></path>' +
+                        '<path d="M14 11v5"></path>' +
+                        '</svg>';
+
+                    removeButton.addEventListener(
+                        "click",
+                        function () {
+                            const removedId = String(row.id);
+                            rowsData.splice(index, 1);
+                            selectedCatalogIds.delete(removedId);
+                            recalculateDistribution();
+                            renderWalletCatalog();
+                            updateEverything();
+                        }
+                    );
+
+                    actionTd.appendChild(removeButton);
+                    tr.appendChild(actionTd);
+
+                    metaDistributionBody.appendChild(tr);
+                });
+            }
+
+            function distributionTotals() {
+                const totalCents = getCompanyMetaCents();
+                const distributedCents = rowsData.reduce(
+                    function (sum, row) {
+                        return sum + (Number(row.valueCents) || 0);
+                    },
+                    0
+                );
+                const percent = rowsData.reduce(
+                    function (sum, row) {
+                        return sum + (Number(row.percent) || 0);
+                    },
+                    0
+                );
+
+                return {
+                    totalCents: totalCents,
+                    distributedCents: distributedCents,
+                    differenceCents: totalCents - distributedCents,
+                    percent: percent
+                };
+            }
+
+            function isDistributionValid() {
+                if (!rowsData.length) {
+                    return false;
+                }
+
+                const totals = distributionTotals();
+
+                if (totals.totalCents <= 0) {
+                    return false;
+                }
+
+                if (totals.differenceCents !== 0) {
+                    return false;
+                }
+
+                if (
+                    currentMode() === "PERCENTUAL" &&
+                    Math.abs(totals.percent - 100) > 0.0001
+                ) {
+                    return false;
+                }
+
+                return rowsData.every(function (row) {
+                    return row.valueCents >= 0;
+                });
+            }
+
+            function isConfigValid() {
+                return Boolean(
+                    empresaSelect.value &&
+                    digitalProfileSelect.value !== "" &&
+                    competenciaField.value &&
+                    getCompanyMetaCents() > 0 &&
+                    currentMode()
+                );
+            }
+
+            function updateSummary() {
+                const totals = distributionTotals();
+                const progress =
+                    totals.totalCents > 0
+                        ? Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                (totals.distributedCents / totals.totalCents) * 100
+                            )
+                        )
+                        : 0;
+
+                summaryWalletCount.textContent = String(rowsData.length);
+                summaryCompanyMeta.textContent =
+                    formatCurrencyFromCents(totals.totalCents);
+                summaryDistributedMeta.textContent =
+                    formatCurrencyFromCents(totals.distributedCents);
+                summaryPercent.textContent =
+                    formatPercent(totals.percent, 2);
+                summaryDifference.textContent =
+                    formatCurrencyFromCents(
+                        Math.abs(totals.differenceCents)
+                    );
+
+                distributionProgressBar.style.width =
+                    progress.toFixed(2) + "%";
+
+                const valid = isDistributionValid();
+
+                summaryDifferenceCard.classList.toggle(
+                    "is-success",
+                    valid
+                );
+                summaryDifferenceCard.classList.toggle(
+                    "is-warning",
+                    !valid && rowsData.length > 0
+                );
+
+                distributionValidation.classList.toggle(
+                    "is-success",
+                    valid
+                );
+                distributionValidation.classList.toggle(
+                    "is-warning",
+                    !valid && rowsData.length > 0
+                );
+
+                if (!rowsData.length) {
+                    distributionValidation.textContent =
+                        "Adicione carteiras para iniciar a distribuição.";
+                } else if (valid) {
+                    distributionValidation.innerHTML =
+                        '<i class="fa fa-check-circle" aria-hidden="true"></i>' +
+                        " Distribuição concluída: " +
+                        formatCurrencyFromCents(totals.distributedCents) +
+                        " e 100% da meta fechados.";
+                } else {
+                    const missing =
+                        totals.differenceCents >= 0
+                            ? "faltam "
+                            : "excedem ";
+
+                    distributionValidation.innerHTML =
+                        '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>' +
+                        " Distribuição incompleta: " +
+                        missing +
+                        formatCurrencyFromCents(
+                            Math.abs(totals.differenceCents)
+                        ) +
+                        ".";
+                }
+            }
+
+            function updateProgress() {
+                const stages = [
+                    isConfigValid(),
+                    rowsData.length > 0,
+                    isDistributionValid(),
+                    isDistributionValid() && !sending
+                ];
+
+                const total = stages.filter(Boolean).length;
+                const pendingIndex = stages.findIndex(function (item) {
+                    return !item;
+                });
+
+                progressDots.forEach(function (dot, index) {
+                    const complete = stages[index];
+                    const active =
+                        !complete &&
+                        pendingIndex === index;
+
+                    dot.classList.toggle("is-complete", complete);
+                    dot.classList.toggle("is-active", active);
+                });
+
+                formProgressText.textContent =
+                    total +
+                    " de 4 " +
+                    (total === 1
+                        ? "etapa preenchida"
+                        : "etapas preenchidas");
+
+                formProgressText.classList.toggle(
+                    "is-complete",
+                    total === 4
+                );
+
+                formProgress.setAttribute(
+                    "aria-label",
+                    total + " de 4 etapas preenchidas"
+                );
+            }
+
+            function updateEverything() {
+                updateWalletSelectionStatus();
+                updateSummary();
+                updateProgress();
+
+                const valid =
+                    isConfigValid() &&
+                    rowsData.length > 0 &&
+                    isDistributionValid() &&
+                    !sending;
+
+                // Mantemos o botão clicável durante o preenchimento para que
+                // o usuário receba feedback via showToast. Bloqueamos apenas
+                // durante um envio efetivamente em andamento.
+                submitButton.disabled = sending;
+                submitButton.setAttribute(
+                    "aria-disabled",
+                    sending ? "true" : "false"
+                );
+
+                if (valid) {
+                    finalValidationText.textContent =
+                        rowsData.length +
+                        " " +
+                        (rowsData.length === 1
+                            ? "carteira pronta"
+                            : "carteiras prontas") +
+                        " para envio. A meta total e a distribuição estão conciliadas.";
+                } else {
+                    finalValidationText.textContent =
+                        "Preencha Empresa, perfil IA/OPERACIONAL, Competência, Meta Total, selecione uma forma de distribuição e adicione ao menos uma carteira.";
+                }
+            }
+
+            metaTotalField.addEventListener("change", function () {
+                const cents = parseMoneyToCents(metaTotalField.value);
+                metaTotalField.value =
+                    cents > 0
+                        ? formatCurrencyFromCents(cents)
+                        : "";
+                recalculateDistribution();
+            });
+
+            metaTotalField.addEventListener("blur", function () {
+                const cents = parseMoneyToCents(metaTotalField.value);
+
+                if (cents > 0) {
+                    metaTotalField.value =
+                        formatCurrencyFromCents(cents);
+                }
+
+                recalculateDistribution();
+            });
+
+            competenciaField.addEventListener(
+                "change",
+                function () {
+                    refreshRowsForCompetition();
+                }
+            );
+
+            empresaSelect.addEventListener("change", loadWallets);
+            digitalProfileSelect.addEventListener("change", loadWallets);
+
+            document
+                .querySelectorAll(
+                    'input[name="forma_distribuicao"]'
+                )
+                .forEach(function (radio) {
+                    radio.addEventListener(
+                        "change",
+                        function () {
+                            if (currentMode() === "PERCENTUAL") {
+                                rowsData.forEach(function (row) {
+                                    row.percent = 0;
+                                    row.valueCents = 0;
+                                });
+                            } else if (currentMode() === "VALOR") {
+                                rowsData.forEach(function (row) {
+                                    row.valueCents = 0;
+                                    row.percent = 0;
+                                });
+                            }
+
+                            recalculateDistribution();
+                        }
+                    );
+                });
+
+            clearAllButton.addEventListener(
+                "click",
+                async function () {
+                    const confirmed = await confirmAction(
+                        "Limpar solicitação",
+                        "Deseja remover as carteiras e limpar todos os valores preenchidos?"
+                    );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    empresaSelect.value = "";
+                    digitalProfileSelect.value = "";
+                    competenciaField.value = currentMonthValue();
+                    metaTotalField.value = "";
+                    document.querySelectorAll(
+                        'input[name="forma_distribuicao"]'
+                    ).forEach(function (radio) {
+                        radio.checked = false;
+                    });
+
+                    walletCatalog = [];
+                    selectedCatalogIds.clear();
+                    rowsData = [];
+
+                    walletSelectionList.innerHTML =
+                        '<div class="qore-empty-wallets">Aguardando Empresa e perfil IA/OPERACIONAL.</div>';
+                    walletCatalogLabel.textContent =
+                        "Selecione Empresa e perfil IA/OPERACIONAL para carregar as carteiras.";
+
+                    renderRows();
+                    updateEverything();
+                    empresaSelect.focus();
+                }
+            );
+
+            function goBack() {
+                if (
+                    window.openTaskflowRequestModal &&
+                    typeof window.openTaskflowRequestModal === "function"
+                ) {
+                    window.openTaskflowRequestModal();
+                    return;
+                }
+
+                window.history.back();
+            }
+
+            cancelButton.addEventListener("click", goBack);
+            backToRequestMenu?.addEventListener("click", goBack);
+
+            function validateBeforeSubmit() {
+                if (!empresaSelect.value) {
+                    showToast({
+                        title: "Empresa obrigatória",
+                        desc: "Selecione a empresa antes de enviar as metas.",
+                        type: "warning"
+                    });
+                    empresaSelect.focus();
+                    return false;
+                }
+
+                if (digitalProfileSelect.value === "") {
+                    showToast({
+                        title: "Perfil obrigatório",
+                        desc: "Selecione IA ou OPERACIONAL.",
+                        type: "warning"
+                    });
+                    digitalProfileSelect.focus();
+                    return false;
+                }
+
+                if (!competenciaField.value) {
+                    showToast({
+                        title: "Competência obrigatória",
+                        desc: "Informe a competência da meta.",
+                        type: "warning"
+                    });
+                    competenciaField.focus();
+                    return false;
+                }
+
+                if (getCompanyMetaCents() <= 0) {
+                    showToast({
+                        title: "Meta total obrigatória",
+                        desc: "Informe uma meta total maior que zero.",
+                        type: "warning"
+                    });
+                    metaTotalField.focus();
+                    return false;
+                }
+
+                if (!currentMode()) {
+                    showToast({
+                        title: "Forma de distribuição obrigatória",
+                        desc: "Selecione pelo menos uma forma de distribuição da meta.",
+                        type: "warning"
+                    });
+                    document.querySelector(
+                        'input[name="forma_distribuicao"]'
+                    )?.focus();
+                    return false;
+                }
+
+                if (!rowsData.length) {
+                    showToast({
+                        title: "Carteira obrigatória",
+                        desc: "Selecione e adicione pelo menos uma carteira.",
+                        type: "warning"
+                    });
+                    return false;
+                }
+
+                const duplicadas = rowsData.filter(function (row) {
+                    return Boolean(
+                        row.detail &&
+                        row.detail.meta_existe &&
+                        row.detail.competencia === competenciaField.value
+                    );
+                });
+
+                if (duplicadas.length) {
+                    showToast({
+                        title: "Meta já cadastrada",
+                        desc:
+                            "Uma ou mais carteiras já possuem meta para a competência selecionada. Remova essas carteiras ou altere a competência.",
+                        type: "warning",
+                        duration: 7000
+                    });
+                    return false;
+                }
+
+                if (!isDistributionValid()) {
+                    showToast({
+                        title: "Revise a distribuição",
+                        desc: "A soma precisa fechar exatamente a meta total da empresa e, no modo percentual, totalizar 100%.",
+                        type: "warning"
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+
+            function payloadForSubmit() {
+                return {
+                    versao_envio_lote: 2,
+                    empresa_id: empresaSelect.value,
+                    digital: digitalProfileSelect.value === "1",
+                    competencia: competenciaField.value,
+                    meta_empresa_total:
+                        (getCompanyMetaCents() / 100).toFixed(2),
+                    forma_distribuicao: currentMode(),
+                    inicio_preenchimento:
+                        inicioPreenchimentoField.value,
+                    carteiras: rowsData.map(function (row) {
+                        return {
+                            carteira_id: row.id,
+                            percentual:
+                                Number(row.percent || 0).toFixed(4),
+                            valor_meta:
+                                (Number(row.valueCents || 0) / 100).toFixed(2)
+                        };
+                    })
+                };
+            }
+
+            form.addEventListener(
+                "submit",
+                async function (event) {
+                    event.preventDefault();
+
+                    if (!validateBeforeSubmit()) {
+                        updateEverything();
+                        return;
+                    }
+
+                    const totals = distributionTotals();
+
+                    const confirmed = await confirmAction(
+                        "Confirmar envio de metas",
+                        "Enviar " +
+                        rowsData.length +
+                        " " +
+                        (rowsData.length === 1
+                            ? "carteira"
+                            : "carteiras") +
+                        " com meta total de " +
+                        formatCurrencyFromCents(totals.totalCents) +
+                        "?"
+                    );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    sending = true;
+                    updateEverything();
+                    submitButtonLabel.textContent = "Enviando...";
+
+                    setLoading(
+                        true,
+                        "Enviando metas",
+                        "A solicitação está sendo gravada de forma transacional."
+                    );
+
+                    try {
+                        const response = await fetch(
+                            form.action,
+                            {
+                                method: "POST",
+                                credentials: "same-origin",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRFToken": csrfToken(),
+                                    "X-Requested-With": "XMLHttpRequest"
+                                },
+                                body: JSON.stringify(payloadForSubmit())
+                            }
+                        );
+
+                        const data = await response.json();
+
+                        if (!response.ok || !data.ok) {
+                            throw new Error(
+                                data.mensagem ||
+                                "Não foi possível concluir o envio."
+                            );
+                        }
+
+                        setLoading(false);
+                        submitButtonLabel.textContent =
+                            "Metas enviadas";
+                        updateEverything();
+
+                        showToast({
+                            title: "Metas enviadas",
+                            desc:
+                                data.quantidade_carteiras +
+                                " " +
+                                (data.quantidade_carteiras === 1
+                                    ? "carteira enviada"
+                                    : "carteiras enviadas") +
+                                " com sucesso.",
+                            type: "success",
+                            duration: 3000
+                        });
+
+                        window.setTimeout(
+                            function () {
+                                const destaque =
+                                    data.envio_meta_id
+                                        ? "?destacar_meta=" +
+                                          encodeURIComponent(
+                                              data.envio_meta_id
+                                          )
+                                        : "";
+
+                                window.location.href =
+                                    MEUS_ENVIOS_URL + destaque;
+                            },
+                            900
+                        );
+                    } catch (error) {
+                        sending = false;
+                        submitButtonLabel.textContent =
+                            "Enviar todas as metas";
+
+                        setLoading(false);
+                        updateEverything();
+
+                        const duplicateMeta = /já existe meta|meta já cadastrada|mesma competência/i.test(
+                            error.message || ""
+                        );
+
+                        showToast({
+                            title: duplicateMeta
+                                ? "Meta já cadastrada"
+                                : "Erro no envio",
+                            desc:
+                                error.message ||
+                                "Revise os dados e tente novamente.",
+                            type: duplicateMeta ? "warning" : "error",
+                            duration: 7000
+                        });
+                    }
+                }
+            );
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+                    if (
+                        event.key === "Escape" &&
+                        confirmationResolver
+                    ) {
+                        closeConfirmation(false);
+                    }
+                }
+            );
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                async function () {
+                    if (!competenciaField.value) {
+                        competenciaField.value = currentMonthValue();
+                    }
+
+                    renderRows();
+                    updateEverything();
+
+                    await loadCompanies();
+                    updateEverything();
+                }
+            );
+
+            window.addEventListener(
+                "pageshow",
+                function (event) {
+                    if (!event.persisted) {
+                        return;
+                    }
+
+                    sending = false;
+                    submitButtonLabel.textContent =
+                        "Enviar todas as metas";
+                    setLoading(false);
+                    updateEverything();
+                }
+            );
+        })();
+    </script>
+</body>
+</html>
