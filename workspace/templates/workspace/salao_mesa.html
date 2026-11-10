@@ -1,0 +1,117 @@
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
+
+{% block title %}{{ comanda.mesa_nome }} | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <span class="eyebrow">Comanda aberta</span>
+        <h1>{{ comanda.mesa_nome }}</h1>
+        <p>Início do atendimento: {{ comanda.aberta_em|date:"d/m/Y" }} às {{ comanda.aberta_em|date:"H:i" }}</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" href="{% url 'pedido_novo' %}?tipo=salao&mesa={{ comanda.mesa_numero }}"><i class="fas fa-plus"></i> Adicionar itens</a>
+        <a class="btn btn-secondary" href="{% url 'salao' %}"><i class="fas fa-arrow-left"></i> Voltar</a>
+    </div>
+</section>
+
+<div class="comanda-layout">
+    <section class="card">
+        <header class="card-head">
+            <h2><i class="fas fa-list-ul"></i> Pedidos desta comanda</h2>
+            <small>{{ pedidos|length }} pedido(s)</small>
+        </header>
+
+        {% for pedido in pedidos %}
+            <article class="comanda-pedido">
+                <header>
+                    <div>
+                        <strong><a href="{% url 'pedido_detalhe' pedido.id %}">{{ pedido.codigo }}</a></strong>
+                        <small>{{ pedido.criado_em|date:"H:i" }} · {{ pedido.get_status_display }}</small>
+                    </div>
+                    <span class="valor">{{ pedido.total|moeda }}</span>
+                </header>
+                <ul class="linhas-itens">
+                    {% for item in pedido.itens.all %}
+                        <li>
+                            <span>{{ item.quantidade }}× {{ item.produto.nome }}{% if item.observacoes %}<small>{{ item.observacoes }}</small>{% endif %}</span>
+                            <span>{{ item.subtotal|moeda }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </article>
+        {% empty %}
+            <p class="muted" style="padding: 20px 16px;">Nenhum pedido lançado nesta comanda.</p>
+        {% endfor %}
+
+        <div class="comanda-total">
+            <span>Total da comanda</span>
+            <strong>{{ comanda.total|moeda }}</strong>
+        </div>
+    </section>
+
+    <div>
+        <section class="card acao-card">
+            <span class="icon-box"><i class="fas fa-exchange-alt"></i></span>
+            <h3>Transferir mesa</h3>
+            <p>Todos os pedidos desta comanda serão levados juntos para a nova mesa.</p>
+            <form method="post" action="{% url 'salao_mesa_transferir' comanda.mesa_numero %}" style="display: flex; flex-direction: column; gap: 12px;">
+                {% csrf_token %}
+                <label class="field">
+                    <span>Mesa de destino</span>
+                    <select name="mesa_destino" required>
+                        <option value="">Selecione uma mesa livre</option>
+                        {% for mesa in mesas_livres %}
+                            <option value="{{ mesa.numero }}">{{ mesa.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button class="btn btn-secondary btn-block" type="submit" {% if not mesas_livres %}disabled{% endif %}>Transferir comanda</button>
+            </form>
+        </section>
+
+        <section class="card acao-card is-green">
+            <span class="icon-box green"><i class="fas fa-money-check-alt"></i></span>
+            <h3>Fechar e liberar mesa</h3>
+            <p>Registra o pagamento, encerra este lote e deixa a mesa livre para o próximo cliente.</p>
+            <form method="post" action="{% url 'salao_mesa_fechar' comanda.mesa_numero %}" style="display: flex; flex-direction: column; gap: 12px;" data-confirmar>
+                {% csrf_token %}
+                <label class="field">
+                    <span>Forma de pagamento</span>
+                    <select name="forma_pagamento" required>
+                        {% for valor, rotulo in forma_pagamento_choices %}
+                            <option value="{{ valor }}">{{ rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button class="btn btn-success btn-block btn-lg" type="submit">
+                    <i class="fas fa-check"></i> Confirmar pagamento · {{ comanda.total|moeda }}
+                </button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var form = document.querySelector("[data-confirmar]");
+        if (!form) { return; }
+        var botao = form.querySelector("button[type=submit]");
+        var original = botao.innerHTML;
+        var confirmado = false;
+        form.addEventListener("submit", function (evento) {
+            if (confirmado) { return; }
+            evento.preventDefault();
+            confirmado = true;
+            botao.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Clique novamente para confirmar';
+            setTimeout(function () {
+                confirmado = false;
+                botao.innerHTML = original;
+            }, 4000);
+        });
+    })();
+</script>
+{% endblock %}

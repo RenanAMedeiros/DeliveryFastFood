@@ -1,0 +1,107 @@
+{% load static loja_extras %}<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0e14">
+    <title>{% block title %}{{ loja_nome }}{% endblock %}</title>
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}?v=3.0.0">
+    {% block head %}{% endblock %}
+</head>
+<body class="loja-page {% block body_class %}{% endblock %}">
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="{% url 'pedidos' %}" aria-label="{{ loja_nome }}">
+            {% if loja_logo %}
+                <img src="{% static loja_logo %}" alt="{{ loja_nome }}">
+            {% else %}
+                <span class="brand-mark">
+                    <span class="brand-name">{{ loja_nome }}</span>
+                    <span class="brand-sub">Culinária japonesa</span>
+                </span>
+            {% endif %}
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Navegação principal">
+            <a class="{% ativo_em 'pedidos' 'pedido_detalhe' 'pedidos_unir' %}" href="{% url 'pedidos' %}"><i class="fas fa-shopping-cart"></i><span>Pedidos</span></a>
+            <a class="{% ativo_em 'pedido_novo' %}" href="{% url 'pedido_novo' %}"><i class="fas fa-plus"></i><span>Nova venda</span></a>
+            <a class="{% ativo_em 'salao' 'salao_mesa' %}" href="{% url 'salao' %}"><i class="fas fa-chair"></i><span>Salão</span></a>
+            <a class="{% ativo_em 'produtos' 'produto_novo' 'produto_editar' %}" href="{% url 'produtos' %}"><i class="fas fa-box"></i><span>Itens de venda</span></a>
+            <a class="{% ativo_em 'clientes' %}" href="{% url 'clientes' %}"><i class="fas fa-users"></i><span>Clientes</span></a>
+            <a class="{% ativo_em 'cozinha' %}" href="{% url 'cozinha' %}"><i class="fas fa-utensils"></i><span>Cozinha</span></a>
+            <a class="{% ativo_em 'delivery' %}" href="{% url 'delivery' %}"><i class="fas fa-motorcycle"></i><span>Delivery</span></a>
+            <a class="{% ativo_em 'configuracoes' %}" href="{% url 'configuracoes' %}"><i class="fas fa-cog"></i><span>Configurações</span></a>
+            {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}"><i class="fas fa-lock"></i><span>Administração</span></a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-foot">
+            <span>{{ user.get_full_name|default:user.username }}</span>
+            <a href="{% url 'logout' %}">Sair</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        {% if messages %}
+            <div class="alerts">
+                {% for mensagem in messages %}
+                    <div class="alert alert-{{ mensagem.tags|default:'info' }}">
+                        <i class="fas {% if mensagem.tags == 'success' %}fa-check-circle{% elif mensagem.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                        <span>{{ mensagem }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<button class="sidebar-toggle" type="button" id="sidebarToggle" aria-label="Abrir menu">
+    <i class="fas fa-bars"></i>
+</button>
+
+<script>
+    (function () {
+        var toggle = document.getElementById("sidebarToggle");
+        if (toggle) {
+            toggle.addEventListener("click", function () {
+                document.body.classList.toggle("nav-open");
+            });
+        }
+
+        var dataEl = document.querySelectorAll("[data-relogio-data]");
+        var horaEl = document.querySelectorAll("[data-relogio-hora]");
+        if (!dataEl.length && !horaEl.length) {
+            return;
+        }
+
+        function capitalizar(texto) {
+            return texto.replace(/(^|\s)(\S)/g, function (_, espaco, letra) {
+                return espaco + letra.toUpperCase();
+            }).replace(/ De /g, " de ");
+        }
+
+        function atualizar() {
+            var agora = new Date();
+            var data = capitalizar(agora.toLocaleDateString("pt-BR", {
+                weekday: "long", day: "2-digit", month: "long", year: "numeric"
+            }));
+            var hora = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+            dataEl.forEach(function (el) { el.textContent = data; });
+            horaEl.forEach(function (el) { el.textContent = hora; });
+        }
+
+        atualizar();
+        setInterval(atualizar, 15000);
+    })();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

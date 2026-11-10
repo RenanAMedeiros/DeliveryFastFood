@@ -1,65 +1,58 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-{% include "components/_head.html" %}
-<head>
-    <title>Itens de venda</title>
-    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
-</head>
-<body class="pedidos-page">
-    {% include "components/navbar/_navbar.html" %}
-    <main class="pedidos-main">
-        <section class="pedidos-header">
-            <div>
-                <span class="pedidos-eyebrow">Cardapio da loja</span>
-                <h1>Itens de venda</h1>
-                <p>Cadastre produtos com foto, categoria, preco e tempo de preparo para detalhar cada pedido finalizado.</p>
-            </div>
-            <a class="pedidos-primary" href="{% url 'produto_novo' %}">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                Novo item
-            </a>
-        </section>
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
 
-        <form class="pedidos-toolbar" method="get">
-            <label>Busca
-                <input name="q" value="{{ busca }}" placeholder="Nome ou codigo">
-            </label>
-            <label>Categoria
-                <select name="categoria">
-                    <option value="">Todas</option>
-                    {% for valor, rotulo in categoria_choices %}
-                        <option value="{{ valor }}" {% if categoria_atual == valor %}selected{% endif %}>{{ rotulo }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <button class="pedidos-secondary" type="submit">Filtrar</button>
-        </form>
+{% block title %}Itens de venda | {{ loja_nome }}{% endblock %}
 
-        <section class="produtos-grid">
-            {% for produto in produtos %}
-                <article class="produto-card">
-                    <div class="produto-card-media">
-                        {% if produto.foto %}
-                            <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}">
-                        {% else %}
-                            <span><i class="fa fa-camera" aria-hidden="true"></i></span>
-                        {% endif %}
-                    </div>
-                    <div class="produto-card-body">
-                        <span>{{ produto.get_categoria_display }}</span>
-                        <strong>{{ produto.nome }}</strong>
-                        <p>{{ produto.descricao|default:"Sem descricao cadastrada." }}</p>
-                        <div>
-                            <b>R$ {{ produto.preco_unitario|floatformat:2 }}</b>
-                            <small>{{ produto.tempo_preparo_minutos }} min</small>
-                        </div>
-                    </div>
-                </article>
-            {% empty %}
-                <div class="pedidos-empty produtos-empty">Nenhum item cadastrado.</div>
+{% block content %}
+<section class="page-head card">
+    <div>
+        <span class="eyebrow">Cardápio da loja</span>
+        <h1>Itens de venda</h1>
+        <p>Cadastre produtos com foto, categoria, preço e tempo de preparo para detalhar cada pedido finalizado.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'produto_novo' %}"><i class="fas fa-plus"></i> Novo item</a>
+</section>
+
+<form class="card toolbar" method="get" action="{% url 'produtos' %}" style="grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) minmax(200px, 1fr);">
+    <label class="field">
+        <span>Busca</span>
+        <input name="q" value="{{ busca }}" placeholder="Nome ou código">
+    </label>
+    <label class="field">
+        <span>Categoria</span>
+        <select name="categoria">
+            <option value="">Todas</option>
+            {% for valor, rotulo in categoria_choices %}
+                <option value="{{ valor }}" {% if categoria_atual == valor %}selected{% endif %}>{{ rotulo }}</option>
             {% endfor %}
-        </section>
-    </main>
-</body>
-</html>
+        </select>
+    </label>
+    <button class="btn btn-secondary" type="submit">Filtrar</button>
+</form>
+
+<section class="produtos-grid">
+    {% for produto in produtos %}
+        <article class="produto-card {% if not produto.ativo %}is-inativo{% endif %}">
+            <div class="produto-card-media">
+                {% if produto.foto %}
+                    <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}">
+                {% else %}
+                    <i class="fas fa-camera"></i>
+                {% endif %}
+            </div>
+            <div class="produto-card-body">
+                <span class="eyebrow">{{ produto.get_categoria_display }}{% if not produto.ativo %} · inativo{% endif %}</span>
+                <strong>{{ produto.nome }}</strong>
+                <p>{{ produto.descricao|default:"Sem descrição cadastrada." }}</p>
+                <div class="produto-card-foot">
+                    <b>{{ produto.preco_unitario|moeda }}</b>
+                    <span class="badge badge-success">{{ produto.tempo_preparo_minutos }} min</span>
+                </div>
+                <a class="btn btn-ghost btn-sm" href="{% url 'produto_editar' produto.id %}">Editar item / foto</a>
+            </div>
+        </article>
+    {% empty %}
+        <div class="card" style="grid-column: 1 / -1;"><p class="muted" style="padding: 22px; text-align: center;">Nenhum item cadastrado.</p></div>
+    {% endfor %}
+</section>
+{% endblock %}

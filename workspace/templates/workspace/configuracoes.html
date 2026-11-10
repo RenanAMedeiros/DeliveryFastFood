@@ -1,0 +1,69 @@
+{% extends "workspace/base_loja.html" %}
+
+{% block title %}Configurações | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <span class="eyebrow">Estabelecimento</span>
+        <h1>Configurações</h1>
+        <p>Personalize o funcionamento do seu ponto de venda.</p>
+    </div>
+</section>
+
+<section class="card config-card">
+    <header class="card-head">
+        <div class="head-copy">
+            <span class="icon-box red"><i class="fas fa-chair"></i></span>
+            <div>
+                <h2>Mesas do estabelecimento</h2>
+                <p>Defina quantas mesas devem aparecer ao iniciar uma nova venda.</p>
+            </div>
+        </div>
+    </header>
+    <form class="card-body" method="post" action="{% url 'configuracoes' %}">
+        {% csrf_token %}
+        <label class="field" style="align-items: flex-start;">
+            <span>Quantidade de mesas</span>
+            <div class="stepper">
+                <button type="button" data-passo="-1" aria-label="Diminuir">−</button>
+                <input type="number" name="quantidade_mesas" id="quantidadeMesas" min="{{ min_mesas }}" max="{{ max_mesas }}" value="{{ configuracao.quantidade_mesas }}" required>
+                <button type="button" data-passo="1" aria-label="Aumentar">+</button>
+            </div>
+            <small class="hint">Permitido: de {{ min_mesas }} a {{ max_mesas }} mesas.</small>
+        </label>
+
+        <div class="alert alert-success" style="margin: 16px 0;">
+            <i class="fas fa-info-circle"></i>
+            <span>A tela “Nova venda” exibirá <strong id="previaMesas">{{ configuracao.quantidade_mesas }}</strong> mesas.</span>
+        </div>
+
+        <button class="btn btn-primary" type="submit"><i class="fas fa-check"></i> Salvar configuração</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var campo = document.getElementById("quantidadeMesas");
+        var previa = document.getElementById("previaMesas");
+        var minimo = parseInt(campo.min, 10);
+        var maximo = parseInt(campo.max, 10);
+
+        function ajustar(valor) {
+            valor = Math.min(maximo, Math.max(minimo, valor || minimo));
+            campo.value = valor;
+            previa.textContent = valor;
+        }
+
+        document.querySelectorAll("[data-passo]").forEach(function (botao) {
+            botao.addEventListener("click", function () {
+                ajustar(parseInt(campo.value, 10) + parseInt(botao.getAttribute("data-passo"), 10));
+            });
+        });
+        campo.addEventListener("input", function () { previa.textContent = campo.value || "-"; });
+        campo.addEventListener("change", function () { ajustar(parseInt(campo.value, 10)); });
+    })();
+</script>
+{% endblock %}

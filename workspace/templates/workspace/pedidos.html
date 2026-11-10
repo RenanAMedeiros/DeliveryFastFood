@@ -1,89 +1,144 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-{% include "components/_head.html" %}
-<head>
-    <title>Pedidos</title>
-    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
-</head>
-<body class="pedidos-page">
-    {% include "components/navbar/_navbar.html" %}
-    <main class="pedidos-main">
-        <section class="pedidos-header">
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
+
+{% block title %}Pedidos | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <span class="eyebrow">Visão geral</span>
+        <h1>Pedidos</h1>
+    </div>
+    <div class="page-meta">
+        <span class="chip"><i class="fas fa-calendar-alt"></i> <span data-relogio-data>--</span></span>
+        <span class="chip"><i class="fas fa-clock"></i> <span data-relogio-hora>--:--</span></span>
+    </div>
+</section>
+
+<section class="kpi-grid" aria-label="Resumo dos pedidos">
+    <article class="kpi"><span>Total de pedidos</span><strong>{{ resumo.total }}</strong></article>
+    <article class="kpi kpi-green"><span>Pedidos abertos</span><strong>{{ resumo.abertos }}</strong></article>
+    <article class="kpi kpi-red"><span>Pedidos fechados</span><strong>{{ resumo.fechados }}</strong></article>
+</section>
+
+<section class="card" aria-label="Financeiro">
+    <header class="card-head">
+        <h2><i class="fas fa-chart-line"></i> Financeiro</h2>
+        <small>{{ financeiro.data_inicial|date:"d/m/Y" }} a {{ financeiro.data_final|date:"d/m/Y" }}</small>
+    </header>
+    <div class="fin-grid">
+        <article><span>Valor faturado</span><strong>{{ financeiro.valor_faturado|moeda }}</strong></article>
+        <article><span>Pedidos faturados</span><strong>{{ financeiro.pedidos_faturados }}</strong></article>
+        <article><span>Média por dia</span><strong>{{ financeiro.media_por_dia|moeda }}</strong></article>
+        <article><span>Projeção para 7 dias</span><strong>{{ financeiro.projecao_7_dias|moeda }}</strong></article>
+    </div>
+</section>
+
+<form class="card toolbar" method="get" action="{% url 'pedidos' %}">
+    <label class="field">
+        <span><i class="fas fa-search"></i>Buscar pedido</span>
+        <input name="q" value="{{ busca }}" placeholder="Código, cliente ou produto...">
+    </label>
+    <label class="field">
+        <span>Data inicial</span>
+        <input type="date" name="data_inicial" value="{{ data_inicial|date:'Y-m-d' }}">
+    </label>
+    <label class="field">
+        <span>Data final</span>
+        <input type="date" name="data_final" value="{{ data_final|date:'Y-m-d' }}">
+    </label>
+    <label class="field">
+        <span>Status</span>
+        <select name="status">
+            <option value="">Todos</option>
+            {% for valor, rotulo in status_choices %}
+                <option value="{{ valor }}" {% if status_atual == valor %}selected{% endif %}>{{ rotulo }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button class="btn btn-primary" type="submit">Buscar</button>
+</form>
+
+<section class="card">
+    <form method="get" action="{% url 'pedidos_unir' %}" id="formUnir">
+        <header class="card-head">
             <div>
-                <span class="pedidos-eyebrow">Sistema de vendas</span>
-                <h1>Pedidos</h1>
-                <p>Acompanhe os pedidos da loja por canal, status, prioridade, prazo e responsavel.</p>
+                <span class="eyebrow">Últimos registros</span>
+                <h2>Lista de pedidos</h2>
             </div>
-            <a class="pedidos-primary" href="{% url 'pedido_novo' %}">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                Nova venda
-            </a>
-        </section>
+            <div class="card-actions">
+                <button class="btn btn-secondary" type="submit" id="btnUnir" disabled>
+                    <i class="fas fa-link"></i> Unir selecionados
+                </button>
+                <a class="btn btn-primary" href="{% url 'pedido_novo' %}">
+                    <i class="fas fa-plus"></i> Nova venda
+                </a>
+            </div>
+        </header>
 
-        <section class="pedidos-kpis">
-            <article><span>Total</span><strong>{{ resumo.total }}</strong></article>
-            <article><span>Novos</span><strong>{{ resumo.abertos }}</strong></article>
-            <article><span>Preparo</span><strong>{{ resumo.separacao }}</strong></article>
-            <article><span>Prontos</span><strong>{{ resumo.prontos }}</strong></article>
-            <article><span>Entrega</span><strong>{{ resumo.entrega }}</strong></article>
-            <article><span>Atrasados</span><strong>{{ resumo.atrasados }}</strong></article>
-        </section>
-
-        <form class="pedidos-toolbar" method="get">
-            <label>Busca
-                <input name="q" value="{{ busca }}" placeholder="Codigo, cliente ou produto">
-            </label>
-            <label>Status
-                <select name="status">
-                    <option value="">Todos</option>
-                    {% for valor, rotulo in status_choices %}
-                        <option value="{{ valor }}" {% if status_atual == valor %}selected{% endif %}>{{ rotulo }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <button class="pedidos-secondary" type="submit">Filtrar</button>
-        </form>
-
-        <section class="pedidos-table-wrap">
-            <table class="pedidos-table">
+        <div class="table-wrap">
+            <table class="table">
                 <thead>
                     <tr>
+                        <th class="col-check"><span class="sr-only"></span></th>
                         <th>Pedido</th>
-                        <th>Canal</th>
                         <th>Cliente</th>
+                        <th>Canal</th>
                         <th>Itens</th>
                         <th>Total</th>
                         <th>Entrega</th>
                         <th>Status</th>
-                        <th>Prioridade</th>
+                        <th class="col-action"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for pedido in pedidos %}
                         <tr>
-                            <td><a href="{% url 'pedido_detalhe' pedido.id %}"><strong>{{ pedido.codigo }}</strong></a></td>
+                            <td class="col-check">
+                                <input type="checkbox" name="pedido" value="{{ pedido.id }}" data-selecao-pedido
+                                       {% if not pedido.aberto or pedido.pago %}disabled title="Pedido fechado ou pago"{% endif %}>
+                            </td>
+                            <td><a class="link-strong" href="{% url 'pedido_detalhe' pedido.id %}">{{ pedido.codigo }}</a></td>
+                            <td>{{ pedido.cliente.nome }}</td>
                             <td>
                                 {{ pedido.get_canal_display }}
-                                {% if pedido.codigo_externo %}
-                                    <span class="pedido-item-meta">#{{ pedido.codigo_externo }}</span>
-                                {% endif %}
+                                {% if pedido.codigo_externo %}<small>#{{ pedido.codigo_externo }}</small>{% endif %}
                             </td>
-                            <td>{{ pedido.cliente.nome }}</td>
-                            <td>{{ pedido.itens.count }}</td>
-                            <td>R$ {{ pedido.total|floatformat:2 }}</td>
-                            <td class="{% if pedido.atrasado %}pedido-atrasado{% endif %}">{{ pedido.previsao_entrega|date:"d/m/Y"|default:"-" }}</td>
-                            <td><span class="pedido-badge">{{ pedido.get_status_display }}</span></td>
-                            <td>{{ pedido.get_prioridade_display }}</td>
+                            <td>{{ pedido.quantidade_itens }}</td>
+                            <td><strong>{{ pedido.total|moeda }}</strong></td>
+                            <td>{{ pedido.previsao_entrega|date:"d/m/Y"|default:"-" }}</td>
+                            <td><span class="badge {{ pedido.status|status_classe }}">{{ pedido.get_status_display }}</span></td>
+                            <td class="col-action">
+                                <a class="btn-icon" href="{% url 'pedido_detalhe' pedido.id %}" title="Abrir pedido">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </td>
                         </tr>
                     {% empty %}
-                        <tr>
-                            <td colspan="8" class="pedidos-empty">Nenhum pedido encontrado.</td>
-                        </tr>
+                        <tr><td colspan="9" class="empty">Nenhum pedido encontrado.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
-        </section>
-    </main>
-</body>
-</html>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var caixas = document.querySelectorAll("[data-selecao-pedido]");
+        var botao = document.getElementById("btnUnir");
+        if (!botao) { return; }
+
+        function atualizar() {
+            var marcados = document.querySelectorAll("[data-selecao-pedido]:checked").length;
+            botao.disabled = marcados < 2;
+            botao.innerHTML = '<i class="fas fa-link"></i> Unir selecionados' + (marcados ? " (" + marcados + ")" : "");
+        }
+
+        caixas.forEach(function (caixa) { caixa.addEventListener("change", atualizar); });
+        atualizar();
+    })();
+</script>
+{% endblock %}

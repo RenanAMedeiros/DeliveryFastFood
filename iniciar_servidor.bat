@@ -97,6 +97,9 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo Aplicando atualizacoes do banco de dados...
+"%PYTHON_EXE%" "%MANAGE_PY%" migrate --fake-initial
+
 echo.
 echo Servidor disponivel em http://127.0.0.1:8000/
 echo Pressione CTRL+C para parar.

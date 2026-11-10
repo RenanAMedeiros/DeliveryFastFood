@@ -2,9 +2,46 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+
+
+def nome_mesa(numero):
+    return f"Mesa {int(numero):02d}"
+
+
+class ConfiguracaoLoja(models.Model):
+    """Configuracoes gerais do ponto de venda (registro unico)."""
+
+    MIN_MESAS = 1
+    MAX_MESAS = 200
+
+    nome_loja = models.CharField(max_length=80, default="Shinchan")
+    quantidade_mesas = models.PositiveIntegerField(
+        default=10,
+        validators=[MinValueValidator(MIN_MESAS), MaxValueValidator(MAX_MESAS)],
+    )
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Configuracao da loja"
+        verbose_name_plural = "Configuracoes da loja"
+
+    def __str__(self):
+        return self.nome_loja
+
+    @classmethod
+    def obter(cls):
+        configuracao = cls.objects.order_by("id").first()
+        if configuracao is None:
+            configuracao = cls.objects.create()
+        return configuracao
+
+    @property
+    def numeros_mesas(self):
+        return range(1, self.quantidade_mesas + 1)
 
 
 class ClientePedido(models.Model):
@@ -64,8 +101,73 @@ class ProdutoPedido(models.Model):
         verbose_name_plural = "Produtos/servicos"
         ordering = ["nome"]
 
+    @property
+    def grupo(self):
+        """Agrupamento usado no filtro rapido da tela de venda."""
+        return "bebidas" if self.categoria == self.CATEGORIA_BEBIDA else "comidas"
+
     def __str__(self):
         return self.nome
+
+
+class Comanda(models.Model):
+    """Atendimento de uma mesa: agrupa os pedidos abertos ate o pagamento."""
+
+    STATUS_ABERTA = "aberta"
+    STATUS_FECHADA = "fechada"
+    STATUS_CHOICES = [
+        (STATUS_ABERTA, "Aberta"),
+        (STATUS_FECHADA, "Fechada"),
+    ]
+
+    mesa_numero = models.PositiveIntegerField(db_index=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_ABERTA, db_index=True)
+    aberta_em = models.DateTimeField(default=timezone.now, db_index=True)
+    fechada_em = models.DateTimeField(null=True, blank=True)
+    forma_pagamento = models.CharField(max_length=20, blank=True, default="")
+    total_pago = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    aberta_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="comandas_abertas",
+    )
+    fechada_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="comandas_fechadas",
+    )
+
+    class Meta:
+        verbose_name = "Comanda"
+        verbose_name_plural = "Comandas"
+        ordering = ["-aberta_em"]
+
+    @property
+    def mesa_nome(self):
+        return nome_mesa(self.mesa_numero)
+
+    @property
+    def aberta(self):
+        return self.status == self.STATUS_ABERTA
+
+    @property
+    def pedidos_validos(self):
+        return [pedido for pedido in self.pedidos.all() if pedido.status != Pedido.STATUS_CANCELADO]
+
+    @property
+    def total(self):
+        return sum((pedido.total for pedido in self.pedidos_validos), Decimal("0.00"))
+
+    @property
+    def forma_pagamento_display(self):
+        return dict(Pedido.FORMA_PAGAMENTO_CHOICES).get(self.forma_pagamento, self.forma_pagamento or "-")
+
+    def __str__(self):
+        return f"{self.mesa_nome} - {self.get_status_display()}"
 
 
 class Pedido(models.Model):
@@ -104,6 +206,7 @@ class Pedido(models.Model):
         (STATUS_ENTREGUE, "Entregue"),
         (STATUS_CANCELADO, "Cancelado"),
     ]
+    STATUS_FECHADOS = {STATUS_ENTREGUE, STATUS_CANCELADO}
 
     FORMA_PIX = "pix"
     FORMA_DINHEIRO = "dinheiro"
@@ -131,7 +234,7 @@ class Pedido(models.Model):
 
     codigo = models.CharField(max_length=30, unique=True, db_index=True)
     codigo_externo = models.CharField("Codigo iFood/app", max_length=80, blank=True, default="", db_index=True)
-    canal = models.CharField(max_length=20, choices=CANAL_CHOICES, default=CANAL_IFOOD, db_index=True)
+    canal = models.CharField(max_length=20, choices=CANAL_CHOICES, default=CANAL_BALCAO, db_index=True)
     cliente = models.ForeignKey(ClientePedido, on_delete=models.PROTECT, related_name="pedidos")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ABERTO, db_index=True)
     prioridade = models.CharField(max_length=20, choices=PRIORIDADE_CHOICES, default=PRIORIDADE_NORMAL, db_index=True)
@@ -151,6 +254,23 @@ class Pedido(models.Model):
     forma_pagamento = models.CharField(max_length=20, choices=FORMA_PAGAMENTO_CHOICES, default=FORMA_PIX, db_index=True)
     valor_recebido = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     entregador = models.CharField(max_length=120, blank=True, default="")
+    mesa_numero = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+    comanda = models.ForeignKey(
+        Comanda,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pedidos",
+    )
+    unido_em = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pedidos_unidos",
+        help_text="Pedido principal que recebeu os itens deste pedido na uniao.",
+    )
+    pago = models.BooleanField(default=False, db_index=True)
     criado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -185,12 +305,32 @@ class Pedido(models.Model):
         return max(self.valor_recebido - self.total, Decimal("0.00"))
 
     @property
+    def quantidade_itens(self):
+        return sum((item.quantidade for item in self.itens.all()), 0)
+
+    @property
+    def aberto(self):
+        return self.status not in self.STATUS_FECHADOS
+
+    @property
     def atrasado(self):
         return (
-            self.status not in {self.STATUS_ENTREGUE, self.STATUS_CANCELADO}
+            self.status not in self.STATUS_FECHADOS
             and self.previsao_entrega
             and self.previsao_entrega < timezone.localdate()
         )
+
+    @property
+    def mesa_nome(self):
+        return nome_mesa(self.mesa_numero) if self.mesa_numero else ""
+
+    @property
+    def e_salao(self):
+        return bool(self.mesa_numero)
+
+    @property
+    def e_entrega(self):
+        return self.canal in {self.CANAL_DELIVERY, self.CANAL_IFOOD, self.CANAL_WHATSAPP} or bool(self.endereco_entrega)
 
     def get_absolute_url(self):
         return reverse("pedido_detalhe", kwargs={"pedido_id": self.id})

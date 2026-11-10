@@ -1,150 +1,143 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-{% include "components/_head.html" %}
-<head>
-    <title>{{ pedido.codigo }}</title>
-    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
-</head>
-<body class="pedidos-page">
-    {% include "components/navbar/_navbar.html" %}
-    <main class="pedidos-main">
-        <section class="pedidos-header">
-            <div>
-                <span class="pedidos-eyebrow">{{ pedido.get_status_display }}</span>
-                <h1>{{ pedido.codigo }}</h1>
-                <p>{{ pedido.cliente.nome }} · {{ pedido.get_canal_display }} · Total R$ {{ pedido.total|floatformat:2 }}</p>
-            </div>
-            <a class="pedidos-secondary" href="{% url 'pedidos' %}">Voltar</a>
-        </section>
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
 
-        <section class="pedidos-panel pedidos-detail-grid">
-            <article>
-                <span>Canal</span>
-                <strong>{{ pedido.get_canal_display }}</strong>
-            </article>
-            <article>
-                <span>Codigo iFood/app</span>
-                <strong>{{ pedido.codigo_externo|default:"-" }}</strong>
-            </article>
-            <article>
-                <span>Taxa de entrega</span>
-                <strong>R$ {{ pedido.taxa_entrega|floatformat:2 }}</strong>
-            </article>
-            <article>
-                <span>Subtotal</span>
-                <strong>R$ {{ pedido.subtotal|floatformat:2 }}</strong>
-            </article>
-            <article>
-                <span>Desconto geral</span>
-                <strong>R$ {{ pedido.desconto_pedido|floatformat:2 }}</strong>
-            </article>
-            <article>
-                <span>Pagamento</span>
-                <strong>{{ pedido.get_forma_pagamento_display }}</strong>
-            </article>
-            <article>
-                <span>Recebido / troco</span>
-                <strong>R$ {{ pedido.valor_recebido|floatformat:2 }} / R$ {{ pedido.troco|floatformat:2 }}</strong>
-            </article>
-            <article>
-                <span>Entregador</span>
-                <strong>{{ pedido.entregador|default:"-" }}</strong>
-            </article>
-            <article>
-                <span>Endereco</span>
-                <strong>{{ pedido.endereco_entrega|default:"Retirada ou nao informado" }}</strong>
-            </article>
-        </section>
+{% block title %}{{ pedido.codigo }} | {{ loja_nome }}{% endblock %}
 
-        <section class="pedidos-panel">
-            <form class="pedidos-toolbar" method="post" action="{% url 'pedido_atualizar_status' pedido.id %}">
-                {% csrf_token %}
-                <label>Status
-                    <select name="status">
-                        {% for valor, rotulo in status_choices %}
-                            <option value="{{ valor }}" {% if pedido.status == valor %}selected{% endif %}>{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <button class="pedidos-primary" type="submit">Atualizar status</button>
-            </form>
-        </section>
-
-        <section class="pedidos-table-wrap">
-            <h2>Itens do pedido</h2>
-            <table class="pedidos-table">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Foto</th>
-                        <th>Quantidade</th>
-                        <th>Valor unitario</th>
-                        <th>Desconto</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in pedido.itens.all %}
-                        <tr>
-                            <td>
-                                <strong>{{ item.produto.nome }}</strong>
-                                <span class="pedido-item-meta">{{ item.produto.get_categoria_display }}</span>
-                                {% if item.observacoes %}
-                                    <span class="pedido-item-meta">{{ item.observacoes }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.produto.foto %}
-                                    <img class="pedido-item-foto" src="{{ item.produto.foto.url }}" alt="{{ item.produto.nome }}">
-                                {% else %}
-                                    <span class="pedido-sem-foto"><i class="fa fa-camera" aria-hidden="true"></i></span>
-                                {% endif %}
-                            </td>
-                            <td>{{ item.quantidade }}</td>
-                            <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
-                            <td>R$ {{ item.desconto|floatformat:2 }}</td>
-                            <td>R$ {{ item.subtotal|floatformat:2 }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-
-        {% if pedido.observacoes %}
-            <section class="pedidos-panel">
-                <h2>Detalhes do preparo</h2>
-                <p class="pedido-observacoes">{{ pedido.observacoes }}</p>
-            </section>
+{% block content %}
+<section class="page-head">
+    <div>
+        <span class="eyebrow">{{ pedido.get_status_display }}</span>
+        <h1>{{ pedido.codigo }}</h1>
+        <p>
+            {{ pedido.cliente.nome }} · {{ pedido.get_canal_display }}
+            {% if pedido.mesa_numero and pedido.cliente.nome != pedido.mesa_nome %} · {{ pedido.mesa_nome }}{% endif %}
+            · {{ pedido.criado_em|date:"d/m/Y H:i" }}
+        </p>
+    </div>
+    <div class="page-actions">
+        {% if pedido.mesa_numero and pedido.comanda and pedido.comanda.aberta %}
+            <a class="btn btn-secondary" href="{% url 'salao_mesa' pedido.mesa_numero %}"><i class="fas fa-chair"></i> Ver comanda</a>
         {% endif %}
+        <a class="btn btn-secondary" href="{% url 'pedidos' %}"><i class="fas fa-arrow-left"></i> Voltar</a>
+    </div>
+</section>
 
-        <section class="pedidos-table-wrap">
-            <h2>Historico</h2>
-            <table class="pedidos-table">
-                <thead>
+{% if pedido.unido_em %}
+    <div class="alert alert-warning">
+        <i class="fas fa-link"></i>
+        <span>Este pedido foi unido ao <a class="link-strong" href="{% url 'pedido_detalhe' pedido.unido_em.id %}">{{ pedido.unido_em.codigo }}</a>. Seus itens e valores foram somados lá.</span>
+    </div>
+{% endif %}
+{% if pedido.pedidos_unidos.all %}
+    <div class="alert alert-info">
+        <i class="fas fa-link"></i>
+        <span>
+            Recebeu os itens de:
+            {% for unido in pedido.pedidos_unidos.all %}
+                <a class="link-strong" href="{% url 'pedido_detalhe' unido.id %}">{{ unido.codigo }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    </div>
+{% endif %}
+
+<section class="card">
+    <div class="detail-grid">
+        <article><span>Status</span><strong><span class="badge {{ pedido.status|status_classe }}">{{ pedido.get_status_display }}</span></strong></article>
+        <article><span>Canal</span><strong>{{ pedido.get_canal_display }}</strong></article>
+        <article><span>Mesa</span><strong>{{ pedido.mesa_nome|default:"-" }}</strong></article>
+        <article><span>Subtotal</span><strong>{{ pedido.subtotal|moeda }}</strong></article>
+        <article><span>Taxa de entrega</span><strong>{{ pedido.taxa_entrega|moeda }}</strong></article>
+        <article><span>Desconto</span><strong>{{ pedido.desconto_pedido|moeda }}</strong></article>
+        <article><span>Total</span><strong>{{ pedido.total|moeda }}</strong></article>
+        <article><span>Pagamento</span><strong>{{ pedido.get_forma_pagamento_display }}{% if pedido.pago %} · pago{% endif %}</strong></article>
+        <article><span>Recebido / troco</span><strong>{{ pedido.valor_recebido|moeda }} / {{ pedido.troco|moeda }}</strong></article>
+        <article><span>Telefone</span><strong>{{ pedido.cliente.telefone|default:"-" }}</strong></article>
+        <article><span>Endereço</span><strong>{{ pedido.endereco_entrega|default:"-" }}</strong></article>
+        <article><span>Entregador</span><strong>{{ pedido.entregador|default:"-" }}</strong></article>
+        <article><span>Previsão</span><strong>{{ pedido.previsao_entrega|date:"d/m/Y"|default:"-" }}</strong></article>
+        <article><span>Responsável</span><strong>{{ pedido.responsavel.get_full_name|default:pedido.responsavel.username|default:"-" }}</strong></article>
+    </div>
+</section>
+
+{% if pedido.status != 'cancelado' or not pedido.unido_em %}
+<section class="card">
+    <form class="card-body" method="post" action="{% url 'pedido_atualizar_status' pedido.id %}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+        {% csrf_token %}
+        <label class="field" style="min-width: 240px;">
+            <span>Alterar status</span>
+            <select name="status">
+                {% for valor, rotulo in status_choices %}
+                    <option value="{{ valor }}" {% if pedido.status == valor %}selected{% endif %}>{{ rotulo }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Atualizar status</button>
+    </form>
+</section>
+{% endif %}
+
+<section class="card">
+    <header class="card-head"><h2><i class="fas fa-list"></i> Itens do pedido</h2><small>{{ pedido.quantidade_itens }} item(ns)</small></header>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th></th><th>Item</th><th>Qtd.</th><th>Valor unitário</th><th>Desconto</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+                {% for item in pedido.itens.all %}
                     <tr>
-                        <th>Data</th>
-                        <th>Status anterior</th>
-                        <th>Status novo</th>
-                        <th>Usuario</th>
-                        <th>Descricao</th>
+                        <td style="width: 56px;">
+                            {% if item.produto.foto %}
+                                <img class="foto-mini" src="{{ item.produto.foto.url }}" alt="">
+                            {% else %}
+                                <span class="sem-foto"><i class="fas fa-camera"></i></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ item.produto.nome }}</strong>
+                            <small>{{ item.produto.get_categoria_display }}{% if item.observacoes %} · {{ item.observacoes }}{% endif %}</small>
+                        </td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>{{ item.valor_unitario|moeda }}</td>
+                        <td>{{ item.desconto|moeda }}</td>
+                        <td><strong>{{ item.subtotal|moeda }}</strong></td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for item in pedido.historico.all %}
-                        <tr>
-                            <td>{{ item.criado_em|date:"d/m/Y H:i" }}</td>
-                            <td>{{ item.status_anterior|default:"-" }}</td>
-                            <td>{{ item.status_novo|default:"-" }}</td>
-                            <td>{{ item.usuario|default:"-" }}</td>
-                            <td>{{ item.descricao }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="5" class="pedidos-empty">Sem historico.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-    </main>
-</body>
-</html>
+                {% empty %}
+                    <tr><td colspan="6" class="empty">Sem itens.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% if pedido.observacoes %}
+    <section class="card">
+        <header class="card-head"><h2><i class="fas fa-comment-alt"></i> Observações</h2></header>
+        <p class="observacoes">{{ pedido.observacoes }}</p>
+    </section>
+{% endif %}
+
+<section class="card">
+    <header class="card-head"><h2><i class="fas fa-history"></i> Histórico</h2></header>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Data</th><th>De</th><th>Para</th><th>Usuário</th><th>Descrição</th></tr>
+            </thead>
+            <tbody>
+                {% for registro in pedido.historico.all %}
+                    <tr>
+                        <td>{{ registro.criado_em|date:"d/m/Y H:i" }}</td>
+                        <td>{{ registro.status_anterior|default:"-" }}</td>
+                        <td>{{ registro.status_novo|default:"-" }}</td>
+                        <td>{{ registro.usuario.get_full_name|default:registro.usuario.username|default:"-" }}</td>
+                        <td>{{ registro.descricao }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="empty">Sem histórico.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,216 +1,410 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-{% include "components/_head.html" %}
-<head>
-    <title>Nova venda</title>
-    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
-</head>
-<body class="pedidos-page">
-    {% include "components/navbar/_navbar.html" %}
-    <main class="pedidos-main">
-        <section class="pedidos-header">
-            <div>
-                <span class="pedidos-eyebrow">Cadastro</span>
-                <h1>Nova venda</h1>
-                <p>Registre cliente, tipo do pedido, itens, pagamento e entrega em um unico fluxo.</p>
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
+
+{% block title %}Nova venda | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <span class="eyebrow">Atendimento</span>
+        <h1>Nova venda</h1>
+        <p>Escolha o tipo de atendimento e monte o pedido</p>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'pedidos' %}"><i class="fas fa-arrow-left"></i> Voltar</a>
+</section>
+
+<form method="post" action="{% url 'pedido_novo' %}" id="formVenda" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="tipo" id="tipoVenda" value="{{ tipo }}">
+    <input type="hidden" name="mesa_numero" id="mesaSelecionada" value="{% if mesa_numero %}{{ mesa_numero }}{% endif %}">
+
+    <div class="pos-tipos" role="tablist">
+        <button type="button" class="pos-tipo {% if tipo == 'salao' %}is-active{% endif %}" data-tipo="salao">
+            <i class="fas fa-chair"></i>
+            <span><strong>Salão</strong><small>Atendimento nas mesas</small></span>
+        </button>
+        <button type="button" class="pos-tipo {% if tipo == 'delivery' %}is-active{% endif %}" data-tipo="delivery">
+            <i class="fas fa-motorcycle"></i>
+            <span><strong>Delivery</strong><small>Entrega no endereço</small></span>
+        </button>
+    </div>
+
+    <section class="pos-mesas" data-secao="salao" aria-label="Mesas">
+        {% for mesa in mesas %}
+            <div class="mesa-pill {% if mesa.ocupada %}is-ocupada{% else %}is-livre{% endif %} {% if mesa.numero == mesa_numero %}is-selected{% endif %}"
+                 role="button" tabindex="0" data-mesa="{{ mesa.numero }}" data-nome="{{ mesa.nome }}">
+                <i class="fas fa-chair"></i>
+                <span>
+                    <strong>{{ mesa.nome }}</strong>
+                    <small>{% if mesa.ocupada %}Em uso desde {{ mesa.comanda.aberta_em|date:"H:i" }}{% else %}Livre{% endif %}</small>
+                </span>
+                {% if mesa.ocupada %}
+                    <a class="mesa-pill-link" href="{% url 'salao_mesa' mesa.numero %}" data-parar><i class="fas fa-cog"></i> Gerenciar</a>
+                {% endif %}
             </div>
-            <a class="pedidos-secondary" href="{% url 'pedidos' %}">Voltar</a>
-        </section>
+        {% endfor %}
+    </section>
 
-        <section class="pedidos-panel">
-            <form class="pedidos-form" method="post">
-                {% csrf_token %}
-                <label>Codigo interno<input name="codigo" value="{{ codigo_sugerido }}"></label>
-                <label>Codigo iFood/app<input name="codigo_externo" placeholder="Ex: 1234"></label>
-                <label>Tipo do pedido
-                    <select name="canal">
-                        {% for valor, rotulo in canal_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>Cliente<input name="cliente_nome" required></label>
-                <label>Tipo de pessoa
-                    <select name="tipo_pessoa">
-                        {% for valor, rotulo in tipo_pessoa_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>Documento<input name="documento"></label>
-                <label>E-mail<input name="email" type="email"></label>
-                <label>Telefone<input name="telefone"></label>
-                <section class="pedidos-form-wide pedido-itens-editor" aria-label="Itens do pedido">
-                    <div class="pedido-itens-editor-header">
-                        <div>
-                            <span class="pedidos-eyebrow">Itens do pedido</span>
-                            <h2>Produtos vendidos</h2>
-                        </div>
-                        <button class="pedidos-secondary" type="button" id="adicionarItemPedido">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                            Adicionar item
-                        </button>
-                    </div>
-
-                    <div class="pedido-itens-list" id="pedidoItensList">
-                        <div class="pedido-item-row" data-pedido-item-row>
-                            <label>Item cadastrado
-                                <select name="produto_id" data-produto-select>
-                                    <option value="">Selecionar</option>
-                                    {% for produto in produtos %}
-                                        <option
-                                            value="{{ produto.id }}"
-                                            data-preco="{{ produto.preco_unitario|floatformat:2 }}"
-                                            data-categoria="{{ produto.categoria }}"
-                                            data-sku="{{ produto.sku }}">
-                                            {{ produto.nome }} - R$ {{ produto.preco_unitario|floatformat:2 }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                            <label>Ou novo item
-                                <input name="produto_nome" placeholder="Ex: X-Burger">
-                            </label>
-                            <label>Categoria
-                                <select name="categoria" data-categoria-select>
-                                    {% for valor, rotulo in categoria_choices %}
-                                        <option value="{{ valor }}">{{ rotulo }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                            <label>SKU/codigo
-                                <input name="sku" data-sku-input>
-                            </label>
-                            <label>Qtd.
-                                <input name="quantidade" type="number" min="1" value="1">
-                            </label>
-                            <label>Valor
-                                <input name="valor_unitario" placeholder="R$ 0,00" data-valor-input>
-                            </label>
-                            <label>Desconto
-                                <input name="desconto" placeholder="R$ 0,00">
-                            </label>
-                            <label>Adicionais/obs.
-                                <input name="item_observacoes" placeholder="Ex: Catupiry, sem cebola">
-                            </label>
-                            <button class="pedido-item-remover" type="button" data-remover-item aria-label="Remover item" title="Remover item">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-                <label>Taxa de entrega<input name="taxa_entrega" placeholder="R$ 0,00"></label>
-                <label>Desconto geral<input name="desconto_pedido" placeholder="R$ 0,00"></label>
-                <label>Pagamento
-                    <select name="forma_pagamento" id="formaPagamentoPedido">
-                        {% for valor, rotulo in forma_pagamento_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>Valor recebido<input name="valor_recebido" id="valorRecebidoPedido" placeholder="R$ 0,00"></label>
-                <label>Previsao de entrega<input name="previsao_entrega" type="date"></label>
-                <label>Entregador<input name="entregador" placeholder="Nome do entregador"></label>
-                <label>Status
-                    <select name="status">
-                        {% for valor, rotulo in status_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>Prioridade
-                    <select name="prioridade">
-                        {% for valor, rotulo in prioridade_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label class="pedidos-form-wide">Endereco de entrega<input name="endereco_entrega" placeholder="Rua, numero, bairro, complemento"></label>
-                <label class="pedidos-form-wide">Detalhes do pedido/preparo<textarea name="observacoes" rows="4" placeholder="Ex: sem cebola, molho separado, ponto da carne, observacoes do iFood"></textarea></label>
-                <div class="pedidos-form-actions">
-                    <button class="pedidos-primary" type="submit">Confirmar venda</button>
+    <section class="card" data-secao="delivery" {% if tipo != 'delivery' %}hidden{% endif %}>
+        <header class="card-head">
+            <div class="head-copy">
+                <span class="icon-box green"><i class="fas fa-map-marker-alt"></i></span>
+                <div>
+                    <h2>Dados para entrega</h2>
+                    <p>Identifique o cliente e o endereço do pedido.</p>
                 </div>
-            </form>
-        </section>
-    </main>
-    <script>
-        (function () {
-            const lista = document.getElementById("pedidoItensList");
-            const adicionar = document.getElementById("adicionarItemPedido");
+            </div>
+        </header>
+        <div class="card-body form-grid" style="grid-template-columns: 1fr 1fr 2fr;">
+            <label class="field">
+                <span>Nome do cliente</span>
+                <input name="cliente_nome" value="{{ dados.cliente_nome }}" placeholder="Nome completo" autocomplete="off">
+            </label>
+            <label class="field">
+                <span>Telefone</span>
+                <input name="telefone" value="{{ dados.telefone }}" placeholder="(00) 00000-0000" inputmode="tel">
+            </label>
+            <label class="field">
+                <span>Endereço de entrega</span>
+                <input name="endereco_entrega" value="{{ dados.endereco_entrega }}" placeholder="Rua, número, bairro e complemento">
+            </label>
+        </div>
+    </section>
 
-            if (!lista || !adicionar) {
+    <div class="pos-layout">
+        <section class="card pos-catalogo">
+            <header class="card-head">
+                <h2 id="tituloCatalogo">Selecione uma mesa</h2>
+                <button type="button" class="link-muted" id="limparPedido">Limpar pedido</button>
+            </header>
+            <div class="pos-filtros">
+                <label class="search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="buscaProduto" placeholder="Buscar item no cardápio..." autocomplete="off">
+                </label>
+                <div class="seg" id="filtroGrupo">
+                    <button type="button" class="is-active" data-grupo="">Todos</button>
+                    <button type="button" data-grupo="comidas">Comidas</button>
+                    <button type="button" data-grupo="bebidas">Bebidas</button>
+                </div>
+            </div>
+            <div class="catalogo-grid" id="catalogoGrid">
+                {% for produto in produtos %}
+                    <button type="button" class="produto-tile" data-id="{{ produto.id }}" data-grupo="{{ produto.grupo }}" data-busca="{{ produto.nome|lower }}">
+                        <span class="tile-media {{ produto.grupo }}">
+                            {% if produto.foto %}
+                                <img src="{{ produto.foto.url }}" alt="">
+                            {% else %}
+                                <i class="fas {% if produto.grupo == 'bebidas' %}fa-glass-martini{% else %}fa-utensils{% endif %}"></i>
+                            {% endif %}
+                        </span>
+                        <span class="tile-body">
+                            <strong>{{ produto.nome }}</strong>
+                            <small>{{ produto.preco_unitario|moeda }}</small>
+                        </span>
+                    </button>
+                {% empty %}
+                    <p class="muted" style="grid-column: 1 / -1; padding: 20px; text-align: center;">
+                        Nenhum item ativo no cardápio. <a class="link-strong" href="{% url 'produto_novo' %}">Cadastre um item</a>.
+                    </p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <aside class="card pos-carrinho">
+            <header class="card-head">
+                <h2><i class="fas fa-shopping-basket"></i> <span id="tituloCarrinho">Pedido atual</span></h2>
+                <small id="contadorItens">0 itens</small>
+            </header>
+
+            <div class="cart-list" id="cartList"></div>
+            <div class="cart-empty" id="cartEmpty">
+                <i class="fas fa-shopping-basket"></i>
+                <strong>Seu pedido está vazio</strong>
+                <small>Clique nos produtos para adicionar</small>
+            </div>
+
+            <div class="cart-total">
+                <span>Total</span>
+                <strong id="cartTotal">R$ 0,00</strong>
+            </div>
+
+            <div class="cart-form">
+                <label class="field">
+                    <span>Observação (opcional)</span>
+                    <textarea name="observacoes" rows="2" placeholder="Ex.: sem gelo, ponto da carne...">{{ dados.observacoes }}</textarea>
+                </label>
+
+                <details class="cart-details">
+                    <summary>Detalhes da venda</summary>
+                    <div class="form-grid">
+                        <label class="field" data-secao="delivery">
+                            <span>Taxa de entrega</span>
+                            <input name="taxa_entrega" value="{{ dados.taxa_entrega }}" inputmode="decimal" placeholder="0,00">
+                        </label>
+                        <label class="field">
+                            <span>Desconto</span>
+                            <input name="desconto_pedido" value="{{ dados.desconto_pedido }}" inputmode="decimal" placeholder="0,00">
+                        </label>
+                        <label class="field">
+                            <span>Forma de pagamento</span>
+                            <select name="forma_pagamento">
+                                {% for valor, rotulo in forma_pagamento_choices %}
+                                    <option value="{{ valor }}" {% if dados.forma_pagamento == valor %}selected{% endif %}>{{ rotulo }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Valor recebido</span>
+                            <input name="valor_recebido" value="{{ dados.valor_recebido }}" inputmode="decimal" placeholder="0,00">
+                        </label>
+                        <label class="field" data-secao="delivery">
+                            <span>Entregador</span>
+                            <input name="entregador" value="{{ dados.entregador }}" placeholder="Nome do entregador">
+                        </label>
+                        <label class="field" data-secao="delivery">
+                            <span>Previsão de entrega</span>
+                            <input type="date" name="previsao_entrega" value="{{ dados.previsao_entrega }}">
+                        </label>
+                    </div>
+                </details>
+
+                <div class="alert alert-error cart-erro" id="cartErro"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                <div id="cartInputs"></div>
+
+                <button class="btn btn-primary btn-block btn-lg" type="submit" id="btnConfirmar">
+                    <i class="fas fa-check"></i> Confirmar venda
+                </button>
+            </div>
+        </aside>
+    </div>
+</form>
+
+<script type="application/json" id="catalogoData">{{ catalogo_json|safe }}</script>
+<script type="application/json" id="carrinhoData">{{ carrinho_json|safe }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var catalogo = {};
+        JSON.parse(document.getElementById("catalogoData").textContent || "[]").forEach(function (produto) {
+            catalogo[produto.id] = produto;
+        });
+
+        var carrinho = [];
+        var tipoInput = document.getElementById("tipoVenda");
+        var mesaInput = document.getElementById("mesaSelecionada");
+        var tituloCatalogo = document.getElementById("tituloCatalogo");
+        var tituloCarrinho = document.getElementById("tituloCarrinho");
+        var contador = document.getElementById("contadorItens");
+        var lista = document.getElementById("cartList");
+        var vazio = document.getElementById("cartEmpty");
+        var totalEl = document.getElementById("cartTotal");
+        var inputs = document.getElementById("cartInputs");
+        var erro = document.getElementById("cartErro");
+        var moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+        function mostrarErro(texto) {
+            erro.querySelector("span").textContent = texto;
+            erro.classList.toggle("is-visible", Boolean(texto));
+        }
+
+        function nomeMesaSelecionada() {
+            var pill = document.querySelector(".mesa-pill.is-selected");
+            return pill ? pill.getAttribute("data-nome") : "";
+        }
+
+        function atualizarTitulos() {
+            var tipo = tipoInput.value;
+            if (tipo === "delivery") {
+                tituloCatalogo.textContent = "Pedido delivery";
+                tituloCarrinho.textContent = "Delivery";
+            } else {
+                var mesa = nomeMesaSelecionada();
+                tituloCatalogo.textContent = mesa ? mesa : "Selecione uma mesa";
+                tituloCarrinho.textContent = mesa ? "Pedido " + mesa : "Pedido atual";
+            }
+        }
+
+        function aplicarTipo(tipo) {
+            tipoInput.value = tipo;
+            document.querySelectorAll(".pos-tipo").forEach(function (botao) {
+                botao.classList.toggle("is-active", botao.getAttribute("data-tipo") === tipo);
+            });
+            document.querySelectorAll("[data-secao]").forEach(function (secao) {
+                secao.hidden = secao.getAttribute("data-secao") !== tipo;
+            });
+            mostrarErro("");
+            atualizarTitulos();
+        }
+
+        function render() {
+            lista.innerHTML = "";
+            inputs.innerHTML = "";
+            var total = 0;
+            var quantidade = 0;
+
+            carrinho.forEach(function (item, indice) {
+                var produto = catalogo[item.produto_id];
+                if (!produto) { return; }
+                var subtotal = produto.preco * item.quantidade;
+                total += subtotal;
+                quantidade += item.quantidade;
+
+                var linha = document.createElement("div");
+                linha.className = "cart-item";
+                linha.innerHTML =
+                    '<div><div class="cart-item-nome"></div><div class="cart-item-preco"></div></div>' +
+                    '<div class="cart-item-sub"></div>' +
+                    '<div class="cart-item-ctl">' +
+                        '<button type="button" data-acao="menos" aria-label="Diminuir">−</button>' +
+                        '<span></span>' +
+                        '<button type="button" data-acao="mais" aria-label="Aumentar">+</button>' +
+                        '<button type="button" class="rm" data-acao="remover" aria-label="Remover"><i class="fas fa-trash"></i></button>' +
+                    '</div>' +
+                    '<input class="cart-item-obs" placeholder="Observação do item (opcional)" maxlength="255">';
+
+                linha.querySelector(".cart-item-nome").textContent = produto.nome;
+                linha.querySelector(".cart-item-preco").textContent = item.quantidade + " × " + moeda.format(produto.preco);
+                linha.querySelector(".cart-item-sub").textContent = moeda.format(subtotal);
+                linha.querySelector(".cart-item-ctl span").textContent = item.quantidade;
+                var obs = linha.querySelector(".cart-item-obs");
+                obs.value = item.observacoes || "";
+                obs.addEventListener("input", function () {
+                    item.observacoes = obs.value;
+                    sincronizarInputs();
+                });
+
+                linha.querySelectorAll("[data-acao]").forEach(function (botao) {
+                    botao.addEventListener("click", function () {
+                        var acao = botao.getAttribute("data-acao");
+                        if (acao === "mais") { item.quantidade += 1; }
+                        if (acao === "menos") { item.quantidade -= 1; }
+                        if (acao === "remover" || item.quantidade <= 0) { carrinho.splice(indice, 1); }
+                        render();
+                    });
+                });
+
+                lista.appendChild(linha);
+            });
+
+            vazio.hidden = carrinho.length > 0;
+            totalEl.textContent = moeda.format(total);
+            contador.textContent = quantidade + (quantidade === 1 ? " item" : " itens");
+            sincronizarInputs();
+            mostrarErro("");
+        }
+
+        function sincronizarInputs() {
+            inputs.innerHTML = "";
+            carrinho.forEach(function (item) {
+                ["produto_id", "quantidade", "item_observacoes"].forEach(function (nome) {
+                    var campo = document.createElement("input");
+                    campo.type = "hidden";
+                    campo.name = nome;
+                    campo.value = nome === "item_observacoes" ? (item.observacoes || "") : item[nome];
+                    inputs.appendChild(campo);
+                });
+            });
+        }
+
+        function adicionar(produtoId) {
+            var existente = carrinho.find(function (item) { return item.produto_id === produtoId; });
+            if (existente) {
+                existente.quantidade += 1;
+            } else {
+                carrinho.push({ produto_id: produtoId, quantidade: 1, observacoes: "" });
+            }
+            render();
+        }
+
+        // Tipo de atendimento
+        document.querySelectorAll(".pos-tipo").forEach(function (botao) {
+            botao.addEventListener("click", function () { aplicarTipo(botao.getAttribute("data-tipo")); });
+        });
+
+        // Mesas
+        document.querySelectorAll(".mesa-pill").forEach(function (pill) {
+            function selecionar() {
+                document.querySelectorAll(".mesa-pill").forEach(function (outra) { outra.classList.remove("is-selected"); });
+                pill.classList.add("is-selected");
+                mesaInput.value = pill.getAttribute("data-mesa");
+                atualizarTitulos();
+                mostrarErro("");
+            }
+            pill.addEventListener("click", selecionar);
+            pill.addEventListener("keydown", function (evento) {
+                if (evento.key === "Enter" || evento.key === " ") { evento.preventDefault(); selecionar(); }
+            });
+        });
+        document.querySelectorAll("[data-parar]").forEach(function (link) {
+            link.addEventListener("click", function (evento) { evento.stopPropagation(); });
+        });
+
+        // Catalogo
+        document.querySelectorAll(".produto-tile").forEach(function (tile) {
+            tile.addEventListener("click", function () { adicionar(parseInt(tile.getAttribute("data-id"), 10)); });
+        });
+
+        var busca = document.getElementById("buscaProduto");
+        var grupoAtivo = "";
+        function filtrar() {
+            var termo = (busca.value || "").trim().toLowerCase();
+            document.querySelectorAll(".produto-tile").forEach(function (tile) {
+                var bateGrupo = !grupoAtivo || tile.getAttribute("data-grupo") === grupoAtivo;
+                var bateTermo = !termo || tile.getAttribute("data-busca").indexOf(termo) !== -1;
+                tile.hidden = !(bateGrupo && bateTermo);
+            });
+        }
+        busca.addEventListener("input", filtrar);
+        document.querySelectorAll("#filtroGrupo button").forEach(function (botao) {
+            botao.addEventListener("click", function () {
+                grupoAtivo = botao.getAttribute("data-grupo");
+                document.querySelectorAll("#filtroGrupo button").forEach(function (outro) { outro.classList.remove("is-active"); });
+                botao.classList.add("is-active");
+                filtrar();
+            });
+        });
+
+        document.getElementById("limparPedido").addEventListener("click", function () {
+            carrinho = [];
+            render();
+        });
+
+        // Envio
+        document.getElementById("formVenda").addEventListener("submit", function (evento) {
+            if (!carrinho.length) {
+                evento.preventDefault();
+                mostrarErro("Adicione pelo menos um item ao pedido.");
                 return;
             }
-
-            function atualizarLinha(linha) {
-                const select = linha.querySelector("[data-produto-select]");
-                const opcao = select ? select.options[select.selectedIndex] : null;
-                const valor = linha.querySelector("[data-valor-input]");
-                const categoria = linha.querySelector("[data-categoria-select]");
-                const sku = linha.querySelector("[data-sku-input]");
-
-                if (!opcao || !opcao.value) {
+            if (tipoInput.value === "salao" && !mesaInput.value) {
+                evento.preventDefault();
+                mostrarErro("Selecione a mesa que receberá o pedido.");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+            if (tipoInput.value === "delivery") {
+                var nome = document.querySelector("[name=cliente_nome]").value.trim();
+                var endereco = document.querySelector("[name=endereco_entrega]").value.trim();
+                if (!nome || !endereco) {
+                    evento.preventDefault();
+                    mostrarErro("Informe o nome do cliente e o endereço de entrega.");
                     return;
                 }
-
-                if (valor && !valor.value) {
-                    valor.value = opcao.dataset.preco || "";
-                }
-
-                if (categoria && opcao.dataset.categoria) {
-                    categoria.value = opcao.dataset.categoria;
-                }
-
-                if (sku && !sku.value) {
-                    sku.value = opcao.dataset.sku || "";
-                }
             }
+            document.getElementById("btnConfirmar").disabled = true;
+        });
 
-            function prepararLinha(linha) {
-                const select = linha.querySelector("[data-produto-select]");
-                const remover = linha.querySelector("[data-remover-item]");
-
-                if (select) {
-                    select.addEventListener("change", function () {
-                        atualizarLinha(linha);
-                    });
-                }
-
-                if (remover) {
-                    remover.addEventListener("click", function () {
-                        const linhas = lista.querySelectorAll("[data-pedido-item-row]");
-                        if (linhas.length > 1) {
-                            linha.remove();
-                        } else {
-                            linha.querySelectorAll("input").forEach(function (input) {
-                                input.value = "";
-                            });
-                            linha.querySelectorAll("select").forEach(function (selectField) {
-                                selectField.selectedIndex = 0;
-                            });
-                        }
-                    });
-                }
+        // Estado inicial (inclui carrinho devolvido apos erro de validacao)
+        JSON.parse(document.getElementById("carrinhoData").textContent || "[]").forEach(function (item) {
+            if (catalogo[item.produto_id]) {
+                carrinho.push({ produto_id: item.produto_id, quantidade: item.quantidade || 1, observacoes: item.observacoes || "" });
             }
-
-            prepararLinha(lista.querySelector("[data-pedido-item-row]"));
-
-            adicionar.addEventListener("click", function () {
-                const base = lista.querySelector("[data-pedido-item-row]");
-                const novaLinha = base.cloneNode(true);
-
-                novaLinha.querySelectorAll("input").forEach(function (input) {
-                    input.value = input.name === "quantidade" ? "1" : "";
-                });
-                novaLinha.querySelectorAll("select").forEach(function (selectField) {
-                    selectField.selectedIndex = 0;
-                });
-
-                lista.appendChild(novaLinha);
-                prepararLinha(novaLinha);
-            });
-        })();
-    </script>
-</body>
-</html>
+        });
+        aplicarTipo(tipoInput.value === "delivery" ? "delivery" : "salao");
+        render();
+    })();
+</script>
+{% endblock %}

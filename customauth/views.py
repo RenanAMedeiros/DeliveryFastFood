@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_http_methods
 
-from workspace.models import ClientePedido, Pedido, ProdutoPedido
 
 
 SESSAO_INICIO_LOGIN = "inicio_login"
@@ -91,26 +90,7 @@ class ResetSenhaCompleteView(auth_views.PasswordResetCompleteView):
 
 @login_required
 def home(request):
-    pedidos_qs = Pedido.objects.select_related("cliente").prefetch_related("itens")
-    pedidos_lista = list(pedidos_qs)
-    pedidos_abertos = [
-        pedido for pedido in pedidos_lista
-        if pedido.status not in {Pedido.STATUS_ENTREGUE, Pedido.STATUS_CANCELADO}
-    ]
-    pedidos_recentes = pedidos_lista[:5]
-    valor_em_aberto = sum((pedido.total for pedido in pedidos_abertos), 0)
-
-    return render(request, "workspace/home.html", {
-        "total_pedidos": len(pedidos_lista),
-        "pedidos_abertos": len(pedidos_abertos),
-        "pedidos_atrasados": sum(1 for pedido in pedidos_lista if pedido.atrasado),
-        "pedidos_faturados": sum(1 for pedido in pedidos_lista if pedido.status == Pedido.STATUS_FATURADO),
-        "pedidos_enviados": sum(1 for pedido in pedidos_lista if pedido.status == Pedido.STATUS_ENVIADO),
-        "total_clientes": ClientePedido.objects.count(),
-        "total_produtos": ProdutoPedido.objects.count(),
-        "valor_em_aberto": valor_em_aberto,
-        "pedidos_recentes": pedidos_recentes,
-    })
+    return redirect("pedidos")
 
 
 @login_required

@@ -74,6 +74,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "workspace.context_processors.loja",
             ],
         },
     },
@@ -118,13 +119,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# O app workspace foi reiniciado para o dominio de pedidos. As migrations
-# antigas tinham SQL e modelos do sistema anterior, entao o ambiente novo usa
-# syncdb para criar apenas as tabelas atuais desse app.
-MIGRATION_MODULES = {
-    "workspace": None,
-}
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/home/"

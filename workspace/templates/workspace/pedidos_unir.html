@@ -1,0 +1,61 @@
+{% extends "workspace/base_loja.html" %}
+{% load loja_extras %}
+
+{% block title %}Unir pedidos | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head card">
+    <div>
+        <h1>Unir pedidos</h1>
+        <p>Escolha o pedido que receberá todos os itens.</p>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'pedidos' %}">Voltar</a>
+</section>
+
+<section class="card">
+    <div class="card-body">
+        <p class="muted" style="margin-bottom: 14px;">
+            Os itens, taxas de entrega, descontos e valores recebidos serão somados. O cliente, canal, endereço,
+            prazo e status do pedido principal serão mantidos. Os demais pedidos ficarão cancelados, com seus
+            dados e histórico preservados.
+        </p>
+
+        {% if erro %}
+            <div class="alert alert-error alert-inline"><i class="fas fa-exclamation-circle"></i><span>{{ erro }}</span></div>
+        {% endif %}
+
+        {% if clientes %}
+            <p style="margin-bottom: 12px;">
+                Cliente{{ clientes|length|pluralize }}: <strong>{{ clientes|join:", " }}</strong>
+            </p>
+        {% endif %}
+
+        <form method="post" action="{% url 'pedidos_unir' %}">
+            {% csrf_token %}
+            <div class="unir-lista">
+                {% for pedido in pedidos %}
+                    <input type="hidden" name="pedido" value="{{ pedido.id }}">
+                    <label class="unir-opcao">
+                        <input type="radio" name="principal" value="{{ pedido.id }}" {% if pedido.id == principal_sugerido %}checked{% endif %}>
+                        <span>
+                            <strong>{{ pedido.codigo }}</strong>
+                            <small>
+                                {{ pedido.get_status_display }} · {{ pedido.quantidade_itens }} item(ns) · {{ pedido.total|moeda }}
+                                {% if pedido.mesa_numero %} · {{ pedido.mesa_nome }}{% endif %}
+                            </small>
+                        </span>
+                    </label>
+                {% empty %}
+                    <p class="muted">Nenhum pedido selecionado. Volte à lista e marque os pedidos que deseja unir.</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" {% if erro %}disabled{% endif %}>
+                    Confirmar união dos pedidos
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,48 +1,72 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-{% include "components/_head.html" %}
-<head>
-    <title>Novo item de venda</title>
-    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}">
-</head>
-<body class="pedidos-page">
-    {% include "components/navbar/_navbar.html" %}
-    <main class="pedidos-main">
-        <section class="pedidos-header">
-            <div>
-                <span class="pedidos-eyebrow">Cardapio da loja</span>
-                <h1>Novo item de venda</h1>
-                <p>Cadastre o item vendido pela loja com foto para aparecer no detalhe dos pedidos.</p>
-            </div>
-            <a class="pedidos-secondary" href="{% url 'produtos' %}">Voltar</a>
-        </section>
+{% extends "workspace/base_loja.html" %}
 
-        <section class="pedidos-panel">
-            <form class="pedidos-form" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <label>Nome do item<input name="nome" required placeholder="Ex: X-Burger"></label>
-                <label>Codigo/SKU<input name="sku" placeholder="Ex: LAN-001"></label>
-                <label>Categoria
-                    <select name="categoria">
-                        {% for valor, rotulo in categoria_choices %}
-                            <option value="{{ valor }}">{{ rotulo }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>Preco<input name="preco_unitario" placeholder="R$ 0,00"></label>
-                <label>Tempo de preparo (min)<input name="tempo_preparo_minutos" type="number" min="0" value="0"></label>
-                <label>Foto do item<input name="foto" type="file" accept="image/*"></label>
-                <label class="pedidos-checkbox">
-                    <input name="ativo" type="checkbox" checked>
-                    <span>Item ativo para venda</span>
-                </label>
-                <label class="pedidos-form-wide">Descricao<textarea name="descricao" rows="4" placeholder="Ingredientes, tamanho, observacoes do item"></textarea></label>
-                <div class="pedidos-form-actions">
-                    <button class="pedidos-primary" type="submit">Salvar item</button>
+{% block title %}{% if produto %}Editar item{% else %}Novo item{% endif %} | {{ loja_nome }}{% endblock %}
+
+{% block content %}
+<section class="page-head card">
+    <div>
+        <span class="eyebrow">Cardápio da loja</span>
+        <h1>{% if produto %}Editar item de venda{% else %}Novo item de venda{% endif %}</h1>
+        <p>{% if produto %}Atualize dados, preço e foto do item.{% else %}Cadastre o item vendido pela loja com foto para aparecer na tela de venda.{% endif %}</p>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'produtos' %}"><i class="fas fa-arrow-left"></i> Voltar</a>
+</section>
+
+<section class="card">
+    <form class="card-body" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-grid">
+            <label class="field span-2">
+                <span>Nome do item</span>
+                <input name="nome" required value="{{ produto.nome|default:'' }}" placeholder="Ex: Onigiri - Salmão">
+            </label>
+            <label class="field">
+                <span>Código/SKU</span>
+                <input name="sku" value="{{ produto.sku|default:'' }}" placeholder="Ex: JAP-001">
+            </label>
+            <label class="field">
+                <span>Categoria</span>
+                <select name="categoria">
+                    {% for valor, rotulo in categoria_choices %}
+                        <option value="{{ valor }}" {% if produto and produto.categoria == valor %}selected{% endif %}>{{ rotulo }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="field">
+                <span>Preço</span>
+                <input name="preco_unitario" inputmode="decimal" value="{% if produto %}{{ produto.preco_unitario|stringformat:'.2f' }}{% endif %}" placeholder="0,00">
+            </label>
+            <label class="field">
+                <span>Tempo de preparo (min)</span>
+                <input name="tempo_preparo_minutos" type="number" min="0" value="{{ produto.tempo_preparo_minutos|default:0 }}">
+            </label>
+            <label class="field">
+                <span>Foto do item</span>
+                <input name="foto" type="file" accept="image/*">
+                <small>JPG ou PNG. A foto aparece na tela de venda e no cardápio.</small>
+            </label>
+            <label class="field-check">
+                <input name="ativo" type="checkbox" {% if not produto or produto.ativo %}checked{% endif %}>
+                <span>Item ativo para venda</span>
+            </label>
+            {% if produto and produto.foto %}
+                <div class="field">
+                    <span>Foto atual</span>
+                    <img class="produto-foto-atual" src="{{ produto.foto.url }}" alt="{{ produto.nome }}">
+                    <label class="field-check" style="margin-top: 8px;">
+                        <input name="remover_foto" type="checkbox" value="1">
+                        <span>Remover foto atual</span>
+                    </label>
                 </div>
-            </form>
-        </section>
-    </main>
-</body>
-</html>
+            {% endif %}
+            <label class="field span-all">
+                <span>Descrição</span>
+                <textarea name="descricao" rows="4" placeholder="Ingredientes, tamanho, observações do item">{{ produto.descricao|default:'' }}</textarea>
+            </label>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><i class="fas fa-check"></i> {% if produto %}Salvar alterações{% else %}Salvar item{% endif %}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

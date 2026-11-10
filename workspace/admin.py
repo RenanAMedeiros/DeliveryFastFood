@@ -1,7 +1,26 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin as UnfoldModelAdmin, TabularInline
 
-from workspace.models import ClientePedido, HistoricoPedido, ItemPedido, Pedido, ProdutoPedido
+from workspace.models import (
+    ClientePedido,
+    Comanda,
+    ConfiguracaoLoja,
+    HistoricoPedido,
+    ItemPedido,
+    Pedido,
+    ProdutoPedido,
+)
+
+
+@admin.register(ConfiguracaoLoja)
+class ConfiguracaoLojaAdmin(UnfoldModelAdmin):
+    list_display = ("nome_loja", "quantidade_mesas", "atualizado_em")
+
+    def has_add_permission(self, request):
+        return not ConfiguracaoLoja.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(ClientePedido)
@@ -40,20 +59,19 @@ class PedidoAdmin(UnfoldModelAdmin):
     list_display = (
         "codigo",
         "canal",
-        "codigo_externo",
+        "mesa_numero",
         "cliente",
         "status",
-        "prioridade",
         "data_pedido",
-        "previsao_entrega",
         "forma_pagamento",
+        "pago",
         "responsavel",
         "total",
     )
-    list_filter = ("canal", "status", "forma_pagamento", "prioridade", "data_pedido", "previsao_entrega")
+    list_filter = ("canal", "status", "forma_pagamento", "pago", "data_pedido")
     search_fields = ("codigo", "codigo_externo", "cliente__nome", "cliente__documento", "observacoes")
     autocomplete_fields = ("cliente", "responsavel")
-    readonly_fields = ("criado_por", "criado_em", "atualizado_em", "total")
+    readonly_fields = ("criado_por", "criado_em", "atualizado_em", "total", "unido_em", "comanda")
     date_hierarchy = "data_pedido"
     inlines = [ItemPedidoInline, HistoricoPedidoInline]
 
@@ -74,6 +92,26 @@ class PedidoAdmin(UnfoldModelAdmin):
                 descricao="Alteracao feita pelo admin" if change else "Pedido criado pelo admin",
                 usuario=request.user,
             )
+
+
+class PedidoComandaInline(TabularInline):
+    model = Pedido
+    extra = 0
+    can_delete = False
+    fields = ("codigo", "status", "total", "criado_em")
+    readonly_fields = ("codigo", "status", "total", "criado_em")
+    show_change_link = True
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Comanda)
+class ComandaAdmin(UnfoldModelAdmin):
+    list_display = ("mesa_nome", "status", "aberta_em", "fechada_em", "forma_pagamento", "total_pago", "fechada_por")
+    list_filter = ("status", "forma_pagamento", "aberta_em")
+    readonly_fields = ("aberta_por", "fechada_por")
+    inlines = [PedidoComandaInline]
 
 
 @admin.register(HistoricoPedido)
